@@ -1,0 +1,13 @@
+# Keeps the GitHub Actions used by the workflows up to date (one pull request per update, the quick gate checks it).
+# PT itself has no runtime dependencies: one HTML file, vanilla JavaScript. The tests use Playwright, pinned in the workflows.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Zurich
+    labels: [dependencies, pt]
+    open-pull-requests-limit: 3

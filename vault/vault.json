@@ -1,0 +1,226 @@
+{
+  "_about": "Firnlab vault — the open tools PT and the tools PT builds rely on, each pinned to a release, checksummed and licence-checked once a month (tools/vault_mirror.py, .github/workflows/vault.yml). Chosen by the owner on 25 Oct 2026. 'licence' is what we expect to find in the LICENSE file at the pinned tag; a mismatch turns the run red. 'use' is what PT may write into a build brief.",
+  "checked": "2026-10-25",
+  "tools": [
+    {
+      "id": "rea",
+      "name": "REA — Reverse Engineer Anything",
+      "repo": "morluto/rea",
+      "licence": "MIT",
+      "group": "reverse engineering",
+      "install": "npx rea-agents setup",
+      "use": "laptop only; drives Ghidra/IDA/Hopper for native binaries, reads JS/Electron and .NET statically; only on software the owner owns and whose licence allows; findings go to the model provider",
+      "mirror": "source"
+    },
+    {
+      "id": "ghidra",
+      "name": "Ghidra",
+      "repo": "NationalSecurityAgency/ghidra",
+      "licence": "Apache License",
+      "group": "reverse engineering",
+      "install": "unzip the release; needs a JDK 21",
+      "use": "the disassembler REA drives; same rules as REA",
+      "mirror": "release"
+    },
+    {
+      "id": "mitmproxy",
+      "name": "mitmproxy",
+      "repo": "mitmproxy/mitmproxy",
+      "licence": "MIT",
+      "group": "reverse engineering",
+      "install": "pipx install mitmproxy",
+      "use": "observe an app's own network traffic for interoperability (public APIs, formats); never to bypass a protection",
+      "mirror": "source"
+    },
+    {
+      "id": "jadx",
+      "name": "jadx",
+      "repo": "skylot/jadx",
+      "licence": "Apache License",
+      "group": "reverse engineering",
+      "install": "download the release zip",
+      "use": "read Android packages for the open-device route; same rules as REA",
+      "mirror": "source"
+    },
+    {
+      "id": "frida",
+      "name": "Frida",
+      "repo": "frida/frida",
+      "licence": "wxWindows Library Licence",
+      "group": "reverse engineering",
+      "install": "pip install frida-tools",
+      "use": "live instrumentation of a running app on the owner's own device only; rarely, and never where the licence or terms forbid it",
+      "mirror": "source"
+    },
+    {
+      "id": "promptfoo",
+      "name": "promptfoo",
+      "repo": "promptfoo/promptfoo",
+      "licence": "MIT",
+      "group": "security",
+      "install": "npx promptfoo@latest init",
+      "use": "weekly red-team of PT's prompts and every tool's brief against the OWASP LLM attack classes; runs locally",
+      "mirror": "source"
+    },
+    {
+      "id": "gitleaks",
+      "name": "gitleaks",
+      "repo": "gitleaks/gitleaks",
+      "licence": "MIT",
+      "group": "security",
+      "install": "GitHub Action gitleaks/gitleaks-action",
+      "use": "secret scanning in every firnlab repository next to the data guard",
+      "mirror": "source"
+    },
+    {
+      "id": "garak",
+      "name": "garak",
+      "repo": "NVIDIA/garak",
+      "licence": "Apache License",
+      "group": "security",
+      "install": "pip install garak",
+      "use": "second LLM vulnerability scanner with a broader probe set; heavier, for the quarterly deep pass",
+      "mirror": "source"
+    },
+    {
+      "id": "owasp-llm",
+      "name": "OWASP Top 10 for LLM Applications",
+      "repo": "OWASP/www-project-top-10-for-large-language-model-applications",
+      "licence": "Creative Commons",
+      "group": "security",
+      "install": "",
+      "use": "the attack classes PT's proof rules and red-team cases cite; re-read monthly",
+      "mirror": "source"
+    },
+    {
+      "id": "claude-code-action",
+      "name": "Claude Code GitHub Action",
+      "repo": "anthropics/claude-code-action",
+      "licence": "MIT",
+      "group": "agent infrastructure",
+      "install": "uses: anthropics/claude-code-action@v1 with CLAUDE_CODE_OAUTH_TOKEN",
+      "use": "build-without-a-chat: a GitHub issue labelled build becomes a pull request; runs on the owner's subscription token, stored only in GitHub secrets",
+      "mirror": "source"
+    },
+    {
+      "id": "mcp-servers",
+      "name": "MCP reference servers",
+      "repo": "modelcontextprotocol/servers",
+      "licence": "MIT",
+      "group": "agent infrastructure",
+      "install": "npx -y @modelcontextprotocol/server-filesystem …",
+      "use": "filesystem, fetch, git, memory, time for tools PT builds",
+      "mirror": "source"
+    },
+    {
+      "id": "playwright-mcp",
+      "name": "Playwright MCP",
+      "repo": "microsoft/playwright-mcp",
+      "licence": "Apache License",
+      "group": "agent infrastructure",
+      "install": "npx @playwright/mcp@latest",
+      "use": "do-it-for-me in the browser on the laptop, with a gate at every irreversible step",
+      "mirror": "source"
+    },
+    {
+      "id": "activepieces",
+      "name": "Activepieces",
+      "repo": "activepieces/activepieces",
+      "licence": "MIT",
+      "group": "agent infrastructure",
+      "install": "docker compose (self-hosted)",
+      "use": "self-hosted automation with MCP as the free alternative to paid Zapier/n8n; the ee folder is commercial and is not used",
+      "mirror": "source"
+    },
+    {
+      "id": "faster-whisper",
+      "name": "faster-whisper",
+      "repo": "SYSTRAN/faster-whisper",
+      "licence": "MIT",
+      "group": "voice",
+      "install": "pip install faster-whisper",
+      "use": "dictation inside a tool, on the laptop; the clean-room base for a dictation tool",
+      "mirror": "source"
+    },
+    {
+      "id": "whisper-cpp",
+      "name": "whisper.cpp",
+      "repo": "ggml-org/whisper.cpp",
+      "licence": "MIT",
+      "group": "voice",
+      "install": "build from source",
+      "use": "dictation in a native or offline tool",
+      "mirror": "source"
+    },
+    {
+      "id": "kokoro",
+      "name": "Kokoro TTS",
+      "repo": "hexgrad/kokoro",
+      "licence": "Apache License",
+      "group": "voice",
+      "install": "pip install kokoro",
+      "use": "speech out at zero credits; weights under Apache-2.0 on Hugging Face",
+      "mirror": "source"
+    },
+    {
+      "id": "ollama",
+      "name": "Ollama",
+      "repo": "ollama/ollama",
+      "licence": "MIT",
+      "group": "local models",
+      "install": "download the installer",
+      "use": "AI inside a tool at zero credits on the laptop",
+      "mirror": "source"
+    },
+    {
+      "id": "capacitor",
+      "name": "Capacitor",
+      "repo": "ionic-team/capacitor",
+      "licence": "MIT",
+      "group": "phone",
+      "install": "npm i @capacitor/core @capacitor/cli",
+      "use": "PWA to native app for kit 4; EU direct install",
+      "mirror": "source"
+    },
+    {
+      "id": "expo",
+      "name": "Expo",
+      "repo": "expo/expo",
+      "licence": "MIT",
+      "group": "phone",
+      "install": "npx create-expo-app",
+      "use": "native apps for kit 4; EAS free tier",
+      "mirror": "source"
+    },
+    {
+      "id": "vite",
+      "name": "Vite",
+      "repo": "vitejs/vite",
+      "licence": "MIT",
+      "group": "web",
+      "install": "npm create vite@latest",
+      "use": "the build tool for kit 3 web apps",
+      "mirror": "source"
+    },
+    {
+      "id": "wrangler",
+      "name": "Cloudflare workers-sdk (wrangler)",
+      "repo": "cloudflare/workers-sdk",
+      "licence": "MIT",
+      "group": "web",
+      "install": "npx wrangler",
+      "use": "Cloudflare Pages and Workers for kit 3 hosting",
+      "mirror": "source"
+    },
+    {
+      "id": "chartjs",
+      "name": "Chart.js",
+      "repo": "chartjs/Chart.js",
+      "licence": "MIT",
+      "group": "web",
+      "install": "npm i chart.js",
+      "use": "charts inside tools PT builds",
+      "mirror": "source"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+# Firnlab · build without a chat (decided 25 Oct 2026)
+# Copy this file to <tools repository>/.github/workflows/claude-build.yml.
+# One-time, by the owner: install the Claude GitHub App on the repository (github.com/apps/claude) and add the repository secret
+# CLAUDE_CODE_OAUTH_TOKEN from `claude setup-token` on the laptop. The token lives only in GitHub's secret store. Runs use the owner's
+# subscription (checked on code.claude.com/docs/en/github-actions, 25 Oct 2026). An issue labelled "build" (Prompt Translator prepares it,
+# with the BUILD BRIEF in the body) becomes a pull request; Claude stops and asks in the issue before anything irreversible.
+name: claude build
+on:
+  issues:
+    types: [opened, labeled]
+  issue_comment:
+    types: [created]
+jobs:
+  build:
+    if: >
+      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'build')) ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: "--max-turns 60"

@@ -1,0 +1,46 @@
+# Release: when releases.json gains a published version (Claude commits it after the owner's GO and the publish), this workflow
+# creates the tag v<version> at the recorded commit, builds that commit and attaches the file to a GitHub release whose notes
+# carry the live artifact version ids (main and preview) — so every release points at exactly what is live and can be rolled back.
+# Tags cannot be pushed from Claude's session (the session's GitHub access is branch-only), so the repository does it itself here.
+# Publishing to claude.ai stays a manual GO in the PT session; this only records it.
+name: release
+on:
+  push:
+    branches: [main]
+    paths: [releases.json]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: which versions still need a tag
+        id: need
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, subprocess
+          rel = json.load(open("releases.json"))
+          have = set(subprocess.run(["git", "tag", "-l"], capture_output=True, text=True).stdout.split())
+          todo = [r for r in rel if "v" + r["version"] not in have]
+          print("todo=" + json.dumps(todo))
+          PY
+      - name: tag, build and release each one
+        if: steps.need.outputs.todo != '[]'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TODO: ${{ steps.need.outputs.todo }}
+        run: |
+          git config user.name "prompt-translator release"
+          git config user.email "release@noreply.github.com"
+          python3 tools/release_from_json.py

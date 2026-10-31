@@ -1,0 +1,17 @@
+# test data is a copy of real projects: keep it out of the repository (it lives in work/, see README)
+work
+work/
+# generated while testing
+test/index*.html
+test/*_index.html
+test/*.png
+test/shots*/
+__pycache__/
+*.pyc
+node_modules/
+.env
+.env.*
+*.zip
+*.bundle
+*.pem
+*.key

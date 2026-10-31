@@ -1,0 +1,3 @@
+#!/bin/sh
+# Refuses a push that carries private data or a secret. Installed once per clone with: git config core.hooksPath .githooks
+exec python3 "$(git rev-parse --show-toplevel)/tools/data_guard.py"

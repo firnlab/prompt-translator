@@ -1,0 +1,24 @@
+name: Idea for PT
+description: Something PT should be able to do. One sentence is enough; PT reads this inbox at the start of a session.
+title: "Idea: "
+labels: [idea, pt]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What should PT do?
+      placeholder: "For example: when I paste a YouTube link, PT should pull the key points into the project."
+    validations:
+      required: true
+  - type: dropdown
+    id: who
+    attributes:
+      label: Who needs it?
+      options: [Owner, Second owner, both]
+      default: 0
+  - type: dropdown
+    id: when
+    attributes:
+      label: How soon?
+      options: [next update, when it fits, someday]
+      default: 1

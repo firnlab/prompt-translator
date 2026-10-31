@@ -1,0 +1,182 @@
+# PT release checks (internal, for every update)
+
+Run before every publish of main: `python3 test/release_gate.py` (all, ~60 min) or `--quick` while building (~25 min).
+The gate runs: build · static checks · check the checks · strings · unit · flows · hunt (checks 1–21) · hunt 2 (checks 22–31) · layout · migrations · old flows · click everything.
+Everything runs on copies of the data (scratchpad/backup-141 or a fresh backup) with the mock runtime. Real artifacts are never touched.
+Main is published only after the gate is GREEN **and** Owner says GO.
+
+## Design card: filled in BEFORE building anything (PT itself)
+
+Every new PT feature or change starts with this card, shown to Owner in the change list he approves with GO.
+Designing a cause out at this point costs minutes; finding it after a release costs a bug, a fix round and a re-test.
+
+1. **What changes** for the person (one or two sentences, no code words).
+2. **Causes it touches**: go through the 50 rows below and list every cause the change could bring back (new screen → 4, 5, 6, 7, 12, 26, 28, 30, 31, 36; new AI step → 2, 3, 8, 11, 13, 17, 20, 34; new stored field → 15, 24, 27, 32; and so on).
+3. **How the design keeps each one out**, using the shared building blocks, never a local copy:
+   runAI (ground rule, validate) · contentLang(p) · buildPrompt({proj}) · liveP after await · snapshot / actOpen / actGroup · youOpen / queueCounts / queueOf · nextId / uid · clampHTML · esc · menuFloat · boxHostNow / nearField · REF_IDS / data-anchor / goRef · refLabel · normalizeProject defaults · step() migrations · Store.
+4. **Which check proves it**: an existing check, or a new check plus a planted bug in check_the_checks.py / check_the_hunts.py.
+5. **Tools built in PT**: if the change affects how PT designs tools, which of the 29 failure-proof rules (src/v142_proof.js) it touches.
+
+A change without a filled card is not built.
+
+## Failure-proof rules for the tools PT builds (src/v142_proof.js)
+
+The causes that apply to tools, not only to PT, are built into PT's own design steps, so every tool is designed against them while changing the design is still cheap:
+- **Design**: the architecture step gets the rules that apply to this tool and must say, rule by rule, how the design keeps each failure out. The Design step shows a "Failure-proof by design" panel; a missing rule is open work ("Design them in").
+- **Package**: the package is compiled with the rules and the designed protections, and must do them, not mention them.
+- **Tests**: every rule a test can show gets at least one test (mode = rule id); missing ones are open work ("Write the tests").
+- **Review**: a "Failure-proof" lens checks the package rule by rule.
+- The 29 rules (1.7.0 adds: lean — the lowest credit cost that passes the tool's own tests; canary — a planted secret stops the tool, reader and actor never one part. 1.6.0 adds, for rebuilt products: nothing copied; for pages: permissions asked late · data where decided · no secret in the page; for scheduled tools: proof of life; for companies: zero autonomous spend; for web apps: money decided server-side; for media: capped and traceable): right language · outside text is never an order · AI results checked · nothing cut silently · failures visible · asks before acting · every repeat has a limit · stable identity · sources and dates · one truth per number · storage limits · only what each part needs · done is checked · safe to run again · as little data out as possible · a readable record · model and platform changes · screens that behave · honest tests.
+- A new cause found in a tool → a new rule in PROOF_MODES (with strings in three languages), so every future tool gets it.
+
+## Firnlab kits (1.6.0): rules they are built on (src/v160_kits.js)
+- A kit is PT's knowledge and insistence for one kind of tool: official facts (dated, checked on the maker's pages) that the design and compile prompts get, decisions the person makes, steps the build brief adds with their checks, failure-proof rules.
+- **PT recommends, the person decides** (24 Oct 2026): every kit decision is a queue item with options; the recommendation is starred with its reason; the rule behind the recommendation is deterministic code (`kitStorageRec`), never an AI guess.
+- A kit decision waits in the one queue (`kitQueue`), so the Pick deck, the counts and Finish all show it; it blocks only once a package exists. Answering is one Undo step and one decision line; changing it marks the sections built on it.
+- Workspace defaults decided once by the owner (`KIT_DEFAULTS`: pages start private, AI inside a page only where the job needs it, sources to `firnlab/tools/<slug>/`); a settings panel may change them later.
+- The brief stays deterministic: kit steps come from the decisions, never from the AI; the report carries the live version id of every page as its restore point (`p.tool.versions`).
+- Kit 1 covers pages (artifacts); kit 2 scheduled tools (engine: included scheduled task or Managed Agent with its cost named; results: page / issue / e-mail draft / sheet; watchdog for daily tools; PT's own radar = the weekly knowledge check, proposals only). Kit 6 covers AI companies (src/v160_company.js): a pasted master record goes through the background runner (long text, never into the chat prompt), rules become must-requirements with the record's ids, roles become linked employee tools (`p.kit.company`), founder questions block, contradictions are open questions; the founder gate is a page row + GitHub issue, Telegram only notifies; every agent a Managed Agent; the record per company (PT recommends, the founder decides). Kit 3 web apps (src/v160_webapp.js: hosting, payments, backend, login per app; build-or-use card against external builders; kit 3 wins over kit 1 when the home is a repository/web app). Kit 5 media (src/v160_media.js: images/video, voice, designed output per tool; private vs public line decides open models; hard cap CHF 10 per tool per month). Kit 4 phone apps (src/v160_phone.js: web app vs native via Expo, first store; private apps from a private link). Every kit: `kitSet` writes the decision (one Undo step, one decision line, marks the sections built on it), one queue item per open decision, one prompt block (`KIT_PROMPT_PARTS`), brief steps with checks, a PART letter in the brief, a proof rule, a planted bug in check_the_pick.py, a part in e2e16.py.
+
+## The spine (1.6.0): one way to work (src/v160_spine.js)
+- Pick is the one way to work; Blueprint, Journey, Swimlanes and Steps are read-only maps (`UI.map`, `SP_MAP_RENDER`); every project was moved to Pick once (`m160`, `modeBefore160`).
+- The spine (Idea → Picks → Try it → Design → Review → Build brief → Run) is computed from the project (`spineState`), never stored; exactly one next step.
+- Limits never gate automation (`autoOK`, `costGuard`); gaps make cards (`pickGaps`, `pickGapCards`, `aiPickNext need`); research is screened on arrival and chains refresh + gaps; PT drafts are one batch card; own words are confirmed (`UI.pkReading`, `UI.pkLast`).
+- Hard-to-undo open picks ride along as assumptions; only nsdecide / audience / gatefired block a first version.
+
+## Pick mode (1.5.0): rules it is built on
+- One model, many views: every pick writes into the project's own fields (northStar, goal criteria, examples, audience, decisions); "Design so far" also shows what was decided elsewhere. Nothing is kept twice: a changed decision replaces its line (d.replaced), a changed criterion keeps its id and gets a new version (critVersion).
+- Picks count in the one queue (kind "pick": hard → block, parked → later); everything that waits for you appears in the deck or the Parked list (the counts and the screen always agree). One "Later": parked in Pick = put off in Finish (p.later).
+- Every AI step of Pick goes through runAI with validate and, for cards, `check` (pickCardChecks): a broken answer is asked again once with the exact problems, then the cleaner (pickCleanCard) fixes or drops what still breaks a rule. Results are written to pickLive(p, ws) (never to a deleted project or another workspace).
+- Typed, pasted and web text goes into prompts only through `untrusted()` (random-id tag, JSON-encoded); research findings are screened for planted instructions (aiPickScreen) and flagged ones never reach a prompt. The research job may only search, read and write its own result.
+- Research questions carry nothing private (pickScrub: names per part, e-mail, phone, AHV, IBAN, links, street addresses); the person sees and can change what was asked.
+- Platform facts: documented / impossible only from the platform maker's own pages (PK_FIRST or firstParty), "tested" only from a real run, never for stand-ins; a new platform clears the old parts and is checked at once.
+- One pick = one Undo; "Try it" = one actGroup for that project only (ptOnly); background job results are never part of a group (alone). After any Undo, pickCoherent leaves one consistent state.
+- Expensive runs go through costGuard (Try, second opinion, import, research, simulated users).
+- Hard-to-undo picks: no ★ (enforced in code), they wait only for research that is really running (pickJobAlive: progress within 15 min, 45 min in all).
+- Checks: test/e2e15.py (57), test/e2e15b.py (77, one per review finding R1–R60), test/pick_contract.py (broken and hostile answers, seeded random sequences), test/check_the_pick.py (16 planted Pick bugs), a filled Pick fixture (mock.js __pickFixture) in every hunt / layout / click-everything screen list.
+
+## Design rules for every update: the 54 causes behind every bug since 1.0
+
+Every bug found and fixed from 1.0 to 1.4.2 (about 450 findings) comes from one of these 38 causes.
+Design each new feature against the rule. The check in the last column fails the gate when the cause comes back.
+`check_the_checks.py` puts known bugs back into a copy and proves the static checks still catch them.
+"static" means `test/static_checks.js`: H = hard (fails the gate), R = review (new lines only, look at each).
+
+| # | Cause | Design rule | Automatic check |
+|---|---|---|---|
+| 1 | One fact, many formulas (counts, "done", status disagree) | Derived facts come from one selector: queueOf, queueCounts, youOpen, blockingItems, stepInfo. Views never filter item lists for counts. Never store a derived "done"; a step with a blocker in the queue is never "done" (stepInfo asks the queue). | static H `count` (own open-work formula); hunt 17 (done = no blocker); hunt2 26 (Finish button = steps = totals) |
+| 2 | AI does not see what it needs (context cut) | Never cut AI input silently. The context builder keeps the targets whole and names what it left out; `trunc` marks every long cut with "[… n more characters not shown]". | static H `cut` (trunc keeps the marker), R `cut`; hunt 18 |
+| 3 | AI answer not checked | Every runAI with JSON passes `validate:`. Fields go through a whitelist. Empty never overwrites filled. Verdicts use `=== true`. | static R `validate`, R `verdict`; hunt 18 (empty / junk / wrong shapes) |
+| 4 | Boxes overlap, clip or cover | Menus and popovers open in the top layer (menuFloat). Status goes in a grid slot, never `position:absolute` over text. No raw z-index. | static H `layout` (menuFloat), R `overlap` (new absolute / fixed / z-index); hunt 11; layout141 |
+| 5 | "Go to" lands nowhere | Every place an item is shown has an id from REF_IDS or `data-anchor`. Only goRef navigates. | hunt 14 (every kind × every mode); static R `goto` |
+| 6 | A render destroys typed text, cursor or open panels | Every box is bound to state or a draft. The render keeps focus, cursor, scroll and every panel you opened (detailsReopen; menus excepted). | hunt 16 (typing survives a render, cursor kept) |
+| 7 | The screen moves without you | Background work never scrolls, changes the step or reorders a visible list. Progress lives in the tray and status bar. | static R `move` (scroll / setPhase after an await); hunt2 23 (renders, save state, going online move nothing) |
+| 8 | Wrong language in content | Content language = `contentLang(p)` of the task's own project. `buildPrompt` gets `proj:`, or says `userLang:"viewer"`. | static H `lang` (`contentLang()` without p; buildPrompt without proj); hunt2 27 (screen ≠ project language) |
+| 9 | "Who did it" recorded wrongly | Every change goes through one recorder with `by: you / PT`. An accepted suggestion stays "suggested by PT". | hunt 5 + 6 (each action is one Undo) |
+| 10 | Open work buried | Each step shows Needs you / To check / Done from the queue. One main button. | hunt 17; hunt2 26 |
+| 11 | Stale copy after a wait | After each await, re-read the project (liveP) and write only into the task's own project. | static R `stale`; hunt2 28 (switch project mid-answer) |
+| 12 | A click does nothing, or no way to "done" | Every button changes something you can see, or it is not shown. Every blocker has a resolving action. | hunt 1 (handlers exist); hunt2 24 (every visible button has a visible effect); monkey141 |
+| 13 | Endless AI loops, runaway cost | Every generator has a cap and a stop rule. Big runs ask first (cost guard). | static R `loop` (AI loop without a named cap) |
+| 14 | Built not as agreed | Decisions are written down verbatim. Nothing is built or published without GO. Every changelog line has a test. | release gate + GO (manual) |
+| 15 | Ids reused or taken from position | Ids come from a counter that only goes up (nextId / uid), never from length + 1 or the AI. | static H `ids`; hunt 21; hunt2 29 (unique ids) |
+| 16 | A change marks too much or too little | One link graph and one change engine; only direct dependents, only on a real change. | unit14 §4 |
+| 17 | Undo takes back the wrong thing | Every change is one action (snapshot / actOpen); several steps are one actGroup. | static R `undo`; hunt 5 + 6 |
+| 18 | One feature built twice, the later one wins | Delete the old version instead of overriding it. One name, one definition. | build.py (duplicate functions); static H `names` (duplicate string keys, top-level names), H `wrappers` |
+| 19 | Strings and locale | Text only through t(key) in 3 languages; ss, du, Simplified Chinese; words matched with boundaries. | static H `strings`, R `du`, `plural`, `regex`; i18n14; hunt 9 |
+| 20 | Measuring the harness instead of the tool | A measurement runs the tool's prompt exactly as it will run (PT adds nothing: `ok:rule`) and says "not measurable yet" when it cannot. | static H `rule` (every AI call outside runAI must say why) |
+| 21 | Silent failure | No empty catch without a reason (`ok:catch`). Saves retry and say "Not saved yet · Retry". | static R `catch`; hunt 19 (failed load writes nothing); hunt2 31 (failed save is shown and retried) |
+| 22 | PT decides without asking | Only easy-to-undo choices get a ★; hard-to-undo ones never. Destructive actions are never the main button. | unit14; manual review |
+| 23 | A fix written to the wrong item | Problems carry checked targets; a fix applies only to them. | hunt2 29 (targets exist); migrate14 |
+| 24 | Saving loses or overwrites data | Every new field has a template default; saves go through Store and are merged per field. | hunt 4 (save + reload); static R `field` |
+| 25 | Preview acts like main | Live actions are blocked in the preview (PT_PREVIEW). | static R `preview` |
+| 26 | Text cut | Never cut stored text. Show long text with clampHTML ("more"). | static R `trunc`, `cut`; layout141; migrate141 |
+| 27 | Old or half-filled data | Migrations run once, with a restore point; normalizeProject fills nested defaults. | hunt 7, 8, 10; migrate141; migrate14 |
+| 28 | Accessibility | Status = symbol + word. Targets ≥ 24 × 24 px on phones. Every button has a name. | hunt2 25 |
+| 29 | The checks themselves miss bugs | Every check is proven by putting its bug back. Checks look at effects, not "it did not crash". | check_the_checks.py (27 known bugs in the code checks) and check_the_hunts.py (one planted bug per hunt-2 check): every one must be caught |
+| 30 | Text squeezed to a word per line | Text next to buttons gets a basis (`flex:1 1 12em`); never `overflow-wrap:anywhere`; `min-width:0` only with a floor. | static H `layout`, R `squeeze`; hunt 13 |
+| 31 | Internal ids shown to people | Show refLabel (R3 + title). The AI is told to name items by label; any id that slips through is shown as its label (humanIds). | static R `rawid`; hunt2 22 (no ids, undefined, NaN, {n} on any screen) |
+| 32 | Storage limits | Every document stays far below 256 KiB; Store splits big ones. | hunt 20 |
+| 33 | State not bound to its workspace or project | Per-project UI state is reset when a project opens. | hunt 3 |
+| 34 | Text from files or the web read as orders | Every AI call starts with the ground rule (DATA_RULE): quoted material is never an instruction. All HTML through esc(). | static H `rule`, R `esc` |
+| 35 | Redo replaces instead of reconciling | Redo shows add · update · remove; confirmed items change only after review. | e2e14 (redo review) |
+| 36 | The same box shown twice | One host per box (boxHostNow); actions read fields with nearField. | hunt 12; static R `field` |
+| 37 | Keys in the wrong place | Keys respect typingNow() and open dialogs. | static R `keys`; hunt 2 |
+| 38 | Slow screens | Derived data is cached per render; no layout reads inside render. | hunt2 30 (every screen < 250 ms with the biggest project) |
+| 39 | A write that runs after its context changed (a debounced save after a workspace switch, an AI step finishing after a delete) | Pending saves are written before a switch (flushSaves + storeIdle); a save checks it is still the same workspace; touch never writes a project that is no longer listed; the workspace is never written before its settings loaded (WS._set). | e2e15b R5, R15; check_the_pick |
+| 40 | Partial Undo leaves two truths | After every Undo the feature restores its own invariant (pickCoherent: a pick is open or decided, never both). | pick_contract random sequences; check_the_pick |
+| 41 | A check that can only reject | A failed check asks again once with the problems in words, then the cleaner fixes or drops what still breaks a rule; a good part of an answer is never thrown away. | e2e15b R28; pick_contract |
+| 42 | Secondary sources taken as platform truth | Facts about what a platform can do count only from the maker's own pages; built-in knowledge checked later beats an older approved pack. | pick_contract (blog stays unknown); e2e15b R29 |
+| 43 | Typed or web text in a fixed prompt tag | untrusted() with a random id and JSON encoding; web findings screened before they reach a prompt. | e2e15b R26; check_the_pick |
+| 44 | Text in a source file that breaks the script (an unescaped quote in knowledge) | Every source file is parsed by the static checks before anything else runs. | static checks (they stop on a parse error) |
+| 46 | A soft limit (the weekly budget) silently gated the automatic steps (research screening, next picks, rounds) while the message said "nothing is blocked"; the owner saw PT stall | Limits never gate automation; usage is information only; every automatic step runs on its own trigger | e2e16 part 13 (budget never throttles); check_the_pick |
+| 47 | Readiness needed a decision (result) that no card ever asked → empty deck and "not ready" with no way forward | Every missing readiness item makes its own card (`pickGaps` → a round with `need`); the deck says what is missing | e2e16 part 13 (gaps); check_the_pick |
+| 48 | PT's own drafts asked the person once per item (7 × "Keep it") | One card per batch of PT drafts in the deck; items only when unclear | e2e16 part 13 (batch); check_the_pick |
+| 49 | Typed words vanished with the card and nothing showed what was recorded | The card shows PT reading the words and keeps the text; a strip shows what was recorded with Undo and Change; a failed read says so | e2e16 part 13 (own words); check_the_pick |
+| 50 | Automatic steps (trial cases, trial run, engine suggestion, mini-test) wrote into the project without an action of their own — Undo could never take them back; the budget gate had kept them off in every test since 1.4, so nothing saw it | Every automatic step opens its own action (`snapshot`) before its first write; hunt 5 undoes everything a click set off and waits until PT has been idle for half a second | hunt 5 |
+| 51 | A view switch (Karte · Bauplan) lived in the status line at the bottom and swapped the body under another screen; it did nothing visible and sat in the wrong place | A view is never a toggle under another view: the Bauplan is the body of the Design page; the mode bar is gone; every station is a page with the same three blocks | e2e17 parts 1–3 (pages render, Bauplan content on the Design page, no mode bar) |
+| 52 | Seven kit decisions appeared at once on an old project, before the design existed | Kit decisions wait for the design station; the deck shows one at a time; the Design page lists them all | e2e17 part 5 |
+| 53 | "Fix automatically" ended with a count; nothing showed what changed | The done screen lists every change before→after with "that's what I meant" / "change it" and what PT suggests next | e2e17 part 6 |
+| 54 | Facts (prices, legal lines, platform rules) carried no date; an old fact read like a fresh one | Every fact block, kit option and prompt names its check date; older than 90 days is flagged on screen, in prompts and briefs | e2e17 part 8; check_the_checks (planted: a stale date not flagged) |
+| 45 | A decision written before its Undo step opens (the field is created, then the step starts) splits into two steps; a decision kept under `tool` (outside the diff) cannot be undone at all | Open the action before the first write; decisions live in diffed fields (`kit`, not `tool`); one planted bug per new decision | e2e16 (one decision line, one Undo step); check_the_pick |
+
+## Bug classes found in 1.4.1 and the check that now catches each
+
+| Bug class (seen in 1.4.1) | Caught by |
+|---|---|
+| String missing in a language, placeholders differ, ß, Traditional Chinese, "1 rules", formal "Sie" | static_checks 1 (hard + review), i18n14, hunt 9 |
+| Button/handler named in markup but never defined | static_checks 2, hunt 1 |
+| Wrapper around a function or action that no longer exists | static_checks 3 |
+| User text cut with "…" instead of shown in full / "more" | static_checks 4a (new lines), layout141 |
+| Value into HTML without esc() | static_checks 4b |
+| Global key works while typing, or while a dialog / page / palette is open | static_checks 4c, hunt 2 |
+| AI result applied without a PT action → Undo hits the wrong thing or only part | static_checks 4d, hunt 5 |
+| Several AI steps (batches, "do all") → Undo takes back only the last | hunt 5 (use `actGroup(fn)` for multi-step) |
+| Undo toast after nothing changed / for an old action | static_checks 4e, hunt 6 |
+| New project field lost on reload or not restored by Undo | static_checks 4f (review), hunt 4 + 5 |
+| Word regex without boundaries ("iframe" → "rame", 当前 → 前) | static_checks 4g |
+| UI state (panel, filter, selection, editor) leaks into another project | hunt 3 |
+| Screen crashes on old / half-filled / empty data | hunt 7 + 8 (normalizeProject merges nested defaults) |
+| One-time migration runs twice or changes things a second time | hunt 10, migrate141, migrate14 |
+| Layout: sideways scroll, button under the status bar, clipped text | layout141 |
+| Any button on any screen at any level throws or breaks the screen | monkey141 (click everything) |
+| Old flows broken by new UI | e2e14, e2e13, e2e12_on14, smoke14 |
+| A menu near the end of a list or panel is cut off (1.4.2) | hunt 11; static 3b (menus must use menuFloat, the top layer) |
+| The same box shown twice (list + inspector), so PT reads the empty copy (1.4.2) | hunt 12 (no duplicate ids, incl. a box opened from the inspector); static 4h (read fields with nearField) |
+| Text or buttons squeezed to one word or letter per line (1.4.2) | hunt 13 at 1440 / 1024 + inspector / 390; static 3b (overflow-wrap:anywhere banned) |
+| "Go to" / "Go through" lands nowhere in some modes (1.4.2) | hunt 14 (every kind of open item × every mode); static 4j |
+| "You are here" shows progress instead of where you are (1.4.2) | hunt 15; static 4i |
+
+## 1.7.0: the cover and the seven pages (src/v170_pages.js), honesty (v170_honest.js), more (v170_more.js), build (v170_build.js), vault (v170_vault.js)
+- Seven stations = seven pages (idea · picks · try · design · review · build · run), each with *what PT did · what you decide · next*; one cover above them (summary, open questions, the filled track, the quality spider, one next step, the inbox link). The first three pages share the Pick screen; the steps behind every page are its "all details". A step ref opens its page with the details open; an item ref lands in view (or the inspector). The mode bar is gone; the old views stay reachable for items and the older tests (`modeBefore160`).
+- Honesty as code: `FACT_DAYS = 90`; `factChip`, `factsBlock` (Check page), `honestyPromptBlock` in every design/package prompt, kit options carry their date. Source ledger per domain (`WS.settings.sources`), filled by the screening, shown on the Check page, a bad domain marked on its findings.
+- Cost card (`costPlan`, PART L, rule `lean`, always on) and security card (`secPlan`, PART M, rule `canary`): the seven credit rules and the four security layers made concrete per part; a part that reads outside content and acts outward is flagged to be split.
+- Attack drill (`aiRedTeam`, task `redteam`): six judged cases of five kinds against the package; undefended ones are queue items (`rt`) with "fix as requirement" / "accept the risk"; due weekly when live.
+- Tappable mock (task `mock`): sandboxed iframe (`allow-scripts`), "yes, that's it" / "no, like this" are decisions; the design pass (`designPass`) chains picks → first version → design → review and stops at hard decisions; learn from use (`learnGroups`) turns repeated failures and new input kinds into queue items; PT health is a Settings tab; kit defaults (sharing, AI, repo, media cap) are editable.
+- Build page: `buildIssue` (GitHub issue labelled build with the brief; the Action template is `vault/claude-build.yml`), laptop tasks (`personSteps`, `laptopTaskText` with the gate rules; REA guardrails), PART N (devices), PART O (vault tools). Company: free infrastructure until launch, no Telegram anywhere.
+- The vault: `vault/vault.json` (25 tools chosen by the owner), `tools/vault_mirror.py` + `vault.yml` (monthly: pin, checksum, licence check, release assets, `vault/lock.json`); `VAULT` is injected at build time.
+- Checks: e2e17 (86), `tests parse` (every test script compiles with warnings as errors), the quick gate on GitHub runs e2e15/16/17 and the Pick contract on made-up data (`test/fixtures/synthetic.json`, built by `tools/make_synthetic.py`). Proof rules: 29.
+
+## Review items
+`static_checks.js` lists "review" items only for lines that are new since the last release (baseline = highest `src_vNNN_backup`).
+Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
+
+## Layout rules (1.4.2)
+- Menus are `<details>` with a `.menu` child: they open in the top layer through menuFloat(); never position a menu with overflow tricks.
+- Never `overflow-wrap:anywhere`. Rows wrap; buttons and chips keep their natural width; text next to them keeps a readable minimum.
+- Narrow areas are handled by container queries on the main area and the inspector (two columns become one), not by window width alone.
+- An item's edit/ask/refine box is shown in one place only (boxHostNow); actions read fields with nearField(el, …).
+- Every place an item is shown needs an id from REF_IDS (ir-<ref> by default) or data-anchor="<ref> …"; goRef falls back to the full step, then the inspector.
+
+## For a new feature, add to the checks
+- Read the 50 design rules above first; the review items in `static_checks.js` point at the rule a new line may break.
+- A new bug class → a rule in the table, a check, and a mutation in `check_the_checks.py` that proves the check catches it.
+- New AI action → it must open its action after the result (`snapshot(p, label)`); several steps → `actGroup`.
+- New project field → default in the project template (normalizeProject fills it, also nested), add it to DIFF_SKIP only if it is volatile.
+- New key → respect `typingNow()` and `UI.modal || UI.palette || UI.capture`.
+- New UI state on `UI.*` that belongs to one project → reset it in the openProject wrapper (v141_levels.js) and add it to hunt 3.
+- New migration → `step()` blocks, a restore point, marker so it runs once; add it to hunt 10.
+
+## After each release
+1. `cp -r src src_vNNN_backup` (new baseline for the next diff, e.g. src_v142_backup). check_the_checks.py uses the newest one.
+2. Fresh data backup for the tests if the data changed a lot.
+3. Note version ids (main + preview, the one before for restore) in BUILD-LOG and in `releases.json` (the release workflow tags and releases from it).
