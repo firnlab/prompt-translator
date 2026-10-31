@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: data guard (no private data, no secrets in the repository)
         run: python3 tools/data_guard.py --all
       - uses: actions/setup-node@v4
