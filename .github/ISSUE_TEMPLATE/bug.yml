@@ -1,0 +1,24 @@
+name: Something is wrong in PT
+description: PT did something wrong, odd or slow. Write what you saw; a screenshot helps, the data stays with you.
+title: "Bug: "
+labels: [bug, pt]
+body:
+  - type: textarea
+    id: saw
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: PT version and which one (main or preview)
+      placeholder: "1.5.0 main — shown at the bottom of PT's menu"
+  - type: dropdown
+    id: device
+    attributes:
+      label: Where
+      options: [phone, laptop, both]
+  - type: markdown
+    attributes:
+      value: "Never paste project contents, PINs, keys or anything personal here. The issue is private to the repository, but the rule stands."

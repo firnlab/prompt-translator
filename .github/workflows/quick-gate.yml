@@ -1,0 +1,57 @@
+# Quick gate: runs on every push and pull request. About 12 minutes, no private data needed.
+# Green means: the sources build, every file parses, the strings are complete, the known bugs are still caught
+# and nothing private or secret is in the repository.
+# The full gate (RELEASE-CHECKS.md) runs on a copy of real project data and therefore runs in Claude's session before every push — not here.
+name: quick gate
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: quick-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  quick-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: data guard (no private data, no secrets in the repository)
+        run: python3 tools/data_guard.py --all
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: build
+        run: python3 build.py
+      - name: static checks (every source file parses, no duplicate functions, planted bugs are caught)
+        run: node test/static_checks.js
+      - name: strings complete in every language
+        run: node test/i18n14.js
+      # unit14.js runs on the private data copy too (loads real projects); it runs in Claude's session, not here
+      - name: check the checks (known bugs put back into a copy must turn a check red)
+        run: python3 test/check_the_checks.py
+      - name: every test and tool script parses
+        run: python3 -W error -m py_compile test/*.py tools/*.py
+      # 1.7 (task #84): the flow tests run here on made-up data built by PT itself (test/fixtures/synthetic.json, tools/make_synthetic.py).
+      # The hunts, layout and migration checks still need the copy of real data and run in Claude's session (full gate).
+      - name: browser for the flow tests
+        run: pip install playwright && python3 -m playwright install --with-deps chromium
+      - name: flows on made-up data (1.5 Pick, 1.6 kits, 1.7 pages, Pick contract)
+        run: |
+          python3 test/e2e15.py test/fixtures/synthetic.json
+          python3 test/e2e16.py test/fixtures/synthetic.json
+          python3 test/e2e17.py test/fixtures/synthetic.json
+          python3 test/pick_contract.py test/fixtures/synthetic.json
+      - name: keep the built file for 7 days
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prompt-translator-${{ github.sha }}
+          path: dist/prompt-translator.html
+          retention-days: 7

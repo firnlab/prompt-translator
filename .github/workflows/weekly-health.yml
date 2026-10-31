@@ -1,0 +1,50 @@
+# Weekly health check: Monday 06:17 Zürich time (04:17 UTC in summer, 05:17 in winter). Also runs by hand.
+# Runs the quick gate on main and checks the links PT's knowledge pack relies on. Opens or updates one issue when something is red,
+# so the inbox (GitHub issues) carries it to the next PT session. Uses GitHub's own minutes only (Free plan: 2,000 min/month).
+name: weekly health
+on:
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: quick gate
+        id: gate
+        continue-on-error: true
+        run: |
+          set -e
+          python3 tools/data_guard.py --all
+          python3 build.py
+          node test/static_checks.js
+          node test/i18n14.js
+          python3 test/check_the_checks.py
+      - name: official pages PT relies on still answer
+        id: links
+        continue-on-error: true
+        run: python3 tools/link_check.py
+      - name: report to the inbox when red
+        if: steps.gate.outcome == 'failure' || steps.links.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GATE: ${{ steps.gate.outcome }}
+          LINKS: ${{ steps.links.outcome }}
+        run: |
+          title="Weekly health check is red"
+          body=$(printf 'Run: %s/%s/actions/runs/%s\n\nquick gate: %s\nofficial pages: %s\n\nNext PT session: open the run, read the red step, fix, rerun the gate.' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" "$GATE" "$LINKS")
+          gh label create health --color d93f0b --description "weekly health check" --force >/dev/null 2>&1 || true
+          gh label create pt --color 0e8a16 --description "Prompt Translator" --force >/dev/null 2>&1 || true
+          n=$(gh issue list --label health --state open --json number --jq 'length')
+          if [ "$n" = "0" ]; then gh issue create --title "$title" --body "$body" --label health,pt; else gh issue comment "$(gh issue list --label health --state open --json number --jq '.[0].number')" --body "$body"; fi

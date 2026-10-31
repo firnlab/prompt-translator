@@ -1,0 +1,1402 @@
+{
+ "bl.runs3": [
+  "Die Tests liefen {n}-mal; drei Durchläufe sind nötig",
+  "测试已运行 {n} 次；需要运行三次"
+ ],
+ "bl.decide": [
+  "{id}: Die Bewerter sind sich nicht einig oder unsicher, deshalb entscheiden Sie",
+  "{id}：评审意见不一或没有把握，需要由你决定"
+ ],
+ "judge.samefam": [
+  "gleiche Modellfamilie (Claude)",
+  "同系列模型（Claude）"
+ ],
+ "judge.unknown": [
+  "Bewerter: nicht genug Belege",
+  "评审：证据不足"
+ ],
+ "judge.unsure": [
+  "Bewerter unsicher ({n} %)",
+  "评审没有把握（{n}%）"
+ ],
+ "test.passk": [
+  "Alle {k} Durchläufe bestehen",
+  "{k} 次运行全部通过"
+ ],
+ "test.flip": [
+  "Wechselrate",
+  "结果翻转率"
+ ],
+ "test.flaky": [
+  "Ergebnisse ändern sich von Lauf zu Lauf (unbeständig): {x}",
+  "每次运行结果不一致（不稳定）：{x}"
+ ],
+ "judge.rel": [
+  "Zuverlässigkeit des Bewerters",
+  "评审可靠性"
+ ],
+ "judge.rel.sub": [
+  "Verglichen mit Ihren eigenen Entscheiden. Version der Bewerter-Anweisungen: {v}.",
+  "与你自己的判断对比。评审指令版本 {v}。"
+ ],
+ "judge.tpr": [
+  "Besteht, was Sie bestehen lassen",
+  "你判通过的，它也判通过"
+ ],
+ "judge.tnr": [
+  "Lässt durchfallen, was Sie durchfallen lassen",
+  "你判不通过的，它也判不通过"
+ ],
+ "judge.labels": [
+  "aus {n} Ihrer Entscheide",
+  "基于你的 {n} 次判断"
+ ],
+ "judge.relgood": [
+  "Der Bewerter stimmt gut genug mit Ihnen überein, um ihm allein zu vertrauen.",
+  "评审与你的判断足够一致，可以放心让它独立评分。"
+ ],
+ "judge.relbad": [
+  "Der Bewerter weicht oft von Ihnen ab: Prüfen Sie knappe Fälle weiterhin selbst, oder schärfen Sie die Testkriterien.",
+  "评审经常与你的判断不同：请继续亲自检查难以判定的情况，或把测试标准写得更明确。"
+ ],
+ "judge.relneed": [
+  "PT zeigt dies nach 30 Ihrer Entscheide an (bisher {n}). Jeder knappe Fall, den Sie entscheiden, zählt.",
+  "你做出 30 次判断后，PT 才会显示此项（目前 {n} 次）。你每判定一个难以判定的情况，都会计入。"
+ ],
+ "judge.vmix": [
+  "Diese Läufe nutzten unterschiedliche Bewerter-Anweisungen ({x}); vergleichen Sie mit Vorsicht.",
+  "这些运行使用了不同版本的评审指令（{x}）；对比时请谨慎。"
+ ],
+ "lint.gen5param": [
+  "Erwähnt Prefill, Thinking-Budgets oder Temperatur: Claude-5-Modelle lehnen diese ab; nennen Sie stattdessen eine Stufe für den Denkaufwand.",
+  "提到了预填充、思考预算或温度：Claude 5 代模型不接受这些参数；请改为指定思考强度。"
+ ],
+ "lint.sevfilter": [
+  "Ein Schweregrad-Filter («nur hohe Befunde melden …»): Opus 5 nimmt ihn wörtlich. Lassen Sie alles melden und filtern Sie danach.",
+  "严重度筛选（“只报告高严重度的…”）：Opus 5 会严格按字面执行。请让它报告全部问题，再自行筛选。"
+ ],
+ "lint.skilldesclong": [
+  "Skill-Beschreibung hat {d} Zeichen: Sie funktioniert bis 1024, löst unter 200 aber zuverlässiger aus.",
+  "技能描述有 {d} 个字符：最多 1,024 个字符也能用，但少于 200 个字符时触发更可靠。"
+ ],
+ "lint.skillreserved": [
+  "Skill-Namen dürfen weder «claude» noch «anthropic» enthalten.",
+  "技能名称不能包含“claude”或“anthropic”。"
+ ],
+ "lint.skilldesc": [
+  "Skill-Beschreibung hat {d} Zeichen: die Grenze ist 1024",
+  "技能描述有 {d} 个字符：上限是 1,024"
+ ],
+ "lint.skillname": [
+  "Skill-Name muss klein, mit Bindestrichen und höchstens 64 Zeichen lang sein",
+  "技能名称必须使用小写字母和连字符，且不超过 64 个字符"
+ ],
+ "lint.verify": [
+  "Allgemeine «Doppelt prüfen»-Anweisung: Claude-5-Modelle prüfen ihre Arbeit selbst, das führt zu übermässigem Prüfen",
+  "笼统的“再检查一遍”指令：Claude 5 代模型会自行检查，这会导致过度检查"
+ ],
+ "run.err.norunner": [
+  "Hintergrundläufe sind für dieses Login noch nicht eingerichtet. Verwenden Sie zuerst «Hintergrundläufe einrichten».",
+  "此登录账号尚未设置后台运行。请先使用“设置后台运行”。"
+ ],
+ "usage.overwarn": [
+  "Die geschätzte PT-Nutzung liegt bei {n} % Ihres Wochenbudgets. Nichts wird blockiert; Sie entscheiden, was läuft.",
+  "PT 估计用量已达到每周预算的 {n}%。不会阻止任何操作，由你决定运行什么。"
+ ],
+ "usage.projwarn": [
+  "«{p}» hat {n} % seiner monatlichen Nutzungsschätzung verbraucht.",
+  "“{p}”已用掉每月估计用量的 {n}%。"
+ ],
+ "set.projmonthly": [
+  "Monatliche Schätzung pro Projekt",
+  "每个项目的每月估计用量"
+ ],
+ "usage.tip": [
+  "Eine Schätzung aus den Aufrufen, die PT macht. PT warnt nur, es blockiert nie. Die wöchentliche Wissensprüfung und die Tool-Prüfungen nutzen einen kleinen festen Anteil.",
+  "根据 PT 发起的调用估算。PT 只会提醒，从不阻止。每周的知识检查和工具检查会占用一小部分固定用量。"
+ ],
+ "bl.cost": [
+  "Länger oder teurer als die Live-Freigabe (Paket +{a} %, Ergebnisse +{b} %): beheben oder mit Begründung akzeptieren",
+  "比线上版本更长或成本更高（配置包 +{a}%，输出 +{b}%）：请修复，或说明理由后接受"
+ ],
+ "rel.g.cost": [
+  "Dieser Entwurf ist 20 % oder mehr länger oder teurer als die Live-Freigabe: Kürzen Sie ihn, oder akzeptieren Sie ihn mit Begründung.",
+  "此草稿比线上版本长或成本高 20% 及以上：请精简，或说明理由后接受。"
+ ],
+ "rd.f.costok": [
+  "Mit Begründung akzeptieren",
+  "说明理由后接受"
+ ],
+ "cost.reason": [
+  "Warum ist der längere oder teurere Entwurf vertretbar?",
+  "为什么可以接受这个更长或成本更高的草稿？"
+ ],
+ "act.costok": [
+  "Längeren oder teureren Entwurf akzeptiert: {r}",
+  "已接受更长或成本更高的草稿：{r}"
+ ],
+ "rd.engine": [
+  "Frontier & Dimensionierung",
+  "前沿与规模适配"
+ ],
+ "bl.scan": [
+  "Der Frontier-Scan ist noch nicht gelaufen",
+  "前沿扫描尚未运行"
+ ],
+ "bl.scanrun": [
+  "Der Frontier-Scan läuft noch",
+  "前沿扫描仍在运行"
+ ],
+ "bl.gate": [
+  "{g} nicht beantwortet: {q}",
+  "{g} 尚未回答：{q}"
+ ],
+ "bl.gatefired": [
+  "{g} zeigt, dass ein einfacherer Weg passt: Folgen Sie ihm, oder fahren Sie mit Begründung fort",
+  "{g} 表明更简单的方案就够了：请采用它，或说明理由后继续"
+ ],
+ "bl.trial": [
+  "Der Probelauf mit Beispielfällen ist noch nicht gelaufen (für dieses Tool empfohlen)",
+  "示例用例试跑尚未运行（建议此工具运行）"
+ ],
+ "bl.mini": [
+  "Der Mini-Test der zwei führenden Einstellungen ist noch nicht gelaufen",
+  "两种领先设置的小测试尚未运行"
+ ],
+ "rd.leftcopy": [
+  "Alle Bereitschaftsprüfungen sind erledigt, aber {n} Punkte unter «Bevor Sie kopieren können» (unten) sind noch offen.",
+  "所有就绪度检查都已完成，但下方“复制前需完成”中还有 {n} 项未处理。"
+ ],
+ "aud.title": [
+  "Wer wird das nutzen?",
+  "谁会使用它？"
+ ],
+ "aud.sub": [
+  "Davon hängt ab, welche Prüfungen zu Transparenz und Datenschutz gelten.",
+  "这决定了需要进行哪些透明度和数据保护检查。"
+ ],
+ "aud.customers": [
+  "Werden Kunden oder andere Personen (nicht nur Sie) es nutzen oder seine Ergebnisse erhalten?",
+  "客户或其他人（不只是你）会使用它或收到它的结果吗？"
+ ],
+ "aud.eu": [
+  "Werden Personen in der EU es nutzen oder seine Ergebnisse erhalten?",
+  "欧盟境内的人会使用它或收到它的结果吗？"
+ ],
+ "aud.hint.eu": [
+  "Nutzer in der EU: PT ergänzt die Transparenzregel der EU-KI-Verordnung (Art. 50: sagen, dass es KI ist; KI-erzeugte Medien kennzeichnen) sowie die Schweizer und EU-Datenschutzprüfungen.",
+  "欧盟用户：PT 会加入欧盟《人工智能法》的透明度规则（Art. 50：告知对方这是 AI，并标注 AI 生成的媒体），以及瑞士和欧盟的数据保护检查。"
+ ],
+ "aud.hint.cust": [
+  "Andere Personen nutzen es: PT ergänzt die Schweizer Datenschutzprüfungen (nDSG, Leitfaden des EDÖB).",
+  "其他人会使用它：PT 会加入瑞士的数据保护检查（nDSG、联邦数据保护专员指南）。"
+ ],
+ "bl.audience": [
+  "Wer wird das nutzen? Beantworten Sie die zwei Fragen unter «Erfassen»",
+  "谁会使用它？请在“收集想法”中回答这两个问题"
+ ],
+ "fs.art50": [
+  "Personen in der EU nutzen dies: Sagen Sie ihnen, dass es eine KI ist, und kennzeichnen Sie KI-erzeugte Bilder, Audio- oder Videoinhalte maschinenlesbar (EU-KI-Verordnung Art. 50, ab 2. August 2026).",
+  "欧盟境内的人会使用它：要告知他们这是 AI，并以机器可读的方式标注 AI 生成的图片、音频或视频（欧盟《人工智能法》Art. 50，自 2026 年 8 月 2 日起）。"
+ ],
+ "fs.fdpic": [
+  "Andere Personen nutzen dies: Sagen Sie, was die KI tut und mit welchen Daten, lassen Sie sie widersprechen oder eine Prüfung durch einen Menschen verlangen, und klären Sie, ob eine Vertretung in der EU nötig ist (nDSG, Leitfaden des EDÖB; DSGVO Art. 27).",
+  "其他人会使用它：说明 AI 做什么、使用哪些数据，允许他们提出反对或要求人工复核，并确认是否需要设立欧盟代表（nDSG、联邦数据保护专员指南；GDPR Art. 27）。"
+ ],
+ "act.audience": [
+  "Nutzerkreis festgelegt: {x}",
+  "已设置使用人群：{x}"
+ ],
+ "btn.yes": [
+  "Ja",
+  "是"
+ ],
+ "btn.no": [
+  "Nein",
+  "否"
+ ],
+ "ib.newkind": [
+  "Neue Art von Eingabe",
+  "新类型的输入"
+ ],
+ "ib.totest": [
+  "Daraus einen Test machen",
+  "设为测试"
+ ],
+ "ib.istest": [
+  "Test {id}",
+  "测试 {id}"
+ ],
+ "act.fromreal": [
+  "Test {id} aus echter Nutzung erstellt",
+  "已根据真实使用创建测试 {id}"
+ ],
+ "wn.lead": [
+  "Prompt Translator {v}. Ihre Projekte und Notizen sind alle da; nichts ging verloren.",
+  "Prompt Translator {v}。你的项目和笔记都在，没有丢失任何内容。"
+ ],
+ "cl.12.added": [
+  "Frontier-Engine: Jedes Projekt erhält einen Frontier-Scan (bestehende Produkte, bauen oder kaufen, was Claude heute kann), die Schwellen G1–G7, einen Dimensionierungswert und vier Regler (Bauweise, Modell, Plattform, Autonomie), alle auf Auto, mit einem Klick übersteuerbar|Probelauf mit 10–20 Beispielfällen und ein automatischer Mini-Test der zwei führenden Modelleinstellungen (alle 3 Versuche bestehen, Wechselrate, Nutzung pro Erfolg)|Obergrenzen-Karte: die empfohlene Einrichtung neben der heute besten Option, mit Begründung, warum nicht, und wann aufsteigen|Wissenspaket, das Sie genehmigen: Eine Prüfung am Sonntag schlägt neue Modelle, Ausmusterungen und Regeln vor; nichts ändert sich ohne Sie|Monatsübersicht und dringende Hinweise im Cockpit|Tool-Karte bei jeder Freigabe; Prüfung veröffentlichter Seiten am echten Tool; «Daraus einen Test machen» aus echter Nutzung|Wer es nutzt (Kunden, EU): Prüfungen zur EU-KI-Verordnung Art. 50 und zum Schweizer Datenschutz schalten sich selbst ein|Getrennte Logins: Second owner richtet ihre eigenen Hintergrundläufe mit einem Klick ein",
+  "前沿引擎：每个项目都有前沿扫描（现有产品、自建还是购买、Claude 目前能做什么）、G1–G7 门槛、规模适配评分和四个调节项（设计、模型、平台、自主程度），全部默认为自动，一键即可手动更改|用 10–20 个示例用例试跑，并自动对两种领先的模型设置做小测试（3 次全部通过、结果翻转率、每次成功的用量）|上限卡片：把推荐方案与当前最高配置并列，说明为什么不选最高配置，以及何时升级|由你批准的知识包：每周日的检查会建议新模型、模型退役和新规则；未经你同意不会有任何改动|控制台中的月度摘要和紧急提醒|每次正式发布都有工具卡片；对已发布页面进行真实工具检查；可从真实使用中“设为测试”|使用人群（客户、欧盟）：欧盟《人工智能法》Art. 50 和瑞士数据保护检查会自动启用|独立登录：Second owner 一键即可设置自己的后台运行"
+ ],
+ "cl.12.changed": [
+  "Tests laufen 3-mal; Bewerter können «unbekannt» sagen und angeben, wie sicher sie sind; knappe Fälle und Uneinigkeit kommen zu Ihnen; die Zuverlässigkeit der Bewerter wird nach 30 Ihrer Entscheide angezeigt|Regeln für Opus 5.5, Sonnet 5.5, Haiku 5.5 und Fable 5.1; Prüfungen für Prompts für Claude 5 (kein Prefill, keine Thinking-Budgets, keine Temperatur)|Die Blickwinkel der Prüfung erhalten die passenden Best-Practice-Regeln|Modell-Chips nennen das Modell hinter jeder Stufe|Das Budget warnt nur und blockiert nie; monatliche Schätzung pro Projekt|Standardansicht für Owner: Bauplan / Profi|«Verstehen» braucht 3 von 4 Teilen",
+  "测试运行 3 次；评审可以回答“无法判断”并给出把握程度；难以判定的情况和意见分歧交由你决定；你做出 30 次判断后会显示评审可靠性|新增 Opus 5.5、Sonnet 5.5、Haiku 5.5 和 Fable 5.1 的规则；检查 Claude 5 提示词写法（不用预填充、思考预算或温度）|各审查角度都配有相应的最佳实践规则|模型标签会显示每个级别背后的具体模型|预算只提醒，从不阻止；每个项目有每月估计用量|Owner 的默认视图：蓝图 / 专业|“理清问题”只需完成 4 个部分中的 3 个"
+ ],
+ "cl.12.fixed": [
+  "Kosten- und Längenschutz bei der Freigabe (20 % oder mehr länger oder teurer gilt als schlechter)|Mehrere Befunde auf einmal abzeichnen, jeder mit Ziel · Änderung · Risiko · Rückgängig|Warnung, wenn die eingefügte Ersatzkopie 2 oder mehr Freigaben alt ist|Skill-Namen und -Beschreibungen werden mit den Grenzen von Anthropic abgeglichen",
+  "正式发布时检查成本和长度（长度或成本增加 20% 及以上即视为变差）|可一次签字确认多个问题，每个都附目标 · 改动 · 风险 · 撤销|粘贴的备用副本落后 2 个或更多发布版本时发出警告|按 Anthropic 的限制检查技能名称和描述"
+ ],
+ "cl.12.removed": [
+  "In Ihrem Login wird kein Arbeitsbereich «Second owner» mehr angelegt (sie hat ihr eigenes Login)",
+  "你的登录账号中不再创建“Second owner”工作区（她有自己的登录账号）"
+ ],
+ "eng.down": [
+  "heruntergestuft (zählt als Erfolg)",
+  "已降级（算作成功）"
+ ],
+ "act.dial": [
+  "{k} auf {v} gesetzt",
+  "{k} 已设为 {v}"
+ ],
+ "eng.autobadge": [
+  "Auto",
+  "自动"
+ ],
+ "eng.yoursbadge": [
+  "Von Ihnen gewählt",
+  "你的选择"
+ ],
+ "eng.auto": [
+  "Auto · {x}",
+  "自动 · {x}"
+ ],
+ "eng.notyet": [
+  "noch nicht verfügbar",
+  "暂不可用"
+ ],
+ "eng.on": [
+  "Ein",
+  "开"
+ ],
+ "eng.off": [
+  "Aus",
+  "关"
+ ],
+ "eng.rec": [
+  "empfohlen",
+  "推荐"
+ ],
+ "eng.backauto": [
+  "Zurück zu Auto",
+  "恢复自动"
+ ],
+ "eng.climb.why": [
+  "Warum über die Empfehlung von PT hinausgehen?",
+  "为什么要高于 PT 的推荐？"
+ ],
+ "eng.climb.ph": [
+  "Ein Satz, z. B. «der Probelauf scheiterte an X»",
+  "一句话即可，例如“试跑在 X 上失败了”"
+ ],
+ "eng.climb.help": [
+  "Jeder Schritt nach oben braucht eine Begründung, damit Sie später sehen, ob er sich gelohnt hat. Nach unten braucht es nie eine.",
+  "每次往上调都需要说明理由，方便你以后判断是否值得。往下调则不需要。"
+ ],
+ "eng.climb.yes": [
+  "Höher gehen",
+  "往上调"
+ ],
+ "act.gate": [
+  "{g} beantwortet: {v}",
+  "{g} 已回答：{v}"
+ ],
+ "act.gateover": [
+  "{g} übersteuert: {r}",
+  "{g} 已被手动跳过：{r}"
+ ],
+ "eng.gate.override": [
+  "Trotzdem fortfahren, mit Begründung",
+  "仍要继续（需说明理由）"
+ ],
+ "eng.gate.why": [
+  "Warum ist der einfachere Weg hier nicht richtig?",
+  "为什么更简单的方案在这里不合适？"
+ ],
+ "eng.gate.overridden": [
+  "Sie sind fortgefahren: {r}",
+  "你选择了继续：{r}"
+ ],
+ "eng.gate.overridden.short": [
+  "trotzdem fortgefahren",
+  "已选择继续"
+ ],
+ "eng.gate.undo": [
+  "Rückgängig",
+  "撤销"
+ ],
+ "eng.gate.must": [
+  "nötig",
+  "必答"
+ ],
+ "eng.gate.sug": [
+  "PT schlägt vor: {a}",
+  "PT 建议：{a}"
+ ],
+ "eng.ans.yes": [
+  "Ja",
+  "是"
+ ],
+ "eng.ans.no": [
+  "Nein",
+  "否"
+ ],
+ "eng.ans.unknown": [
+  "Nicht sicher",
+  "不确定"
+ ],
+ "gate.existing": [
+  "Erledigt ein bestehendes Produkt, Plugin, Skill, Connector oder eine eingebaute Claude-Funktion das bereits?",
+  "是否已有现成的产品、插件、技能、连接器或 Claude 内置功能能做到这件事？"
+ ],
+ "gate.value": [
+  "Wird diese Arbeit heute wirklich erledigt, mindestens etwa zweimal im Monat?",
+  "这项工作现在是否真的在做，且至少每月约两次？"
+ ],
+ "gate.exact": [
+  "Muss das Ergebnis exakt reproduzierbar sein (Rechnungen, MWST, rechtlich relevante Zahlen)?",
+  "结果是否必须能精确复现（发票、增值税、法律相关数字）？"
+ ],
+ "gate.shape": [
+  "Läuft die Aufgabe streng Schritt für Schritt ab (jeder Schritt braucht den vorherigen)?",
+  "这项任务是否严格按步骤进行（每一步都依赖上一步）？"
+ ],
+ "gate.maintain": [
+  "Können Sie (und Second owner) diese Bauweise selbst pflegen?",
+  "你（和 Second owner）能自己维护这种设计吗？"
+ ],
+ "gate.redline": [
+  "Betrifft es Personalauswahl, Kredite, Bewertungen im Bildungsbereich oder persönliche Rechts-, Finanz- oder medizinische Beratung?",
+  "是否涉及招聘、信贷、教育评分，或个人法律、财务、医疗建议？"
+ ],
+ "gate.trifecta": [
+  "Kommen private Daten, nicht vertrauenswürdige Inhalte und ein Weg, Daten nach aussen zu senden, zusammen?",
+  "是否同时涉及私密数据、不可信内容，以及向外发送数据的途径？"
+ ],
+ "gate.fx.existing": [
+  "Etwas erledigt das bereits: PT empfiehlt, es zu übernehmen. Selbst bauen braucht eine Begründung.",
+  "已有现成方案能做到：PT 建议直接采用。自建需要说明理由。"
+ ],
+ "gate.fx.value": [
+  "Der Nutzen ist noch nicht belegt: PT empfiehlt zuerst einen einfachen Prompt oder eine Checkliste (R0).",
+  "价值尚未得到证明：PT 建议先用简单的提示词或清单（R0）。"
+ ],
+ "gate.fx.exact": [
+  "Exakte Ergebnisse: Der exakte Teil wird zu festen Regeln oder Code; KI nur rundherum.",
+  "需要精确结果：精确的部分改用固定规则或代码，AI 只负责周边工作。"
+ ],
+ "gate.fx.shape": [
+  "Schritt-für-Schritt-Aufgabe: keine Multi-Agent-Bauweise (sie ist hier messbar schlechter).",
+  "按步骤进行的任务：不采用多智能体设计（在这种情况下效果明显更差）。"
+ ],
+ "gate.fx.maintain": [
+  "Schwer zu pflegen: PT begrenzt die Bauweise auf einen festen Ablauf (R3).",
+  "难以维护：PT 会把设计上限定为固定工作流（R3）。"
+ ],
+ "gate.fx.redline": [
+  "Ein Bereich mit roter Linie: Halten Sie an und holen Sie fachkundigen Rat ein, bevor Sie bauen.",
+  "属于红线领域：请先停下，在构建前寻求专业意见。"
+ ],
+ "gate.fx.trifecta": [
+  "Gefährliches Dreigespann: Entfernen Sie eines der drei, oder fügen Sie Ihre Genehmigung ein, bevor etwas nach aussen geht.",
+  "致命三要素：去掉其中一项，或在任何内容发出前加上你的批准。"
+ ],
+ "eng.scan": [
+  "Frontier-Scan",
+  "前沿扫描"
+ ],
+ "eng.scanning": [
+  "Prüft, was es gibt und was möglich ist …",
+  "正在扫描已有方案和可行做法…"
+ ],
+ "eng.scan.sub": [
+  "Was es schon gibt, bauen oder kaufen, was Claude heute dafür kann, und die einfachste Bauweise, die gut genug ist.",
+  "已有哪些方案、自建还是购买、Claude 目前能为此做什么，以及够用的最简单设计。"
+ ],
+ "eng.scan.run": [
+  "Frontier-Scan starten",
+  "运行前沿扫描"
+ ],
+ "eng.scan.running": [
+  "Der Frontier-Scan läuft im Hintergrund mit Live-Websuche.",
+  "前沿扫描正在后台运行，使用实时网络搜索。"
+ ],
+ "eng.scan.time": [
+  "Meist 5–30 Minuten. Sie können weiterarbeiten.",
+  "通常需要 5–30 分钟。你可以继续工作。"
+ ],
+ "eng.scan.failed": [
+  "Der Scan wurde nicht abgeschlossen.",
+  "扫描未完成。"
+ ],
+ "eng.scan.local": [
+  "Ohne Live-Websuche",
+  "未使用实时网络搜索"
+ ],
+ "eng.scan.web": [
+  "Mit Live-Websuche",
+  "使用了实时网络搜索"
+ ],
+ "eng.scan.none": [
+  "Noch nicht gelaufen. Er startet von selbst, sobald die Idee verstanden ist.",
+  "尚未运行。想法理清后会自动开始。"
+ ],
+ "eng.scan.auto": [
+  "Läuft von selbst nach «Verstehen»",
+  "在“理清问题”后自动运行"
+ ],
+ "kp.used": [
+  "Wissen vom {d}",
+  "知识截至 {d}"
+ ],
+ "eng.criterion": [
+  "Erfolgskriterium",
+  "成功标准"
+ ],
+ "eng.existing": [
+  "Gibt es schon",
+  "已有方案"
+ ],
+ "eng.fit": [
+  "Passung",
+  "匹配度"
+ ],
+ "eng.note": [
+  "Was es abdeckt / was fehlt",
+  "覆盖了什么 / 缺少什么"
+ ],
+ "eng.noexisting": [
+  "Nichts gefunden, das dies bereits erledigt.",
+  "没有找到已能做到这件事的方案。"
+ ],
+ "eng.capfit": [
+  "Was Claude für jedes Bedürfnis kann ({n})",
+  "Claude 能为每项需求做什么（{n}）"
+ ],
+ "eng.sources": [
+  "Quellen ({n})",
+  "来源（{n}）"
+ ],
+ "eng.verdict.adopt": [
+  "Bestehendes übernehmen",
+  "采用现有方案"
+ ],
+ "eng.verdict.buy": [
+  "Ein Produkt kaufen",
+  "购买现成产品"
+ ],
+ "eng.verdict.partial": [
+  "Nur den fehlenden Teil bauen",
+  "只构建缺少的部分"
+ ],
+ "eng.verdict.build": [
+  "Bauen",
+  "自建"
+ ],
+ "eng.mat.ga": [
+  "verfügbar",
+  "已可用"
+ ],
+ "eng.mat.beta": [
+  "Beta",
+  "测试版"
+ ],
+ "eng.mat.preview": [
+  "Vorschau",
+  "预览版"
+ ],
+ "eng.mat.none": [
+  "nicht möglich",
+  "无法实现"
+ ],
+ "act.scan": [
+  "Frontier-Scan: {v}",
+  "前沿扫描：{v}"
+ ],
+ "kp.refresh": [
+  "Wissensprüfung",
+  "知识检查"
+ ],
+ "smoke.none": [
+  "Noch keine veröffentlichten Seiten zum Prüfen.",
+  "还没有可检查的已发布页面。"
+ ],
+ "smoke.title": [
+  "Prüfung am echten Tool",
+  "真实工具检查"
+ ],
+ "smoke.issue": [
+  "Problem auf {u}",
+  "{u} 上有问题"
+ ],
+ "smoke.sub": [
+  "Öffnet die veröffentlichten Seiten nur lesend und prüft, ob sie wie gebaut funktionieren.",
+  "以只读方式打开已发布的页面，检查它们是否按构建的方式正常工作。"
+ ],
+ "smoke.run": [
+  "Echtes Tool prüfen",
+  "检查真实工具"
+ ],
+ "eng.suggesting": [
+  "Wert und Schwellen werden vorgeschlagen …",
+  "正在建议评分和门槛答案…"
+ ],
+ "eng.trial.drafting": [
+  "Beispielfälle werden entworfen …",
+  "正在起草示例用例…"
+ ],
+ "eng.trial.running": [
+  "Probelauf {i}/{n} (einfacher Prompt) …",
+  "试跑 {i}/{n}（普通提示词）…"
+ ],
+ "eng.trial.judging": [
+  "Die Ergebnisse werden geprüft …",
+  "正在检查结果…"
+ ],
+ "eng.trial.log": [
+  "einfacher Prompt bestand {a}/{b} Beispielfälle",
+  "普通提示词通过了 {a}/{b} 个示例用例"
+ ],
+ "act.trial": [
+  "Probelauf: {a}/{b} Fälle mit einfachem Prompt bestanden",
+  "试跑：普通提示词通过了 {a}/{b} 个用例"
+ ],
+ "eng.mini.running": [
+  "Mini-Test {i}/{n} · {s} …",
+  "小测试 {i}/{n} · {s}…"
+ ],
+ "eng.mini.log.up": [
+  "eine Stufe höher bestand deutlich mehr ({a} % → {b} %)",
+  "升一级后通过率明显更高（{a}% → {b}%）"
+ ],
+ "act.mini": [
+  "Mini-Test: {x}",
+  "小测试：{x}"
+ ],
+ "eng.score": [
+  "Dimensionierungswert",
+  "规模适配评分"
+ ],
+ "eng.score.sub": [
+  "Sieben Fragen, die entscheiden, wie viel Bauweise dies braucht. PT schlägt vor; Sie können jede Antwort ändern.",
+  "七个问题决定这需要多复杂的设计。PT 会给出建议，你可以修改任何答案。"
+ ],
+ "eng.suggest": [
+  "Vorschlagen",
+  "建议"
+ ],
+ "eng.score.rung": [
+  "Schlägt {r} vor · {x}",
+  "建议 {r} · {x}"
+ ],
+ "eng.autonomycap": [
+  "Autonomie höchstens {x} (Fehlerkosten)",
+  "自主程度最高 {x}（出错代价）"
+ ],
+ "eng.track": [
+  "Verfahren",
+  "流程"
+ ],
+ "score2.path": [
+  "Lassen sich die Schritte im Voraus festlegen?",
+  "步骤能否事先确定？"
+ ],
+ "score2.path.hint": [
+  "0 ja, immer gleich · 2 nein, hängt davon ab, was es findet",
+  "0 能，总是一样 · 2 不能，取决于它发现了什么"
+ ],
+ "score2.input": [
+  "Wie unordentlich ist die Eingabe?",
+  "输入有多杂乱？"
+ ],
+ "score2.input.hint": [
+  "0 saubere Tabellen · 2 freier Text, E-Mail, Web",
+  "0 整齐的表格 · 2 自由文本、邮件、网页"
+ ],
+ "score2.rules": [
+  "Wie viele Regeln, und ändern sie sich?",
+  "规则有多少，会不会变？"
+ ],
+ "score2.rules.hint": [
+  "0 eine Seite · 2 viele, wechselnd",
+  "0 一页 · 2 很多，经常变"
+ ],
+ "score2.breadth": [
+  "Viele unabhängige Suchen gleichzeitig?",
+  "是否需要同时进行很多独立搜索？"
+ ],
+ "score2.breadth.hint": [
+  "0 ein Strang · 2 viele parallel",
+  "0 单线进行 · 2 多路并行"
+ ],
+ "score2.value": [
+  "Nutzen × Häufigkeit",
+  "价值 × 频率"
+ ],
+ "score2.value.hint": [
+  "0 selten, geringer Nutzen · 2 häufig, hoher Nutzen",
+  "0 很少用、价值低 · 2 经常用、价值高"
+ ],
+ "score2.errorcost": [
+  "Kosten eines Fehlers",
+  "出错代价"
+ ],
+ "score2.errorcost.hint": [
+  "0 leicht rückgängig zu machen · 2 teuer oder endgültig (senkt die Autonomie, nicht die Bauweise)",
+  "0 容易撤销 · 2 代价高或无法挽回（降低的是自主程度，而不是设计）"
+ ],
+ "score2.capacity": [
+  "Fähigkeit, es zu pflegen",
+  "维护能力"
+ ],
+ "score2.capacity.hint": [
+  "0 gering · 2 hoch (begrenzt die Bauweise)",
+  "0 低 · 2 高（限制设计上限）"
+ ],
+ "track.quick": [
+  "Schnell",
+  "快速"
+ ],
+ "track.standard": [
+  "Standard",
+  "标准"
+ ],
+ "track.full": [
+  "Vollständig",
+  "完整"
+ ],
+ "track.quick.d": [
+  "Schnell: kurzer Scan, kein Probelauf und kein Mini-Test, ausser Sie schalten sie ein. Für kleine Tools mit geringem Risiko.",
+  "快速：简短扫描，除非你手动开启，否则不做试跑和小测试。适合小型、低风险的工具。"
+ ],
+ "track.standard.d": [
+  "Standard: vollständiger Scan; Probelauf, wo PT ihn empfiehlt; Mini-Test der zwei führenden Einstellungen.",
+  "标准：完整扫描；在 PT 建议时进行试跑；对两种领先设置做小测试。"
+ ],
+ "track.full.d": [
+  "Vollständig: alles eingeschaltet, für Agenten, geplante oder riskante Tools.",
+  "完整：全部开启，适合智能体、定时运行或有风险的工具。"
+ ],
+ "eng.dials": [
+  "Vier Regler",
+  "四个调节项"
+ ],
+ "eng.dials.sub": [
+  "Bauweise, Modell, Plattform und Autonomie werden getrennt eingestellt. Jeder steht auf Auto (die Empfehlung von PT aufgrund der Belege); eine höhere Wahl braucht eine Begründung.",
+  "设计、模型、平台和自主程度分别设置。每项默认为自动（PT 根据证据给出的推荐）；选择更高的档位需要说明理由。"
+ ],
+ "eng.dial.rung": [
+  "Bauweise",
+  "设计"
+ ],
+ "eng.dial.setting": [
+  "Modell · Denkaufwand",
+  "模型 · 思考强度"
+ ],
+ "eng.dial.platform": [
+  "Plattform",
+  "平台"
+ ],
+ "eng.dial.autonomy": [
+  "Autonomie",
+  "自主程度"
+ ],
+ "eng.dial.rung.hint": [
+  "Die einfachste Bauweise, die alle Schwellen besteht",
+  "能通过所有门槛的最简单设计"
+ ],
+ "eng.dial.setting.hint": [
+  "Erst den Denkaufwand erhöhen, dann mehr Technik",
+  "先提高思考强度，再考虑增加复杂机制"
+ ],
+ "eng.dial.platform.hint": [
+  "Code-Weg und Managed Agents kommen später",
+  "代码路线和 Managed Agents 以后再考虑"
+ ],
+ "eng.dial.autonomy.hint": [
+  "Genehmigung bei Schritten nach aussen, unumkehrbaren Schritten, Geld oder Logins",
+  "对外发送、不可撤销、涉及资金或登录的步骤需要批准"
+ ],
+ "rung.R0": [
+  "kein neues Tool",
+  "不新建工具"
+ ],
+ "rung.R1": [
+  "Regeln oder Code",
+  "规则或代码"
+ ],
+ "rung.R2": [
+  "Prompt, Projekt oder Skill",
+  "提示词、项目或技能"
+ ],
+ "rung.R3": [
+  "fester Ablauf oder geplante Aufgabe",
+  "固定工作流或定时任务"
+ ],
+ "rung.R4": [
+  "ein Agent mit Tools",
+  "一个带工具的智能体"
+ ],
+ "rung.R5": [
+  "mehrere Agenten, ein Schreiber",
+  "多个智能体，一个负责写入"
+ ],
+ "plat.claude": [
+  "Claude-App (ohne Code)",
+  "Claude 应用（无需代码）"
+ ],
+ "plat.code": [
+  "Code-Weg (Claude Code + GitHub)",
+  "代码路线（Claude Code + GitHub）"
+ ],
+ "plat.managed": [
+  "Managed Agents",
+  "Managed Agents"
+ ],
+ "aut.L1": [
+  "Sie handeln, es hilft",
+  "你来做，它协助"
+ ],
+ "aut.L2": [
+  "Sie arbeiten zusammen",
+  "你们一起完成"
+ ],
+ "aut.L3": [
+  "es handelt, Sie genehmigen wichtige Schritte",
+  "它执行，你批准关键步骤"
+ ],
+ "aut.L4": [
+  "Sie genehmigen nur",
+  "你只需批准"
+ ],
+ "aut.L5": [
+  "Sie schauen nur zu",
+  "你只需旁观"
+ ],
+ "tri.private": [
+  "private Daten",
+  "私密数据"
+ ],
+ "tri.untrusted": [
+  "nicht vertrauenswürdige Inhalte",
+  "不可信内容"
+ ],
+ "tri.outbound": [
+  "ein Weg nach aussen",
+  "对外发送的途径"
+ ],
+ "tri.all": [
+  "Alle drei zusammen: G7 gilt.",
+  "三者同时存在：适用 G7。"
+ ],
+ "tri.ok": [
+  "Nicht alle drei zusammen.",
+  "三者未同时存在。"
+ ],
+ "eng.trial": [
+  "Probelauf",
+  "试跑"
+ ],
+ "eng.trial.sub": [
+  "Vor dem Entwerfen: die Aufgabe mit einem einfachen Prompt an 10–20 Beispielfällen. Was scheitert, zeigt, was die Bauweise wirklich braucht.",
+  "设计之前：先用普通提示词在 10–20 个示例用例上完成这项工作。失败的地方能说明设计真正需要什么。"
+ ],
+ "eng.trial.expect": [
+  "Ein gutes Ergebnis muss enthalten",
+  "好的结果必须包含"
+ ],
+ "eng.trial.real": [
+  "echter Fall",
+  "真实用例"
+ ],
+ "eng.trial.none": [
+  "Noch keine Fälle.",
+  "还没有用例。"
+ ],
+ "eng.trial.redraft": [
+  "Neu entwerfen",
+  "重新起草"
+ ],
+ "eng.trial.draft": [
+  "Fälle entwerfen",
+  "起草用例"
+ ],
+ "eng.trial.add": [
+  "Fall hinzufügen",
+  "添加用例"
+ ],
+ "eng.trial.run": [
+  "Probelauf starten",
+  "开始试跑"
+ ],
+ "eng.trial.result": [
+  "{a}/{b} mit einfachem Prompt bestanden",
+  "普通提示词通过了 {a}/{b} 个"
+ ],
+ "eng.trial.low": [
+  "Ein einfacher Prompt erledigt das meiste bereits: PT hält die Bauweise einfach.",
+  "普通提示词已能完成大部分工作：PT 会保持简单的设计。"
+ ],
+ "eng.trial.climb": [
+  "Die Fehlschläge sind die Gründe für einen Aufstieg; die Bauweise muss sie beheben.",
+  "这些失败就是升级的理由；设计必须解决它们。"
+ ],
+ "eng.trial.offrec": [
+  "Aus. PT empfiehlt ihn für dieses Tool.",
+  "已关闭。PT 建议此工具开启。"
+ ],
+ "eng.trial.offok": [
+  "Aus. Für ein so einfaches Tool optional.",
+  "已关闭。对这么简单的工具来说可选。"
+ ],
+ "eng.mini": [
+  "Mini-Test von zwei Einstellungen",
+  "两种设置的小测试"
+ ],
+ "eng.mini.sub": [
+  "{a} gegen {b}: 5 Fälle × je 3 Versuche.",
+  "{a} 对比 {b}：5 个用例 × 每个 3 次尝试。"
+ ],
+ "eng.mini.setting": [
+  "Einstellung",
+  "设置"
+ ],
+ "eng.mini.passk": [
+  "Alle 3 Versuche bestehen",
+  "3 次全部通过"
+ ],
+ "eng.mini.per": [
+  "Nutzung pro Erfolg",
+  "每次成功的用量"
+ ],
+ "eng.mini.tier": [
+  "lief auf der Stufe, nicht auf dem genannten Modell",
+  "按级别运行，而非指定的具体模型"
+ ],
+ "eng.mini.use": [
+  "Diese verwenden",
+  "使用此设置"
+ ],
+ "eng.mini.current": [
+  "aktuell",
+  "当前"
+ ],
+ "eng.mini.hint": [
+  "Die Nutzung pro Erfolg ist eine Schätzung (Claude.ai zeigt keine Tokenzahlen). Eine günstige Einstellung, die in der Hälfte der Fälle scheitert, kann pro brauchbarem Ergebnis mehr kosten.",
+  "每次成功的用量是估算值（Claude.ai 不显示 token 数）。一个便宜但有一半时间失败的设置，平均每个有用结果的成本可能更高。"
+ ],
+ "eng.mini.none": [
+  "Noch nicht gelaufen. Er läuft von selbst, sobald die Optionen feststehen.",
+  "尚未运行。选项确定后会自动运行。"
+ ],
+ "eng.mini.run": [
+  "Mini-Test starten",
+  "运行小测试"
+ ],
+ "eng.mini.off": [
+  "Aus. Die Obergrenzen-Karte zeigt dann Schätzungen statt Messungen.",
+  "已关闭。上限卡片将显示估算值而非实测值。"
+ ],
+ "eng.ceil": [
+  "Obergrenzen-Karte",
+  "上限卡片"
+ ],
+ "eng.ceil.sub": [
+  "Was PT empfiehlt, neben der heute besten Option, damit Sie sehen, dass PT den neuesten Stand geprüft hat.",
+  "把 PT 的推荐与当前最高配置并列，让你看到它确实考察了前沿。"
+ ],
+ "eng.ceil.rec": [
+  "Empfohlen",
+  "推荐"
+ ],
+ "eng.ceil.top": [
+  "Obergrenze heute",
+  "当前上限"
+ ],
+ "eng.ceil.measure": [
+  "Gemessen",
+  "实测"
+ ],
+ "eng.ceil.measured": [
+  "alle 3 bestehen {k} % · Wechsel {f} %",
+  "3 次全过 {k}% · 翻转 {f}%"
+ ],
+ "eng.ceil.notmeasured": [
+  "noch nicht gemessen",
+  "尚未实测"
+ ],
+ "eng.ceil.tokens": [
+  "etwa {a}× die Tokens eines Chats",
+  "约为普通对话的 {a} 倍 token"
+ ],
+ "eng.ceil.upkeep": [
+  "Pflegeaufwand",
+  "维护成本"
+ ],
+ "eng.upkeep.low": [
+  "gering",
+  "低"
+ ],
+ "eng.upkeep.mid": [
+  "mittel",
+  "中"
+ ],
+ "eng.upkeep.high": [
+  "hoch",
+  "高"
+ ],
+ "eng.upkeep.top": [
+  "hoch; braucht Code und GitHub",
+  "高；需要代码和 GitHub"
+ ],
+ "eng.ceil.whynot": [
+  "Warum nicht die Obergrenze",
+  "为什么不选上限方案"
+ ],
+ "eng.ceil.climb": [
+  "Was uns aufsteigen liesse",
+  "什么情况下会升级"
+ ],
+ "eng.climblog": [
+  "Aufstiegsprotokoll ({n})",
+  "升级记录（{n}）"
+ ],
+ "ceil.why.simple": [
+  "Eine einfache Bauweise erledigt die Aufgabe; mehr Technik brächte Kosten und Pflegeaufwand ohne bessere Ergebnisse.",
+  "简单的设计就能完成任务；增加更多机制只会增加成本和维护负担，结果却不会更好。"
+ ],
+ "ceil.why.enough": [
+  "Die empfohlene Einstellung besteht bereits in {n} % der Fälle alle 3 Versuche.",
+  "推荐的设置已在 {n}% 的用例中 3 次全部通过。"
+ ],
+ "ceil.why.default": [
+  "Mit der einfachsten Bauweise beginnen, die alle Schwellen besteht, und messen, bevor Sie aufsteigen.",
+  "先从能通过所有门槛的最简单设计开始，测量之后再考虑升级。"
+ ],
+ "ceil.climb.default": [
+  "Alle 3 Versuche bestehen in weniger als {n} % der Fälle, auch nach zwei Prompt-Korrekturen.",
+  "在两次修改提示词后，3 次全部通过的用例仍少于 {n}%。"
+ ],
+ "kp.packv": [
+  "Wissenspaket v{v} · {d}",
+  "知识包 v{v} · {d}"
+ ],
+ "kp.builtin": [
+  "Eingebautes Wissen · {d}",
+  "内置知识 · {d}"
+ ],
+ "kp.owneronly": [
+  "Nur der Eigentümer genehmigt Wissensänderungen.",
+  "只有所有者才能批准知识更改。"
+ ],
+ "kp.applied": [
+  "{n} Änderung(en) übernommen · Wissenspaket v{v}",
+  "已应用 {n} 项更改 · 知识包 v{v}"
+ ],
+ "kp.rejected": [
+  "Abgelehnt.",
+  "已拒绝。"
+ ],
+ "kp.urgent": [
+  "dringend",
+  "紧急"
+ ],
+ "kp.before": [
+  "Vorher",
+  "更改前"
+ ],
+ "kp.after": [
+  "Nachher",
+  "更改后"
+ ],
+ "kp.approve": [
+  "Genehmigen",
+  "批准"
+ ],
+ "kp.reject": [
+  "Ablehnen",
+  "拒绝"
+ ],
+ "kp.waiting": [
+  "wartet auf den Eigentümer",
+  "等待所有者处理"
+ ],
+ "kp.stale": [
+  "{n} möglicherweise veraltet",
+  "{n} 项可能已过时"
+ ],
+ "kp.fresh": [
+  "alles aktuell",
+  "全部为最新"
+ ],
+ "kp.checknow": [
+  "Jetzt prüfen",
+  "立即检查"
+ ],
+ "kp.lead.owner": [
+  "Eine Prüfung läuft {d} und schlägt Änderungen an Modellen, Regeln und dem Rechtsstand vor. Nichts ändert sich, bevor Sie es genehmigen; der Prompt Translator von Second owner nutzt, was Sie genehmigen.",
+  "检查会在{d}运行，并对模型、规则和法规概览提出更改建议。在你批准之前不会有任何改动；Second owner 的 Prompt Translator 会使用你批准的内容。"
+ ],
+ "kp.sunday": [
+  "jeden Sonntag um 20:52",
+  "每周日 20:52"
+ ],
+ "kp.lead.other": [
+  "Dieses Wissenspaket wird vom Eigentümer genehmigt und hier unverändert verwendet.",
+  "此知识包由所有者批准，在这里按原样使用。"
+ ],
+ "kp.approveall": [
+  "Alle genehmigen",
+  "全部批准"
+ ],
+ "kp.nochanges": [
+  "Diesmal keine Änderungen.",
+  "本次没有更改。"
+ ],
+ "kp.noprops": [
+  "Keine offenen Vorschläge.",
+  "没有待处理的建议。"
+ ],
+ "kp.staleitems": [
+  "Möglicherweise veraltet (älter als 90 Tage oder Neuprüfung überfällig)",
+  "可能已过时（超过 90 天或已过重新核实日期）"
+ ],
+ "kp.verified": [
+  "überprüft am {d}",
+  "核实于 {d}"
+ ],
+ "kp.models": [
+  "Modelle",
+  "模型"
+ ],
+ "kp.retires": [
+  "wird am {d} ausgemustert",
+  "将于 {d} 退役"
+ ],
+ "kp.log": [
+  "Änderungen",
+  "更改记录"
+ ],
+ "kp.done": [
+  "Entschiedene Vorschläge",
+  "已处理的建议"
+ ],
+ "kp.review": [
+  "Prüfen",
+  "审查"
+ ],
+ "kp.op.add": [
+  "neu",
+  "新增"
+ ],
+ "kp.op.change": [
+  "geändert",
+  "已更改"
+ ],
+ "kp.op.retire": [
+  "ausgemustert",
+  "已退役"
+ ],
+ "kp.kind.rule": [
+  "Regel",
+  "规则"
+ ],
+ "kp.kind.model": [
+  "Modell",
+  "模型"
+ ],
+ "kp.kind.platform": [
+  "Plattform",
+  "平台"
+ ],
+ "kp.kind.fact": [
+  "Fakt",
+  "事实"
+ ],
+ "kp.kind.law": [
+  "Recht",
+  "法规"
+ ],
+ "kp.st.approved": [
+  "genehmigt",
+  "已批准"
+ ],
+ "kp.st.rejected": [
+  "abgelehnt",
+  "已拒绝"
+ ],
+ "kp.st.open": [
+  "offen",
+  "待处理"
+ ],
+ "kp.mst.active": [
+  "aktiv",
+  "使用中"
+ ],
+ "kp.mst.retiring": [
+  "wird ausgemustert",
+  "即将退役"
+ ],
+ "kp.mst.retired": [
+  "ausgemustert",
+  "已退役"
+ ],
+ "urg.title": [
+  "Braucht Sie jetzt",
+  "需要你立即处理"
+ ],
+ "urg.sub": [
+  "Dinge, die nicht bis zur Monatsübersicht warten können.",
+  "等不到月度摘要的事项。"
+ ],
+ "urg.retire": [
+  "{m} wird am {d} ausgemustert, und «{p}» nutzt es",
+  "{m} 将于 {d} 退役，而“{p}”正在使用它"
+ ],
+ "urg.broken": [
+  "«{p}» hat seine letzte Prüfung nicht bestanden",
+  "“{p}”未通过最近一次检查"
+ ],
+ "urg.kp": [
+  "Wissen: {x}",
+  "知识：{x}"
+ ],
+ "dig.title": [
+  "Übersicht · {m}",
+  "月度摘要 · {m}"
+ ],
+ "dig.sub": [
+  "Etwa 10 Minuten: was passiert ist und was zu entscheiden ist.",
+  "大约 10 分钟：发生了什么，以及需要决定什么。"
+ ],
+ "dig.seen": [
+  "Erledigt",
+  "已读"
+ ],
+ "dig.live": [
+  "{n} Live-Tools",
+  "{n} 个线上工具"
+ ],
+ "dig.releases": [
+  "{n} Freigaben",
+  "{n} 次正式发布"
+ ],
+ "dig.inbox": [
+  "{n} in den Eingängen",
+  "收件箱中有 {n} 项"
+ ],
+ "dig.props": [
+  "{n} Wissensvorschläge",
+  "{n} 项知识建议"
+ ],
+ "dig.retiring": [
+  "Bald ausgemusterte Modelle: {x}",
+  "即将退役的模型：{x}"
+ ],
+ "dig.noclimb": [
+  "Kein Tool muss gerade aufsteigen oder kann heruntergestuft werden.",
+  "目前没有工具需要升级或可以降级。"
+ ],
+ "dig.down": [
+  "«{p}» besteht fast alles: Versuchen Sie {s}, um Nutzung zu sparen",
+  "“{p}”几乎全部通过：可以试试 {s} 来节省用量"
+ ],
+ "dig.up": [
+  "«{p}» besteht nur in {n} % alle 3 Versuche: Erwägen Sie eine Stufe höher",
+  "“{p}”只有 {n}% 的用例 3 次全部通过：可以考虑升一级"
+ ],
+ "dig.newmodel": [
+  "«{p}»: Die Modellliste hat sich seit dem letzten Mini-Test geändert: führen Sie ihn erneut aus",
+  "“{p}”：自上次小测试以来模型列表已有变化：请重新运行"
+ ],
+ "rs.title": [
+  "Hintergrundläufe einrichten",
+  "设置后台运行"
+ ],
+ "rs.sub": [
+  "Für dieses Login",
+  "适用于此登录账号"
+ ],
+ "rs.what": [
+  "Scans, Pilotläufe, Bauvorgänge und Prüfungen laufen im Hintergrund über eine geplante Aufgabe in Ihrem eigenen Konto. Sie läuft nur, wenn Sie hier eine Schaltfläche drücken.",
+  "扫描、试运行、构建和检查会通过你自己账号中的定时任务在后台运行。只有你在这里点击按钮时才会运行。"
+ ],
+ "rs.go": [
+  "Hintergrundläufe einrichten",
+  "设置后台运行"
+ ],
+ "rs.hint": [
+  "Ein Klick; Ihre Claude-App fragt eventuell nach Ihrer Erlaubnis.",
+  "只需一键；Claude 应用可能会请你授权。"
+ ],
+ "rs.done": [
+  "Hintergrundläufe sind bereit ({id}).",
+  "后台运行已就绪（{id}）。"
+ ],
+ "jw.title": [
+  "Second owner hat jetzt ihr eigenes Login",
+  "Second owner 现在有了自己的登录账号"
+ ],
+ "jw.sub": [
+  "Der leere Arbeitsbereich «Second owner» in Ihrem Login wird nicht mehr gebraucht.",
+  "你的登录账号中那个空的“Second owner”工作区已不再需要。"
+ ],
+ "jw.remove": [
+  "Leeren Arbeitsbereich entfernen",
+  "删除空工作区"
+ ],
+ "jw.removeq": [
+  "Er hat keine Projekte und keine Notizen. Aus Ihrem Login entfernen?",
+  "它没有项目，也没有笔记。要从你的登录账号中删除吗？"
+ ],
+ "jw.removed": [
+  "Entfernt.",
+  "已删除。"
+ ],
+ "jw.keep": [
+  "Behalten",
+  "保留"
+ ],
+ "fr.title": [
+  "Willkommen bei Prompt Translator",
+  "欢迎使用 Prompt Translator"
+ ],
+ "fr.sub": [
+  "Ihr eigener Bereich: Ihre Projekte und Daten bleiben privat in Ihrem Login.",
+  "你的专属空间：你的项目和数据仅保存在你的登录账号中，不会对外公开。"
+ ],
+ "fr.name": [
+  "Ihr Name",
+  "你的名字"
+ ],
+ "fr.nameph": [
+  "z. B. Second owner",
+  "例如 Second owner"
+ ],
+ "fr.go": [
+  "Starten",
+  "开始"
+ ],
+ "fr.def.zh": [
+  "Startet in der Ansicht Reise mit dem Guide, auf Chinesisch. Sie können das jederzeit ändern.",
+  "默认以旅程视图和向导启动，界面为中文。你可以随时更改。"
+ ],
+ "fr.def.other": [
+  "Startet in der Ansicht Bauplan. Sie können das jederzeit ändern.",
+  "默认以蓝图视图启动。你可以随时更改。"
+ ],
+ "eng.gates.early": [
+  "Schwellen vor dem Entwerfen",
+  "设计前的门槛"
+ ],
+ "eng.gates.early.sub": [
+  "Zwei Fragen, die einen ganzen Bau ersparen können.",
+  "两个问题，可能省下一整次构建。"
+ ],
+ "so.goal": [
+  "Ziel",
+  "目标"
+ ],
+ "so.change": [
+  "Änderung",
+  "改动"
+ ],
+ "so.risk": [
+  "Risiko",
+  "风险"
+ ],
+ "so.undo": [
+  "Rückgängig",
+  "撤销"
+ ],
+ "so.undo.x": [
+  "Es gibt einen Wiederherstellungspunkt von vor dieser Korrektur; unter «Wiederherstellungspunkte» holen Sie ihn zurück.",
+  "已有修复前的还原点；可在“还原点”中恢复。"
+ ],
+ "so.batchbtn": [
+  "Alle «{s}» abzeichnen ({n})",
+  "全部签字确认：{s}（{n}）"
+ ],
+ "so.hint": [
+  "Lesen Sie zuerst die Karten; mit dem Abzeichnen akzeptieren Sie die Korrektur.",
+  "请先阅读卡片；签字确认即表示你接受该修复。"
+ ],
+ "so.batch": [
+  "{n} Befunde der Stufe «{s}» abzeichnen?",
+  "签字确认 {n} 个“{s}”级问题？"
+ ],
+ "so.batchyes": [
+  "{n} abzeichnen",
+  "签字确认 {n} 个"
+ ],
+ "so.batched": [
+  "gemeinsam",
+  "批量"
+ ],
+ "act.signedbatch": [
+  "{n} Befunde der Stufe «{s}» gemeinsam abgezeichnet",
+  "已批量签字确认 {n} 个“{s}”级问题"
+ ],
+ "act.track": [
+  "Verfahren: {x}",
+  "流程：{x}"
+ ],
+ "rel.ceil": [
+  "Mit {r} · {s} freigegeben; Obergrenze damals: {c}",
+  "以 {r} · {s} 正式发布；当时的上限：{c}"
+ ],
+ "rel.toolcard": [
+  "Tool-Karte",
+  "工具卡片"
+ ],
+ "fb.old": [
+  "Ihre eingefügte Ersatzkopie stammt von v{a}, live ist v{b}: Kopieren Sie die Projektanweisungen erneut.",
+  "你粘贴的备用副本来自 v{a}，线上版本是 v{b}：请重新复制项目说明。"
+ ],
+ "pv.trial-run": [
+  "Führt die Aufgabe mit einem einfachen Prompt für jeden Beispielfall aus und prüft dann jedes Ergebnis. Liest Ihr Projekt; ändert nichts ausser den Ergebnissen des Probelaufs.",
+  "用普通提示词逐个运行示例用例，然后检查每个结果。会读取你的项目；除试跑结果外不会改动任何内容。"
+ ],
+ "pv.mini-run": [
+  "Führt 5 Fälle × 3 Versuche mit zwei Modelleinstellungen aus und prüft jedes Ergebnis. Liest Ihr Projekt; ändert nichts ausser den Ergebnissen des Mini-Tests.",
+  "用两种模型设置运行 5 个用例 × 3 次尝试，并检查每个结果。会读取你的项目；除小测试结果外不会改动任何内容。"
+ ],
+ "eng.gate.acceptall": [
+  "Vorschläge von PT übernehmen",
+  "采用 PT 建议的答案"
+ ],
+ "eng.gate.acceptall.hint": [
+  "Der ★ markiert den Vorschlag von PT samt Belegen. Sie können jede Antwort danach ändern.",
+  "★ 标出了 PT 的建议及其依据。之后你可以修改任何答案。"
+ ],
+ "act.gatesacc": [
+  "{n} Antworten zu Schwellen aus den Vorschlägen von PT übernommen",
+  "已采用 PT 建议的 {n} 个门槛答案"
+ ],
+ "job.frontier": [
+  "Frontier-Scan",
+  "前沿扫描"
+ ],
+ "job.refresh": [
+  "Wissensprüfung",
+  "知识检查"
+ ],
+ "job.smoke": [
+  "Prüfung am echten Tool",
+  "真实工具检查"
+ ],
+ "set.tab.knowledge": [
+  "Wissen",
+  "知识"
+ ]
+}

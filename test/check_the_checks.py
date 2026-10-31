@@ -1,0 +1,79 @@
+"""Check the checks: put known bugs back into a COPY of the sources, one at a time, and make sure the static checks catch each one.
+A check that stays green when its bug is back is broken, and the release gate stops.
+Run: python3 test/check_the_checks.py        (under a minute; never touches src/)
+"""
+import pathlib, shutil, subprocess, sys, tempfile, re
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+BASE = sorted([d for d in ROOT.iterdir() if re.fullmatch(r"src_v\d+_backup", d.name)], key=lambda d: int(re.search(r"\d+", d.name).group()))[-1].name
+APP = "\nfunction __zz{n}(p, x){{ {body} }}\n"
+# (name, file, kind, change, expected tag, hard?)  kind: "append" adds text at the end, "sub" replaces the first match, "dupline" repeats the line that matches
+M = [
+    ("a comment that swallows the rest of a line (parse error)", "v150_pick.js", "sub", ("saveWs(); toast(t(good", "saveWs();   // note toast(t(good"), "parse", True),
+    ("squeezed text: overflow-wrap:anywhere",          "styles.css", "append", ".zz{overflow-wrap:anywhere}", "layout", True),
+    ("menus cut off: no top-layer menus",              "v141_ui.js", "sub", ("function menuFloat(", "function menuFloatOff("), "layout", True),
+    ("leftover 'Sie': a string key defined twice",     "strings7.js", "dupline", '"it.inpanel":', "names", True),
+    ("one name declared in two files",                 "tasks4.js", "append", "\nconst ZZ_TWICE = 1;\n", "names", True),
+    ("one name declared in two files (2)",             "v14_queue.js", "append", "\nconst ZZ_TWICE = 2;\n", "names", True),
+    ("ids reused after a delete",                      "tasks4.js", "append", APP.format(n=1, body="const id = arr(p.tests).length + 1; return id;"), "ids", True),
+    ("content in the screen language",                 "tasks4.js", "sub", ("contentLang(p)", "contentLang()"), "lang", True),
+    ("untrusted text read as orders: rule removed",    "core.js", "sub", ("prompt = DATA_RULE + prompt", "prompt = prompt"), "rule", True),
+    ("AI call that skips runAI",                       "tasks4.js", "append", "\nasync function __zz2(){ const r = await sample(\"x\", {}); return r; }\n", "rule", True),
+    ("three counts for open work",                     "v14_ui.js", "append", APP.format(n=3, body='return x.cls === "block" || x.cls === "should";'), "count", True),
+    ("German ß",                                       "strings7.js", "dupline_edit", ('"it.inpanel":', '"zz.sz":["a", "Strasse und Straße", "街道"],'), "strings", True),
+    ("Traditional Chinese",                            "strings7.js", "dupline_edit", ('"it.inpanel":', '"zz.tr":["a", "a", "這個"],'), "strings", True),
+    ("missing translation key",                        "views13.js", "append", APP.format(n=4, body='return t("zz.never.defined");'), "strings", True),
+    ("a button with no action",                        "views13.js", "append", APP.format(n=5, body="return '<button data-a=\"zz-nothing\">x</button>';"), "handlers", True),
+    ("wrapper of a missing function",                  "actions4.js", "append", "\n{ const orig = zzGone; zzGone = function(){ return orig(); }; }\n", "wrappers", True),
+    # review items: the person must look at them, so they must show up
+    ("silent failure: empty catch",                    "views13.js", "append", APP.format(n=6, body="try{ x(); }catch(e){}"), "catch", False),
+    ("AI answer without a shape check",                "views13.js", "append", APP.format(n=7, body='return runAI("k", "l", "prompt", {json: true});'), "validate", False),
+    ("text squeezed by flex:1",                        "views13.js", "append", APP.format(n=8, body="return `<h2 style=\"flex:1\">${x}</h2>`;"), "squeeze", False),
+    ("text cut with …",                                "views13.js", "append", APP.format(n=9, body="return `<div class=\"x\">${trunc(x.title, 40)}</div>`;"), "trunc", False),
+    ("stale copy after a wait",                        "views13.js", "append", "\nasync function __zz10(p){\n  const r = await aiThing(p);\n  p.notes = r;\n}\n", "stale", False),
+    ("screen moves after a wait",                      "views13.js", "append", "\nasync function __zz11(p){\n  await later();\n  setPhase(\"test\");\n}\n", "move", False),
+    ("verdict forced to yes/no",                       "views13.js", "append", APP.format(n=12, body="return !!x.pass;"), "verdict", False),
+    ("internal id shown as text",                      "views13.js", "append", APP.format(n=13, body="return `<span class=\"x\">${x.id}</span>`;"), "rawid", False),
+    ("raw z-index in new CSS",                         "styles.css", "append", "\n.zz2{position:absolute;z-index:999}\n", "overlap", False),
+    ("long text cut silently",                        "core.js", "sub", ('if (n < 400) return s.slice(0, n - 1) + "…";', 'return s.slice(0, n - 1) + "…";'), "cut", True),
+    ("AI loop without a cap",                         "views13.js", "append", "\nasync function __zz15(p){\n  while (true){\n    const r = await runAI(\"k\", \"l\", \"x\", {validate: Boolean});\n    if (r) break;\n  }\n}\n", "loop", False),
+    ("live action in the preview",                     "views13.js", "append", APP.format(n=14, body='return callTool("x", "create_trigger", {});'), "preview", False),
+]
+
+def run(tmp):
+    r = subprocess.run(["node", "test/static_checks.js", BASE], cwd=tmp, capture_output=True, text=True)
+    return r.returncode, r.stdout + r.stderr
+
+with tempfile.TemporaryDirectory() as td:
+    tmp = pathlib.Path(td)
+    for d in ("src", "test", BASE): shutil.copytree(ROOT / d, tmp / d, ignore=shutil.ignore_patterns("*.html", "*.png", "shots*"))
+    shutil.copy(ROOT / "build.py", tmp / "build.py")
+    code0, out0 = run(tmp)
+    if code0 != 0 or "0 hard, 0 to review" not in out0:
+        print("the sources are not clean to start with:\n" + out0[:1500]); sys.exit(1)
+    missed = []
+    pairs = {}
+    for name, f, kind, change, tag, hard in M:
+        fp = tmp / "src" / f; orig = fp.read_text()
+        if kind == "append": new = orig + change
+        elif kind == "sub":
+            if change[0] not in orig: missed.append(f"{name}: the code it mutates is gone ({change[0]}) — update this script"); continue
+            new = orig.replace(change[0], change[1], 1)
+        else:
+            needle = change if kind == "dupline" else change[0]
+            lines = orig.split("\n"); k = next((i for i, l in enumerate(lines) if needle in l), None)
+            if k is None: missed.append(f"{name}: line not found ({needle})"); continue
+            lines.insert(k + 1, lines[k] if kind == "dupline" else change[1]); new = "\n".join(lines)
+        # the "declared in two files" pair needs both halves at once
+        if name.endswith("(2)"):
+            prev = pairs.pop("twice"); (tmp / "src" / prev[0]).write_text(prev[1])
+        fp.write_text(new)
+        if name == "one name declared in two files": pairs["twice"] = (f, new); fp.write_text(orig); continue
+        code, out = run(tmp)
+        caught = f"[{tag}]" in out and (code == 1 if hard else True)
+        print(("caught " if caught else "MISSED ") + name + f"  [{tag}]")
+        if not caught: missed.append(name + f" (expected [{tag}]{' as a hard failure' if hard else ''})")
+        fp.write_text(orig)
+        if name.endswith("(2)"): (tmp / "src" / "tasks4.js").write_text((ROOT / "src" / "tasks4.js").read_text())
+    print(f"{len(M) - len(missed)} of {len(M)} known bugs caught")
+    for m in missed: print("  MISSED", m)
+    sys.exit(1 if missed else 0)

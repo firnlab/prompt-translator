@@ -1,0 +1,11 @@
+name: Question for PT
+description: Anything to look into, research or decide in the next session.
+title: "Question: "
+labels: [question, pt]
+body:
+  - type: textarea
+    id: q
+    attributes:
+      label: The question
+    validations:
+      required: true
