@@ -16,4 +16,4 @@ The owner asked not to spend another 4-hour run on a guess; a one-button test pa
 - Published (1 Nov 2026, about 22:25 Zürich): preview `1793568176-3b15` (before `1793554511-e0e7`); main `1793568295-4f03`
   (before `1793554626-3ad8`). Capabilities carried forward.
 - Live re-test of the preview: byte for byte the tested build; smoke green.
-- Code commit: `c7fb5b6`.
+- Code commit: `9f225da`.

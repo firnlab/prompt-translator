@@ -2,7 +2,7 @@
   {
     "version": "1.8.0",
     "date": "2026-11-01",
-    "commit": "51e295383b60ab827b7ab7f236a07668398a6c66",
+    "commit": "a00b175054114b22f13729bcb2d9f0210456d23c",
     "main": {
       "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
       "live": "1793541397-6111",
@@ -18,7 +18,7 @@
   {
     "version": "1.8.1",
     "date": "2026-11-01",
-    "commit": "fb8e8f7340597e8fa47c23e72924e34b30d010b1",
+    "commit": "95a1c0996febfabedf2f4ea297883b8a2e9860f1",
     "main": {
       "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
       "live": "1793554626-3ad8",
@@ -34,7 +34,7 @@
   {
     "version": "1.8.2",
     "date": "2026-11-01",
-    "commit": "c7fb5b6f00483a8267acb6250d8b02c7d4cae60e",
+    "commit": "9f225da3fd459de5fb554911272b5c34f95426b1",
     "main": {
       "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
       "live": "1793568295-4f03",
