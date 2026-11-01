@@ -77,7 +77,10 @@ M = [
     ("the kind's outward action does not reach the checks", [("v180_cone.js", 'return e && e.out ? e.out : "";', 'return "";')], CN),
     # 1.8.1 creating scheduled tasks (e2e180_run must turn red; the made-up bundle)
     ("a scheduled task is created with notifications but without a new session per run", [("core.js", "Object.assign({}, input, {create_new_session_on_fire: true})", "Object.assign({}, input)")], "python3 test/e2e180_run.py test/fixtures/synthetic.json"),
-    ("any refusal of a new scheduled task is tried again", [("core.js", 'if (!(e && e.code === "tool_error" && /create_new_session_on_fire|notifications/i.test(str(e.message)))) throw e;', 'if (!e) throw e;')], "python3 test/e2e180_run.py test/fixtures/synthetic.json"),
+    ("any refusal of a new scheduled task is tried again", [("core.js", 'if (/create_new_session_on_fire|notifications/i.test(msg) && ("notifications" in a || "create_new_session_on_fire" in a)){', 'if (true){')], "python3 test/e2e180_run.py test/fixtures/synthetic.json"),
+    # 1.8.2 the cloud environment (cause 70)
+    ("a scheduled task created from PT gets no cloud environment", [("core.js", 'if (/environment_id/i.test(msg) && envs.length){', 'if (false){')], "python3 test/e2e180_run.py test/fixtures/synthetic.json"),
+    ("a self-hosted pool is taken before a cloud environment", [("core.js", 'envs.find(x => x.startsWith("env_")) || ', '')], "python3 test/e2e180_run.py test/fixtures/synthetic.json"),
 ]
 
 ONLY = next((x.split("=", 1)[1] for x in sys.argv if x.startswith("--only=")), None)   # 1.8: run the planted bugs whose name or test contains this text
