@@ -3,7 +3,7 @@ release (vault-YYYY-MM-DD) and write vault/lock.json. Runs inside GitHub Actions
 workflow's own token — no key of ours. Exit 1 when a licence does not match what we expect or a download fails.
     python3 tools/vault_mirror.py --check     resolve + licence check only (no download, no release)
     python3 tools/vault_mirror.py             full run (needs gh and GITHUB_TOKEN)"""
-import json, os, sys, hashlib, pathlib, subprocess, urllib.request, datetime
+import re, json, os, sys, hashlib, pathlib, subprocess, urllib.request, datetime
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 V = json.loads((ROOT / "vault/vault.json").read_text())
 CHECK = "--check" in sys.argv
@@ -36,7 +36,7 @@ for tool in V["tools"]:
         except Exception: rel = None; tag = api(f"https://api.github.com/repos/{repo}")["default_branch"]
         entry["tag"] = tag
         name, text = licence_text(repo, tag)
-        entry["licence_file"] = name; entry["licence_head"] = " ".join(text.split())[:120]
+        entry["licence_file"] = name; entry["licence_head"] = re.sub(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", "[email]", " ".join(text.split()))[:120]  # licence contact addresses stay out of the public repo (data guard)
         exp = tool.get("licence", "")
         entry["licence_ok"] = (not exp) or (exp.lower() in text.lower())
         if not entry["licence_ok"]: red.append(f"{tool['id']}: expected '{exp}', LICENSE says: {entry['licence_head'][:80]}")

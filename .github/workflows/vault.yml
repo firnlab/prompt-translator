@@ -7,6 +7,7 @@ permissions:
   contents: write
   pull-requests: write
   issues: write
+  actions: write
 jobs:
   mirror:
     runs-on: ubuntu-latest
@@ -35,6 +36,9 @@ jobs:
           git commit -m "vault: lock $(date -u +%F)"
           git push -u origin "$b"
           gh pr create --base main --head "$b" --title "vault: lock $(date -u +%F)" --body "Monthly vault mirror: checksums and licence checks in vault/lock.json. Merge when the quick gate is green."
+          # A PR opened with the workflow's own token starts no other workflow (GitHub rule), so the required checks
+          # would never report. workflow_dispatch is the documented exception: start the gate on the branch explicitly.
+          gh workflow run quick-gate.yml --ref "$b"
       - name: Open an issue when a licence or a download turned red
         if: failure()
         env:
