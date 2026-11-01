@@ -47,6 +47,6 @@ is left (the mock always answers with one unclear criterion); the rail keeps pro
   `1793541397-6111` (before: `1792946573-2d87`, 1.7.0). Same capabilities as 1.7.0, carried forward.
 - Live re-test of the preview: the published page is byte for byte the tested build; smoke, the 1.8 look test (98) and the 1.7.1
   test (28) pass on the live page.
-- Code commit: `51e2953` (the built file is the one from `0d4f6b2`; the commit after it changed tests only).
+- Code commit: `a00b175` (the built file is the one from `01754dc`; the commit after it changed tests only).
 - Baseline for the next static review: `src_v180_backup/`.
 - After the publish, CI (quick-gate, made-up bundle) was red on one Health test check (test only: the 1.8 drill is a check row, see RELEASE-CHECKS); fixed in the test, the CI list run locally on the made-up bundle: green. The published file is unchanged.
