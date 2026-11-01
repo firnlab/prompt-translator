@@ -55,6 +55,10 @@ for tool in V["tools"]:
 (ROOT / "vault/lock.json").write_text(json.dumps(lock, indent=1, ensure_ascii=False) + "\n")
 if not CHECK and not red:
     tag = "vault-" + lock["checked"]
+    # a second run on the same day must not fail or overwrite: earlier releases are kept, the new one gets -2, -3, …
+    n = 1
+    while subprocess.run(["gh", "release", "view", tag], capture_output=True).returncode == 0:
+        n += 1; tag = f"vault-{lock['checked']}-{n}"
     files = [str(out / f["file"]) for t in lock["tools"] for f in t.get("files", [])]
     notes = "Firnlab vault mirror " + lock["checked"] + "\n\n" + "\n".join(f"- {t['id']} {t.get('tag', '')} · {t.get('licence_file', '')}: {t.get('licence_head', '')[:70]}" for t in lock["tools"])
     subprocess.run(["gh", "release", "create", tag, "--title", tag, "--notes", notes, *files], check=True)
