@@ -56,14 +56,14 @@ with sync_playwright() as p:
     ctx = new_ctx(b); pg = ctx.new_page(); pg.on("pageerror", lambda e: errors.append(str(e)) if "sandboxed" not in str(e) else None)
     pg.goto(U); pg.wait_for_timeout(900)
     check(pg.evaluate("LANG") == "en", "first page opens in English (no language used on this device yet)")
-    click(pg, "[data-a=boot-lang][data-l=de]"); pg.get_by_text("Owner", exact=True).first.click(); pg.wait_for_selector(".rail"); pg.wait_for_timeout(600)
+    click(pg, "[data-a=boot-lang][data-l=de]"); pg.locator(f'.ws-opt[data-id="{_ws_order()[0]}"]').click(); pg.wait_for_selector(".rail"); pg.wait_for_timeout(600)
     check(pg.evaluate("LANG") == "de" and pg.evaluate("WS.settings.lang") == "de", "Deutsch on the first page → Owner's workspace opens in German and keeps it")
     while pg.locator(".modal [data-a=modal-close]").count(): pg.locator(".modal [data-a=modal-close]").first.click(); pg.wait_for_timeout(150)
     check("Cockpit" in pg.evaluate("document.body.innerText") and "Einstellungen" in pg.evaluate("document.body.innerText"), "screen is German")
     pg.wait_for_function("Store.pending() === 0", timeout=10000); pg.wait_for_timeout(700)
     pg.reload(); pg.wait_for_timeout(900)
     check(pg.evaluate("LANG") == "de", "after reload the first page remembers German (last language on this device)")
-    pg.get_by_text("Second owner", exact=True).first.click(); pg.wait_for_selector(".rail"); pg.wait_for_timeout(500)
+    pg.locator(f'.ws-opt[data-id="{_ws_order()[1]}"]').click(); pg.wait_for_selector(".rail"); pg.wait_for_timeout(500)
     check(pg.evaluate("WS.settings.lang") in ("zh", "en", "de"), "Second owner's workspace keeps its own language when no language was clicked: " + pg.evaluate("WS.settings.lang"))
     ctx.close()
 
@@ -82,7 +82,7 @@ with sync_playwright() as p:
     check(pg.input_value("#pr-in") == "Clocks need a separate shot list", "closing with X keeps the draft; reopening restores it")
     pg.keyboard.press("Escape"); pg.wait_for_timeout(500)
     pg.reload(); pg.wait_for_timeout(900)
-    if pg.locator(".rail").count() == 0: pg.get_by_text("Owner", exact=True).first.click()
+    if pg.locator(".rail").count() == 0: pg.locator(f'.ws-opt[data-id="{_ws_order()[0]}"]').click()
     pg.wait_for_selector(".rail"); pg.wait_for_timeout(400)
     pg.evaluate(f"openProject('{PID}')"); pg.wait_for_timeout(300); pg.evaluate("setPhase('interview')"); pg.wait_for_timeout(300)
     click(pg, "[data-a=qa-add]")
@@ -273,7 +273,7 @@ with sync_playwright() as p:
     code = pg.evaluate("UI.modal && UI.modal.code")
     check(bool(code) and pg.evaluate("META.workspaces.find(w => w.id === WS.id).pinHash.startsWith('pbkdf2$600000$')"), "PIN stored with PBKDF2 + salt; recovery code shown once: " + str(code))
     click(pg, "[data-a=pincode-done]")
-    pg.evaluate("lockNow()"); pg.wait_for_timeout(200); pg.get_by_text("Owner", exact=True).first.click(); pg.wait_for_timeout(200)
+    pg.evaluate("lockNow()"); pg.wait_for_timeout(200); pg.locator(f'.ws-opt[data-id="{_ws_order()[0]}"]').click(); pg.wait_for_timeout(200)
     for i in range(5):
         pg.fill("#pin", "000000"); pg.locator("form[data-form=unlock] button[type=submit]").click(); pg.wait_for_timeout(1800)
     check(pg.locator("text=Too many wrong tries").count() == 1, "after 5 wrong PINs PT asks to wait")
@@ -287,7 +287,7 @@ with sync_playwright() as p:
     check(pg.locator(".rail").count() == 1, "you are back in your workspace, nothing lost (%d projects)" % pg.evaluate("WS.projects.length"))
     # an old (1.2) PIN still works and is upgraded
     pg.evaluate("(async () => { const w = META.workspaces.find(w => w.id === WS.id); w.pinHash = await sha256(w.id + ':' + '555123'); saveMeta(); lockNow(); })()"); pg.wait_for_timeout(300)
-    pg.get_by_text("Owner", exact=True).first.click(); pg.fill("#pin", "555123"); pg.locator("form[data-form=unlock] button[type=submit]").click(); pg.wait_for_timeout(2500)
+    pg.locator(f'.ws-opt[data-id="{_ws_order()[0]}"]').click(); pg.fill("#pin", "555123"); pg.locator("form[data-form=unlock] button[type=submit]").click(); pg.wait_for_timeout(2500)
     check(pg.locator(".rail").count() == 1 and pg.evaluate("META.workspaces.find(w => w.id === WS.id).pinHash.startsWith('pbkdf2$')"), "a PIN from 1.2 still opens and is upgraded")
     ctx.close()
 
