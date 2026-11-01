@@ -229,3 +229,9 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
 - The kind taken: `p.cone.ending` (with the checks it brings) joins `chkSignals` / `chkOutward` (an outward kind tests 5×); the answers and the kind are rows `cone:<aud|out|where|when|ending>` (ROW_SOURCES) and reach every prompt as `<kind_of_tool>`.
 - 1.7 tools: the offer (cover, Pick page, `coneOffer(p)` for Health's day-one screen), re-run once (`coneRerun(p)`), "no thanks" once (`coneDismiss(p)`); an answer that differs from an earlier decision (`p.audience`) waits for keep / replace.
 - Checks: `test/e2e180_cone.py` (real data and made-up data; quick gate on the made-up data); updated e2e15, e2e15b and e2e180_decide (their new tools choose "fast" to test the mock-first start); check_the_pick: ten planted cone bugs (`--only=e2e180_cone`).
+
+## 1.8.0 integration (1 Nov 2026)
+- Cause 67 (speed): the check rows, the queue, the run count (3 or 5) and the cost line each read the whole tool text again (`chkOutText`, a long regex), many times per screen; with the biggest project some screens took more than 250 ms on a loaded machine (hunt 2, check 30). Now `chkOutText`, `chkOutward` and `chkSignals` are kept for one screen (`CHK_MEMO`, a WeakMap made at the start of `renderInner` and dropped at its end; outside a screen nothing is kept, so a change is seen at once). Check: `e2e180_checks.py` section 9 counts the reads per screen.
+- The health test expected "no cone offer" because the cone was not merged yet; with the cone in 1.8.0 it now checks that the cone is connected, that switching it off hides every offer, and that her first day offers it once.
+- 1.7.1 was not published on its own: it is all inside 1.8.0 and its tests run in the 1.8.0 gate (the machine has two CPUs; two gates at once made both too slow to finish).
+

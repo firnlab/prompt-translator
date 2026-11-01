@@ -4,7 +4,7 @@ Covers:
  3 the move: once per workspace, before anything else changes; one restore point per project ("Before 1.8", stored, kind migrate),
    the decision rows' "migrated" event takes that same point; tools that existed are kit 1.7.0; the first month (boot18); the move's
    Undo sets back the projects that changed since (unchanged ones stay) and the settings the move changed, deletes nothing, and is
-   gone afterwards; the cone hook: no offer while the cone is missing, one offer per tool once it is there; not run twice.
+   gone afterwards; the cone hook: connected in 1.8.0, no offer while it is switched off, one offer per tool once it is there; not run twice.
  1 Health: five rows (my tools, honesty, economy, security, your time), each a pill with glyph + word, value, trend, threshold and
    what happens when red; "not measured yet" where there is no data; a red needs two signals (one signal = watch); earlier reds are
    kept with how they ended; PT's AI calls and approval answers are counted per day as numbers only; the economy row says "estimate";
@@ -98,7 +98,10 @@ with sync_playwright() as pw:
     ev(pg, "T18H.health()"); pg.wait_for_timeout(1200)
     pn = ev(pg, "(() => { const e = document.querySelector('.mig18-panel'); return e ? {text: e.innerText, undo: !!e.querySelector('[data-a=mig18-undo]'), cone: e.querySelectorAll('[data-a=mig18-cone]').length} : null; })()")
     check("Health shows the move with its Undo", pn and pn["undo"] and "1.8" in pn["text"], pn)
-    check("no cone offer while the cone is not there (no button that does nothing)", pn and pn["cone"] == 0, pn)
+    check("in 1.8.0 the cone is connected: the move offers it", ev(pg, "cone18Ready() === true") and pn and pn["cone"] >= 1, pn)
+    ev(pg, "window.__realCone = [cone18Ready, cone18Rerun]; cone18Ready = () => false; render()"); pg.wait_for_timeout(300)
+    n0 = ev(pg, "document.querySelectorAll('.mig18-panel [data-a=mig18-cone]').length")
+    check("no cone offer while the cone is switched off (no button that does nothing)", n0 == 0, n0)
     ev(pg, "window.__cone = []; cone18Ready = () => true; cone18Rerun = (p, o) => { window.__cone.push([p.id, o.why]); return true; }; render()"); pg.wait_for_timeout(300)
     nc = ev(pg, "document.querySelectorAll('.mig18-panel [data-a=mig18-cone]').length")
     check("with the cone there: one offer per moved tool", nc == len([1 for x in ev(pg, "WS.projects.filter(p => p.status !== 'archived' && !p.example18).map(p => p.id)")]), nc)
@@ -110,7 +113,7 @@ with sync_playwright() as pw:
             pid1 = pg.locator(".mig18-panel [data-a=mig18-cone-skip]").first.get_attribute("data-pid")
             pg.locator(".mig18-panel [data-a=mig18-cone-skip]").first.click(); pg.wait_for_timeout(300)
             check("Skip marks it skipped; each tool is offered once", ev(pg, f"WS.settings.mig18.cone['{pid1}'].st") == "skip" and ev(pg, f"!document.querySelector('.mig18-panel [data-a=mig18-cone][data-pid=\"{pid1}\"]')"))
-    ev(pg, "cone18Ready = () => false; render()")
+    ev(pg, "[cone18Ready, cone18Rerun] = window.__realCone; render()")
     # the Undo of the move: the changed project goes back, an unchanged one stays, the move's settings go back, nothing is deleted
     u = ev(pg, """async () => { const M = WS.settings.mig18, ps = WS.projects.filter(p => M.rps[p.id]); const z = ps.find(p => !(M.touched || {})[p.id]) || ps[1] || null, a = ps.find(p => p !== z);
       // an old data copy may have every project changed during the open by an earlier one-time step (1.6 moved all to Pick): one is taken as untouched
@@ -257,7 +260,7 @@ with sync_playwright() as pw:
     check("…her project moved to 1.8 with a restore point", d1["moved"] >= 1 and "迁移" in d1["text"], d1)
     check("…her Example tool, offered as 'Try it'", d1["ex"] and "示例" in d1["text"] and "试一试" in d1["text"], d1["text"][:600])
     check("…her Sunday note time (default Sunday 14:00)", d1["sel"] == "14:00" and "周报" in d1["text"], d1)
-    check("…no cone offer while the cone is not there", not d1["cone"])
+    check("…and the cone offered once for her tool (it is there in 1.8.0)", d1["cone"], d1["text"][:300])
     check("nothing on that screen called the AI", d1["prompts"] == 0, d1["prompts"])
     check("the screen has no raw keys", not raw_keys(d1["text"]), raw_keys(d1["text"]))
     hp.select_option("#so18-time", "18:00"); hp.locator(".modal [data-a=so18-done]").click(); hp.wait_for_timeout(500)

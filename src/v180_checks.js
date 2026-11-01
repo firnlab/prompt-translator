@@ -96,6 +96,13 @@ function chkList(p){
   return v;
 }
 { const orig = renderInner; renderInner = function(){ CHK_CACHE = null; try{ return orig.apply(this, arguments); } finally{ CHK_CACHE = null; } }; }
+/* the tool's own words are read once per screen: the rows, the queue, the run count and the cost line all ask (cause 67, speed) */
+let CHK_MEMO = null;
+function chkMemo(p, k, fn){ if (!CHK_MEMO || !RENDERING || !p || typeof p !== "object") return fn(); let m = CHK_MEMO.get(p); if (!m) CHK_MEMO.set(p, m = Object.create(null)); return k in m ? m[k] : (m[k] = fn()); }
+{ const orig = renderInner; renderInner = function(){ CHK_MEMO = new WeakMap(); try{ return orig.apply(this, arguments); } finally{ CHK_MEMO = null; } }; }
+{ const orig = chkOutText; chkOutText = function(p){ return chkMemo(p, "txt", () => orig(p)); }; }
+{ const orig = chkOutward; chkOutward = function(p){ return chkMemo(p, "out", () => orig(p)); }; }
+{ const orig = chkSignals; chkSignals = function(p){ return chkMemo(p, "sig", () => orig(p)); }; }
 function chkOpenRows(p, L0 = null){ return chkPrivate(p) ? (L0 || chkList(p)).rows.filter(x => x.state === "open" && !x.floor && !x.fixed) : []; }
 /** is this lens part of the tool's review now (projects before the design behave as before: every lens) */
 function chkLensOn(p, id, L0 = null){
