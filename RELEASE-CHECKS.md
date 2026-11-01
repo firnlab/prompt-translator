@@ -180,3 +180,8 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
 1. `cp -r src src_vNNN_backup` (new baseline for the next diff, e.g. src_v142_backup). check_the_checks.py uses the newest one.
 2. Fresh data backup for the tests if the data changed a lot.
 3. Note version ids (main + preview, the one before for restore) in BUILD-LOG and in `releases.json` (the release workflow tags and releases from it).
+
+
+## Inbox triage (1 Nov 2026)
+- `test/triage_test.py` (quick gate): secret-in-issue (three token kinds removed, owner's issues too), stranger issue (untrusted), hostile issue (markers flagged, text kept as data), duplicate (near-identical titles, never itself), unclear kind; includes its own planted bug (removing the GitHub-token pattern must let the token through).
+- Cause 55: an issue on a public repository can carry a pasted key or instructions aimed at an agent → triage removes keys at once and never interpolates issue text into a workflow or writes it to the public log.

@@ -11,3 +11,6 @@ updates:
       timezone: Europe/Zurich
     labels: [dependencies, pt]
     open-pull-requests-limit: 3
+    # 14-day soak before a new version is proposed (PLAN-1.8: pin, soak, then update); security updates are not delayed.
+    cooldown:
+      default-days: 14

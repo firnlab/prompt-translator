@@ -1,0 +1,30 @@
+# Build room for PT itself (DESIGN-1.8-rev2 §5). Runs only when the owner comments "@claude build" on an issue or PR,
+# inside the `build` environment (owner is the required reviewer, so GitHub waits for the owner's approval before the
+# token is released). The Claude token exists only in that environment. Works on a branch and opens a PR; main is
+# protected by the ruleset. Publishing PT stays in a Claude session under the owner's login (GO), never here.
+name: claude build
+on:
+  issue_comment:
+    types: [created]
+jobs:
+  build:
+    if: >
+      github.event.comment.user.login == 'firnsmith' &&
+      contains(github.event.comment.body, '@claude build')
+    runs-on: ubuntu-latest
+    environment: build
+    timeout-minutes: 90
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: read
+      id-token: write
+      actions: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 1
+      - uses: anthropics/claude-code-action@f6527d30e7b14dcbbeebcd4270e0dcfca4d6a65c # v1.0.94
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: "--max-turns 60 --allowedTools Read,Write,Edit,Glob,Grep,Bash(python3:*),Bash(node:*),Bash(git:*)"
