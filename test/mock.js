@@ -234,7 +234,14 @@
       }
       if (tool === "list_triggers") return {payload:{data:[{id:"trig_01E9H3fe9ckZJbWPW7HtKuYX", name:"Prompt Translator runner"},{id:"trig_mock1", name:"Weekly scout", last_run:{status:"ROUTINE_RUN_STATUS_SUCCEEDED"}}]}};
       if (tool === "update_trigger") return {payload:{trigger:{id: input.trigger_id, enabled: input.enabled}}};
-      if (tool === "create_trigger") return {payload:{trigger:{id:"trig_new"}}};
+      if (tool === "create_trigger"){
+        // the service's rule seen on 1 Nov 2026 (cause 69): notifications only for a task that starts a new session on every run
+        if (input.notifications !== undefined && input.create_new_session_on_fire !== true) throw {code: "tool_error", message: "create_trigger: notifications only applies to triggers that start a new session each fire. Set create_new_session_on_fire=true, or omit the notifications param"};
+        // window.__mcpNoNewSession: a service that does not know the flag (PT then tries once more without notifications and the flag)
+        if (window.__mcpNoNewSession && input.create_new_session_on_fire !== undefined) throw {code: "tool_error", message: "create_trigger: unknown parameter create_new_session_on_fire"};
+        if (window.__mcpCreateFail) throw {code: "tool_error", message: window.__mcpCreateFail};
+        return {payload:{trigger:{id:"trig_new"}}};
+      }
       return {payload:{}};
     }
   };
