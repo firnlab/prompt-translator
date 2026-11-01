@@ -5349,8 +5349,122 @@ Object.assign(STR, {
 Object.assign(STR, {
 });
 
-/* ===================== 1.8 checks (lenses per tool, check rows, fix until green, 3×/5×, facts by type) — UI STRINGS: [English, Deutsch (CH, du, ss), 简体中文（中国大陆）] ===================== */
+/* ===================== 1.8 checks (lenses per tool, check rows, fix until green, 3×/5×, facts by type) — UI STRINGS: [English, Deutsch (CH, du, ss), 简体中文（中国大陆）] =====================
+   Glossary 1.8 checks: check=Prüfung=检查 · tap=Klick=点按 · apply=anwenden=应用 · skip=weglassen=跳过 · ★ my pick=mein Vorschlag=我的建议 ·
+   quality area (lens)=Qualitätsbereich=质量方面 · attack drill=Sicherheitstest=安全演练 · pass (of fixing)=Durchgang=轮 · residual risk=Restrisiko=剩余风险 ·
+   budget (of a fact)=Budget=时效 */
 Object.assign(STR, {
+"chk.panel.title":["Checks for this tool","Prüfungen für dieses Tool","此工具的检查"],
+"chk.sub.priv":["A private tool: every check that applies is yours to tap — apply or skip. PT never applies or skips one for you, and a check runs only once you applied it. Each row says why it helps here, what it costs and when it is not needed.","Ein privates Tool: Jede Prüfung, die hier zutrifft, klickst du selbst an — anwenden oder weglassen. PT wendet keine für dich an und lässt keine für dich weg; eine Prüfung läuft erst, wenn du sie angewendet hast. Jede Zeile sagt, warum sie hier hilft, was sie kostet und wann sie nicht nötig ist.","私人工具：每项适用的检查都由你点按——应用或跳过。PT 绝不会替你应用或跳过；只有你应用后检查才会运行。每一行都说明它在这里的作用、代价，以及何时不需要。"],
+"chk.sub.shared":["A tool other people use: every quality area starts ticked, as before, and you can untick one for this tool. Legal & ethics and Output & usability (with accessibility) stay on.","Ein Tool, das andere nutzen: Jeder Qualitätsbereich ist wie bisher angehakt, und du kannst einen für dieses Tool abwählen. Recht & Ethik sowie Ergebnis & Bedienbarkeit (mit Barrierefreiheit) bleiben an.","他人使用的工具：所有质量方面照旧默认勾选，你可以为此工具取消某一项。法律与伦理、输出与易用性（含无障碍）始终保留。"],
+"chk.count":["{a} applied · {s} skipped · {o} to tap","{a} angewendet · {s} weggelassen · {o} offen","已应用 {a} · 已跳过 {s} · 待点按 {o}"],
+"chk.open":["Waiting for your tap before they run: {n}.","Warten auf deinen Klick, bevor sie laufen: {n}.","等你点按后才会运行：{n} 项。"],
+"chk.st.apply":["applied","angewendet","已应用"],
+"chk.st.skip":["skipped","weggelassen","已跳过"],
+"chk.st.open":["your tap","dein Klick","待你点按"],
+"chk.o.apply":["Apply","Anwenden","应用"],
+"chk.o.skip":["Skip","Weglassen","跳过"],
+"chk.helps":["Why it helps:","Warum es hilft:","作用："],
+"chk.costs":["Cost:","Kosten:","代价："],
+"chk.notneeded":["Not needed when:","Nicht nötig, wenn:","何时不需要："],
+"chk.here":["Here: {x}.","Hier: {x}.","此处：{x}。"],
+"chk.cost":["about {u} units a run ({l} left this week) · CHF 0 extra, it runs on your Claude plan · about {m} min · 1 tap now; skipping costs nothing.","etwa {u} Einheiten pro Lauf (diese Woche noch {l}) · CHF 0 zusätzlich, es läuft über dein Claude-Abo · etwa {m} Min. · 1 Klick jetzt; Weglassen kostet nichts.","每次约 {u} 单位（本周还剩 {l}）· 不额外花费 CHF，使用你的 Claude 订阅 · 约 {m} 分钟 · 现在点按 1 次；跳过不花费任何东西。"],
+"chk.lastchip":["you chose this last time","letztes Mal so gewählt","上次你这样选"],
+"chk.star.last":["you chose this last time (on {x}); here it is your call again.","das hast du letztes Mal gewählt (bei {x}); hier entscheidest du wieder.","上次你这样选（在 {x} 上）；这里仍由你决定。"],
+"chk.star.lens":["every quality area starts ticked: one review call is cheap next to finding the problem in use.","jeder Qualitätsbereich ist vorausgewählt: ein Prüfaufruf ist günstig, verglichen mit einem Fehler im Einsatz.","每个质量方面都默认勾选：一次审查调用的代价远小于在使用中才发现问题。"],
+"chk.star.tests":["a tool that is not run {k} times can answer differently each time; all {k} runs must pass.","ein Tool, das nicht {k}-mal läuft, kann jedes Mal anders antworten; alle {k} Läufe müssen bestehen.","未运行 {k} 次的工具每次的回答可能不同；{k} 次运行必须全部通过。"],
+"chk.star.tests.out":["it acts outward ({x}), so every test runs {k} times and all {k} runs must pass.","es wirkt nach aussen ({x}), darum läuft jeder Test {k}-mal und alle {k} Läufe müssen bestehen.","它会对外操作（{x}），因此每个测试运行 {k} 次，且 {k} 次必须全部通过。"],
+"chk.star.drill":["it reads outside content or acts outward: an attack drill shows whether a planted instruction gets through.","es liest fremde Inhalte oder wirkt nach aussen: ein Sicherheitstest zeigt, ob eine eingeschleuste Anweisung durchkommt.","它读取外部内容或对外操作：安全演练能显示植入的指令是否会得逞。"],
+"chk.ptview":["PT's own view: {x} — {y}","PTs eigene Sicht: {x} — {y}","PT 自己的看法：{x}——{y}"],
+"chk.floor":["Always on for tools other people use (legal and accessibility floor).","Immer an bei Tools, die andere nutzen (Mindeststandard Recht und Barrierefreiheit).","他人使用的工具始终开启（法律与无障碍底线）。"],
+"chk.fixed":["Always on for tools other people use, as before.","Immer an bei Tools, die andere nutzen, wie bisher.","他人使用的工具照旧始终开启。"],
+"chk.pruned":["Not a check for this tool ({n}) — why","Keine Prüfung für dieses Tool ({n}) — warum","不适用于此工具的检查（{n}）——原因"],
+"chk.q":["Check: {x} — apply or skip?","Prüfung: {x} — anwenden oder weglassen?","检查：{x}——应用还是跳过？"],
+"chk.ref":["Check: {x}","Prüfung: {x}","检查：{x}"],
+"chk.act":["Check {x}: {v}","Prüfung {x}: {v}","检查 {x}：{v}"],
+"chk.dec":["Check: {x}","Prüfung: {x}","检查：{x}"],
+"chk.dec.changed":["changed","geändert","已更改"],
+"chk.rev.tapfirst":["No quality area is applied yet: tap the check rows first (waiting: {n}).","Noch kein Qualitätsbereich angewendet: klick zuerst die Prüfzeilen an (offen: {n}).","尚未应用任何质量方面：请先点按检查行（待点按：{n}）。"],
+"chk.pass.stop":["The checks wait for your tap on their rows (open: {n}).","Die Prüfungen warten auf deinen Klick auf ihre Zeilen (offen: {n}).","检查正在等你点按对应的行（待点按：{n}）。"],
+"chk.runs.need":["Tests ran {n} time(s); this tool needs {k} runs","Die Tests liefen {n}-mal; dieses Tool braucht {k} Läufe","测试已运行 {n} 次；此工具需要运行 {k} 次"],
+"chk.runs.why":["Each test runs {k} times on the current package; the tool passes only when every run passes.","Jeder Test läuft {k}-mal mit dem aktuellen Paket; das Tool besteht nur, wenn jeder Lauf besteht.","每个测试在当前配置包上运行 {k} 次；只有每次运行都通过，工具才算通过。"],
+"chk.runs.out":["It acts outward ({x}): 5 runs instead of 3.","Es wirkt nach aussen ({x}): 5 Läufe statt 3.","它会对外操作（{x}）：运行 5 次而不是 3 次。"],
+"chk.pass.none":["No test run yet; {k} runs per test, all must pass.","Noch kein Testlauf; {k} Läufe pro Test, alle müssen bestehen.","尚未运行测试；每个测试运行 {k} 次，必须全部通过。"],
+"chk.pass.ok":["Last run: every run passed ({n} in all, {k} per test) — the tool passes.","Letzter Lauf: jeder Lauf bestanden ({n} insgesamt, {k} pro Test) — das Tool besteht.","上次运行：每次运行均通过（共 {n} 次，每个测试 {k} 次）——工具通过。"],
+"chk.pass.old":["The last run was on an older version; it does not count for this one.","Der letzte Lauf war auf einer älteren Version; er zählt für diese nicht.","上次运行基于旧版本，不计入当前版本。"],
+"chk.pass.few":["The last run had {n} run(s) per test; {k} are needed.","Der letzte Lauf hatte {n} Durchlauf/Durchläufe pro Test; {k} sind nötig.","上次运行每个测试只运行了 {n} 次；需要 {k} 次。"],
+"chk.pass.bad":["Runs that did not pass: {f} of {n} — the tool does not pass yet.","Nicht bestandene Läufe: {f} von {n} — das Tool besteht noch nicht.","未通过的运行：{n} 次中 {f} 次——工具尚未通过。"],
+"chk.ev.reads":["reads outside content ({x})","liest fremde Inhalte ({x})","读取外部内容（{x}）"],
+"chk.ev.acts":["acts outward ({x})","wirkt nach aussen ({x})","对外操作（{x}）"],
+"chk.ev.out":["acts outward: “{x}”","wirkt nach aussen: «{x}»","对外操作：“{x}”"],
+"chk.ev.personal":["handles personal data","verarbeitet Personendaten","处理个人数据"],
+"chk.ev.web":["uses the web","nutzt das Web","使用网络"],
+"chk.ev.money":["involves money","es geht um Geld","涉及金钱"],
+"chk.ev.data":["works on lists or records","arbeitet mit Listen oder Datensätzen","处理列表或记录"],
+"chk.ev.ai":["{n} AI parts work together","{n} KI-Teile arbeiten zusammen","{n} 个 AI 部件协同工作"],
+"chk.ev.sched":["runs by itself or on a schedule","läuft selbständig oder nach Zeitplan","自动或按计划运行"],
+"chk.ev.shared":["other people use it","andere nutzen es","他人会使用"],
+"chk.ev.tests":["tests: {n}, each runs {k} times","Tests: {n}, jeder läuft {k}-mal","测试：{n} 个，每个运行 {k} 次"],
+"chk.ev.notests":["tests are written first (8–14), then each runs {k} times","zuerst werden Tests geschrieben (8–14), dann läuft jeder {k}-mal","先编写测试（8–14 个），然后每个运行 {k} 次"],
+"chk.pr.agent":["one AI step, nothing runs by itself","ein KI-Schritt, nichts läuft selbständig","只有一个 AI 步骤，没有自动运行"],
+"chk.pr.security":["private, reads only what you give it, acts nowhere, no personal data","privat, liest nur, was du ihm gibst, wirkt nirgends nach aussen, keine Personendaten","私人工具，只读取你提供的内容，不对外操作，无个人数据"],
+"chk.pr.legal":["private, no personal data, no web sources, no money","privat, keine Personendaten, keine Webquellen, kein Geld","私人工具，无个人数据、无网络来源、不涉及金钱"],
+"chk.pr.data":["no data sources: it works on what you type","keine Datenquellen: es arbeitet mit dem, was du eingibst","无数据来源：只处理你输入的内容"],
+"chk.pr.drill":["nothing outside comes in and nothing goes out","nichts Fremdes kommt herein, nichts geht hinaus","没有外部内容进入，也没有内容外发"],
+"chk.g.tests":["Test runs","Testläufe","测试运行"],
+"chk.g.drill":["Attack drill","Sicherheitstest","安全演练"],
+"chk.h.intent":["A reviewer checks that the tool does exactly what you asked — no drift, nothing missing, nothing added.","Ein Prüfer schaut, ob das Tool genau das tut, was du wolltest — keine Abweichung, nichts fehlt, nichts dazuerfunden.","审查员检查工具是否完全按你的要求工作——不偏离、不遗漏、不擅自添加。"],
+"chk.h.prompt":["Clear instructions with reasons give steadier results and fewer surprises.","Klare Anweisungen mit Gründen geben beständigere Ergebnisse und weniger Überraschungen.","清晰且附带理由的指令能带来更稳定的结果、更少的意外。"],
+"chk.h.agent":["Parts that hand work to each other fail at the hand-over: stop rules, briefs and progress records are checked.","Teile, die einander Arbeit übergeben, scheitern an der Übergabe: Stoppregeln, Aufträge und Fortschrittsnotizen werden geprüft.","相互交接工作的部件常在交接处出错：会检查停止规则、任务说明和进度记录。"],
+"chk.h.security":["Planted instructions, leaks and actions without your approval are looked for before they can happen.","Eingeschleuste Anweisungen, Datenlecks und Aktionen ohne deine Freigabe werden gesucht, bevor sie passieren.","在问题发生前查找植入的指令、数据泄露和未经你批准的操作。"],
+"chk.h.cost":["Finds wasted calls, oversized models and steps that could be plain code.","Findet unnötige Aufrufe, zu grosse Modelle und Schritte, die einfacher Code sein könnten.","找出多余的调用、过大的模型，以及可以用普通代码完成的步骤。"],
+"chk.h.legal":["Swiss nDSG / EU GDPR, the terms of the sites it reads, copyright, the limits of advice.","Schweizer nDSG / EU-DSGVO, Nutzungsbedingungen der gelesenen Seiten, Urheberrecht, Grenzen der Beratung.","瑞士 nDSG / 欧盟 GDPR、所读取网站的条款、版权、建议的边界。"],
+"chk.h.maintain":["Whether it can be changed safely later, when models or your needs change.","Ob es sich später sicher ändern lässt, wenn Modelle oder deine Bedürfnisse sich ändern.","以后模型或你的需求变化时，能否安全地修改它。"],
+"chk.h.ux":["Whether the result is easy to read and act on — format, length, language, look; for others also accessibility.","Ob das Ergebnis leicht zu lesen und umzusetzen ist — Form, Länge, Sprache, Aussehen; für andere auch Barrierefreiheit.","结果是否易读、易用——格式、长度、语言、外观；对他人还包括无障碍。"],
+"chk.h.product":["Whether it delivers the value you want with little effort from you.","Ob es den gewünschten Nutzen mit wenig Aufwand für dich bringt.","它能否以很少的投入带来你想要的价值。"],
+"chk.h.data":["Source quality, freshness, gaps and duplicates, and how data errors are caught.","Qualität und Aktualität der Quellen, Lücken und Doppelte, und wie Datenfehler erkannt werden.","来源质量、时效、缺漏与重复，以及如何发现数据错误。"],
+"chk.h.proof":["Checks that each failure-proof rule is really built in, not only mentioned.","Prüft, ob jede Fehlersicher-Regel wirklich eingebaut ist, nicht nur erwähnt.","检查每条防错规则是否真正落实，而不只是提到。"],
+"chk.h.tests":["Simulated runs on realistic cases, judged by two judges; every run of every test must pass.","Simulierte Läufe mit realistischen Fällen, von zwei Richtern beurteilt; jeder Lauf jedes Tests muss bestehen.","用真实场景模拟运行，由两位评判打分；每个测试的每次运行都必须通过。"],
+"chk.h.drill":["Fresh attack cases against the package; the undefended ones become fixes for you to decide.","Frische Angriffsfälle gegen das Paket; die nicht abgewehrten werden zu Korrekturen, über die du entscheidest.","针对配置包的新攻击用例；未防住的会成为供你决定的修复项。"],
+"chk.n.intent":["you read every result yourself before using it and the tool is one small step.","du jedes Ergebnis selbst liest, bevor du es nutzt, und das Tool ein kleiner Schritt ist.","你会在使用前亲自阅读每个结果，且工具只是一个小步骤。"],
+"chk.n.prompt":["the instructions are a few lines you wrote and tested by hand.","die Anweisungen wenige Zeilen sind, die du selbst geschrieben und von Hand getestet hast.","指令只有你亲手写好并手动测试过的几行。"],
+"chk.n.agent":["it is one AI step that never runs by itself.","es ein einziger KI-Schritt ist, der nie selbständig läuft.","它只有一个 AI 步骤，且从不自动运行。"],
+"chk.n.security":["it reads only your own text, sends nothing and holds no personal data.","es nur deinen eigenen Text liest, nichts versendet und keine Personendaten hält.","它只读取你自己的文本，不发送任何内容，也不保存个人数据。"],
+"chk.n.cost":["it runs rarely and costs a few units a month.","es selten läuft und nur wenige Einheiten im Monat kostet.","它很少运行，每月只花几个单位。"],
+"chk.n.legal":["it is private and touches no personal data, no outside sources and no money.","es privat ist und keine Personendaten, keine fremden Quellen und kein Geld betrifft.","它是私人的，不涉及个人数据、外部来源或金钱。"],
+"chk.n.maintain":["it is a one-off you throw away after use.","es eine Einmal-Sache ist, die du nach dem Gebrauch wegwirfst.","它是一次性的，用完即弃。"],
+"chk.n.ux":["you are the only reader and the format does not matter to you.","du der einzige Leser bist und dir die Form egal ist.","你是唯一的读者，格式对你无所谓。"],
+"chk.n.product":["it is an experiment and its value is not the point yet.","es ein Experiment ist und der Nutzen noch nicht im Vordergrund steht.","它只是个实验，价值还不是重点。"],
+"chk.n.data":["it works only on what you type in.","es nur mit dem arbeitet, was du eingibst.","它只处理你输入的内容。"],
+"chk.n.proof":["no failure-proof rule applies beyond the basics.","keine Fehlersicher-Regel über die Grundregeln hinaus gilt.","除基本规则外没有适用的防错规则。"],
+"chk.n.tests":["it is a draft you check by hand each time before it matters.","es ein Entwurf ist, den du jedes Mal von Hand prüfst, bevor es darauf ankommt.","它只是草稿，每次在关键时刻前你都会手动检查。"],
+"chk.n.drill":["nothing from outside comes in and nothing goes out.","nichts Fremdes hereinkommt und nichts hinausgeht.","没有外部内容进入，也没有内容外发。"],
+"fx.repeat":["PT proposed the same fix again in round {n}: stopped here; before → after is kept for you","PT hat in Runde {n} dieselbe Korrektur noch einmal vorgeschlagen: hier gestoppt; vorher → nachher liegt für dich bereit","PT 在第 {n} 轮再次提出了同样的修复：已在此停止；修改前 → 修改后留给你查看"],
+"fx.residual":["Residual risk after round {n} ({s}): {x} — still open: {y}","Restrisiko nach Runde {n} ({s}): {x} — noch offen: {y}","第 {n} 轮后的剩余风险（{s}）：{x}——仍未解决：{y}"],
+"fix.loop.running":["Fixing until green: pass {n} of at most {c}.","Beheben bis grün: Durchgang {n} von höchstens {c}.","修复直到通过：第 {n} 轮，最多 {c} 轮。"],
+"fix.loop.green":["Green after pass {n}: nothing PT can fix blocks any more.","Grün nach Durchgang {n}: nichts, was PT beheben kann, blockiert mehr.","第 {n} 轮后通过：已没有 PT 能修复的阻塞项。"],
+"fix.loop.repeat":["Stopped after pass {n}: it changed nothing, so the next pass would propose the same again. What PT changed, before → after:","Nach Durchgang {n} gestoppt: er hat nichts verändert, der nächste würde also dasselbe vorschlagen. Was PT geändert hat, vorher → nachher:","第 {n} 轮后停止：本轮没有任何变化，下一轮只会提出同样的修复。PT 所做的修改（修改前 → 修改后）："],
+"fix.loop.cap":["Stopped at the limit of {c} passes. The residual risk is written down below and on the Check page.","An der Obergrenze von {c} Durchgängen gestoppt. Das Restrisiko steht unten und auf der Prüfseite.","已在 {c} 轮上限处停止。剩余风险记录在下方和检查页上。"],
+"fix.loop.budget":["Stopped after pass {n}: the next pass would go over this week's budget.","Nach Durchgang {n} gestoppt: der nächste würde das Wochenbudget überschreiten.","第 {n} 轮后停止：下一轮将超出本周预算。"],
+"fix.loop.stopped":["Stopped by you after pass {n}.","Von dir nach Durchgang {n} gestoppt.","你在第 {n} 轮后停止了。"],
+"fix.res.act":["Residual risk after pass {n}","Restrisiko nach Durchgang {n}","第 {n} 轮后的剩余风险"],
+"fix.res.log":["Fix until green stopped at the limit (pass {n}); blocking items written down as residual risk: {b}","Beheben bis grün an der Obergrenze gestoppt (Durchgang {n}); als Restrisiko notierte blockierende Punkte: {b}","修复直到通过在上限处停止（第 {n} 轮）；记为剩余风险的阻塞项：{b} 个"],
+"fix.res.title":["Residual risk","Restrisiko","剩余风险"],
+"fix.rep.title":["Stopped: the same fix was proposed twice","Gestoppt: dieselbe Korrektur kam zweimal","已停止：同样的修复被提出了两次"],
+"fix.res.sub":["Still open after pass {n} of fixing ({d}); each needs your decision:","Nach Durchgang {n} noch offen ({d}); jeder Punkt braucht deinen Entscheid:","第 {n} 轮修复后（{d}）仍未解决；每项都需要你决定："],
+"fact.ty.price":["prices","Preise","价格"],
+"fact.ty.platform":["platform facts","Plattform-Fakten","平台事实"],
+"fact.ty.policy":["law and policy","Recht und Richtlinien","法律与政策"],
+"fact.ty.other":["other facts","andere Fakten","其他事实"],
+"fact.t.ok":["Within its budget: {x} have a {n}-day budget from the day they are checked.","Im Budget: {x} haben ein Budget von {n} Tagen ab der Prüfung.","在时效内：{x}自核对之日起时效为 {n} 天。"],
+"fact.t.stale":["Past its budget: {x} have a {n}-day budget from the day they are checked; this one is not used until it is checked again.","Über dem Budget: {x} haben ein Budget von {n} Tagen ab der Prüfung; dieser wird erst nach einer neuen Prüfung wieder verwendet.","已超出时效：{x}自核对之日起时效为 {n} 天；此项在重新核对前不会使用。"],
+"fact.notused":["past its budget · not used","über dem Budget · nicht verwendet","已超时效 · 不使用"],
+"fact.budgets":["Each fact has an age budget by type: prices {a} days, platform {b}, law and policy {c}, others {d}. Past it, a fact is not used until it is checked again.","Jeder Fakt hat ein Altersbudget nach Art: Preise {a} Tage, Plattform {b}, Recht und Richtlinien {c}, andere {d}. Darüber wird ein Fakt erst nach neuer Prüfung wieder verwendet.","每条事实按类型有时效：价格 {a} 天，平台 {b} 天，法律与政策 {c} 天，其他 {d} 天。超过时效的事实在重新核对前不会使用。"],
+"fact.pastlist":["Not used until checked again: {x}","Erst nach neuer Prüfung wieder verwendet: {x}","重新核对前不使用：{x}"],
+"fact.research.past":["Research findings past their budget, left out of what PT passes on: {n}","Rechercheergebnisse über dem Budget, nicht weitergegeben: {n}","已超时效、未被 PT 采用的调研结果：{n} 条"],
+"fact.kitprice":["Firnlab kit prices","Firnlab-Bausatz-Preise","Firnlab 套件价格"],
+"fact.kitlaw":["Firnlab kit law and policy","Firnlab-Bausatz: Recht und Richtlinien","Firnlab 套件法律与政策"],
+"fact.option.past":["the platform facts behind this are past their {n}-day budget: no ★ until they are checked again","die Plattform-Fakten dahinter sind über ihrem Budget von {n} Tagen: kein ★, bis sie neu geprüft sind","其背后的平台事实已超过 {n} 天时效：重新核对前不给出 ★"]
 });
 
 /* ===================== 1.8 decision rows, the cone — UI STRINGS: [English, Deutsch (CH, du, ss), 简体中文（中国大陆）] ===================== */
@@ -8275,8 +8389,9 @@ async function aiCheckBatch(p, fs, before, after){
 }
 function lintErrSet(p, secIds){ return new Set(lintPackage(p).filter(l => l.sev === "error" && (!secIds || secIds.includes(l.sec))).map(l => l.sec + "|" + l.key)); }
 
-/** fix a set of findings: groups that share items, up to 3 rounds each (the 2nd and 3rd with the checker's note) */
-async function fixFindings(p, ids, {rounds = 3, quiet = false} = {}){
+/** fix a set of findings: groups that share items, round after round until the checker confirms (each later round with the checker's note);
+    1.8 (owner, 31 Oct 2026): the same fix proposed twice stops and shows before → after; FIX_CAP (5) rounds is the breaker, the last one writes the residual risk */
+async function fixFindings(p, ids, {rounds = FIX_CAP, quiet = false} = {}){
   const sum = {fixed: 0, partly: 0, needYou: 0, changed: new Set(), failed: 0};
   let todo = arr(p.findings).filter(f => ids.includes(f.id) && OPEN_F.includes(f.status));
   if (!todo.length) return sum;
@@ -8289,6 +8404,7 @@ async function fixFindings(p, ids, {rounds = 3, quiet = false} = {}){
     const grp = "g" + uid("x");   // the fix and its check are one Undo step together
     const orig = {}, acts = [];   // the text before the first round, and every round's action (so a rejected fix can be taken back completely)
     let lint0 = null;
+    const seen = new Map();   // 1.8: the text every round proposed per item, to see a fix proposed twice
     for (let round = 1; round <= rounds && open.length; round++){
       actClose(p.id);
       if (UI.finish && UI.finish.stop) break;
@@ -8301,8 +8417,16 @@ async function fixFindings(p, ids, {rounds = 3, quiet = false} = {}){
       actOpen(p, t("fx.act", {x: trunc(open[0].issue, 50)}), {by: "pt", grp});
       const changed = applyFixAnswer(p, open, r);
       const actA = actClose(p.id); if (actA) acts.push(actA);
-      if (!changed.length){ for (const f of open){ f.audit = arr(f.audit); f.audit.push({at: now(), what: t("aud.notapplied"), by: t("aud.fixer")}); } break; }
       const after = snapTargets(p, changed);
+      // 1.8: the fixer proposed what an earlier round already proposed (nothing new, or a text it had before): stop, it goes to you with before → after
+      if (round > 1 && fixRepeats(seen, changed, after)){
+        actOpen(p, t("fx.act", {x: trunc(open[0].issue, 50)}) + " · " + t("aud.checker"), {by: "pt", grp});
+        for (const f of open){ const mine = findingTargets(p, f).filter(rf => changed.includes(rf)); if (mine.length){ f.fixRun = {at: now(), round, act: actA && actA.id, before: Object.fromEntries(mine.map(rf => [rf, before[rf] || ""])), after: Object.fromEntries(mine.map(rf => [rf, after[rf] || ""]))}; f.before = Object.values(f.fixRun.before).join("\n\n"); f.after = Object.values(f.fixRun.after).join("\n\n"); } }
+        fixGiveBack(p, open, {notes, acts, okRefs, round, sum, repeat: true});
+        break;
+      }
+      for (const [rf, v] of Object.entries(after)) seen.set(rf, [...arr(seen.get(rf)), v]);
+      if (!changed.length){ for (const f of open){ f.audit = arr(f.audit); f.audit.push({at: now(), what: t("aud.notapplied"), by: t("aud.fixer")}); } break; }
       const res = await aiCheckBatch(p, open, before, after);
       actOpen(p, t("fx.act", {x: trunc(open[0].issue, 50)}) + " · " + t("aud.checker"), {by: "pt", grp});   // what the check decides belongs to the same Undo step as the fix
       if (!res){ for (const f of open){ f.status = "waiting"; f.audit = arr(f.audit); f.audit.push({at: now(), what: t("fx.notchecked"), by: t("aud.checker")}); } sum.failed++; break; }
@@ -8333,14 +8457,7 @@ async function fixFindings(p, ids, {rounds = 3, quiet = false} = {}){
       }
       // what the checker rejected in the last round is taken back; it comes to you as a proposal with the reason
       if (round === rounds || (UI.finish && UI.finish.stop)){
-        for (const f of next){
-          const mine = Object.keys(f.fixRun ? f.fixRun.after : {});
-          f.proposal = {at: now(), fields: Object.fromEntries(mine.map(rf => [rf, (itemObj(p, rf) ? Object.fromEntries(targetFields(rf).map(fl => [fl, (itemObj(p, rf) || {})[fl]])) : {})])), note: notes[f.id], round};
-          if (!f.partly){ const kept = new Set(); for (let ai = acts.length - 1; ai >= 0; ai--){ const back = mine.filter(rf => !okRefs.has(rf) || ai >= okRefs.get(rf)); revertRefs(p, acts[ai], back, kept); } for (const rf of kept) markPT(p, rf, "changed", t("fx.notback", {x: trunc(f.issue, 120)})); }
-          else { for (const rf of mine) markPT(p, rf, "changed", t("fx.partlywhy", {a: f.partly.done, b: f.partly.total, x: trunc(f.issue, 120)})); sum.partly++; }
-          f.status = "open"; f.needsYou = {why: notes[f.id], at: now()}; f.reopened = (f.reopened || 0) + 1;
-          sum.needYou++;
-        }
+        fixGiveBack(p, next, {notes, acts, okRefs, round, sum, capped: round === rounds && rounds >= FIX_CAP && !(UI.finish && UI.finish.stop)});
         break;
       }
       open = next;
@@ -8354,6 +8471,22 @@ async function fixFindings(p, ids, {rounds = 3, quiet = false} = {}){
   if (!quiet){ render(); toast(t("fx.toast", {a: sum.fixed, b: sum.needYou}), sum.needYou ? "" : "ok"); }
   return sum;
 }
+/** the findings the fixing stops on go back to you: their unconfirmed change is taken back and kept as a proposal (before → after);
+    a repeated fix says so, the last round of the cap writes down the residual risk (1.8) */
+function fixGiveBack(p, list, {notes, acts, okRefs, round, sum, repeat = false, capped = false}){
+  for (const f of list){
+    const mine = Object.keys(f.fixRun ? f.fixRun.after : {});
+    if (repeat){ notes[f.id] = t("fx.repeat", {n: round}) + (notes[f.id] ? " · " + notes[f.id] : ""); f.audit = arr(f.audit); f.audit.push({at: now(), what: notes[f.id], by: t("aud.fixer")}); }
+    f.proposal = {at: now(), fields: Object.fromEntries(mine.map(rf => [rf, (itemObj(p, rf) ? Object.fromEntries(targetFields(rf).map(fl => [fl, (itemObj(p, rf) || {})[fl]])) : {})])), note: notes[f.id], round, ...(repeat ? {repeat: true} : {})};
+    if (!f.partly){ const kept = new Set(); for (let ai = acts.length - 1; ai >= 0; ai--){ const back = mine.filter(rf => !okRefs.has(rf) || ai >= okRefs.get(rf)); revertRefs(p, acts[ai], back, kept); } for (const rf of kept) markPT(p, rf, "changed", t("fx.notback", {x: trunc(f.issue, 120)})); }
+    else { for (const rf of mine) markPT(p, rf, "changed", t("fx.partlywhy", {a: f.partly.done, b: f.partly.total, x: trunc(f.issue, 120)})); sum.partly++; }
+    f.status = "open"; f.needsYou = {why: notes[f.id], at: now()}; f.reopened = (f.reopened || 0) + 1;
+    if (capped){ f.residual = {at: now(), rounds: round, text: t("fx.residual", {n: round, s: t("sev." + f.severity), x: trunc(f.issue, 160), y: notes[f.id] || t("fx.notsolved")})}; f.needsYou.why = f.residual.text; f.audit = arr(f.audit); f.audit.push({at: now(), what: f.residual.text, by: t("aud.checker")}); }
+    sum.needYou++;
+  }
+}
+/** a round proposes what an earlier round already proposed: nothing changed (the same fix as now), or every changed item got a text it had before */
+function fixRepeats(seen, changed, after){ return !changed.length || changed.every(rf => arr(seen.get(rf)).includes(after[rf])); }
 /** take back the changes of one fixer action for the given items only */
 function revertRefs(p, a, refs, kept = null){
   if (!a) return;
@@ -12942,8 +13075,8 @@ ACTIONS["mode-back"] = () => { const p = curP(); if (!p || !UI.backMode) return;
 
 /* ===================== 1.4 FINISH: from every mode, in one go =====================
    1. Plan: what PT can do on its own, with the cost before anything runs.
-   2. Autopilot: close marks with no real change, merge duplicate problems, fix what blocks (checked fixes only, at most
-      2 rounds per item), update the affected items layer by layer, run the tests once. A pass that does not reduce
+   2. Autopilot: close marks with no real change, merge duplicate problems, fix what blocks (checked fixes only; 1.8: until
+      green, stopping on a repeat, at most 5 rounds), update the affected items layer by layer, run the tests once. A pass that does not reduce
       what blocks is taken back.
    3. Your decisions: one per screen, ★ preselected (Enter), 1/2/3 alternatives, L = later, W = won't fix (with a reason),
       "accept all like this" for PT's similar decisions.
@@ -12981,7 +13114,7 @@ async function finishRun1(p, g, sum){
   switch (g.fix){
     case "finding-fix": { const ids = refs.map(r => r.slice(8)).filter(id => { const f = arr(p.findings).find(x => x.id === id); return f && num(f.autoRounds, 0) < 2; });
       for (const id of ids){ const f = arr(p.findings).find(x => x.id === id); if (f) f.autoRounds = num(f.autoRounds, 0) + 1; }
-      const s = await fixFindings(p, ids, {rounds: 2, quiet: true}); sum.fixed += s.fixed; sum.needYou += s.needYou; s.changed.forEach(r => sum.changed.add(r));
+      const s = await fixFindings(p, ids, {rounds: FIX_CAP, quiet: true}); sum.fixed += s.fixed; sum.needYou += s.needYou; s.changed.forEach(r => sum.changed.add(r));   // 1.8: fix until green, the same stop rules as Fix for me
       // the items that depend on what was fixed: updated layer by layer (at most 2 layers, only direct dependents each time)
       let layer = [...s.changed];
       for (let d = 0; d < 2 && layer.length && !(F && F.stop); d++){ const u = await updateAffected(p, layer, {auto: true, layer: d + 1}); sum.updated += u.applied; layer = u.next; }
@@ -13050,6 +13183,7 @@ async function finishAutopilot(p){
   { const rp = addRestore(p, {kind: "manual", label: t("fin.rp")}); const last = arr(p.restore).slice(-1)[0]; F.rp = rp ? rp.id : last ? last.id : null; }
   actOpen(p, t("fin.merge"), {by: "pt"}); sum.merged = mergeDuplicates(p); actClose(p.id);
   render();
+  for (let round = 1; round <= FIX_CAP; round++){   // 1.8 fix until green: whole passes until nothing PT can fix blocks, a pass repeats itself, or the cap (fixNextRound, v180_checks.js)
   for (const g of F.plan.groups.filter(x => x.on)){
     if (F.stop) break;
     g.state = "running"; render();
@@ -13069,6 +13203,7 @@ async function finishAutopilot(p){
     sum.groups.push({fix: g.fix, state: g.state});
     render();
   }
+  if (!fixNextRound(p, F, round)) break; }
   F.step = "decide"; F.list = finishDecisions(p).map(x => x.key); F.i = 0;
   // "Approve, I'll check each change": the changes PT made come first, each with its Undo
   if (F.checkEach) UI.modal = {kind: "runreview", since: F.startAt, st: F.stage || null};
@@ -17937,7 +18072,417 @@ function metRowHTML(){
 
 /* ===================== 1.8 deciding: ★ on hard decisions, your call first (money / who sees it / where data lives), 5 cards per round, readiness without measure, mock first, start switch, map folded ===================== */
 
-/* ===================== 1.8 checks: lenses per tool (all seven preselected), check rows for private tools (O4a), fix until green (repeat stop, cap 5, residual risk), tests 3x / 5x outward, facts by type ===================== */
+/* ===================== 1.8 checks: lenses per tool (all seven preselected), check rows for private tools (O4a), fix until green (repeat stop, cap 5, residual risk), tests 3x / 5x outward, facts by type =====================
+   Decided with the owner (PLAN-1.8 §5 and the rounds O1, O3, O4 reading (a), "tap every check"; 25 Oct – 1 Nov 2026).
+   1. The quality areas (the review lenses) are ticked per tool, all preselected, stored with the project (p.checks.rows) and changeable
+      per tool. Tools other people use keep Legal and Output & usability (with accessibility) as fixed floors.
+   2. Private tools (the owner's or the second owner's): every lens and gate that applies is a row you tap, apply or skip. PT never applies
+      or skips one by itself and there is no tap for all of them. Each row says why it helps this tool, what it costs (units, CHF,
+      minutes, taps), when it is not needed, and PT's ★ with one line why. Your choice on an earlier tool of this workspace is the next ★
+      ("you chose this last time"), still asked. Checks that do not apply to this tool (audience, what it reads and does) are no rows at
+      all; the panel names them in one folded line. A lens runs only once its row is applied; a gate (tests, attack drill) likewise.
+      Tools other people use keep today's behaviour: everything starts ticked, the floors cannot be unticked.
+   3. Fix until green: the fixer and its independent checker go round until the checker confirms; the same fix proposed twice stops and
+      shows before → after; 5 rounds is the breaker and the fifth writes down the residual risk (v14_fix.js). "Fix automatically" goes
+      round the same way in whole passes (v14_finish.js calls fixNextRound).
+   4. Tests run 3 times, 5 for tools that act outward (send, post, publish, pay, order); a tool passes only when every run passes.
+   5. Facts expire by type with an error budget: prices 20 days, platform 45, law and policy 180, everything else 90 (O1 replaces the
+      single 90-day rule). A fact past its budget is not used, and PT says so where it would have been used: in every prompt, on the kit
+      options (no ★ on a stale fact), in the research PT passes on, and on the Check page. */
+
+const FIX_CAP = 5;            // the breaker: at most 5 rounds of fixing, the fifth writes down the residual risk
+const CHK_TRIALS_OUT = 5;     // tests run 5 times for a tool that acts outward (TRIALS = 3 otherwise)
+const CHK_GATES = ["tests", "drill"];
+const CHK_FLOORS = ["legal", "ux"];   // fixed for tools other people use: Legal and Output & usability (accessibility)
+DIFF_NESTED.add("checks");    // Undo compares p.checks part by part: one row at a time, never the whole object
+
+/* ---------- what the tool is: the signals the rows are pruned and explained by ---------- */
+const CHK_PERSONAL = /\b(personal|customers?|clients?|patients?|employees?|contacts?|address(es)?|health|salary|donors?|birthday|phone numbers?)\b|personen|kunde|mitarbeit|kontakt|adresse|gesundheit|個人|个人|客户|员工|联系|地址|健康|工资/i;
+const CHK_WEB = /\b(web|websites?|internet|online|search|scrap\w*|crawl\w*|rss|feeds?|news)\b|webseite|internetseite|\bsuche|网站|网络|网页|搜索|新闻/i;
+const CHK_MONEY = /\b(pay|payments?|prices?|pricing|invest\w*|finance|financial|money|revenue|profit|invoices?|budget|chf|usd|eur)\b|finanz|\bgeld\b|umsatz|gewinn|preis|rechnung|投资|财务|收入|价格|付款|预算/i;
+const CHK_DATA = /\b(data|datasets?|database|records?|spreadsheets?|csv|lists?|tables?|history|inventory|catalog)\b|daten|liste|tabelle|verlauf|数据|表格|清单|历史/i;
+const CHK_AGENT = /\b(agents?|subagents?|schedul\w*|automat\w*|daily|weekly|hourly|loops?|unattended|background)\b|täglich|wöchentl|stündl|智能体|自动|定时|每天|每周|后台/i;
+/* acting outward (owner, 31 Oct 2026: send, post, publish, pay, order) — nouns and set phrases that only look like it are taken out first */
+const CHK_OUT = /\b(send|sends|sending|sent|e-?mails? (?:to|out)|mail out|post|posts|posted|posting|publish|publishes|published|publishing)\b|\bpay(?:s|ing)? (?:for|the|a|an|invoices?|bills?|out)\b|\b(?:make|makes|making|send|sends|sending|process|processes|processing) payments?\b|\b(?:buy|buys|buying|purchase|purchases|purchasing) (?:the|a|an|it|them|new|more|from|online|items|products|tickets|stock|shares)\b|\b(?:place|places|placed|placing) (?:an |the |a )?orders?\b|\border(?:s|ed|ing)? (?:the|a|an|it|them|new|more|from|online|supplies|items|products|groceries|food|stock|tickets)\b|versend|verschick|\bsenden\b|\bsendet\b|veröffentlich|bezahl|bestellt?\b|bestellen|\bposten\b|发送|寄出|发布|发帖|支付|付款|购买|下单|订购/i;
+const CHK_NOT_OUT = /\b(?:people|customers|users|buyers|visitors|they|someone|others|clients|readers|sellers)\b[^.,;:\n]{0,50}?\b(?:buy|purchase|order|pay|send|post|publish)\w*|\b(?:blog|news|forum|social[- ]media|linkedin|instagram|a|the|this|each|every|new|latest|my|your|old|past) posts?\b|\bsent to me\b/gi;
+function chkOutText(p){
+  const a = (p && p.arch) || {}, ns = (p && p.northStar) || {};
+  return [ns.goal, ns.success, p && p.intake && p.intake.raw, ...arr(a.components).map(c => [c.role, c.outputs].join(" ")), ...arr(p && p.requirements).map(r => [r.title, r.then].join(" "))].map(str).join(" \n ").replace(CHK_NOT_OUT, " ");
+}
+/** the word that makes the tool act outward ("" when it does not) */
+function chkOutward(p){ if (!p) return ""; const m = CHK_OUT.exec(chkOutText(p)); return m ? m[0].trim().toLowerCase() : ""; }
+/** how often every test runs for this tool: 3, or 5 when it acts outward */
+function chkTrials(p){ return chkOutward(p) ? CHK_TRIALS_OUT : TRIALS; }
+function chkSignals(p){
+  const txt = typeof proofText === "function" ? proofText(p) : "", s = typeof secPlan === "function" ? secPlan(p) : {reads: [], acts: []};
+  const ai = arr(p.arch && p.arch.components).filter(c => c.kind === "ai" || c.kind === "hybrid").length;
+  return {reads: s.reads.map(c => str(c.name)), acts: s.acts.map(c => str(c.name)), ai, out: chkOutward(p), shared: chkShared(p),
+    personal: CHK_PERSONAL.test(txt), web: CHK_WEB.test(txt), money: CHK_MONEY.test(txt), data: CHK_DATA.test(txt), agent: ai >= 2 || CHK_AGENT.test(txt)};
+}
+
+/* ---------- the rows: which checks apply, their state, your earlier choice, PT's ★ ---------- */
+function chkOf(p){ if (!p.checks || typeof p.checks !== "object") p.checks = {rows: []}; if (!Array.isArray(p.checks.rows)) p.checks.rows = []; return p.checks; }   // ok:field  checks is new in 1.8, made on first use (older projects have none); it is part of Undo and survives reload (e2e180_checks)
+function chkRead(p){ return (p && p.checks) || {rows: []}; }
+function chkRowOf(p, id){ return arr(chkRead(p).rows).find(r => r && r.id === id) || null; }
+/** a tool other people use (customers, a team, or pages shared by default) keeps today's behaviour */
+function chkShared(p){ const a = (p && p.audience) || {}; return a.customers === true || ["others", "customers", "team", "public"].includes(str(a.who)) || (typeof kitSettings === "function" && kitSettings().sharing === "shared"); }
+function chkPrivate(p){ return !chkShared(p); }
+function chkFloor(p, id){ return chkShared(p) && CHK_FLOORS.includes(id); }
+/** rows exist once there is something to check: a first version, a design or a package (before that nothing changes) */
+function chkActive(p){ return !!p && (typeof pgKitsReady === "function" ? pgKitsReady(p) : arr(p.arch && p.arch.components).length > 0); }
+function chkName(id){ const l = LENSES.find(x => x.id === id); return l ? L(l) : t("chk.g." + id); }
+/** apply · skip · open — a private tool's row is open until you tap it; a shared tool's row starts applied */
+function chkState(p, id){
+  if (chkFloor(p, id)) return "apply";
+  const r = chkRowOf(p, id); if (r && (r.v === "apply" || r.v === "skip")) return r.v;
+  return chkPrivate(p) ? "open" : "apply";
+}
+/** does a check apply to this tool at all (early pruning: the audience and what the tool reads and does) */
+function chkApplies(p, id, S){
+  const ev = [];
+  if (S.reads.length) ev.push(t("chk.ev.reads", {x: S.reads.join(", ")}));
+  if (S.acts.length) ev.push(t("chk.ev.acts", {x: S.acts.join(", ")}));
+  const evOut = S.out ? t("chk.ev.out", {x: S.out}) : "";
+  if (S.shared) return {ok: true, ev: t("chk.ev.shared")};
+  switch (id){
+    case "agent": return S.agent ? {ok: true, ev: S.ai >= 2 ? t("chk.ev.ai", {n: S.ai}) : t("chk.ev.sched")} : {ok: false, why: t("chk.pr.agent")};
+    case "security": return S.reads.length || S.acts.length || S.personal || S.web || S.out ? {ok: true, ev: [...ev, evOut, S.personal ? t("chk.ev.personal") : "", S.web && !S.reads.length ? t("chk.ev.web") : ""].filter(Boolean).join(" · ")} : {ok: false, why: t("chk.pr.security")};
+    case "legal": return S.personal || S.web || S.money ? {ok: true, ev: [S.personal ? t("chk.ev.personal") : "", S.web ? t("chk.ev.web") : "", S.money ? t("chk.ev.money") : ""].filter(Boolean).join(" · ")} : {ok: false, why: t("chk.pr.legal")};
+    case "data": return S.data || S.web || S.reads.length ? {ok: true, ev: S.reads.length ? ev[0] : S.web ? t("chk.ev.web") : t("chk.ev.data")} : {ok: false, why: t("chk.pr.data")};
+    case "drill": return S.reads.length || S.acts.length || S.web || S.out ? {ok: true, ev: [...ev, evOut].filter(Boolean).join(" · ") || t("chk.ev.web")} : {ok: false, why: t("chk.pr.drill")};
+    case "tests": return {ok: true, ev: arr(p.tests).length ? t("chk.ev.tests", {n: arr(p.tests).length, k: chkTrials(p)}) : t("chk.ev.notests", {k: chkTrials(p)})};
+    default: return {ok: true, ev: ""};
+  }
+}
+/** every check of this tool: the rows (they apply) and the pruned ones (they do not, with the reason); kept for one render */
+let CHK_CACHE = null;
+function chkList(p){
+  if (!chkActive(p)) return {rows: [], pruned: [], S: null};
+  if (RENDERING && CHK_CACHE && CHK_CACHE.p === p) return CHK_CACHE.v;
+  const S = chkSignals(p), rows = [], pruned = [];
+  for (const id of [...LENSES.map(l => l.id), ...CHK_GATES]){
+    const a = chkApplies(p, id, S), gate = CHK_GATES.includes(id);
+    const x = {id, gate, ev: a.ev || "", floor: chkFloor(p, id), fixed: gate && S.shared, state: gate && S.shared ? "apply" : chkState(p, id)};
+    if (a.ok) rows.push(x); else pruned.push(Object.assign(x, {why: a.why}));
+  }
+  const v = {rows, pruned, S};
+  if (RENDERING) CHK_CACHE = {p, v};
+  return v;
+}
+{ const orig = renderInner; renderInner = function(){ CHK_CACHE = null; try{ return orig.apply(this, arguments); } finally{ CHK_CACHE = null; } }; }
+function chkOpenRows(p, L0 = null){ return chkPrivate(p) ? (L0 || chkList(p)).rows.filter(x => x.state === "open" && !x.floor && !x.fixed) : []; }
+/** is this lens part of the tool's review now (projects before the design behave as before: every lens) */
+function chkLensOn(p, id, L0 = null){
+  if (!chkActive(p)) return true;
+  if (chkShared(p)) return chkState(p, id) !== "skip";
+  return chkState(p, id) === "apply" && (L0 || chkList(p)).rows.some(x => x.id === id);
+}
+/** the lenses that are on for this tool, from one list of its checks */
+function chkOnLenses(p, L0 = null){ const L1 = L0 || (chkActive(p) && chkPrivate(p) ? chkList(p) : null); return LENSES.map(l => l.id).filter(id => chkLensOn(p, id, L1)); }
+/** is a gate (tests, attack drill) on: shared tools as before; private tools once its row is applied */
+function chkGateOn(p, id, L0 = null){ if (!chkActive(p) || chkShared(p)) return true; return chkState(p, id) === "apply" && (L0 || chkList(p)).rows.some(x => x.id === id); }
+/** your choice for this check on another tool of this workspace (the latest); the other workspace's choices never count here */
+function chkPrev(p, id){
+  let best = null;
+  for (const q of arr(WS && WS.projects)){ if (!q || q.id === p.id) continue; const r = arr(q.checks && q.checks.rows).find(y => y && y.id === id && (y.v === "apply" || y.v === "skip")); if (r && (!best || str(r.at) > str(best.at))) best = {v: r.v, at: str(r.at), name: str(q.name)}; }
+  return best;
+}
+/** PT's own ★: every quality area starts ticked (owner: all preselected); the gates by what the tool does */
+function chkPtStar(p, x){
+  if (x.id === "tests") return {v: "apply", why: chkOutward(p) ? t("chk.star.tests.out", {k: chkTrials(p), x: chkOutward(p)}) : t("chk.star.tests", {k: chkTrials(p)})};
+  if (x.id === "drill") return {v: "apply", why: t("chk.star.drill")};
+  return {v: "apply", why: t("chk.star.lens")};
+}
+/** the ★ shown: your earlier choice when there is one ("you chose this last time"), otherwise PT's */
+function chkStar(p, x){ const pt = chkPtStar(p, x), prev = chkPrev(p, x.id); return prev ? {v: prev.v, why: t("chk.star.last", {x: prev.name}), last: true, pt} : {v: pt.v, why: pt.why, last: false, pt}; }
+/** what a check costs: units of PT's weekly budget, minutes, CHF (it runs on your Claude plan) and taps */
+function chkCost(p, x){
+  if (x.id === "tests"){ const k = chkTrials(p), n = arr(p.tests).length; return {u: n ? testRunCost(p, k) : 10 * k * (TIER_WEIGHT.default * 2 + TIER_WEIGHT.complex), m: Math.max(1, Math.round((n || 10) * k * 3 * 15 / 60))}; }
+  if (x.id === "drill") return {u: num(COST_EST.redteam, 8), m: 2};
+  return {u: TIER_WEIGHT.complex, m: 1};
+}
+/** the person's tap: one Undo step, one decision line, the next tool sees it as "you chose this last time" */
+function chkSet(p, id, v, {by = "you"} = {}){
+  if (!p || !["apply", "skip"].includes(v) || chkFloor(p, id)) return false;
+  const cur = chkRowOf(p, id); if (cur && cur.v === v) return true;
+  actOpen(p, t("chk.act", {x: chkName(id), v: t("chk.o." + v)}));   // before the first write, so the tap is one Undo step
+  const c = chkOf(p), row = {id, v, at: now(), by}, i = c.rows.findIndex(r => r && r.id === id);
+  if (i >= 0) c.rows[i] = row; else c.rows.push(row);
+  // a lens applied after this version's review has not looked at it yet: the review is due again (only that lens runs, see aiReview)
+  if (v === "apply" && LENSES.some(l => l.id === id) && p.seal.review === p.versionNo && !chkRan(p, id)) p.seal = Object.assign({}, p.seal, {review: 0});
+  if (v === "skip" && p.seal.review !== p.versionNo && !chkOnLenses(p).length) chkSeal(p);
+  logDecision(p, t("chk.dec", {x: chkName(id)}), t("chk.o." + v), cur ? t("chk.dec.changed") : "");
+  markRef(p, "chk:" + id, cur ? "changed" : "decided");
+  logAct(p, t("chk.act", {x: chkName(id), v: t("chk.o." + v)}), {step: "review"});
+  touch(p); actClose(p.id);
+  return true;
+}
+/** which lenses looked at this version (a carried seal from 1.7 means all of them did) */
+function chkRan(p, id){
+  const r = chkRead(p).ran;
+  if (!r) return p.seal.review === p.versionNo;   // sealed before 1.8: every lens ran
+  return (r.v === p.versionNo || p.seal.review === p.versionNo) && arr(r.ids).includes(id);
+}
+
+/* ---------- the rows in the one queue (private tools), with their options ---------- */
+function chkQueue(p, add){
+  if (!chkActive(p)) return;
+  // tier "wait" + noAuto: PT waits for you here; no auto-take of a ★ may answer a check row (owner, O4 reading (a))
+  const L0 = chkList(p);
+  if (chkPrivate(p)) for (const x of chkOpenRows(p, L0)) add({kind: "chk", ref: "chk:" + x.id, ph: "review", cls: "block", who: "you", hard: false, tier: "wait", noAuto: true, title: t("chk.q", {x: chkName(x.id)}), why: chkStar(p, x).why});
+  // an outward tool whose tests ran 3 times needs 5 (the old rule asks only below 3)
+  if (!chkGateOn(p, "tests", L0) || !arr(p.pkg.sections).length || !arr(p.tests).length) return;
+  const lr = lastRun(p), k = chkTrials(p);
+  if (lr && lr.versionNo === p.versionNo && !lr.incomplete && (lr.trials || 1) >= TRIALS && (lr.trials || 1) < k) add({kind: "test-run", ref: "test", ph: "test", cls: "block", who: "pt", title: t("chk.runs.need", {n: lr.trials || 1, k}), why: t("chk.runs.why", {k}), fix: "tests-run"});
+}
+{ const orig = kitQueue; kitQueue = function(p, add){ orig(p, add); chkQueue(p, add); }; }
+/* what the queue says about reviews and tests follows the rows: a check that is not applied is not PT's work */
+{ const orig = queueOf; queueOf = function(p){
+    if (RENDERING && Q_CACHE && Q_CACHE.p === p) return Q_CACHE.q;
+    const q = orig(p);
+    if (!p || !chkActive(p)) return q;
+    const L0 = chkList(p), lensOn = chkOnLenses(p, L0).length > 0, testsOn = chkGateOn(p, "tests", L0), k = chkTrials(p), out = chkOutward(p);   // a shared tool: both are on (today's behaviour)
+    for (let i = q.length - 1; i >= 0; i--){
+      const x = q[i];
+      // no quality area applied (yet): the review is not PT's work; the open rows ask first, and skipping them all seals (chkSet)
+      if (x.kind === "review" && !lensOn){ q.splice(i, 1); continue; }
+      if (!["test-none", "test-run", "notest", "test-skip", "proof-tests"].includes(x.kind)) continue;
+      // tests not applied (open or skipped): no run is asked for; failures of earlier runs stay
+      if (!testsOn){ q.splice(i, 1); continue; }
+      if (x.kind === "test-run"){ const lr = lastRun(p); if (lr && lr.versionNo === p.versionNo && !lr.incomplete && (lr.trials || 1) < k) x.title = t("chk.runs.need", {n: lr.trials || 1, k}); x.why = t("chk.runs.why", {k}) + (out ? " " + t("chk.runs.out", {x: out}) : ""); }
+    }
+    return q; }; }
+{ const orig = qOptions; qOptions = function(p, x){
+    if (x && x.kind === "chk"){ const id = str(x.ref).slice(4), r = chkList(p).rows.find(y => y.id === id); if (!r) return [];
+      const s = chkStar(p, r);
+      // one option per answer, never "batch": every check is its own tap (owner, 31 Oct 2026)
+      return ["apply", "skip"].map(v => ({label: t("chk.o." + v), star: s.v === v, why: v === "apply" ? t("chk.h." + id) : t("chk.n." + id), run: () => chkSet(p, id, v)})); }
+    return orig(p, x); }; }
+{ const orig = refLabel; refLabel = function(p, ref, full = false){ return str(ref).startsWith("chk:") ? t("chk.ref", {x: chkName(str(ref).slice(4))}) : orig(p, ref, full); }; }
+{ const orig = goRef; goRef = function(ref, o = {}){
+    const p = curP();
+    if (p && str(ref).startsWith("chk:")){
+      if (typeof pgOn === "function" && pgOn(p)){ pgOpen(p, "review"); UI.flashRef = ref; UI.navRef = ref; UI.navTry = 0; render(); return; }   // pgOpen scrolls to the top: the row is brought into view by the render after it
+      UI.home = false; UI.finish = null; setPhase("review"); UI.flashRef = ref; UI.navRef = ref; UI.navTry = 0; render(); return; }
+    return orig(ref, o); }; }
+/* the Check page shows the rows in their own panel; its "what you decide" block lists the rest */
+{ const orig = pgYou; pgYou = function(p, id){ const L0 = orig(p, id); return id === "review" ? L0.filter(x => x.kind !== "chk") : L0; }; }
+
+/* ---------- the panel: one row per check, with the honest assessment both ways ---------- */
+function chkCostLine(p, x){ const c = chkCost(p, x); return t("chk.cost", {u: c.u, l: weekLeft(), m: c.m}); }
+function chkRowHTML(p, x){
+  const st = x.state, star = chkStar(p, x), name = chkName(x.id), locked = x.floor || x.fixed;
+  const pill = st === "apply" ? `<span class="chip st-ok">${ic("check")}${esc(t("chk.st.apply"))}</span>` : st === "skip" ? `<span class="chip">${esc(t("chk.st.skip"))}</span>` : `<span class="chip warn">${esc(t("chk.st.open"))}</span>`;
+  const btns = locked ? `<span class="small muted">${esc(t(x.floor ? "chk.floor" : "chk.fixed"))}</span>`
+    : ["apply", "skip"].map(v => `<button class="btn xs ${st === v ? "on" : st === "open" && star.v === v ? "primary" : ""}" data-a="chk-set" data-id="${esc(x.id)}" data-v="${v}" aria-pressed="${st === v}">${st === "open" && star.v === v ? "★ " : ""}${esc(t("chk.o." + v))}</button>`).join("");
+  const pass = x.id === "tests" ? chkPassLine(p) : "";
+  return `<div class="item chk-row chk-${esc(st)}" data-anchor="chk:${esc(x.id)}" id="chk-${esc(x.id)}">${stSlot(st === "apply" ? "ok" : st === "skip" ? "todo" : "attn", t("chk.st." + st))}<div class="body">
+      <div class="row" style="gap:6px"><b>${esc(name)}</b>${pill}${star.last ? `<span class="chip">${esc(t("chk.lastchip"))}</span>` : ""}</div>
+      ${locked ? "" : `<span class="small chk-star">★ ${esc(t("chk.o." + star.v))} — ${esc(star.why)}</span>`}
+      <span class="small"><b>${esc(t("chk.helps"))}</b> ${esc(t("chk.h." + x.id))}${x.ev ? " " + esc(t("chk.here", {x: x.ev})) : ""}</span>
+      <span class="small"><b>${esc(t("chk.costs"))}</b> ${esc(chkCostLine(p, x))}</span>
+      <span class="small"><b>${esc(t("chk.notneeded"))}</b> ${esc(t("chk.n." + x.id))}</span>
+      ${star.last && star.pt.v !== star.v ? `<span class="small muted">${esc(t("chk.ptview", {x: t("chk.o." + star.pt.v), y: star.pt.why}))}</span>` : ""}${pass}
+    </div><div class="qacts">${btns}</div></div>`;
+}
+function chkPanel(p){
+  if (!chkActive(p)) return "";
+  const L0 = chkList(p), priv = chkPrivate(p), open = L0.rows.filter(x => x.state === "open" && !x.floor && !x.fixed).length;
+  const on = L0.rows.filter(x => x.state === "apply").length, skip = L0.rows.filter(x => x.state === "skip").length;
+  const pruned = L0.pruned.length ? `<details class="chk-pruned"><summary class="small">${esc(t("chk.pruned", {n: L0.pruned.length}))}</summary><ul class="small">${L0.pruned.map(x => `<li><b>${esc(chkName(x.id))}</b> — ${esc(x.why)}</li>`).join("")}</ul></details>` : "";
+  return `<section class="panel pg-checks" data-anchor="checks"><div class="row"><h3 style="flex:1 1 12em">${ic("shield")} ${esc(t("chk.panel.title"))}</h3><span class="small muted">${esc(t("chk.count", {a: on, s: skip, o: open}))}</span></div>
+    <p class="small muted">${esc(t(priv ? "chk.sub.priv" : "chk.sub.shared"))}</p>
+    ${open ? `<p class="small warn-t">${esc(t("chk.open", {n: open}))}</p>` : ""}
+    <div class="list">${L0.rows.map(x => chkRowHTML(p, x)).join("")}</div>${pruned}${fixResidualHTML(p)}</section>`;
+}
+ACTIONS["chk-set"] = el => { const p = curP(); if (!p) return; if (chkSet(p, str(el.dataset.id), str(el.dataset.v))){ render(); toastUndo(t("chk.act", {x: chkName(str(el.dataset.id)), v: t("chk.o." + str(el.dataset.v))})); } };
+{ const orig = pgBody; pgBody = function(p, id){ const h = orig(p, id); return id === "review" ? chkPanel(p) + h : h; }; }
+/* the step view of the review: the same rows, and the lens chips are this tool's ticks (they were one list for every project) */
+{ const orig = phReview; phReview = function(p){
+    UI.lensSel = new Set(chkOnLenses(p));
+    const h = orig(p);
+    return (typeof pgOn === "function" && pgOn(p)) ? h : chkPanel(p) + h; }; }
+CHANGES.lens = el => { const p = curP(), id = str(el.dataset.id);
+  if (p && chkActive(p) && !chkFloor(p, id)){ chkSet(p, id, el.checked ? "apply" : "skip"); }
+  else { if (el.checked) UI.lensSel.add(id); else UI.lensSel.delete(id); }
+  render(); };
+
+/* ---------- the review runs the lenses that are on; the seal counts those ---------- */
+function chkSeal(p){
+  const r = chkRead(p).ran, L0 = chkList(p), on = chkOnLenses(p, L0);
+  if (!arr(p.pkg && p.pkg.sections).length) return false;
+  if (!on.length && chkOpenRows(p, L0).some(x => !x.gate)) return false;
+  if (on.length && !(r && r.v === p.versionNo && on.every(id => arr(r.ids).includes(id)))) return false;
+  if (!on.length) chkOf(p).ran = {v: p.versionNo, ids: []};   // you skipped every quality area: sealed without a review, and a lens applied later runs
+  p.reviewedVersion = p.versionNo; p.seal = Object.assign({}, p.seal, {review: p.versionNo});
+  return true;
+}
+{ const orig = aiReview; aiReview = async function(p, lensIds, o = {}){
+    if (!p || !chkActive(p)) return orig(p, lensIds, o);
+    const L0 = chkList(p), onAll = chkOnLenses(p, L0), on = arr(lensIds).filter(id => onAll.includes(id)), c = chkRead(p).ran, lensOpen = chkOpenRows(p, L0).filter(x => !x.gate).length;
+    // a review that was due again only because a lens was applied later runs that lens alone
+    const run = !o.onlySections && p.seal.review !== p.versionNo && c && c.v === p.versionNo ? on.filter(id => !arr(c.ids).includes(id)) : on;
+    if (!run.length){
+      if (!on.length && lensOpen){ toast(t("chk.rev.tapfirst", {n: lensOpen}), "err"); return false; }
+      if (!o.onlySections && chkSeal(p)){ touch(p); render(); }
+      return true;
+    }
+    const done = await orig(p, run, o);
+    if (done && !o.onlySections){ const q = liveP(p) || p, c2 = chkOf(q); c2.ran = {v: q.versionNo, ids: [...new Set([...(c2.ran && c2.ran.v === q.versionNo ? arr(c2.ran.ids) : []), ...run])]}; chkSeal(q); touch(q); render(); }
+    return done; }; }
+/* a seal carried to a new version by the recheck carries the lenses that ran with it */
+{ const orig = aiSealRecheck; aiSealRecheck = async function(p, o = {}){
+    const v0 = chkRead(p).ran;
+    await orig(p, o);
+    const q = liveP(p) || p;
+    if (chkActive(q) && q.seal.review === q.versionNo && v0 && v0.v !== q.versionNo){ chkOf(q).ran = {v: q.versionNo, ids: arr(v0.ids)}; touch(q); } }; }
+{ const orig = designPass; designPass = async function(p){
+    const P = await orig(p);
+    if (P && P.done && chkActive(p) && chkOpenRows(p).length && !P.stop){ P.stop = t("chk.pass.stop", {n: chkOpenRows(p).length}); render(); }
+    return P; }; }
+
+/* ---------- tests: 3 runs, 5 for a tool that acts outward; it passes only when every run passes ---------- */
+{ const orig = aiRunTests; aiRunTests = async function(p, o = {}){ const k = chkTrials(p); return orig(p, Object.assign({}, o, o.trials === TRIALS && k > TRIALS ? {trials: k} : {})); }; }
+{ const orig = testRunCost; testRunCost = function(p, trials){ return orig(p, trials == null ? chkTrials(p) : trials); }; }
+{ const orig = stageChecks; stageChecks = function(p, sid){
+    const C = orig(p, sid);
+    if (sid === "prove"){ const x = C.find(c => c.id === "prv.tests"); if (x){ const lr = lastRun(p); x.ok = chkGateOn(p, "tests") ? !!(lr && lr.versionNo === p.versionNo && (lr.trials || 1) >= chkTrials(p) && !lr.incomplete) : chkState(p, "tests") === "skip"; }
+      const y = C.find(c => c.id === "prv.review"); if (y && chkActive(p) && !chkOnLenses(p).length) y.ok = !chkOpenRows(p).some(z => !z.gate); }
+    return C; }; }
+/* a test or a review not applied by you is not planned by "Fix automatically" */
+{ const orig = finishPlan; finishPlan = function(p, sid = null){
+    const pl = orig(p, sid);
+    if (p && chkActive(p) && !chkShared(p)){
+      const L0 = chkList(p), testsOn = chkGateOn(p, "tests", L0), lensOn = chkOnLenses(p, L0).length > 0;
+      const drop = g => (["tests-run", "gen-tests", "tests-missing", "proof-tests"].includes(g.fix) && !testsOn) || (["review-run", "seal-recheck"].includes(g.fix) && !lensOn);
+      pl.groups = pl.groups.filter(g => !drop(g)); pl.units = pl.groups.reduce((n, g) => n + g.units, 0); }
+    return pl; }; }
+/** pass^k of the last run: every run of every test must pass */
+function chkPassK(p){
+  const lr = lastRun(p); if (!lr) return null;
+  const k = chkTrials(p), res = arr(lr.results), fails = res.filter(x => x.userVerdict ? x.userVerdict === "fail" : x.pass !== true).length;
+  return {k, trials: lr.trials || 1, runs: res.length, fails, current: lr.versionNo === p.versionNo, pass: lr.versionNo === p.versionNo && !lr.incomplete && (lr.trials || 1) >= k && res.length > 0 && fails === 0};
+}
+function chkPassLine(p){
+  const x = chkPassK(p); if (!x) return `<span class="small muted">${esc(t("chk.pass.none", {k: chkTrials(p)}))}</span>`;
+  const msg = x.pass ? t("chk.pass.ok", {n: x.runs, k: x.k}) : !x.current ? t("chk.pass.old") : x.trials < x.k ? t("chk.pass.few", {n: x.trials, k: x.k}) : t("chk.pass.bad", {f: x.fails, n: x.runs});
+  return `<span class="small ${x.pass ? "ok-t" : "warn-t"}">${esc(msg)}</span>`;
+}
+/* the attack drill is due only once you applied it (a drill that runs by itself must not start on an open row) */
+{ const orig = rtDue; rtDue = function(p){ return chkGateOn(p, "drill") && orig(p); }; }
+
+/* ---------- fix until green: whole passes of "Fix automatically" (v14_finish.js calls this after each pass) ---------- */
+/** a short fingerprint of what a pass works on: the blocking work PT can do and the text it changes */
+function fixSig(p, allowed){
+  const block = queueOf(p).filter(x => x.cls === "block" && x.who === "pt" && x.fix && (!allowed || allowed.includes(x.fix))).map(x => x.key).sort();
+  const body = JSON.stringify([block, arr(p.pkg && p.pkg.sections).map(s => [s.id, s.content]), arr(p.requirements).map(r => [r.id, r.title, r.then]), arr(p.findings).map(f => [f.id, f.status]), arr(p.tests).map(x => [x.id, x.criteria])]);
+  let h = 5381; for (let i = 0; i < body.length; i++) h = ((h << 5) + h + body.charCodeAt(i)) | 0;
+  return {block, h: String(h)};
+}
+{ const orig = finishAutopilot; finishAutopilot = async function(p){
+    const F = UI.finish;
+    if (F){ const allowed = F.plan.groups.filter(g => g.on).map(g => g.fix); F.loop = {allowed, sigs: [fixSig(p, allowed).h], rounds: [], end: ""}; }
+    return orig(p); }; }
+/** after pass n: go round again (true) only while PT can still fix something that blocks, the pass changed something and the cap allows */
+function fixNextRound(p, F, round){
+  const L = F && F.loop; if (!L) return false;
+  L.rounds.push({n: round, groups: F.plan.groups.filter(g => g.on).map(g => ({fix: g.fix, state: g.state}))});
+  if (F.stop || UI.finish !== F){ L.end = "stopped"; return false; }
+  const s = fixSig(p, L.allowed);
+  if (!s.block.length){ L.end = "green"; return false; }
+  if (L.sigs.includes(s.h)){ L.end = "repeat"; logAct(p, t("fix.loop.repeat", {n: round}), {important: true, kind: "fix"}); return false; }   // the pass changed nothing: the next would propose the same again
+  L.sigs.push(s.h);
+  if (round >= FIX_CAP){ L.end = "cap"; fixResidual(p, round); return false; }
+  const next = finishPlan(p, F.stage).groups.filter(g => L.allowed.includes(g.fix));
+  const units = next.reduce((n, g) => n + g.units, 0);
+  if (!next.length){ L.end = "green"; return false; }
+  if (units > weekLeft()){ L.end = "budget"; return false; }
+  for (const g of next){ g.on = true; g.state = ""; }
+  F.plan = Object.assign({}, F.plan, {groups: next, units});
+  render();
+  return true;
+}
+/** the fifth pass ends with what is still at risk, written down for you (kept with the tool, shown on the Check page) */
+function fixResidual(p, rounds){
+  const items = queueOf(p).filter(x => x.cls === "block").slice(0, 12).map(x => ({title: str(x.title), why: str(x.why), ref: str(x.ref)}));
+  actOpen(p, t("fix.res.act", {n: rounds}), {by: "pt"});
+  chkOf(p).residual = {at: now(), rounds, items};
+  logAct(p, t("fix.res.log", {n: rounds, b: items.length}), {important: true, kind: "fix"});
+  actClose(p.id);
+}
+function fixResidualHTML(p){
+  const R = chkRead(p).residual, fs = arr(p.findings).filter(f => f.residual && OPEN_F.includes(f.status));
+  const rep = arr(p.findings).filter(f => f.proposal && f.proposal.repeat && OPEN_F.includes(f.status) && (str(f.before) || str(f.after)));
+  const diff = f => `<details><summary class="small">${esc(t("rev.beforeafter"))}</summary><div class="diff small">${lineDiff(str(f.before), str(f.after)).map(d => d.t === "eq" ? esc(d.s) + "\n" : `<span class="${d.t}">${esc(d.s)}</span>`).join("")}</div></details>`;
+  const repHTML = rep.length ? `<div class="stack chk-repeat" data-anchor="repeat" style="gap:4px"><b class="small warn-t">${esc(t("fix.rep.title"))}</b><ul class="small">${rep.map(f => `<li><button class="linkish" data-a="goto-ref" data-ref="finding:${esc(f.id)}">${esc(f.issue)}</button> — ${esc(str(f.proposal.note))}${diff(f)}</li>`).join("")}</ul></div>` : "";
+  if (!(R && arr(R.items).length) && !fs.length) return repHTML;
+  return repHTML + `<div class="stack chk-residual" data-anchor="residual" style="gap:4px"><b class="small warn-t">${esc(t("fix.res.title"))}</b>
+    ${R && arr(R.items).length ? `<p class="small">${esc(t("fix.res.sub", {n: R.rounds, d: fmtDate(R.at)}))}</p><ul class="small">${R.items.map(x => `<li><button class="linkish" data-a="goto-ref" data-ref="${esc(x.ref)}">${esc(x.title)}</button>${x.why ? " — " + esc(x.why) : ""}</li>`).join("")}</ul>` : ""}
+    ${fs.length ? `<ul class="small">${fs.map(f => `<li><button class="linkish" data-a="goto-ref" data-ref="finding:${esc(f.id)}">${esc(f.residual.text)}</button>${diff(f)}</li>`).join("")}</ul>` : ""}</div>`;
+}
+function fixLoopHTML(p, F){
+  const L = F && F.loop; if (!L || !L.rounds.length) return "";
+  const n = L.rounds.length, end = L.end || (F.step === "run" ? "running" : "");
+  const msg = end === "running" ? t("fix.loop.running", {n: n + 1, c: FIX_CAP}) : t("fix.loop." + (["green", "repeat", "cap", "budget", "stopped"].includes(end) ? end : "green"), {n, c: FIX_CAP});
+  return `<section class="panel fix-loop" data-anchor="fixloop"><p class="small ${end === "green" ? "ok-t" : end === "running" ? "" : "warn-t"}">${ic("bolt")} ${esc(msg)}</p>${end === "repeat" && F.startAt && F.step !== "done" && typeof pgChangeList === "function" ? pgChangeList(p, F.startAt) : ""}${end === "cap" ? fixResidualHTML(p) : ""}</section>`;
+}
+{ const orig = finishView; finishView = function(p){ const F = UI.finish, h = orig(p); return F && F.loop && UI.finish === F ? fixLoopHTML(p, F) + h : h; }; }
+
+/* ---------- facts by type, with an error budget (O1, 31 Oct 2026) ---------- */
+const FACT_BUDGET = {price: 20, platform: 45, policy: 180, other: 90};
+function factBudget(type){ return FACT_BUDGET[type] || FACT_BUDGET.other; }
+/** the type of a fact: given, or known from its source (the platform knowledge and the kit facts are platform facts) */
+function factTypeOf(d, type = ""){ if (FACT_BUDGET[type]) return type; if (d && (d === KP_VERSION || d === KIT_CHECKED)) return "platform"; return "other"; }
+{ const orig = factStale; factStale = function(d, type = ""){ const ty = factTypeOf(d, type); return ty === "other" ? orig(d) : factAge(d) > factBudget(ty); }; }
+/** a fact may be used only within its budget */
+function factUsable(d, type = ""){ return !!d && !factStale(d, type); }
+{ const orig = factChip; factChip = function(d, label = "", type = ""){
+    if (!d) return "";
+    const ty = factTypeOf(d, type), stale = factStale(d, ty), n = factBudget(ty);
+    return `<span class="chip ${stale ? "warn" : ""} fact" data-type="${esc(ty)}" title="${esc(t(stale ? "fact.t.stale" : "fact.t.ok", {n, x: t("fact.ty." + ty)}))}">${label ? esc(label) + " · " : ""}${esc(t("fact.checked", {d: fmtDay(d)}))}${stale ? " · " + esc(t("fact.notused")) : ""}</span>`; }; }
+/** a research finding's type: platform findings, prices, law; the date it was checked is the research run's */
+function factOfFinding(f, at){
+  const tx = str(f && f.text);
+  const type = f && f.kind === "platform" ? "platform" : /\b(chf|usd|eur|price|prices|pricing|costs?|fee|fees|per month|subscription)\b|\$\s?\d|€|preis|kosten|gebühr|价格|费用|收费/i.test(tx) ? "price" : /\b(law|legal|gdpr|ndsg|regulation|act|licen[cs]e|terms|policy|copyright)\b|gesetz|recht|lizenz|datenschutz|法律|法规|许可|条款|政策/i.test(tx) ? "policy" : "other";
+  return {type, d: str((f && f.at) || at).slice(0, 10)};
+}
+function factResearchPast(p){
+  const k = p && typeof pickRead === "function" ? pickRead(p) : null; if (!k || !k.research || !k.research.at) return [];
+  return arr(k.findings).filter(f => f && f.screened && !f.flagged).filter(f => { const x = factOfFinding(f, k.research.at); return factStale(x.d, x.type); });
+}
+/** the facts PT relies on, each with its type and budget (the kit facts hold platform facts, prices and law) */
+function factTyped(p){
+  const out = [];
+  for (const x of factList(p)){
+    if (x.id === "kits"){ out.push(Object.assign({}, x, {type: "platform"}), {id: "kitprice", label: t("fact.kitprice"), d: x.d, type: "price"}, {id: "kitlaw", label: t("fact.kitlaw"), d: x.d, type: "policy"}); continue; }
+    out.push(Object.assign({}, x, {type: x.id === "kp" || str(x.id).startsWith("plat:") ? "platform" : "other"}));
+  }
+  return out.map(x => Object.assign(x, {n: factBudget(x.type), past: factStale(x.d, x.type)}));
+}
+{ const orig = factsBlock; factsBlock = function(p){
+    const F = factTyped(p), past = F.filter(x => x.past), rp = factResearchPast(p);
+    return `<section class="panel pg-facts" data-anchor="facts"><div class="row"><h3 style="flex:1 1 12em">${ic("clock")} ${esc(t("fact.title"))}</h3><span class="small muted">${esc(t("fact.budgets", {a: FACT_BUDGET.price, b: FACT_BUDGET.platform, c: FACT_BUDGET.policy, d: FACT_BUDGET.other}))}</span></div>
+      <div class="row" style="gap:6px;flex-wrap:wrap">${F.map(x => factChip(x.d, x.label, x.type)).join("")}</div>
+      ${past.length ? `<p class="small warn-t">${esc(t("fact.pastlist", {x: past.map(x => x.label).join(", ")}))}</p>` : ""}
+      ${rp.length ? `<p class="small warn-t">${esc(t("fact.research.past", {n: rp.length}))}</p>` : ""}</section>`; }; }
+/** every prompt says which facts are past their budget and must not be used as facts */
+function factPromptBlock(p){
+  const F = factTyped(p), past = F.filter(x => x.past), en = {price: "prices", platform: "platform facts", policy: "law and policy", other: "other facts"};
+  return `\n<honesty facts_checked="${KIT_CHECKED}" platform_knowledge="${KP_VERSION}" budget_days="price ${FACT_BUDGET.price}, platform ${FACT_BUDGET.platform}, law and policy ${FACT_BUDGET.policy}, other ${FACT_BUDGET.other}"${past.length ? ' past_budget="' + [...new Set(past.map(x => x.type))].join(",") + '"' : ""}>\nEvery legal, price and platform claim in the output names the date it was checked. Facts have an age budget by type: prices ${FACT_BUDGET.price} days, platform facts ${FACT_BUDGET.platform} days, law and policy ${FACT_BUDGET.policy} days, everything else ${FACT_BUDGET.other} days. A claim older than its budget, or with no date, is not used as a fact: write "re-check before you rely on it" with its date instead.${past.length ? "\nPAST THEIR BUDGET — do not use these as facts; where one would be used, say that it is past its age budget and must be checked again:\n" + past.map(x => `- ${en[x.type]} from the ${x.id === "kp" ? "platform knowledge" : x.id.startsWith("plat:") ? "platform check" : x.id === "research" ? "research" : "Firnlab kit facts"} (checked ${x.d}, budget ${x.n} days)`).join("\n") : ""} No legal claim is stated as settled law; where it is grey, say so and point to real legal advice. Numbers carry their source; estimates say "estimate".\n</honesty>`;
+}
+{ const i = KIT_PROMPT_PARTS.indexOf(honestyPromptBlock); if (i >= 0) KIT_PROMPT_PARTS[i] = factPromptBlock; else KIT_PROMPT_PARTS.push(factPromptBlock); }
+/* a kit option whose platform facts are past their budget gets no ★ (PT does not recommend on a fact it may not use) and says why */
+{ const orig = qOptions; qOptions = function(p, x){
+    const O = orig(p, x);
+    if (x && /^kit-/.test(str(x.kind)) && Array.isArray(O) && factStale(KIT_CHECKED, "platform")) for (const o of O){ if (o && !o.factPast){ o.factPast = true; o.star = false; o.why = (o.why ? o.why + " · " : "") + t("fact.option.past", {n: FACT_BUDGET.platform}); } }
+    return O; }; }
+/* research past its budget is left out of what PT passes on, and the prompt says so */
+{ const orig = projectContext; projectContext = function(p, o = {}){
+    const gone = factResearchPast(p);
+    if (!gone.length || !p.pick) return orig(p, o);
+    const all = p.pick.findings; p.pick.findings = all.filter(f => !gone.includes(f));
+    try{ const s = orig(p, o); return (!o || !o.only || arr(o.only).includes("pick_research")) ? s + `\n<facts_past_budget>${gone.length} research findings are left out: they are past their age budget (prices ${FACT_BUDGET.price} days, platform ${FACT_BUDGET.platform}, law and policy ${FACT_BUDGET.policy}, other ${FACT_BUDGET.other}). Do not state them as facts; say that a re-check is needed where they would matter.</facts_past_budget>` : s; }
+    finally{ p.pick.findings = all; } }; }
 
 /* ===================== 1.8 decision rows (projection, ids <Branch>.<Stage>.<Step>), events (append-only, hash chain), tiers + undo ===================== */
 
