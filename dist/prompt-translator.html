@@ -1,4 +1,4 @@
-<title>Prompt Translator 1.8.0</title>
+<title>Prompt Translator 1.8.2</title>
 <style>
 /* Layout concept: mission-control workspace — slim navigation rail, one focused work surface with a persistent North Star band, and a notes drawer on the right. Dark-first instrument panel; light mode mirrors it. */
 :root{
@@ -6684,7 +6684,10 @@ Object.assign(STR, {
 "kit18.rep.received":["received","erhalten","已收到"],
 "kit18.rep.fixed":["fixed in v{v}","behoben in v{v}","已在 v{v} 修复"],
 "kit18.cp.repeat":["{x} in {y}: {n} % of its AI calls repeat the same input; a cache or code would answer them.","{x} in {y}: {n} % seiner KI-Aufrufe wiederholen dieselbe Eingabe; ein Cache oder Code würde sie beantworten.","{y} 中的 {x}：{n}% 的 AI 调用重复相同的输入；缓存或代码即可回答。"],
-"kit18.cp.rule":["{x} in {y} still calls AI, but its input is bounded: code could do it.","{x} in {y} ruft noch KI auf, aber seine Eingabe ist begrenzt: Code könnte das.","{y} 中的 {x} 仍在调用 AI，但其输入是有限的：可以用代码完成。"]
+"kit18.cp.rule":["{x} in {y} still calls AI, but its input is bounded: code could do it.","{x} in {y} ruft noch KI auf, aber seine Eingabe ist begrenzt: Code könnte das.","{y} 中的 {x} 仍在调用 AI，但其输入是有限的：可以用代码完成。"],
+"cl.181.fixed":["Turning on the Sunday preparation run (and setting up background runs for another login) failed: the scheduled-task service now wants every run in its own new session when notifications are set. PT asks for that, and tries once more without the notification setting if the service still refuses. A preview copy never creates a scheduled task","Das Einschalten des sonntäglichen Vorbereitungslaufs (und das Einrichten von Hintergrundläufen für ein anderes Login) schlug fehl: Der Dienst für geplante Aufgaben will jetzt jeden Lauf in einer eigenen neuen Sitzung, wenn Benachrichtigungen gesetzt sind. PT verlangt das jetzt und versucht es noch einmal ohne die Benachrichtigungs-Einstellung, falls der Dienst trotzdem ablehnt. Eine Vorschau-Kopie erstellt nie eine geplante Aufgabe","开启周日准备运行（以及为其他登录账号设置后台运行）时失败：设置通知时，定时任务服务现在要求每次运行都在新的会话中进行。PT 现在会这样请求；如果服务仍然拒绝，PT 会去掉通知设置再试一次。预览副本从不创建定时任务"],
+"cl.182.fixed":["Turning on the Sunday preparation run still failed: a task created from PT has no Claude session to take its cloud environment from, so the scheduled-task service asks which one. PT now takes one from the list the service sends (a normal cloud environment before a self-hosted one) and remembers it for your login. It also tells you to turn on automatic approval for the new task, since nobody watches its runs","Das Einschalten des sonntäglichen Vorbereitungslaufs schlug noch fehl: Eine Aufgabe, die PT erstellt, hat keine Claude-Sitzung, von der sie ihre Cloud-Umgebung übernehmen kann, darum fragt der Dienst für geplante Aufgaben nach einer. PT nimmt jetzt eine aus der Liste, die der Dienst schickt (eine normale Cloud-Umgebung vor einer selbst gehosteten), und merkt sie sich für dein Login. Ausserdem sagt PT dir, dass du für die neue Aufgabe die automatische Genehmigung einschalten sollst, weil niemand den Läufen zuschaut","开启周日准备运行时仍然失败：由 PT 创建的任务没有可以继承云环境的 Claude 会话，因此定时任务服务会询问使用哪个环境。PT 现在会从服务发来的列表中选择一个（优先选择普通云环境，而不是自托管环境），并为你的登录账号记住它。PT 还会提醒你为新任务开启自动批准，因为运行时无人值守"],
+"sched.approve":["Open this scheduled task's settings once and turn on “Automatically approve”: nobody watches its runs, so without it a run stops and waits for you.","Öffne die Einstellungen dieser geplanten Aufgabe einmal und schalte „Automatically approve“ (automatisch genehmigen) ein: Niemand schaut den Läufen zu, ohne das hält ein Lauf an und wartet auf dich.","请打开这个定时任务的设置一次，开启“Automatically approve”（自动批准）：运行时无人值守，否则运行会停下来等你。"],
 });
 
 /* ===================== CORE ===================== */
@@ -7268,8 +7271,43 @@ const Runner = {
   /* the page passes its own address, so a preview copy's jobs are read from the preview's storage */
   async fire(text){ if (!this.id()) throw {code: "no_runner"}; const r = await this.call("fire_trigger", {trigger_id: this.id(), text: text + " " + PT_URL}); this.state = "ok"; return r; },
   /* only on an explicit click ("Set up background runs"): creates this login's own runner */
+  /* 1.8.1 (cause 69): the scheduled-task service takes "notifications" only for a task that starts a new session on every run, so PT
+     asks for that (a fresh session per run is right for PT's runs anyway). If the service refuses the setting itself, PT tries again
+     without "notifications" and without the flag (the service's defaults).
+     1.8.2 (cause 70): a task created from this page has no Claude session to take its cloud environment from, so the service asks for
+     one and lists the person's environments. PT takes the one it used before if it is listed, else the first cloud environment
+     ("env_…", not a self-hosted pool), else the first; it remembers it for this login (META.envId) and tries again.
+     Any other refusal is shown as it is, never retried. At most four calls. */
+  async create(input){
+    if (PT_PREVIEW) throw {code: "preview_blocked"};   // a preview copy never creates a real scheduled task
+    const M = typeof META !== "undefined" && META ? META : {};
+    let a = Object.assign({}, input, {create_new_session_on_fire: true}), last = null;
+    if (M.envId) a.environment_id = M.envId;
+    for (let i = 0; i < 4; i++){
+      try{
+        const r = await this.call("create_trigger", a);   // ok:preview  create() stops a preview copy on its first line
+        if (a.environment_id && M.envId !== a.environment_id){ M.envId = a.environment_id; if (typeof saveMeta === "function") saveMeta(); }
+        return r;
+      }catch(e){
+        last = e;
+        const msg = e && e.code === "tool_error" ? str(e.message) : "";
+        const tail = msg.split(/environment_ids?\s*:/i).slice(1).join(" ");
+        const envs = [...new Set(tail.match(/\b(?:env|ccpool)_[A-Za-z0-9]+/g) || [])].filter(x => x !== a.environment_id);
+        if (/environment_id/i.test(msg) && envs.length){
+          a = Object.assign({}, a, {environment_id: envs.find(x => x === M.envId) || envs.find(x => x.startsWith("env_")) || envs[0]});
+          continue;
+        }
+        if (/create_new_session_on_fire|notifications/i.test(msg) && ("notifications" in a || "create_new_session_on_fire" in a)){
+          a = Object.assign({}, a); delete a.notifications; delete a.create_new_session_on_fire;
+          continue;
+        }
+        throw e;
+      }
+    }
+    throw last;
+  },
   async setup(){
-    const c = await this.call("create_trigger", {name: RUNNER_NAME, prompt: RUNNER_PROMPT, initiation: "human_request", notifications: {}});
+    const c = await this.create({name: RUNNER_NAME, prompt: RUNNER_PROMPT, initiation: "human_request", notifications: {}});
     const tr = c && (c.trigger || c.data || c); const id = tr && (tr.id || tr.trigger_id);
     if (!id) throw {code: "upstream_error"};
     META.runnerId = id; if (typeof saveMeta === "function") saveMeta(); this.state = "ok"; return id;
@@ -9744,7 +9782,7 @@ function fixCost(p, ids){ const n = arr(p.findings).filter(f => ids.includes(f.i
 /* ===================== APP STATE ===================== */
 let META = {workspaces: [], last: null};
 let WS = {id:null, name:"", settings:{}, profile:{entries:[]}, projects:[], notes:[], patterns:[], research:[], jobs:[], insights:null, profileSuggestions:[]};
-const PT_VERSION = "1.8.0";
+const PT_VERSION = "1.8.2";
 /* ---------- version next to the name: "newest" check (shared doc app/version: read by everyone, written by the owner's page) ---------- */
 const APPV = {latest: PT_VERSION, newer: false, checked: false};
 function verCmp(a, b){ const x = String(a || "0").split(".").map(n => parseInt(n, 10) || 0), y = String(b || "0").split(".").map(n => parseInt(n, 10) || 0); for (let i = 0; i < 3; i++){ if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) - (y[i] || 0); } return 0; }
@@ -11733,6 +11771,8 @@ function rpPreview(p, pv){
     ${row(t("rev.problems"), arr(s.findings).length, p.findings.length)}${row(t("test.title"), arr(s.tests).length, p.tests.length)}</tbody></table></div>`;
 }
 const CHANGELOG = [
+  {v: "1.8.2", d: "2026-11-01", fixed: "cl.182.fixed"},
+  {v: "1.8.1", d: "2026-11-01", fixed: "cl.181.fixed"},
   {v: "1.8.0", d: "2026-11-01", added: "cl.180.added", changed: "cl.180.changed"},
   {v: "1.7.1", d: "2026-11-01", added: "cl.171.added", changed: "cl.171.changed"},
   {v: "1.7.0", d: "2026-10-25", added: "cl.170.added", changed: "cl.170.changed", fixed: "cl.170.fixed"},
@@ -12972,7 +13012,7 @@ Object.assign(ACTIONS, {
   "ver-reload": () => { try{ location.reload(); }catch(e){ toast(t("ver.oldtip", {v: PT_VERSION, n: APPV.latest}), "err"); } },
   "digest-seen": el => { WS.settings.digestSeen = el.dataset.m; saveWs(); render(); },
   /* separate logins (D9) */
-  "runner-setup": async () => { try{ const id = await Runner.setup(); toast(t("rs.done", {id}), "ok"); }catch(e){ toast(mcpErrText(e), "err"); } render(); },
+  "runner-setup": async () => { try{ const id = await Runner.setup(); toast(t("rs.done", {id}) + " " + t("sched.approve"), "ok"); }catch(e){ toast(mcpErrText(e), "err"); } render(); },
   "jw-remove": () => { const w = UI.secondWsEmpty; if (!w) return; confirmBox(t("jw.remove"), t("jw.removeq"), t("jw.remove"), async () => { await removeWorkspace(w); UI.secondWsEmpty = null; toast(t("jw.removed"), "ok"); render(); }); },
   "jw-keep": () => { META.keepSecondWs = true; saveMeta(); UI.secondWsEmpty = null; render(); },
   "fr-lang": el => { UI.firstRun = Object.assign({}, UI.firstRun, {lang: el.dataset.v}); LANG = el.dataset.v; applySettings(); render(); },
@@ -21977,7 +22017,7 @@ async function wk18SwitchOn(){
   if (r.id) await Runner.setEnabled(r.id, true);
   else {
     if (PT_PREVIEW) return false;   // never from a preview copy (checked above as well)
-    const c = await Runner.call("create_trigger", {name: WK18_NAME, cron_expression: WK18_CRON, prompt: wk18Prompt(coll), initiation: "human_request", notifications: {}});
+    const c = await Runner.create({name: WK18_NAME, cron_expression: WK18_CRON, prompt: wk18Prompt(coll), initiation: "human_request", notifications: {}});
     const tr = c && (c.trigger || c.data || c), id = tr && (tr.id || tr.trigger_id);
     if (!id) throw {code: "upstream_error"};
     r.id = str(id);
@@ -21995,7 +22035,7 @@ function wk18SwitchHTML(){
   if (!Store.isOwner || Store.mode !== "cloud") return "";
   const r = WS.settings.wkRun || {}, last = RUN18.last;
   const lastLine = r.on && last && last.at ? " · " + t("wk.sw.last", {d: fmtDate(last.at), s: t(last.status === "done" ? "wk.sw.done" : "wk.sw.failed"), n: num(last.drills, 0)}) : "";
-  return `<div class="item wk18-sw">${stSlot(r.on ? "ok" : "todo")}<div class="body"><span class="small"><b>${esc(t("wk.sw.title"))}</b> · ${esc(t(r.on ? "wk.sw.on" : "wk.sw.off"))}${esc(lastLine)}</span><span class="small muted">${esc(t(PT_PREVIEW ? "wk.sw.preview" : "wk.sw.what"))}</span></div>
+  return `<div class="item wk18-sw">${stSlot(r.on ? "ok" : "todo")}<div class="body"><span class="small"><b>${esc(t("wk.sw.title"))}</b> · ${esc(t(r.on ? "wk.sw.on" : "wk.sw.off"))}${esc(lastLine)}</span><span class="small muted">${esc(t(PT_PREVIEW ? "wk.sw.preview" : "wk.sw.what"))}</span>${r.on && !(last && last.status === "done") ? `<span class="small wk18-approve">${esc(t("sched.approve"))}</span>` : ""}</div>
     <div class="qacts">${PT_PREVIEW ? "" : r.on ? `<button class="btn xs ghost" data-a="wk18-runner-off">${esc(t("wk.sw.turnoff"))}</button>` : `<button class="btn xs" data-a="wk18-runner-on">${ic("clock")}${esc(t("wk.sw.turnon"))}</button>`}</div></div>`;
 }
 
@@ -22251,7 +22291,7 @@ Object.assign(ACTIONS, {
   "wk18-skip": el => { const n = RUN18.notes && RUN18.notes.get(str(el.dataset.key)); if (n){ n.skipped = now(); wk18Save(n); } UI.view = "cockpit"; render(); toast(t("wk.skipped"), ""); },
   "wk18-go": el => run18GoTo(str(el.dataset.pid), str(el.dataset.ref)),
   "wk18-rows": el => run18GoTo(str(el.dataset.pid), ""),
-  "wk18-runner-on": async () => { try{ if (await wk18SwitchOn()) toast(t("wk.sw.ondone"), "ok"); }catch(e){ toast(mcpErrText(e), "err"); } render(); },
+  "wk18-runner-on": async () => { try{ if (await wk18SwitchOn()) toast(t("wk.sw.ondone") + " " + t("sched.approve"), "ok"); }catch(e){ toast(mcpErrText(e), "err"); } render(); },
   "wk18-runner-off": async () => { try{ if (await wk18SwitchOff()) toast(t("wk.sw.offdone"), ""); }catch(e){ toast(mcpErrText(e), "err"); } render(); },
   "ib18-tell": el => { const pid = str(el && el.dataset && el.dataset.pid) || (UI.view === "project" && curP() ? curP().id : ""); UI.modal = {kind: "ib18tell", pid, rk: "bug"}; render(); focusSoon("ib18-text"); },
   "ib18-kind": el => { const m = UI.modal; if (!m || m.kind !== "ib18tell") return; const ta = document.getElementById("ib18-text"), sel = document.getElementById("ib18-tool"); m.text = ta ? ta.value : m.text; m.pid = sel ? sel.value : m.pid; m.rk = oneOf(el.dataset.v, RPT18_KINDS, "bug"); render(); },

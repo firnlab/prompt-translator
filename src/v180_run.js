@@ -376,7 +376,7 @@ async function wk18SwitchOn(){
   if (r.id) await Runner.setEnabled(r.id, true);
   else {
     if (PT_PREVIEW) return false;   // never from a preview copy (checked above as well)
-    const c = await Runner.call("create_trigger", {name: WK18_NAME, cron_expression: WK18_CRON, prompt: wk18Prompt(coll), initiation: "human_request", notifications: {}});
+    const c = await Runner.create({name: WK18_NAME, cron_expression: WK18_CRON, prompt: wk18Prompt(coll), initiation: "human_request", notifications: {}});
     const tr = c && (c.trigger || c.data || c), id = tr && (tr.id || tr.trigger_id);
     if (!id) throw {code: "upstream_error"};
     r.id = str(id);
@@ -394,7 +394,7 @@ function wk18SwitchHTML(){
   if (!Store.isOwner || Store.mode !== "cloud") return "";
   const r = WS.settings.wkRun || {}, last = RUN18.last;
   const lastLine = r.on && last && last.at ? " · " + t("wk.sw.last", {d: fmtDate(last.at), s: t(last.status === "done" ? "wk.sw.done" : "wk.sw.failed"), n: num(last.drills, 0)}) : "";
-  return `<div class="item wk18-sw">${stSlot(r.on ? "ok" : "todo")}<div class="body"><span class="small"><b>${esc(t("wk.sw.title"))}</b> · ${esc(t(r.on ? "wk.sw.on" : "wk.sw.off"))}${esc(lastLine)}</span><span class="small muted">${esc(t(PT_PREVIEW ? "wk.sw.preview" : "wk.sw.what"))}</span></div>
+  return `<div class="item wk18-sw">${stSlot(r.on ? "ok" : "todo")}<div class="body"><span class="small"><b>${esc(t("wk.sw.title"))}</b> · ${esc(t(r.on ? "wk.sw.on" : "wk.sw.off"))}${esc(lastLine)}</span><span class="small muted">${esc(t(PT_PREVIEW ? "wk.sw.preview" : "wk.sw.what"))}</span>${r.on && !(last && last.status === "done") ? `<span class="small wk18-approve">${esc(t("sched.approve"))}</span>` : ""}</div>
     <div class="qacts">${PT_PREVIEW ? "" : r.on ? `<button class="btn xs ghost" data-a="wk18-runner-off">${esc(t("wk.sw.turnoff"))}</button>` : `<button class="btn xs" data-a="wk18-runner-on">${ic("clock")}${esc(t("wk.sw.turnon"))}</button>`}</div></div>`;
 }
 
@@ -650,7 +650,7 @@ Object.assign(ACTIONS, {
   "wk18-skip": el => { const n = RUN18.notes && RUN18.notes.get(str(el.dataset.key)); if (n){ n.skipped = now(); wk18Save(n); } UI.view = "cockpit"; render(); toast(t("wk.skipped"), ""); },
   "wk18-go": el => run18GoTo(str(el.dataset.pid), str(el.dataset.ref)),
   "wk18-rows": el => run18GoTo(str(el.dataset.pid), ""),
-  "wk18-runner-on": async () => { try{ if (await wk18SwitchOn()) toast(t("wk.sw.ondone"), "ok"); }catch(e){ toast(mcpErrText(e), "err"); } render(); },
+  "wk18-runner-on": async () => { try{ if (await wk18SwitchOn()) toast(t("wk.sw.ondone") + " " + t("sched.approve"), "ok"); }catch(e){ toast(mcpErrText(e), "err"); } render(); },
   "wk18-runner-off": async () => { try{ if (await wk18SwitchOff()) toast(t("wk.sw.offdone"), ""); }catch(e){ toast(mcpErrText(e), "err"); } render(); },
   "ib18-tell": el => { const pid = str(el && el.dataset && el.dataset.pid) || (UI.view === "project" && curP() ? curP().id : ""); UI.modal = {kind: "ib18tell", pid, rk: "bug"}; render(); focusSoon("ib18-text"); },
   "ib18-kind": el => { const m = UI.modal; if (!m || m.kind !== "ib18tell") return; const ta = document.getElementById("ib18-text"), sel = document.getElementById("ib18-tool"); m.text = ta ? ta.value : m.text; m.pid = sel ? sel.value : m.pid; m.rk = oneOf(el.dataset.v, RPT18_KINDS, "bug"); render(); },

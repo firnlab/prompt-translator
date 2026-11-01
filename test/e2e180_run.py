@@ -234,12 +234,16 @@ with sync_playwright() as pw:
     check("the Inbox offers the switch as one line, off", ev(pg, "(() => { const s = document.querySelector('.wk18-sw'); return !!s && !!s.querySelector('[data-a=wk18-runner-on]') && !(WS.settings.wkRun || {}).on; })()"))
     check("…and nothing was created before the click", not [c for c in ev(pg, "window.__mcp") if c["tool"] == "create_trigger"])
     pg.locator("[data-a=wk18-runner-on]").first.click(); pg.wait_for_timeout(600); settle(pg, 200)
-    calls = [c for c in ev(pg, "window.__mcp") if c["tool"] == "create_trigger"]
-    check("one click creates one scheduled task: Sundays 12:41 Zürich, asked for by you", len(calls) == 1 and calls[0]["input"].get("cron_expression") == "CRON_TZ=Europe/Zurich 41 12 * * 0" and calls[0]["input"].get("initiation") == "human_request", calls)
+    allc = [c for c in ev(pg, "window.__mcp") if c["tool"] == "create_trigger"]; calls = [c for c in allc if c.get("ok")]
+    noprompt = lambda L: [{k: v for k, v in c["input"].items() if k != "prompt"} for c in L]
+    check("one click creates one scheduled task: Sundays 12:41 Zürich, asked for by you", len(calls) == 1 and calls[0]["input"].get("cron_expression") == "CRON_TZ=Europe/Zurich 41 12 * * 0" and calls[0]["input"].get("initiation") == "human_request", noprompt(allc))
+    check("…each run in its own new session, notifications off (the service takes notifications only so; cause 69)", len(calls) == 1 and calls[0]["input"].get("create_new_session_on_fire") is True and calls[0]["input"].get("notifications") == {}, noprompt(allc))
+    check("…the service asks for a cloud environment (a page has no session): PT takes a cloud one from its list, not the self-hosted pool, and remembers it (cause 70)", len(allc) == 2 and "environment_id" not in allc[0]["input"] and calls and calls[0]["input"].get("environment_id") == "env_01MOCKAAAA" and ev(pg, "META.envId") == "env_01MOCKAAAA", noprompt(allc))
     prm = calls[0]["input"].get("prompt", "") if calls else ""
     check("…its text reads PT's spec, publishes nothing, deletes nothing, changes no scheduled task", "doc_id \"spec\"" in prm and "never publish" in prm and "never delete" in prm and "never create, change or delete a scheduled task" in prm, prm[:400])
     spec = ev(pg, "(R18.docs(wsPath() + '/sunday-run/spec')[0] || {})")
     check("…the spec lists the live tools with their packages and where the drills go", spec and any(x["name"] == "Run test C" for x in spec["inputs"]["tools"]) and spec["inputs"]["drillsColl"].endswith("/drills-in") and "attacker, then the judge" in spec["instructions"], str(spec)[:300])
+    check("…and the line says to turn on automatic approval for the task (nobody watches its runs), until a run has worked", ev(pg, "!!document.querySelector('.wk18-sw .wk18-approve') && document.querySelector('.wk18-sw .wk18-approve').textContent.includes('Automatically approve')"))
     check("…and the line says it is on", ev(pg, "(WS.settings.wkRun || {}).on === true && (WS.settings.wkRun || {}).id === 'trig_new' && !!document.querySelector('.wk18-sw [data-a=wk18-runner-off]')"))
     pg.locator("[data-a=wk18-runner-off]").first.click(); pg.wait_for_timeout(500)
     upd = [c for c in ev(pg, "window.__mcp") if c["tool"] == "update_trigger"]
@@ -247,6 +251,26 @@ with sync_playwright() as pw:
     ev(pg, "(() => { Store.isOwner = false; render(); })()"); pg.wait_for_timeout(200)
     check("another login (the second owner) is not offered the switch; her note is built in PT", ev(pg, "!document.querySelector('.wk18-sw') && !!document.querySelector('.wk18-line')"))
     ev(pg, "(() => { Store.isOwner = true; render(); })()")
+    # 1.8.1 (cause 69): a service that refuses the new-session setting gets one more try without notifications; other refusals are shown, never retried
+    def sw_on_again(flag):
+        ev(pg, f"(() => {{ WS.settings.wkRun = {{}}; window.__mcp.length = 0; {flag}; go('cockpit'); }})()"); pg.wait_for_timeout(300)
+        pg.locator("[data-a=wk18-runner-on]").first.click(); pg.wait_for_timeout(600); settle(pg, 200)
+        return [c["input"] for c in ev(pg, "window.__mcp") if c["tool"] == "create_trigger"]
+    c2 = sw_on_again("window.__mcpNoNewSession = true")
+    check("a service that does not know the new-session setting: PT tries once more without it and without notifications, and the switch is on", len(c2) == 2 and c2[0].get("create_new_session_on_fire") is True and "create_new_session_on_fire" not in c2[1] and "notifications" not in c2[1] and c2[1].get("cron_expression") == "CRON_TZ=Europe/Zurich 41 12 * * 0" and ev(pg, "(WS.settings.wkRun || {}).on === true && (WS.settings.wkRun || {}).id === 'trig_new'"), [{k: v for k, v in x.items() if k != "prompt"} for x in c2])
+    check("…the remembered environment is sent from the first call on", all(x.get("environment_id") == "env_01MOCKAAAA" for x in c2), [x.get("environment_id") for x in c2])
+    c2b = sw_on_again("window.__mcpNoNewSession = false; META.envId = 'env_01GONE'")
+    check("a remembered environment that is gone: PT takes one from the new list and remembers that", len(c2b) == 2 and c2b[0].get("environment_id") == "env_01GONE" and c2b[1].get("environment_id") == "env_01MOCKAAAA" and ev(pg, "META.envId") == "env_01MOCKAAAA" and ev(pg, "(WS.settings.wkRun || {}).on === true"), [x.get("environment_id") for x in c2b])
+    c2c = sw_on_again("delete META.envId; window.__mockEnvs = ['ccpool_01ONLYPOOL']")
+    check("only a self-hosted pool listed: PT uses it (the only choice)", len(c2c) == 2 and c2c[1].get("environment_id") == "ccpool_01ONLYPOOL", [x.get("environment_id") for x in c2c])
+    ev(pg, "window.__mockEnvs = null; META.envId = 'env_01MOCKAAAA'")
+    c3 = sw_on_again("window.__mcpNoNewSession = false; window.__mcpCreateFail = 'rate limited, try later'")
+    t3 = ev(pg, "[...document.querySelectorAll('#toasts .toast')].map(x => x.textContent).join(' | ')")
+    check("any other refusal: one try only, the message is shown, the switch stays off", len(c3) == 1 and "rate limited" in t3 and not ev(pg, "(WS.settings.wkRun || {}).on"), [len(c3), t3[:200]])
+    ev(pg, "window.__mcpCreateFail = null; window.__mcp.length = 0")
+    rid = ev(pg, "(async () => { const keep = META.runnerId; try{ return await Runner.setup(); } finally { if (keep) META.runnerId = keep; else delete META.runnerId; saveMeta(); } })()")
+    c4 = [c["input"] for c in ev(pg, "window.__mcp") if c["tool"] == "create_trigger"]
+    check("setting up background runs for another login asks for the same (one call, new session per run, the remembered environment)", rid == "trig_new" and len(c4) == 1 and c4[0].get("create_new_session_on_fire") is True and c4[0].get("environment_id") == "env_01MOCKAAAA" and c4[0].get("name") == "Prompt Translator runner", [{k: v for k, v in x.items() if k != "prompt"} for x in c4])
 
     print("6 learn from use: PT fixes it and tells; putting it live stays your click")
     r = ev(pg, """(async () => { const E = R18.mk('Run test E'); R18.live(E, '1.0'); const d = now(); window.__calls.length = 0;
