@@ -29,6 +29,7 @@ CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("flows 1.8 look",  "python3 test/e2e180_look.py", True, 15),   # style C, ink blue, light; pills, Live line, Claude labels, sparklines, contrast, widths
     ("flows 1.8 rows",  "python3 test/e2e180_rows.py", True, 10),   # decision rows, events chain, tiers, undo, Decisions page, migration
     ("flows 1.8 kits",  "python3 test/e2e180_kits.py", True, 10),   # what every built tool gets: report, backups, uses-AI line, customer code-only, routing, Art. 50
+    ("flows 1.8 run",   "python3 test/e2e180_run.py", True, 15),   # Sunday note, inbox sorting, tell PT what's wrong, drill when due, learn from use, build default, laptop stops
     ("check the rows",  "python3 test/check_the_rows.py", False, 15),   # planted bugs in the rows code must turn the rows test red
     ("flows 1.8 (checks)", "python3 test/e2e180_checks.py", True, 10),   # check rows, lenses per tool, fix until green, 3×/5×, facts by type
     ("flows 1.8 (deciding)","python3 test/e2e180_decide.py", True, 10),   # ★ on hard, your call first, 5 cards, readiness, mock first + quick try, start switch, price first, Bauplan folded
