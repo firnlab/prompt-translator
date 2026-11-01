@@ -354,3 +354,5 @@ function kit18Card(p){
     <div class="list">${R.join("")}</div><p class="hint">${esc(t("kit18.hint"))}</p></section>`;
 }
 { const orig = pgBody; pgBody = function(p, id){ const h = orig(p, id); if (id !== "design" || !kit18On(p)) return h; const c = kit18Card(p); return h.includes('<section class="pg-details') ? h.replace('<section class="pg-details', c + '<section class="pg-details') : h + c; }; }
+/** the report shape for other files, read at call time (a const of a later file is not reachable while earlier files load) */
+function kitReportShape18(){ return TOOL_REPORT_SHAPE; }
