@@ -5,6 +5,7 @@ import pathlib, shutil, subprocess, sys, tempfile, os
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 C, E, B = "python3 test/pick_contract.py", "python3 test/e2e15.py", "python3 test/e2e15b.py"
 D = "python3 test/e2e180_decide.py"   # 1.8 deciding
+CN = "python3 test/e2e180_cone.py test/fixtures/synthetic.json"   # 1.8 the cone
 # (name, [(file, old, new), …], test that must fail)
 M = [
     ("research questions keep people's names", [("v150_pick.js", "for (const n of [...people, ...people.flatMap(n => n.split(/[\\s._-]+/))].filter(v => v.trim().length > 2)) x = x.replace(rx(n), \"[name]\");", "")], C),
@@ -62,6 +63,17 @@ M = [
     ("a round makes three cards again", [("v180_decide.js", "if (!need.length && (o == null || o.n == null || o.n === 3)) o = Object.assign({}, o, {n: PK8_ROUND});", "")], D),
     ("the four routes show before the price is read", [("v180_decide.js", 'if (x && x.kind === "kit-rebuild"){ if (pk8PriceWaits(p)) return;', 'if (x && x.kind === "kit-rebuild"){ if (false) return;')], D),
     ("the Bauplan opens by default", [("v180_decide.js", "const open = !!(UI.pk8Map && UI.pk8Map[p.id]);", "const open = true;")], D),
+    # 1.8 the cone (e2e180_cone must turn red; the made-up bundle, so no real data is needed)
+    ("the cone is not the default start for a new tool", [("v180_cone.js", 'function coneStartMode(p){ const s = pickRead(p).start; return s === "fast" || s === "questions" ? s : "cone"; }', 'function coneStartMode(p){ const s = pickRead(p).start; return s === "cone" || s === "questions" ? s : "fast"; }')], CN),
+    ("the gallery shows kinds the inference never named (decoys)", [("v180_cone.js", "  if (!fams.length) return null;", "  for (const f of coneRank(sentence)) if (fams.length < 8 && !fams.some(x => x.f === f)) fams.push(coneFamDefault(f));\n  if (!fams.length) return null;")], CN),
+    ("an answer cuts nothing in the gallery", [("v180_cone.js", '  if (!v || v === "unsure") return true;', "  return true;")], CN),
+    ("who it is for is not asked first", [("v180_cone.js", 'if (!A.aud) return "aud";', 'if (!A.aud && Object.keys(A).length >= 3) return "aud";')], CN),
+    ("cut cards vanish without a way back", [("v180_cone.js", "const rem = removed.length ?", "const rem = false ?")], CN),
+    ("the cone shows PT's ★ before the cards were looked at", [("v180_cone.js", "function coneStarShown(p){ return !!(p && UI.coneStar && UI.coneStar[p.id]); }", "function coneStarShown(p){ return !!p; }")], CN),
+    ("pick then verify asks every question", [("v180_cone.js", '    if (CONE_OPTS[d].some(v => v !== "unsure" && !S.some(s => coneFits(s, d, v)))) out.push(d);', "    out.push(d);")], CN),
+    ("a 1.7 tool's earlier decision is replaced without a tap", [("v180_cone.js", "  if (coneConflict(c0, d, v) && !replace){", "  if (false && coneConflict(c0, d, v) && !replace){")], CN),
+    ("a cone answer is not a decision row", [("v180_cone.js", "ROW_SOURCES.push(coneRowSrc);", "")], CN),
+    ("the kind's outward action does not reach the checks", [("v180_cone.js", 'return e && e.out ? e.out : "";', 'return "";')], CN),
 ]
 
 ONLY = next((x.split("=", 1)[1] for x in sys.argv if x.startswith("--only=")), None)   # 1.8: run the planted bugs whose name or test contains this text
