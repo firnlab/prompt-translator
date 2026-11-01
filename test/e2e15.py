@@ -32,7 +32,7 @@ with sync_playwright() as pw:
     check("Pick is the one way to work (1.7: the page bar, no mode bar)", ev(pg, "(() => { openProject(WS.projects[0].id); UI.home = false; render(); return !!document.querySelector('.pg-bar') && !document.querySelector('.modeseg'); })()"))
 
     print("2 a new project in Pick")
-    ev(pg, "(() => { newProject('Donation Generator', {raw: 'Strategies to raise money for families in need'}); UI.home = false; render(); })()")
+    ev(pg, "(() => { newProject('Donation Generator', {raw: 'Strategies to raise money for families in need'}); pickOf(curP()).start = 'fast'; UI.home = false; render(); })()")   # 1.8: "kinds of tool first" (the cone) is the default start; this flow tests the fast start (e2e180_cone covers the cone)
     check("the new project is in Pick", ev(pg, "curP().mode") == "pick")
     check("Pick starts with one button, no empty screen", ev(pg, "!!document.querySelector('.pk-start [data-a=pk-next]')"))
     ev(pg, "document.querySelector('.pk-start [data-a=pk-next]').click()"); wait_ai(pg)
