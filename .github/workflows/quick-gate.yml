@@ -63,6 +63,7 @@ jobs:
           python3 test/e2e180_kits.py test/fixtures/synthetic.json
           python3 test/e2e180_checks.py test/fixtures/synthetic.json
           python3 test/e2e180_decide.py test/fixtures/synthetic.json
+          python3 test/e2e180_cone.py test/fixtures/synthetic.json
           python3 test/pick_contract.py test/fixtures/synthetic.json
       - name: keep the built file for 7 days
         if: always()
