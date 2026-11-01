@@ -1,0 +1,11 @@
+# Paths only the owner may change (DESIGN-1.8-rev2 §5). Review by code owners is not enforced while the owner is the only
+# reviewer (GitHub does not let an author approve their own PR); the list documents the boundary and becomes enforceable
+# the day a second reviewer exists.
+/test/            @firnsmith
+/tools/           @firnsmith
+/.github/         @firnsmith
+/.githooks/       @firnsmith
+/src/knowledge.js @firnsmith
+/src/engine.js    @firnsmith
+/vault/           @firnsmith
+/CLAUDE.md        @firnsmith
