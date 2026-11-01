@@ -1,7 +1,4 @@
 <title>Prompt Translator 1.7.1</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap">
 <style>
 /* Layout concept: mission-control workspace — slim navigation rail, one focused work surface with a persistent North Star band, and a notes drawer on the right. Dark-first instrument panel; light mode mirrors it. */
 :root{
@@ -1236,7 +1233,377 @@ details .menu.float[style*="max-height"]{overflow-y:auto}
 @media (max-width:820px){.pg-track text{font-size:12px}}
 
 /* ===== 1.8 look (styles18.css) ===== */
-/* 1.8 look: style C (friendly expressive), ink blue accent, always light by default. Loaded after styles.css. */
+/* 1.8 look: style C (friendly expressive), ink blue accent, always light by default. Loaded after styles.css.
+   Decided by the owner on 1 Nov 2026: white cards on a soft cool page, soft lines, rounded cards, pill buttons and chips,
+   soft shadows (no glows), tinted state containers, one big main button per screen, system fonts (no download),
+   status = tinted pill with glyph + word, two-tone navigation icons with a word, motion only where it explains.
+   Light is the default: no data-theme (the "Who's working?" screen) and data-theme="light" are light; "dark" is the
+   dark variant of the same style; "system" follows the device (v180_look.js sets data-theme="system" explicitly). */
+
+/* ---------- tokens: light (default) ---------- */
+:root, :root:not([data-theme="dark"]), :root[data-theme="light"]{
+  --bg:#f4f6fa; --bg-2:#edf0f5; --surface:#ffffff; --surface-2:#f7f9fc; --line:#e2e7ef; --line-2:#cfd7e3; --ctl:#7f8ba0;
+  --fg:#15233b; --fg-2:#3b4a62; --muted:#586478;
+  --accent:#24477a; --accent-2:#1d3a63; --accent-ink:#ffffff; --accent-soft:#e6ebf3; --accent-tint:#d6dfed;
+  --signal:#7f4a00; --signal-soft:#fbefd8;
+  --ok:#17633f; --ok-soft:#e2f2e9; --warn:#7f4a00; --warn-soft:#fbefd8; --crit:#a42a26; --crit-soft:#fbe7e5;
+  --as:#663a96; --as-soft:#efe8f7; --on-solid:#ffffff;
+  --glow:0 0 0 1px var(--accent);
+  --shadow:0 1px 2px rgba(21,35,59,.06),0 8px 24px rgba(21,35,59,.08);
+  --shadow-sm:0 1px 2px rgba(21,35,59,.05);
+  --rail:#ffffff; --nav-ic:#edf0f5;
+  color-scheme:light;
+}
+/* ---------- tokens: dark variant of the same style ---------- */
+:root[data-theme="dark"]{
+  --bg:#11151b; --bg-2:#161b22; --surface:#1b212a; --surface-2:#212833; --line:#2c3441; --line-2:#3b4555; --ctl:#6f7b8f;
+  --fg:#e8ecf2; --fg-2:#c2cad6; --muted:#9ba6b6;
+  --accent:#9cb9ea; --accent-2:#b5cbf0; --accent-ink:#0e1b30; --accent-soft:#243350; --accent-tint:#2d3e60;
+  --signal:#f1c46a; --signal-soft:#3a2e14;
+  --ok:#74d3a4; --ok-soft:#183a2b; --warn:#f1c46a; --warn-soft:#3a2e14; --crit:#ff9a92; --crit-soft:#442220;
+  --as:#cdaaf5; --as-soft:#33264a; --on-solid:#0f141b;
+  --glow:0 0 0 1px var(--accent);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.28);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.25);
+  --rail:#161b22; --nav-ic:#262e3b;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: dark){ :root[data-theme="system"]{
+  --bg:#11151b; --bg-2:#161b22; --surface:#1b212a; --surface-2:#212833; --line:#2c3441; --line-2:#3b4555; --ctl:#6f7b8f;
+  --fg:#e8ecf2; --fg-2:#c2cad6; --muted:#9ba6b6;
+  --accent:#9cb9ea; --accent-2:#b5cbf0; --accent-ink:#0e1b30; --accent-soft:#243350; --accent-tint:#2d3e60;
+  --signal:#f1c46a; --signal-soft:#3a2e14;
+  --ok:#74d3a4; --ok-soft:#183a2b; --warn:#f1c46a; --warn-soft:#3a2e14; --crit:#ff9a92; --crit-soft:#442220;
+  --as:#cdaaf5; --as-soft:#33264a; --on-solid:#0f141b;
+  --glow:0 0 0 1px var(--accent);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.28);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.25);
+  --rail:#161b22; --nav-ic:#262e3b;
+  color-scheme:dark;
+}}
+/* the light status colours of 1.4 stay readable on the new tints; in dark they come from the tokens */
+:root[data-theme="dark"] .chip.ok,:root[data-theme="dark"] .chip.st-ok{color:var(--ok)}
+
+/* ---------- shape and type ---------- */
+:root{
+  --f-body:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC","Noto Sans CJK SC",sans-serif;
+  --f-display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,"Helvetica Neue",Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC","Noto Sans CJK SC",sans-serif;
+  --f-mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --r:20px; --r-sm:12px; --r-pill:999px;
+}
+body{font-family:var(--f-body);font-size:14px;line-height:1.55;letter-spacing:0}
+h1,h2,h3,h4{font-family:var(--f-display);font-weight:700;letter-spacing:-.005em}
+h1{font-size:26px} h2{font-size:20px} h3{font-size:16px;font-weight:600} h4{font-size:13.5px;font-weight:600}
+:focus-visible{border-radius:8px}
+/* Chinese: more line height, no letter spacing, no slanted text */
+html:lang(zh) body{line-height:1.7}
+html:lang(zh) h1,html:lang(zh) h2,html:lang(zh) h3,html:lang(zh) h4{line-height:1.45}
+html:lang(zh) .app *{letter-spacing:0!important}
+html:lang(zh) i,html:lang(zh) em{font-style:normal}
+/* small labels: sentence case, no spaced capitals (the mission-control style is gone) */
+.nav-label,.ns-k,.ns-title,.qcard .qd,.briefing h3,.nextbar .lbl,.tbl th,.pkg-h .dest,.pkg-col .lang,.sglabel,.amap .q,.fs-label,.station .here,.brand-sub,.crumb,.gwt b{text-transform:none;letter-spacing:0}
+.nav-label{font-size:12px;font-weight:600;color:var(--muted);padding:16px 12px 6px}
+.ns-k{font-size:12px;font-weight:600}
+.ns-title{font-family:var(--f-body);font-size:13px;font-weight:700;color:var(--accent)}
+.tbl th{font-size:12px;font-weight:600}
+.qcard .qd{font-size:12px;font-weight:600}
+.briefing h3{font-size:14px}
+.nextbar .lbl{font-size:12px}
+.gwt b{font-family:var(--f-body);font-size:12px;font-weight:600}
+/* numbers, ids and logs keep a monospace with even digits */
+code,pre,.mono,kbd,.tbl td.num,.pk-num,.pk-k,.iid,.ph .n,.station .ring,.gauge b{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.pg-track text,.pg-spider text{font-family:var(--f-body)}
+.pg-head .pg-n,.pg-change .diff{font-family:var(--f-mono)}
+.snnum,.sumgrid b,.vbox b,.modebtn .mname,.tile .tn,.h1-input{font-family:var(--f-display)}
+
+/* ---------- shell ---------- */
+body{background:var(--bg)}
+.rail{background:var(--rail);border-right:1px solid var(--line)}
+.rail-foot{background:var(--rail);border-top:1px solid var(--line)}
+.brand-mark{background:var(--accent);color:var(--accent-ink);box-shadow:none;border-radius:12px;font-family:var(--f-display)}
+.brand-name{font-family:var(--f-display);font-weight:700;letter-spacing:0}
+.ws-switch{border-radius:14px;background:var(--surface-2);border-color:var(--line)}
+.ws-switch:hover{border-color:var(--ctl)}
+.nav{gap:4px}
+/* two-tone navigation icons: an outline icon on a tinted rounded square, always with its word */
+.nav-btn{border-radius:var(--r-pill);padding:5px 12px 5px 5px;min-height:40px;gap:10px;color:var(--fg-2);font-weight:500}
+.nav-btn .ic{box-sizing:content-box;width:16px;height:16px;padding:7px;border-radius:10px;background:var(--nav-ic);color:var(--fg-2);opacity:1}
+.nav-btn:hover{background:var(--surface-2);color:var(--fg)}
+.nav-btn.on{background:var(--accent-soft);color:var(--accent);box-shadow:none;font-weight:600}
+.nav-btn.on .ic{background:var(--accent-tint);color:var(--accent)}
+.nav-btn .count{color:var(--muted);font-variant-numeric:tabular-nums}
+.nav-proj .nav-btn{padding:6px 12px;min-height:34px}
+/* the project dots carry a shape too (never colour alone): ready/live = a tick, otherwise a hollow ring */
+.nav-proj .dot{width:14px;height:14px;display:inline-grid;place-items:center;background:none!important;border-radius:50%}
+.nav-proj .dot.ok{background:var(--ok)!important}
+.nav-proj .dot.ok::before{content:"";width:6px;height:3px;border:solid var(--on-solid);border-width:0 0 1.6px 1.6px;transform:translate(0,-1px) rotate(-45deg)}
+.nav-proj .dot.mut{border:1.6px solid var(--ctl)}
+.main{background:var(--bg)}
+.sbar{background:var(--surface);border-top:1px solid var(--line)}
+.sb-usage{border-radius:var(--r-pill);background:var(--surface-2)}
+/* phone tab bar: the icon sits on a tinted container when it is the place you are */
+.pnav .ic{box-sizing:content-box;padding:4px 14px;border-radius:var(--r-pill)}
+.pnav.on{color:var(--accent);font-weight:600}
+.pnav.on .ic{background:var(--accent-soft)}
+
+/* ---------- surfaces: white rounded cards, soft lines, soft shadows ---------- */
+.panel,.pcard,.qcard,.card,.excard,.optcard,.xcard,.pkg-sec,.list,.ilist,.qlist,.maplist,.rpage,.lock-card,.finish .dcard,.pk-top,.northstar,.stepcard,.gatecard,.tbl-wrap,.lanes,.mapwrap,.diagram,.amap,.empty-state,.lockbox,.pg-block,.tile,.mcard,.chk,.msg,.note,.rp,.stbox,.ts,.dial,.four div,.sumgrid>div,.fex,.exrow,.pcard2,.vtn,.dim,.buildmap .bm{border-radius:var(--r)}
+.list,.ilist,.qlist,.maplist{border-radius:16px}
+.note,.chk,.msg,.rp,.stbox,.ts,.dial,.four div,.sumgrid>div,.fex,.exrow,.pcard2,.vtn,.dim,.buildmap .bm,.tile,.mcard{border-radius:16px}
+.panel,.pcard,.qcard,.card,.excard,.optcard,.xcard,.pkg-sec,.northstar,.pk-top,.rpage,.finish .dcard{background:var(--surface);border-color:var(--line);box-shadow:var(--shadow-sm)}
+.panel{padding:18px 20px}
+.panel.flat{box-shadow:none}
+.qcard,.excard,.finish .dcard{background:var(--surface)}
+.northstar{background:var(--surface)}
+.northstar::before{display:none}
+.ns-icon{color:var(--accent)}
+.empty-state{border-color:var(--line-2);background:var(--surface-2)}
+.pcard:hover,.tile:hover,.mcard:hover,.stbox:hover{border-color:var(--ctl);box-shadow:var(--shadow-sm)}
+.briefing,.nextbar,.guide,.gstrip,.navbar14,.purpose,.coach,.moment,.pk-read,.pk-fresh,.so4,.lm{background:var(--accent-soft);border-color:transparent;border-radius:16px}
+.guide{background:var(--accent-soft)}
+.lm{background:var(--surface)}
+.navbar14{border-radius:var(--r-pill)}
+.banner{border-radius:16px;border-color:var(--line)}
+.banner.asb{border-color:transparent} .banner.warnb{border-color:transparent}
+.item,.qrow,.mlrow{background:transparent}
+.list,.ilist,.qlist,.maplist{background:var(--surface)}
+.gauge .track{background:var(--bg-2)} .gauge .track i{background:var(--accent)}
+.meter{background:var(--bg-2)}
+.ph .bar,.bar,.skbar i,.score i{background:var(--bg-2)}
+.mock{border-radius:var(--r)}
+.pk-sketch,.code-pre,.diff,.stream,.mapwrap,.diagram,.lanes,.four div,.blk,.dim,.dial,.askbox,.editbox{background:var(--surface-2)}
+.pk-opt{background:var(--surface);border-color:var(--line-2);border-radius:16px}
+.pk-opt.on,.pk-opt.rec{border-color:var(--accent)}
+.pk-opt.on{background:var(--accent-soft)}
+.pk-btn{border-radius:16px}
+.pk-btn:hover{background:transparent}
+.pk-opt:hover{background:var(--surface-2)}
+.pk-opt.on:hover{background:var(--accent-soft)}
+.pk-k{border-radius:8px;color:var(--accent)}
+label.chk{border:0;background:none;padding:0;border-radius:0;flex-direction:row;align-items:flex-start;gap:9px}
+label.chk.small{gap:7px}
+.opt,.dopt,.cbtn,.lpart,.bp-node,.modebtn,.sp-st,.stagebar .stg,.ws-opt,.pal-item,.ph{border-radius:var(--r-sm)}
+.sp-st{border-radius:var(--r-pill)}
+.opt{background:var(--surface)}
+.bubble{border-radius:18px}
+.bubble.you{border-color:transparent}
+.chip.model{border-color:var(--line-2);color:var(--accent)}
+.pg-block{background:var(--surface-2);border-color:var(--line)}
+.pg-did,.pg-you,.pg-nx{border-left-width:4px}
+.station .ring{background:var(--surface)}
+.station.cur .ring{box-shadow:0 0 0 4px var(--accent-soft)}
+.tbl th{background:var(--surface-2)}
+.toolstates .ts{background:var(--surface-2)}
+
+/* ---------- buttons: pills; one big main button; secondary outlined; tertiary as text ---------- */
+.btn{border-radius:var(--r-pill);min-height:36px;padding:7px 16px;border:1px solid var(--ctl);background:var(--surface);color:var(--fg);font-weight:600;gap:8px;line-height:1.3;transition:background-color .15s ease,border-color .15s ease,color .15s ease}
+.btn:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--fg)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600;min-height:40px;padding:9px 20px}
+.btn.primary:hover{background:var(--accent-2);border-color:var(--accent-2);color:var(--accent-ink);filter:none}
+.btn.primary:active{background:var(--accent-2)}
+.btn.lg{min-height:44px;padding:10px 22px;font-size:14.5px}
+.btn.primary.lg{min-height:40px;padding:9px 20px;font-size:14px}
+/* the one big main button of the screen (v180_look.js picks it: the first big primary, else the first full-size primary) */
+.btn.primary.cta18{min-height:48px;padding:12px 26px;font-size:15.5px;font-weight:700}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--accent);font-weight:600}
+.btn.ghost:hover{background:var(--accent-soft);border-color:transparent;color:var(--accent-2)}
+.btn.danger{color:var(--crit);border-color:var(--crit);background:var(--surface)}
+.btn.danger:hover{background:var(--crit-soft)}
+.btn.sm{min-height:32px;padding:5px 13px;font-size:13px}
+.btn.xs{min-height:28px;padding:3px 11px;font-size:12px;border-radius:var(--r-pill)}
+.btn.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.btn:disabled,.btn[disabled]{opacity:1;background:var(--bg-2);border-color:var(--line-2);color:var(--muted)}
+.btn.ai::after{border-radius:var(--r-pill);background:var(--accent-soft);color:var(--accent);padding:1px 7px}
+.btn.primary.ai::after{background:rgba(255,255,255,.22);color:inherit}
+:root[data-theme="dark"] .btn.primary.ai::after{background:rgba(14,27,48,.18)}
+.iconbtn{border-radius:var(--r-pill);width:32px;height:32px;color:var(--fg-2)}
+.iconbtn:hover{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.iconbtn.on{border-color:transparent}
+.morebtn{font-weight:600}
+.vbtn{border-radius:var(--r-pill);background:var(--surface)}
+.vbtn.good[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:var(--on-solid)}
+.vbtn.bad[aria-pressed="true"]{background:var(--crit);border-color:var(--crit);color:var(--on-solid)}
+.ldot{background:var(--surface)}
+.ldot.v-good{background:var(--ok);border-color:var(--ok);color:var(--on-solid)}
+.ldot.v-bad{background:var(--crit);border-color:var(--crit);color:var(--on-solid)}
+.ldot.on{box-shadow:0 0 0 2px var(--accent)}
+.chip.new{color:var(--accent-ink)}
+.bp-mark{color:var(--accent-ink)}
+.amap .pt.hot,.amap .pt.done{color:var(--on-solid)}
+.pg-track .tr-check{stroke:var(--on-solid)}
+.skip{border-radius:var(--r-pill)}
+
+/* ---------- fields ---------- */
+input[type=text],input[type=password],input[type=search],input[type=number],select,textarea{background:var(--surface);border:1px solid var(--ctl);border-radius:12px;padding:9px 12px;min-height:40px}
+textarea{border-radius:14px}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.h1-input{border-color:transparent;background:transparent}
+.h1-input:hover{border-color:var(--line-2)}
+label.fld{color:var(--fg-2);font-weight:500}
+.seg{border-radius:var(--r-pill);background:var(--bg-2);border-color:transparent;padding:3px;gap:2px}
+.seg button{border-radius:var(--r-pill);padding:5px 12px;min-height:30px;color:var(--fg-2);font-weight:500}
+.seg button.on{background:var(--surface);color:var(--accent);box-shadow:var(--shadow-sm),inset 0 0 0 1px var(--accent);font-weight:600}
+.tabs{border-bottom:0;gap:4px;padding:2px 0}
+.tab{border-radius:var(--r-pill);border-bottom:0;padding:7px 14px;color:var(--fg-2);font-weight:500;min-height:34px}
+.tab:hover{background:var(--surface-2);color:var(--fg)}
+.tab.on{background:var(--accent-soft);color:var(--accent);font-weight:600;border-bottom:0}
+
+/* ---------- chips and status pills (glyph + word, never colour alone) ---------- */
+.chip{border-radius:var(--r-pill);border:1px solid transparent;background:var(--bg-2);color:var(--fg-2);padding:2px 10px;font-size:12px;font-weight:500;gap:5px}
+.chip.wrap{border-radius:12px}
+.chip.ok,.chip.st-ok{background:var(--ok-soft);color:var(--ok);border-color:transparent;font-weight:600}
+.chip.warn,.chip.st-warn{background:var(--warn-soft);color:var(--warn);border-color:transparent;font-weight:600}
+.chip.crit,.chip.st-bad{background:var(--crit-soft);color:var(--crit);border-color:transparent;font-weight:600}
+.chip.acc{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.chip.st-as{background:var(--as-soft);color:var(--as);border-color:transparent;font-weight:600}
+.chip.tap{border-color:var(--line-2);background:var(--surface)}
+.chip.tap:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.chip.tap.ok,.chip.tap.warn,.chip.tap.crit,.chip.tap.acc{border-color:transparent}
+.chip.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+/* the glyph of a state pill (v180_look.js marks pills that already carry one: g18) */
+.chip.ok:not(.g18)::before,.chip.st-ok:not(.g18)::before{content:"✓";content:"✓" / "";font-weight:700}
+.chip.warn:not(.g18)::before,.chip.st-warn:not(.g18)::before{content:"!";content:"!" / "";font-weight:800;display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;border:1.5px solid currentColor;font-size:9.5px;line-height:1}
+.chip.crit:not(.g18)::before,.chip.st-bad:not(.g18)::before{content:"✕";content:"✕" / "";font-weight:700}
+.chip.st-as:not(.g18)::before{content:"?";content:"?" / "";font-weight:800;display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;border:1.5px dashed currentColor;font-size:9.5px;line-height:1}
+/* the version chip in the rail */
+.ver-chip{border-radius:var(--r-pill);font-family:var(--f-mono);border-color:transparent;background:var(--bg-2);color:var(--fg-2);padding:2px 9px}
+.ver-chip.ok{background:var(--ok-soft);color:var(--ok)}
+.ver-chip.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent;border-radius:12px}
+.ver-chip.warn::before{content:"↻ ";content:"↻ " / "";font-weight:700}
+.ver-chip.warn:hover{filter:none;background:var(--signal-soft);box-shadow:inset 0 0 0 1px var(--warn)}
+/* the status slot as a pill: glyph + word (v180_look.js adds the word) */
+.sslot.pill18{width:max-content;height:auto;min-height:22px;display:inline-flex;align-items:center;gap:4px;padding:1px 9px 1px 3px;border-radius:var(--r-pill);font-size:11.5px;font-weight:600;line-height:1.25;white-space:nowrap;max-width:100%;flex:none;vertical-align:middle}
+.sslot.pill18 svg{width:16px;height:16px;flex:none}
+.sslot.pill18 .ssw{white-space:nowrap}
+.sslot.pill18.ss-ok,.sslot.pill18.ss-done{background:var(--ok-soft);color:var(--ok)}
+.sslot.pill18.ss-as{background:var(--as-soft);color:var(--as)}
+.sslot.pill18.ss-warn,.sslot.pill18.ss-attn{background:var(--warn-soft);color:var(--warn)}
+.sslot.pill18.ss-bad{background:var(--crit-soft);color:var(--crit)}
+.sslot.pill18.ss-todo{background:var(--bg-2);color:var(--muted)}
+.sslot.pill18.ss-cur{background:var(--accent-soft);color:var(--accent)}
+.sslot.pill18.ss-ok svg circle,.sslot.pill18.ss-done svg circle{fill:var(--ok);stroke:var(--ok)}
+.sslot.pill18.ss-ok svg path,.sslot.pill18.ss-done svg path,.sslot.pill18.ss-bad svg path{stroke:var(--ok-soft)}
+.sslot.pill18.ss-bad svg path{stroke:var(--crit-soft)}
+.dim14{grid-template-columns:auto minmax(8em,1fr) auto}
+.legend14 .sslot.pill18{margin-right:0}
+/* tinted state containers */
+.offbar,.exreveal.bad,.hardq,.banner.warnb{background:var(--warn-soft);border-color:transparent;border-radius:16px}
+.rcbar,.exreveal,.vbox,.proposal,.pk-last{background:var(--ok-soft);border-color:transparent;border-radius:16px}
+.vbox.bad,.confirm-inline{background:var(--crit-soft);border-color:transparent;border-radius:16px}
+.banner.asb{background:var(--as-soft)}
+.toast{border-radius:16px;border:1px solid var(--line);border-left:1px solid var(--line);box-shadow:var(--shadow);padding:11px 14px;background:var(--surface);color:var(--fg)}
+.toast.ok::before,.toast.err::before{flex:none;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;font-size:12px;font-weight:800}
+.toast.ok::before{content:"✓";content:"✓" / "";background:var(--ok-soft);color:var(--ok)}
+.toast.err::before{content:"!";content:"!" / "";background:var(--crit-soft);color:var(--crit)}
+.toast.err{border-color:var(--crit)}
+
+/* ---------- dialogs and menus ---------- */
+.overlay{background:rgba(16,26,44,.38)}
+.modal{border-radius:24px;border-color:var(--line);box-shadow:var(--shadow);padding:22px}
+details.more .menu,.capture{border-radius:16px;border-color:var(--line);box-shadow:var(--shadow)}
+details.more .mi{border-radius:10px}
+details.more .mi:hover,details.more .mi:focus-visible{background:var(--accent-soft)}
+.lock{background:var(--bg)}
+.lock-card{border-radius:24px;border-color:var(--line);box-shadow:var(--shadow)}
+.ws-opt{background:var(--surface);border-radius:16px}
+.ws-opt:hover{border-color:var(--accent);background:var(--accent-soft)}
+.drawer{background:var(--surface-2)}
+.tray{border-radius:18px;border-color:var(--line);box-shadow:var(--shadow)}
+
+/* ---------- motion only where it explains ---------- */
+/* decorative motion is gone: no hover glows, no pulse rings, no shake */
+.pulse-once{animation:none}
+.nudge{animation:nudge18 .5s ease 1}
+@keyframes nudge18{0%,100%{box-shadow:0 0 0 0 transparent}30%{box-shadow:0 0 0 3px var(--crit-soft)}}
+.flash{animation:flash18 1.4s ease 1}
+@keyframes flash18{0%{background-color:var(--accent-soft)}100%{background-color:transparent}}
+.pulse{animation:fade18p 1.6s ease-in-out infinite}
+@keyframes fade18p{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes fade18{from{opacity:0}to{opacity:1}}
+/* explaining motion: a card that goes away folds, a step that ticks over fades its colour */
+.fold18{animation:fold18 .28s ease-in forwards;overflow:hidden}
+@keyframes fold18{from{opacity:1;max-height:600px}to{opacity:0;max-height:0;padding-top:0;padding-bottom:0;margin:0}}
+.sp-st,.station .ring,.nav-btn,.tab,.seg button,.chip.tap,.iconbtn{transition:background-color .15s ease,border-color .15s ease,color .15s ease}
+@media (prefers-reduced-motion: reduce){
+  /* fades only: colour and opacity may change gently; nothing moves, grows or shakes */
+  .btn,.sp-st,.station .ring,.nav-btn,.tab,.seg button,.chip.tap,.iconbtn{transition-property:background-color,border-color,color,opacity!important;transition-duration:.15s!important}
+  .flash{animation:flash18 1.2s ease 1!important}
+  .nudge{animation:nudge18 .5s ease 1!important}
+  .pulse{animation:fade18p 1.6s ease-in-out infinite!important}
+  .fold18{animation:fade18out .2s ease-in forwards!important}
+  .live18{animation:fade18 .2s ease-out 1!important}
+  html{scroll-behavior:auto}
+}
+@keyframes fade18out{from{opacity:1}to{opacity:0}}
+
+/* ---------- the quiet "Live" line (put live) ---------- */
+.live18{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:16px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);padding:10px 12px 10px 14px;font-size:13.5px;color:var(--fg);animation:live18in .22s ease-out 1;max-width:100%}
+@keyframes live18in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.live18 .lv-tick{flex:none;display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ok);color:var(--on-solid)}
+.live18 .lv-tick svg{width:13px;height:13px}
+.live18 .lv-t{flex:1 1 12em;min-width:min(12em,100%);overflow-wrap:break-word}
+.live18 .lv-t b{font-weight:700}
+.live18 .lv-what{display:block;font-size:12px;color:var(--muted)}
+.live18 .btn{flex:none}
+
+/* ---------- Claude's text, labelled; PT's guesses said as "We assume … — change" ---------- */
+.cl18{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:var(--as);background:var(--as-soft);border-radius:var(--r-pill);padding:1px 9px 1px 6px;line-height:1.5;vertical-align:middle;white-space:nowrap;max-width:100%}
+.cl18 svg{width:12px;height:12px;flex:none}
+.cl18-row{display:flex;margin:0 0 4px}
+.as18{display:inline;color:var(--fg-2)}
+.as18 .as18-w{font-weight:600;color:var(--as)}
+.as18 .linkish{color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:2px;min-height:24px;display:inline-flex;align-items:center}
+
+/* ---------- Health: PT's own tiles (number + word) and your time in PT with sparklines ---------- */
+.pt-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.pt-tile{display:flex;flex-direction:column;gap:2px;border:1px solid var(--line);border-radius:16px;background:var(--surface-2);padding:10px 14px;min-width:0}   /* ok:css a grid cell: it may shrink, its words wrap */
+.pt-tile b{font-size:22px;font-weight:700;line-height:1.2;font-variant-numeric:tabular-nums;color:var(--fg)}
+.pt-tile span{color:var(--fg-2);overflow-wrap:break-word}
+.pt-tile.bad{background:var(--crit-soft);border-color:transparent}
+.pt-tile.bad b{color:var(--crit)}
+.spk18{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:flex-end;margin-top:4px}
+.spk18 figure{margin:0;display:flex;flex-direction:column;gap:2px;min-width:0}   /* ok:css a wrapping row of two charts: the chart scales down, the caption wraps */
+.spk18 figcaption{font-size:12px;color:var(--fg-2);display:flex;flex-direction:column;gap:1px}
+.spk18 figcaption>span:first-child{font-weight:600;color:var(--fg)}
+.spk18 figcaption b{font-size:15px;color:var(--fg);font-variant-numeric:tabular-nums}
+.spk18 svg{display:block;width:168px;max-width:100%;height:36px;overflow:visible}
+.spk18 .sl{fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
+.spk18 .sa{fill:var(--accent-soft);stroke:none}
+.spk18 .sd{fill:var(--accent)}
+.spk18 .sx{font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums;display:flex;justify-content:space-between;width:168px;max-width:100%}
+.tnum,.spk18{font-variant-numeric:tabular-nums}
+
+/* ---------- widths: the rail keeps its words at 840–1199 px; German labels may grow, nothing is fixed ---------- */
+@media (min-width:840px) and (max-width:1199px){
+  .app{grid-template-columns:96px minmax(0,1fr)}
+  .app.with-drawer{grid-template-columns:96px minmax(0,1fr) min(var(--dockw,360px),44vw)}
+  .rail .nav{padding:4px 6px}
+  .rail .nav:not(.nav-proj) .nav-btn{flex-direction:column;gap:3px;padding:6px 2px;border-radius:16px;justify-content:center;text-align:center}
+  .rail .nav:not(.nav-proj) .nav-btn span:not(.count){font-size:11px;line-height:1.2;max-width:100%;overflow-wrap:break-word;hyphens:auto}
+  .rail .nav-btn .count{position:static;margin:0;font-size:10.5px;line-height:1.2}
+  .rail .rail-foot .btn{font-size:11px;line-height:1.2;flex-direction:column;gap:2px;padding:6px 4px;border-radius:14px;text-align:center;width:100%;justify-content:center}
+  .rail .rail-foot .btn span{font-size:11px;line-height:1.2}
+  .rail .nav-proj .nav-btn{justify-content:center;padding:6px 4px;flex-direction:column;gap:2px}
+  .rail .nav-proj .nav-btn span:not(.dot){font-size:10.5px;line-height:1.2;max-width:100%;text-align:center;white-space:normal!important;display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .rail .nav-proj .nav-label{display:none}
+  .rail .ws-switch{flex-direction:column;gap:3px;padding:6px 4px;margin:4px 6px 8px;width:calc(100% - 12px)}
+  .rail .ws-name{font-size:10.5px;line-height:1.2;max-width:100%;text-align:center}
+}
+/* phones: every control is at least 44 px tall (target size at phone width); links inside a sentence stay in the line.
+   The selectors carry extra weight (:not(.x18)) on purpose: 1.4.2 set 24 px with selectors like ".app .chip.tap". */
+@media (max-width:599px){
+  html body .app :is(button,summary,select,a.chip,a.btn,.chip.tap,.btn,input[type=text],input[type=search],input[type=number],input[type=password],[data-a]):not(.linkish):not(span):not(i):not(.x18),
+  html body .app :is(.linkish.qtitle,.item.linkish):not(.x18),
+  html body .modal :is(button,summary,select):not(.linkish):not(.x18),
+  html body .toasts button:not(.x18){min-height:44px}
+  html body .app .main-inner .btn.primary.cta18:not(.x18):not(.x19){min-height:48px}
+  html body .app .sbar .pnavbar .pnav:not(.x18):not(.x19):not(.x20){min-height:48px}
+  html body .app :is(.iconbtn,.ldot):not(.x18):not(.x19),html body .toasts .iconbtn:not(.x18){min-width:44px}
+  .app .btn.xs,.app .btn.sm{padding-top:8px;padding-bottom:8px}
+  .app input[type=checkbox],.app input[type=radio]{width:24px;height:24px}
+  .modal{border-radius:20px;padding:16px}
+  .panel{padding:14px}
+}
 
 </style>
 <div id="app"></div>
@@ -5343,6 +5710,33 @@ Object.assign(STR, {
 
 /* ===================== 1.8 look — UI STRINGS: [English, Deutsch (CH, du, ss), 简体中文（中国大陆）] ===================== */
 Object.assign(STR, {
+/* the word in every status pill (glyph + word, never colour alone) */
+"look.st.ok":["OK","OK","正常"],
+"look.st.done":["Done","Erledigt","已完成"],
+"look.st.as":["Assumed","Angenommen","假定"],
+"look.st.warn":["Check","Prüfen","待检查"],
+"look.st.bad":["Needs you","Braucht dich","待你处理"],
+"look.st.todo":["Open","Offen","未完成"],
+"look.st.cur":["Now","Jetzt","当前"],
+"look.st.attn":["Look","Ansehen","请查看"],
+/* the quiet line when a tool version goes live */
+"look.live":["Live","Live","已上线"],
+"look.live.line":["{name} v{v}","{name} v{v}","{name} v{v}"],
+"look.live.back":["Makes v{v} live again instead of v{c}; your working copy stays. Anyone who already used v{c} has seen it.","Schaltet v{v} wieder live statt v{c}; deine Arbeitskopie bleibt. Wer v{c} schon benutzt hat, hat sie gesehen.","让 v{v} 重新上线以替代 v{c}；你的工作副本保留。已经用过 v{c} 的人已经看到了它。"],
+"look.live.first":["First version: there is no earlier one to go back to.","Erste Version: Es gibt keine frühere, zu der du zurückkannst.","第一个版本：没有可以回退的更早版本。"],
+"look.live.close":["Close","Schliessen","关闭"],
+/* Claude's text, labelled; PT's guesses said plainly */
+"look.claude":["Claude drafted this · you decide","Von Claude entworfen · du entscheidest","Claude 起草 · 由你决定"],
+"look.assume":["We assume","Wir nehmen an","我们假定"],
+"look.assume.ns":["this North Star","diesen Leitstern","这个北极星目标"],
+"look.assume.pick":["this ★ answer","diese ★-Antwort","这个 ★ 答案"],
+"look.assume.change":["change","ändern","更改"],
+/* Health: sparklines for your time in PT */
+"look.spk.taps":["Taps per day","Klicks pro Tag","每天点按次数"],
+"look.spk.min":["Active minutes per day","Aktive Minuten pro Tag","每天活跃分钟"],
+"look.spk.aria":["{what}, last 14 days, oldest first: {list}","{what}, letzte 14 Tage, älteste zuerst: {list}","{what}，最近 14 天，从早到晚：{list}"],
+"look.spk.peak":["peak {n}","max. {n}","最高 {n}"],
+"look.spk.today":["today","heute","今天"]
 });
 
 /* ===================== 1.8 deciding (★, your call first, 5 cards, readiness, mock first, start switch, map folded) — UI STRINGS: [English, Deutsch (CH, du, ss), 简体中文（中国大陆）] ===================== */
@@ -17701,7 +18095,7 @@ function ptHealthHTML(){
   const rt = WS.projects.filter(p => p.redteam).length, due = WS.projects.filter(p => typeof rtDue === "function" && rtDue(p)).length;
   const tile = (n, label, bad = false) => `<div class="pt-tile ${bad ? "bad" : ""}"><b class="tnum">${esc(String(n))}</b><span class="small">${esc(label)}</span></div>`;
   return `<div class="stack lg pt-health"><h3>${esc(t("hp.title"))}</h3><p class="small muted">${esc(t("hp.sub"))}</p>
-    <div class="pt-tiles">${tile(wk.length, t("hp.runs"))}${tile(failed.length, t("hp.failed"), failed.length > 0)}${tile(errs.length, t("hp.errors"), errs.length > 0)}${tile(num(u.units, 0), t("hp.units"))}${tile(lives.length, t("hp.live"))}${tile(due, t("hp.rtdue"), due > 0)}</div>
+    <div class="pt-tiles">${tile(wk.length, t("hp.runs"))}${tile(failed.length, t("hp.failed"), failed.length > 0)}${tile(errs.length, t("hp.errors"), errs.length > 0)}${tile(Math.round(num(u.units, 0)), t("hp.units"))}${tile(lives.length, t("hp.live"))}${tile(due, t("hp.rtdue"), due > 0)}</div>
     ${failed.length ? `<div class="stack" style="gap:4px"><b class="small">${esc(t("hp.failedlist"))}</b><div class="list">${failed.slice(0, 8).map(jobLine).join("")}</div></div>` : ""}
     ${errs.length ? `<details><summary class="small">${esc(t("hp.errlist", {n: errs.length}))}</summary><div class="list">${errs.slice(-12).reverse().map(e => `<div class="item"><div class="body"><span class="small mono">${esc(e.msg)}</span><span class="small muted">${esc(fmtDate(e.at))} · ${esc(e.src)} · ${esc(e.v)}</span></div></div>`).join("")}</div></details>` : ""}
     <div class="stack" style="gap:4px"><b class="small">${esc(t("hp.versions"))}</b><p class="small muted">${esc(t("hp.versionsline", {v: PT_VERSION, k: KP_VERSION, f: KIT_CHECKED}))}${typeof factStale === "function" && (factStale(KP_VERSION) || factStale(KIT_CHECKED)) ? " · " + esc(t("fact.stale")) : ""}</p></div>
@@ -17933,7 +18327,162 @@ function metRowHTML(){
 }
 { const orig = ptHealthHTML; ptHealthHTML = function(){ const h = orig(); return h.replace(/<\/div>$/, metRowHTML() + "</div>"); }; }
 
-/* ===================== 1.8 look: style C (friendly expressive), ink blue, always light; status pills; quiet Live tick + Undo; 'Claude drafted this' and 'We assume' labels; motion only where it explains ===================== */
+/* ===================== 1.8 look: style C (friendly expressive), ink blue, always light; status pills; quiet Live tick + the way back; 'Claude drafted this' and 'We assume' labels; motion only where it explains =====================
+   Decided by the owner on 1 Nov 2026 (PLAN-1.8 "Look"). The colours, shapes, fonts and motion are in styles18.css; this file
+   does what CSS alone cannot:
+   1. light by default: new workspaces start light; a one-time step turns an existing workspace's "system" into "light"
+      (an explicit "dark" stays); "system" still follows the device when chosen in Settings
+   2. every status slot is a tinted pill with its glyph and a word
+   3. one big main button per screen; state pills that already carry a glyph get no second one
+   4. the quiet "Live" line when a tool version goes live in PT, with PT's own rollback (Reinstall) and what it does —
+      a release cannot be taken back by Undo (releases and the live version survive Undo and restore on purpose)
+   5. "Claude drafted this · you decide" on what Claude wrote for you to decide; "We assume … — change" where PT guessed
+   6. Health: small sparklines for taps and active minutes per day */
+
+/* ---------- 1. light by default ---------- */
+{ const orig = createWorkspace; createWorkspace = async function(name, lang, extra = {}){ return orig(name, lang, Object.assign({theme: "light", look18: true}, extra)); }; }
+/** one time per workspace: "system" (the old default) becomes "light"; an explicit "dark" choice is kept */
+function look18Migrate(){
+  if (typeof WS === "undefined" || !WS || !WS._set || !WS.settings || WS.settings.look18) return false;
+  if (!WS.settings.theme || WS.settings.theme === "system") WS.settings.theme = "light";
+  WS.settings.look18 = true; saveWs();
+  return true;
+}
+{ const orig = applySettings; applySettings = function(){
+  look18Migrate();
+  const r = orig.apply(this, arguments);
+  const th = (WS && WS.settings && WS.settings.theme) || "light";
+  document.documentElement.setAttribute("data-theme", ["light", "dark", "system"].includes(th) ? th : "light");   // "system" is set explicitly: without a theme PT is light
+  return r;
+}; }
+
+/* ---------- 2. the status slot as a pill: glyph + word ---------- */
+const ST_WORD18 = {ok: "look.st.ok", done: "look.st.done", as: "look.st.as", warn: "look.st.warn", bad: "look.st.bad", todo: "look.st.todo", cur: "look.st.cur", attn: "look.st.attn"};
+{ const orig = stSlot; stSlot = function(st, label = ""){
+  const h = orig(st, label), s = ST_SHAPE[st] ? st : "todo";
+  return h.replace('class="sslot ', 'class="sslot pill18 ').replace(/<\/svg><\/span>$/, `</svg><span class="ssw" aria-hidden="true">${esc(t(ST_WORD18[s]))}</span></span>`);
+}; }
+
+/* ---------- 5a. labels (used by 3) ---------- */
+function cl18HTML(){ return `<span class="cl18" data-cl18="1">${ic("edit")}${esc(t("look.claude"))}</span>`; }
+function as18HTML(what, action, attrs = ""){ return `<span class="as18" data-as18="1"><span class="as18-w">${esc(t("look.assume"))}</span> ${esc(what)} — <button type="button" class="linkish" data-a="${action}" ${attrs}>${esc(t("look.assume.change"))}</button></span>`; }
+function cl18Node(){ const s = document.createElement("span"); s.innerHTML = cl18HTML(); return s.firstChild; }
+
+/* ---------- 3. after every render: the main button, glyphs, labels ---------- */
+const G18_STATE = ".chip.ok,.chip.warn,.chip.crit,.chip.st-ok,.chip.st-warn,.chip.st-bad,.chip.st-as";
+function look18Visible(el){ return !!(el && el.getClientRects().length && !el.closest("details:not([open]) > :not(summary)")); }
+function look18After(){
+  // state pills that already show a glyph (an icon, ✓, ○, ★ …) keep only their own
+  for (const c of document.querySelectorAll(G18_STATE)){
+    if (c.classList.contains("g18") || c.classList.contains("g18n")) continue;
+    const txt = (c.textContent || "").trim();
+    c.classList.add(c.querySelector("svg") || /^[^\p{L}\p{N}]/u.test(txt) ? "g18" : "g18n");
+  }
+  // one big main button per screen: the first big primary, else the first full-size primary (and one in an open dialog)
+  const roots = [document.querySelector(".main-inner"), document.querySelector(".overlay .modal"), document.querySelector(".lock-card")].filter(Boolean);
+  for (const root of roots){
+    if (root.querySelector(".btn.cta18")) continue;
+    const cands = [...root.querySelectorAll(".btn.primary")].filter(b => !b.closest(".overlay") || root.closest(".overlay")).filter(look18Visible);
+    const pick = cands.find(b => b.classList.contains("lg")) || cands.find(b => !b.classList.contains("xs") && !b.classList.contains("sm"));
+    if (pick) pick.classList.add("cta18");
+  }
+  look18Labels();
+}
+{ const orig = afterRender; afterRender = function(){ const r = orig.apply(this, arguments); try{ look18After(); }catch(e){ onAppError(e && e.message, "look18"); } return r; }; }
+
+/* ---------- 5. Claude's text labelled, PT's guesses said plainly ---------- */
+function look18Labels(){
+  // cards where Claude / PT put a ★ on an option or wrote the reason for it: pick cards, interview questions, Finish decisions
+  for (const c of document.querySelectorAll(".pk-card:not([data-l18]), .qcard:not(.pk-card):not([data-l18]), .finish .dcard:not([data-l18])")){
+    if (!c.querySelector(".pk-opt.rec, .pk-why, .opt.rec, .dopt.star")) continue;
+    c.dataset.l18 = "1";
+    const tag = c.querySelector(":scope > .pk-tag");
+    if (tag) tag.appendChild(cl18Node()); else { const d = document.createElement("div"); d.className = "cl18-row"; d.appendChild(cl18Node()); c.prepend(d); }
+  }
+  // review findings (the issue and the fix were written by the reviewer, Claude)
+  for (const f of document.querySelectorAll('[id^="ir-finding:"]:not([data-l18])')){ f.dataset.l18 = "1"; const row = f.querySelector(":scope > .body > .row"); if (row) row.appendChild(cl18Node()); }
+  // drafts: the North Star draft PT proposes
+  for (const b of document.querySelectorAll('[data-a="ns-accept"]')){ const sec = b.closest("section.panel"); if (!sec || sec.dataset.l18) continue; sec.dataset.l18 = "1"; const d = document.createElement("div"); d.className = "cl18-row"; d.appendChild(cl18Node()); const h = sec.querySelector(".panel-h, h2, h3"); if (h && h.parentNode === sec) h.after(d); else sec.prepend(d); }
+  // the North Star PT filled in itself: "We assume this North Star — change"
+  for (const c of document.querySelectorAll(".northstar .chip.st-as")){ const s = document.createElement("span"); s.innerHTML = as18HTML(t("look.assume.ns"), "edit-ns"); c.replaceWith(s.firstChild); }
+  // interview answers PT assumed: "We assume <answer> — change"
+  for (const row of document.querySelectorAll(".qa14.as:not([data-l18])")){
+    row.dataset.l18 = "1";
+    const b = row.querySelector(".ititle > b"), ch = row.querySelector('[data-a="qa-reanswer"]'); if (!b || !ch) continue;
+    const w = document.createElement("span"); w.className = "as18-w"; w.textContent = t("look.assume") + " ";
+    const go = document.createElement("button"); go.type = "button"; go.className = "linkish"; go.dataset.a = "qa-reanswer"; go.dataset.id = ch.dataset.id; go.textContent = t("look.assume.change");
+    b.before(w); b.after(" — ", go);
+  }
+  // ★ answers taken in one go without asking (pick overview and summary): "We assume this ★ answer — change"
+  const taken = t("pk.assumed");
+  for (const c of document.querySelectorAll(".pk-dec .chip, .pk-sum .chip")){
+    if ((c.textContent || "").trim() !== taken) continue;
+    const row = c.closest(".pk-dec"), ch = row && row.querySelector('[data-a="pk-change"]');
+    const s = document.createElement("span"); s.innerHTML = ch ? as18HTML(t("look.assume.pick"), "pk-change", `data-id="${esc(ch.dataset.id)}"`) : `<span class="as18"><span class="as18-w">${esc(t("look.assume"))}</span> ${esc(t("look.assume.pick"))}</span>`;
+    c.replaceWith(s.firstChild);
+  }
+}
+/* the proposal PT drafts for an item ("Fix for me", "refine"): labelled at its head */
+{ const orig = proposalCard; proposalCard = function(p, ref, a){ return orig(p, ref, a).replace('<div class="proposal">', '<div class="proposal">' + `<div class="cl18-row">${cl18HTML()}</div>`); }; }
+
+/* ---------- 4. the quiet "Live" line ---------- */
+const LIVE18 = {seen: new Map(), mute: new Set(), timer: 0};
+function live18Key(p){ return (WS && WS.id ? WS.id : "") + ":" + p.id; }
+/** what is live now, per project, as PT found it (a project PT has not seen yet counts from its first change on) */
+function live18Seed(){ if (typeof WS === "undefined" || !WS || !Array.isArray(WS.projects)) return; for (const p of WS.projects) if (p && p.id && !LIVE18.seen.has(live18Key(p))) LIVE18.seen.set(live18Key(p), p.live ? str(p.live.v) : ""); }
+function live18Check(p){
+  if (!p || !p.id || !WS || !WS.id) return;
+  const k = live18Key(p), cur = p.live ? str(p.live.v) : "";
+  if (!LIVE18.seen.has(k)){ LIVE18.seen.set(k, cur); return; }
+  const was = LIVE18.seen.get(k); LIVE18.seen.set(k, cur);
+  if (!cur || cur === was) return;
+  live18Show(p, cur, was || str(p.live && p.live.from));
+}
+function live18Close(){ clearTimeout(LIVE18.timer); for (const el of document.querySelectorAll(".live18")) el.remove(); }
+function live18Show(p, v, prev){
+  live18Close();
+  // the line says it once: PT's own "released" / "live again" toasts for this version are left out
+  LIVE18.mute = new Set([t("rel.done", {v}), t("rel.reinstalled", {v})]); setTimeout(() => { LIVE18.mute = new Set(); }, 1500);
+  for (const el of document.querySelectorAll("#toasts .toast")) if (LIVE18.mute.has(el.textContent)) el.remove();
+  const back = prev && prev !== v && arr(p.releases).some(r => r.v === prev) ? prev : "";
+  let host = document.getElementById("toasts"); if (!host){ host = document.createElement("div"); host.id = "toasts"; host.className = "toasts"; document.body.appendChild(host); }
+  const el = document.createElement("div"); el.className = "live18"; el.setAttribute("role", "status"); el.dataset.pid = p.id; el.dataset.v = v;
+  el.innerHTML = `<span class="lv-tick" aria-hidden="true">${ic("check")}</span><span class="lv-t"><b>${esc(t("look.live"))}</b> · ${esc(t("look.live.line", {name: p.name, v}))}<span class="lv-what">${esc(back ? t("look.live.back", {v: back, c: v}) : t("look.live.first"))}</span></span>${back ? `<button class="btn sm" data-a="live18-back" data-pid="${esc(p.id)}" data-v="${esc(back)}">${ic("undo")}${esc(t("rel.reinstallbtn", {v: back}))}</button>` : ""}<button class="iconbtn" data-a="live18-close" aria-label="${esc(t("look.live.close"))}" title="${esc(t("look.live.close"))}">${ic("x")}</button>`;
+  host.prepend(el);
+  LIVE18.timer = setTimeout(() => { if (el.contains(document.activeElement)){ LIVE18.timer = setTimeout(live18Close, 15000); return; } el.classList.add("fold18"); setTimeout(() => el.remove(), 320); }, 45000);
+}
+{ const orig = touch; touch = function(p){ const r = orig.apply(this, arguments); try{ live18Check(p); }catch(e){ onAppError(e && e.message, "live18"); } return r; }; }
+{ const orig = toast; toast = function(msg, kind = ""){ if (LIVE18.mute.has(msg)) return; return orig(msg, kind); }; }
+// what is live when a workspace opens is the starting point (applySettings runs once the projects are loaded, before finished jobs are applied)
+{ const orig = applySettings; applySettings = function(){ const r = orig.apply(this, arguments); try{ live18Seed(); }catch(e){} return r; }; }   // ok:catch a missing seed only means the next change is counted from there
+// a newer project version loaded from elsewhere (another window) is not "put live" by you here
+{ const orig = onSaveConflict; onSaveConflict = function(path, remote, mine){ const r = orig.apply(this, arguments); try{ for (const p of arr(WS && WS.projects)) LIVE18.seen.set(live18Key(p), p.live ? str(p.live.v) : ""); }catch(e){} return r; }; }   // ok:catch the seen list is rebuilt at the next change
+Object.assign(ACTIONS, {
+  /* PT's rollback: the earlier version becomes live again; the dialog says what happens and nothing changes before you confirm */
+  "live18-back": el => { const p = WS.projects.find(x => x.id === el.dataset.pid); if (!p) return; live18Close(); if (!(UI.view === "project" && UI.pid === p.id)) openProject(p.id); doRollback(p, el.dataset.v); },
+  "live18-close": () => live18Close()
+});
+
+/* ---------- 6. Health: your time in PT, per day ---------- */
+/** the last 14 days, oldest first: taps and active minutes per day (all page loads of this workspace) */
+function look18Daily(){
+  const docs = arr(MET.recent).concat(MET.doc && WS && MET.doc.ws === WS.id ? [MET.doc] : []);
+  const out = []; for (let i = 13; i >= 0; i--){ const d = metDay(new Date(Date.now() - i * 86400000)); out.push(docs.filter(x => x && x.day === d).reduce((s, x) => ({day: d, taps: s.taps + num(x.taps, 0), min: s.min + num(x.min, 0)}), {day: d, taps: 0, min: 0})); }
+  return out;
+}
+function spark18Day(d){ try{ return new Date(d + "T12:00:00").toLocaleDateString(LANG === "de" ? "de-CH" : LANG === "zh" ? "zh-CN" : "en-GB", {day: "numeric", month: "short"}); }catch(e){ return d; } }   // ok:catch an odd date shows as written
+function spark18(vals, what){
+  const W = 168, H = 36, n = vals.length, max = Math.max(1, ...vals), x = i => 3 + i * (W - 6) / Math.max(1, n - 1), y = v => H - 3 - v / max * (H - 8);
+  const pts = vals.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  const area = `M${x(0).toFixed(1)},${H - 1} L${pts.split(" ").join(" L")} L${x(n - 1).toFixed(1)},${H - 1} Z`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(t("look.spk.aria", {what, list: vals.join(", ")}))}"><path class="sa" d="${area}"/><polyline class="sl" points="${pts}"/><circle class="sd" cx="${x(n - 1).toFixed(1)}" cy="${y(vals[n - 1]).toFixed(1)}" r="2.6"/></svg>`;
+}
+function spark18HTML(){
+  const days = look18Daily(), taps = days.map(d => d.taps), mins = days.map(d => d.min);
+  const fig = (vals, key) => `<figure><figcaption><span>${esc(t(key))}</span><span class="muted">${esc(t("look.spk.today"))} <b>${vals[vals.length - 1]}</b> · ${esc(t("look.spk.peak", {n: Math.max(0, ...vals)}))}</span></figcaption>${spark18(vals, t(key))}<span class="sx" aria-hidden="true"><span>${esc(spark18Day(days[0].day))}</span><span>${esc(t("look.spk.today"))}</span></span></figure>`;
+  return `<div class="spk18" data-spk18="1">${fig(taps, "look.spk.taps")}${fig(mins, "look.spk.min")}</div>`;
+}
+{ const orig = metRowHTML; metRowHTML = function(){ const h = orig.apply(this, arguments); if (MET.recent === null) return h; try{ return h.replace(/<\/div>$/, spark18HTML() + "</div>"); }catch(e){ return h; } }; }   // ok:catch without the sparklines the row still shows the numbers
 
 /* ===================== 1.8 deciding: ★ on hard decisions, your call first (money / who sees it / where data lives), 5 cards per round, readiness without measure, mock first, start switch, map folded ===================== */
 

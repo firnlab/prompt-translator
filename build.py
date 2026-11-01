@@ -28,9 +28,6 @@ VER = _re.search(r'const PT_VERSION = "([0-9.]+)";', S.joinpath("app.js").read_t
 TITLE = "Prompt Translator " + VER + (" Preview" if URL != MAIN_URL else "")
 css = S.joinpath("styles.css").read_text() + "\n/* ===== 1.8 look (styles18.css) ===== */\n" + S.joinpath("styles18.css").read_text()
 html = f"""<title>{TITLE}</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap">
 <style>
 {css}
 </style>
