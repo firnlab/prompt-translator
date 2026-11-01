@@ -10,6 +10,8 @@ QUICK = "--quick" in sys.argv
 ONLY = next((x.split("=", 1)[1].split(",") for x in sys.argv if x.startswith("--only=")), None)   # run a part of the gate (names as in CHECKS)
 SKIP = next((x.split("=", 1)[1].split(",") for x in sys.argv if x.startswith("--skip=")), [])
 BAD = re.compile(r"failed:\s*[1-9]|FAILS:\s*[1-9]|ERRORS:\s*[1-9]|page errors:\s*[1-9]|ok, [1-9]\d* failed|MISSING\s+[1-9]|BAD\s+[1-9]|UNIQUE PROBLEMS:\s*[1-9]|[1-9]\d* hard|Traceback|Error: ")
+import os as _os
+SLOW = float(_os.environ.get("GATE_SLOW", "1"))   # time budgets × SLOW on a loaded machine (2 CPUs shared with builders); the checks themselves never change
 CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("build",          "python3 build.py", True, 2),
     ("static checks",  "node test/static_checks.js", True, 2),
@@ -45,7 +47,7 @@ for name, cmd, quick, mins in CHECKS:
     try:
         cmds = cmd if isinstance(cmd, list) else [cmd]
         ps = [subprocess.Popen(c, shell=True, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) for c in cmds]
-        outs = [x.communicate(timeout=max(1, mins * 60 - (time.time() - t0)))[0] for x in ps]
+        outs = [x.communicate(timeout=max(1, mins * 60 * SLOW - (time.time() - t0)))[0] for x in ps]
         out = "\n".join(outs); ok = all(x.returncode == 0 for x in ps) and not BAD.search(out)
     except subprocess.TimeoutExpired as e:
         for x in ps: x.kill()
@@ -56,7 +58,7 @@ for name, cmd, quick, mins in CHECKS:
         print(f"   {name} red: running it once more to tell a flaky test from a real failure", flush=True)
         try:
             ps = [subprocess.Popen(c, shell=True, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) for c in cmds]
-            out2 = "\n".join(x.communicate(timeout=mins * 60)[0] for x in ps); ok2 = all(x.returncode == 0 for x in ps) and not BAD.search(out2)
+            out2 = "\n".join(x.communicate(timeout=mins * 60 * SLOW)[0] for x in ps); ok2 = all(x.returncode == 0 for x in ps) and not BAD.search(out2)
         except subprocess.TimeoutExpired:
             for x in ps: x.kill()
             ok2 = False; out2 = "timed out on the second run"
