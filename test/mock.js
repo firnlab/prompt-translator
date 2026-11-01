@@ -284,3 +284,17 @@ window.__pickFixture = function(p){
     second: {at, n: 1, verdict: "One gap found.", logN: 1, tier: "complex"}, sim: {at, users: [{who: "A parent", request: "One idea for this month"}], n: 1},
     quality: {rounds: 3, got: 9, kept: 7}, enough: false, enoughWhy: ""};
 };
+/* 1.9 care (test/e2e190_care.py, test/plain_browser.py): a test can read what a download handed over (window.__downloadData[filename]),
+   make the download fail (window.__mockDownloadFail), and, with window.__mockTrigSeq, give each new scheduled task its own id
+   (trig_new_1, trig_new_2 …). Without these flags everything answers exactly as above. */
+(function(){ if (window !== window.top || !window.claude || typeof window.claude.use !== "function") return;
+  const use0 = window.claude.use, done = new Set();
+  window.claude.use = async name => {
+    const c = await use0(name);
+    if (!c || done.has(name)) return c;
+    done.add(name);
+    if (name === "downloads"){ const s0 = c.save; c.save = async o => { window.__downloadData = window.__downloadData || {}; window.__downloadData[o.filename] = o.data; if (window.__mockDownloadFail) throw {code: "upstream_error"}; return s0(o); }; }
+    if (name === "mcp"){ const call0 = c.callTool; c.callTool = async (server, tool, input) => { const r = await call0(server, tool, input); if (tool === "create_trigger" && window.__mockTrigSeq && r && r.payload && r.payload.trigger){ window.__trigN = (window.__trigN || 0) + 1; r.payload.trigger.id = "trig_new_" + window.__trigN; } return r; }; }
+    return c;
+  };
+})();
