@@ -121,7 +121,7 @@ if (typeof ROW_KIT !== "undefined"){ ROW_KIT.ai = ["U", 3, "notify"]; ROW_KIT.cu
      backend    → a hosted app's own table "reports"; its owner page copies the same block.
    Status: "received" when stored; "seen" may be set by the inbox; "fixed" + fixedIn by the update job for the ids in u.fixes. */
 const TOOL_REPORT_KINDS = ["owner", "second", "user", "stranger", "agent"];
-const TOOL_REPORT_STATUS = ["received", "seen", "fixed"];
+const TOOL_REPORT_STATUS = ["received", "seen", "planned", "fixed", "closed"];   // 1.8: the inbox writes planned / closed back too
 const TOOL_REPORT_MAX = 2000;
 const TOOL_REPORT_TAG = "PT-REPORT v1";
 const TOOL_REPORT_SHAPE = `{"v":1,"id":"<tool id>-r-<YYYYMMDDHHMMSS>-<4 letters>","toolId":"<tool id>","version":"<tool version>","text":"<the reporter's own words, plain text, at most ${TOOL_REPORT_MAX} characters>","at":"<ISO time>","reporter":"owner|second|user|stranger|agent","where":"<screen or feature, optional>","status":"received","fixedIn":""}`;
