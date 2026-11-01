@@ -15,10 +15,11 @@ else:
     for f in (BK / "data/users/me").rglob("*.json"):
         seed["data/users/user-1/" + str(f.relative_to(BK / "data/users/me").with_suffix(""))] = json.loads(f.read_text())
 html = (ROOT / "dist/prompt-translator.html").read_text()
-(ROOT / "test/index14.html").write_text("<!doctype html><html><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'></head><body>" + html + "</body></html>")
+PAGE = f"index14-{pathlib.Path(sys.argv[0]).stem}-{__import__('os').getpid()}.html"   # 1.8: one page per run, so suites can run side by side
+(ROOT / "test" / PAGE).write_text("<!doctype html><html><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'></head><body>" + html + "</body></html>")
 srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), functools.partial(type("Q", (http.server.SimpleHTTPRequestHandler,), {"log_message": lambda *a: None}), directory=str(ROOT / "test")))
 threading.Thread(target=srv.serve_forever, daemon=True).start()
-U = "http://127.0.0.1:%d/index14.html" % srv.server_address[1]
+U = "http://127.0.0.1:%d/" % srv.server_address[1] + PAGE
 MOCK = (ROOT / "test/mock.js").read_text()
 errors, fails, oks = [], [], []
 def check(name, cond, info=""):

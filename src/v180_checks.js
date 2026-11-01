@@ -1,0 +1,1 @@
+/* ===================== 1.8 checks: lenses per tool (all seven preselected), check rows for private tools (O4a), fix until green (repeat stop, cap 5, residual risk), tests 3x / 5x outward, facts by type ===================== */

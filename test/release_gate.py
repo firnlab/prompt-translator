@@ -37,38 +37,49 @@ CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("flows 1.2",      "python3 test/e2e12_on14.py", False, 20),
     ("click everything", ["python3 test/monkey141.py learn", "python3 test/monkey141.py guided", "python3 test/monkey141.py pro"], False, 75),   # one browser per level, side by side
 ]
-res = []
-for name, cmd, quick, mins in CHECKS:
-    if QUICK and not quick: continue
-    if (ONLY and name not in ONLY) or name in SKIP: continue
-    t0 = time.time(); print(f"… {name}", flush=True)
-    try:
-        cmds = cmd if isinstance(cmd, list) else [cmd]
+JOBS = int(next((x.split("=", 1)[1] for x in sys.argv if x.startswith("--jobs=")), "2"))   # 1.8: suites side by side (each run has its own page file)
+EXCLUSIVE = {"click everything"}   # already runs three browsers: alone, after the others
+import concurrent.futures as _cf, threading as _th
+_print_lock = _th.Lock()
+def run_check(name, cmd, mins):
+    t0 = time.time()
+    with _print_lock: print(f"… {name}", flush=True)
+    cmds = cmd if isinstance(cmd, list) else [cmd]
+    def once(limit):
         ps = [subprocess.Popen(c, shell=True, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) for c in cmds]
-        outs = [x.communicate(timeout=max(1, mins * 60 - (time.time() - t0)))[0] for x in ps]
-        out = "\n".join(outs); ok = all(x.returncode == 0 for x in ps) and not BAD.search(out)
-    except subprocess.TimeoutExpired as e:
-        for x in ps: x.kill()
-        out = f"timed out after {mins} min"; ok = False
+        try:
+            outs = [x.communicate(timeout=max(1, limit))[0] for x in ps]
+            out = "\n".join(outs); return all(x.returncode == 0 for x in ps) and not BAD.search(out), out
+        except subprocess.TimeoutExpired:
+            for x in ps: x.kill()
+            return False, f"timed out after {mins} min"
+    ok, out = once(mins * 60 - (time.time() - t0))
     # a red suite runs once more: green the second time means FLAKY (recorded in the ledger and named in the summary, never silent)
     flaky = False
     if not ok and name not in ("build", "static checks", "check the checks", "strings", "unit") and "timed out" not in out:
-        print(f"   {name} red: running it once more to tell a flaky test from a real failure", flush=True)
-        try:
-            ps = [subprocess.Popen(c, shell=True, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) for c in cmds]
-            out2 = "\n".join(x.communicate(timeout=mins * 60)[0] for x in ps); ok2 = all(x.returncode == 0 for x in ps) and not BAD.search(out2)
-        except subprocess.TimeoutExpired:
-            for x in ps: x.kill()
-            ok2 = False; out2 = "timed out on the second run"
+        with _print_lock: print(f"   {name} red: running it once more to tell a flaky test from a real failure", flush=True)
+        ok2, out2 = once(mins * 60)
         if ok2:
             flaky = True; ok = True
             with open(ROOT / "work" / "flaky-ledger.txt", "a") as fl: fl.write(time.strftime("%Y-%m-%d %H:%M") + f"  {name}: red, then green\n" + "\n".join("   " + l for l in [l for l in out.strip().splitlines() if l.strip()][-8:]) + "\n")
     tail = [l for l in out.strip().splitlines() if l.strip()][-6:]
     if flaky: tail = tail + ["FLAKY: red on the first run, green on the second (see work/flaky-ledger.txt)"]
-    res.append((name, ok, int(time.time() - t0), tail))
-    print(f"{'FLAKY' if flaky else 'PASS' if ok else 'FAIL'} {name} ({int(time.time() - t0)} s)", flush=True)
-    if not ok: print("   " + "\n   ".join(tail), flush=True)
-    if name == "build" and not ok: break   # nothing else can run on a broken build
+    with _print_lock:
+        print(f"{'FLAKY' if flaky else 'PASS' if ok else 'FAIL'} {name} ({int(time.time() - t0)} s)", flush=True)
+        if not ok: print("   " + "\n   ".join(tail), flush=True)
+    return (name, ok, int(time.time() - t0), tail)
+todo = [(n, c, m) for n, c, q, m in CHECKS if not (QUICK and not q) and not ((ONLY and n not in ONLY) or n in SKIP)]
+res = []
+if todo and todo[0][0] == "build":
+    r = run_check(*todo[0]); res.append(r); todo = todo[1:]
+    if not r[1]: todo = []   # nothing else can run on a broken build
+pool_items = [x for x in todo if x[0] not in EXCLUSIVE]
+with _cf.ThreadPoolExecutor(max_workers=max(1, JOBS)) as ex:
+    futs = {ex.submit(run_check, *x): x[0] for x in pool_items}
+    done = {futs[f]: f.result() for f in _cf.as_completed(futs)}
+res += [done[x[0]] for x in pool_items]
+for x in todo:
+    if x[0] in EXCLUSIVE: res.append(run_check(*x))
 fl = [r[0] for r in res if r[3] and str(r[3][-1]).startswith("FLAKY")]
 print("\n== release gate:", ("GREEN" + (" with FLAKY: " + ", ".join(fl) if fl else "")) if all(r[1] for r in res) else "RED", f"({sum(r[1] for r in res)}/{len(res)} passed{', quick run' if QUICK else ''})")
 for name, ok, s, tail in res: print(f"  {'✓' if ok else '✗'} {name:18} {s:5d} s   {tail[-1][:110] if tail else ''}")
