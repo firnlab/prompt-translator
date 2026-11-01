@@ -130,7 +130,15 @@ with sync_playwright() as pw:
     check("no card answer, valid or broken, ever throws", not any(r["err"] for r in res), [r for r in res if r["err"]])
     check("never more than 8 options kept (more than 4 fold on screen)", all(r["n"] <= 8 for r in res), [r for r in res if r["n"] > 8])
     check("the ★ is always an option that exists (or none)", all(r["rec"] is None or -1 <= r["rec"] < max(1, r["n"]) for r in res), [r for r in res if r["rec"] is not None and not (-1 <= r["rec"] < max(1, r["n"]))])
-    check("a hard pick never has a ★", all(not r["hard"] or r["rec"] == -1 for r in res if r["kept"]), [r for r in res if r["kept"] and r["hard"] and r["rec"] != -1])
+    # 1.8 (owner, PLAN-1.8 §2): hard decisions show PT's ★ too; still only the owner decides (was: "a hard pick never has a ★")
+    check("1.8: a hard pick keeps the ★ the answer gave", next(r for r in res if r["q"] == "Hard with a star?")["rec"] == 0, [r for r in res if r["kept"] and r["hard"]])
+    st = ev(pg, """(async () => { const p = curP(), k = pickOf(p); k.size = 0;
+      k.cards.push({id: 'pk-hs1', q: 'Is a permit needed?', why: '', target: 'legal', hard: true, multi: false, options: [{k: 'A', label: 'Ask first'}, {k: 'B', label: 'Go ahead'}], rec: 0, recWhy: 'x', by: 'pt', at: now()},
+        {id: 'pk-hs2', q: 'Who sees it?', why: '', target: 'audience', hard: false, multi: false, options: [{k: 'A', label: 'Me'}, {k: 'B', label: 'All'}], rec: 0, recWhy: 'x', by: 'pt', at: now()},
+        {id: 'pk-hs3', q: 'Tone?', why: '', target: 'decision', hard: false, multi: false, options: [{k: 'A', label: 'Calm'}, {k: 'B', label: 'Bold'}], rec: 0, recWhy: 'x', by: 'pt', at: now()});
+      const list = pickStarable(p).map(c => c.id); await pickTakeStars(p); const open = ['pk-hs1', 'pk-hs2', 'pk-hs3'].filter(id => !!pickCard(p, id)); const sel = ['pk-hs1', 'pk-hs2'].some(id => arr(UI.pkSel[id]).length);
+      k.cards = k.cards.filter(c => !/^pk-hs/.test(c.id)); render(); return {list, open, sel}; })()""")
+    check("1.8: a hard pick (or one that waits for your call) is never pre-selected and never taken by 'take all ★'; an easy one still is", st["open"] == ["pk-hs1", "pk-hs2"] and "pk-hs3" in st["list"] and not st["sel"], st)
     check("a pick that decides money is hard, even if the AI said otherwise", next(r for r in res if r["q"] == "How much do customers pay?")["hard"])
     check("links: only http(s) and only from the research", all(all(u.startswith("https://example.org/") for u in r["src"]) for r in res), [r["src"] for r in res if r["src"]])
     check("no raw HTML from an answer reaches the screen", not any(r["script"] for r in res), [r for r in res if r["script"]])
@@ -148,9 +156,11 @@ with sync_playwright() as pw:
     check("hostile research: no unknown kinds, no javascript: links", not rr["hostile"]["badSrc"] and "evil" not in rr["hostile"]["kinds"], rr["hostile"])
     check("a lookup for a pick that is gone breaks nothing", not rr["card"]["err"], rr["card"])
     print("3 contract: private details never reach a research question")
-    sc = ev(pg, "pickScrub('Owner and Second owner at v.t@example.com, +41 79 123 45 67, AHV 756.1234.5678.97, IBAN CH93 0076 2011 6238 5295 7, https://site.example/p, Bahnhofstrasse 12, Contract project', curP())")
+    # 1.7.1: the people's names are the data copy's own workspace names, never names written into the test
+    _names = ev(pg, "META.workspaces.map(w => w.name).filter(n => n.trim().length > 2)")
+    sc = ev(pg, "pickScrub(META.workspaces.map(w => w.name).join(' and ') + ' at v.t@example.com, +41 79 123 45 67, AHV 756.1234.5678.97, IBAN CH93 0076 2011 6238 5295 7, https://site.example/p, Bahnhofstrasse 12, Contract project', curP())")
     import re as _re
-    check("names, e-mail, phone, AHV, IBAN, links, street and the project's name are removed", not _re.search(r"Owner|Second owner|example\.com|123 45|756\.1234|CH93|site\.example|Bahnhofstrasse 12|Contract project", sc), sc)
+    check("names, e-mail, phone, AHV, IBAN, links, street and the project's name are removed", bool(_names) and not _re.search("|".join(_re.escape(n) for n in _names) + r"|example\.com|123 45|756\.1234|CH93|site\.example|Bahnhofstrasse 12|Contract project", sc, _re.I), [_names, sc])
     print("4 Undo after PT touched the decision")
     u = ev(pg, """(() => { const p = curP(), k = pickOf(p); k.size = 0; k.cards.push({id: 'pk-u1', q: 'Undo me?', why: '', target: 'decision', hard: false, multi: false, options: [{k: 'A', label: 'Yes'}, {k: 'B', label: 'No'}], rec: 0, by: 'pt', at: now()});
       pickAnswer(p, 'pk-u1', {keys: ['A']}); actClose(p.id); const e = k.log.find(x => x.cid === 'pk-u1');

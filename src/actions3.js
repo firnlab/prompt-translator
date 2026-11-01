@@ -38,8 +38,8 @@ Object.assign(ACTIONS, {
   "digest-seen": el => { WS.settings.digestSeen = el.dataset.m; saveWs(); render(); },
   /* separate logins (D9) */
   "runner-setup": async () => { try{ const id = await Runner.setup(); toast(t("rs.done", {id}), "ok"); }catch(e){ toast(mcpErrText(e), "err"); } render(); },
-  "jw-remove": () => { const w = UI.secondEmpty; if (!w) return; confirmBox(t("jw.remove"), t("jw.removeq"), t("jw.remove"), async () => { await removeWorkspace(w); UI.secondEmpty = null; toast(t("jw.removed"), "ok"); render(); }); },
-  "jw-keep": () => { META.keepSecondOwner = true; saveMeta(); UI.secondEmpty = null; render(); },
+  "jw-remove": () => { const w = UI.secondWsEmpty; if (!w) return; confirmBox(t("jw.remove"), t("jw.removeq"), t("jw.remove"), async () => { await removeWorkspace(w); UI.secondWsEmpty = null; toast(t("jw.removed"), "ok"); render(); }); },
+  "jw-keep": () => { META.keepSecondWs = true; saveMeta(); UI.secondWsEmpty = null; render(); },
   "fr-lang": el => { UI.firstRun = Object.assign({}, UI.firstRun, {lang: el.dataset.v}); LANG = el.dataset.v; applySettings(); render(); },
   "first-run-go": async () => { const f = UI.firstRun || {}, lang = f.lang || LANG; const name = str(f.name).trim() || t("ws.default"); const w = await createWorkspace(name, lang, Object.assign(wsDefaults(lang), {seenVersion: PT_VERSION})); META.last = w.id; META.v10 = true; saveMeta(); UI.firstRun = null; LANG = lang; await openWorkspace(w.id); },
   /* real use, real tool, tool card */

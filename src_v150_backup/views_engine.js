@@ -149,7 +149,7 @@ function cockpitEngine(){
   const urg = urgentItems();
   if (urg.length) h += `<section class="panel" style="border-color:var(--crit)">${head(t("urg.title"), t("urg.sub"))}<div class="list">${urg.map(u => `<div class="item sev-crit"><span class="dot crit" style="margin-top:7px"></span><div class="body"><span>${esc(u.text)}</span></div>${u.pid ? btn("open-project", t("btn.open"), {cls: "sm", attrs: `data-id="${u.pid}"`}) : u.prop ? btn("kp-open", t("kp.review"), {cls: "sm"}) : ""}</div>`).join("")}</div></section>`;
   if (!Runner.ready() && Store.mode === "cloud") h += runnerSetupCard();
-  if (UI.secondEmpty) h += `<section class="panel">${head(t("jw.title"), t("jw.sub"))}<div class="row">${btn("jw-remove", t("jw.remove"), {cls: "sm"})}${btn("jw-keep", t("jw.keep"), {cls: "sm ghost"})}</div></section>`;
+  if (UI.secondWsEmpty) h += `<section class="panel">${head(t("jw.title"), t("jw.sub"))}<div class="row">${btn("jw-remove", t("jw.remove"), {cls: "sm"})}${btn("jw-keep", t("jw.keep"), {cls: "sm ghost"})}</div></section>`;
   const mk = monthKey(new Date(Date.now() - 15 * 864e5));
   if ((WS.settings.digestSeen || "") !== mk && WS.projects.length){
     const d = digest(mk);

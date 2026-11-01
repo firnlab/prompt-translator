@@ -9,10 +9,11 @@ seed = {}
 for f in (BK / "data/users/me").rglob("*.json"):
     seed["data/users/user-1/" + str(f.relative_to(BK / "data/users/me").with_suffix(""))] = json.loads(f.read_text())
 html = (ROOT / "dist/prompt-translator.html").read_text()
-(ROOT / "test/index13.html").write_text("<!doctype html><html><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'></head><body>" + html + "</body></html>")
+PAGE = f"index13-{pathlib.Path(sys.argv[0]).stem}-{__import__('os').getpid()}.html"   # 1.8: one page per run, so suites can run side by side
+(ROOT / "test" / PAGE).write_text("<!doctype html><html><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'></head><body>" + html + "</body></html>")
 srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), functools.partial(type("Q", (http.server.SimpleHTTPRequestHandler,), {"log_message": lambda *a: None}), directory=str(ROOT / "test")))
 threading.Thread(target=srv.serve_forever, daemon=True).start()
-U = "http://127.0.0.1:%d/index13.html" % srv.server_address[1]
+U = "http://127.0.0.1:%d/" % srv.server_address[1] + PAGE
 MOCK = (ROOT / "test/mock.js").read_text()
 PID = "p-mvdsdqnoyglbu"
 errors, fails = [], []
@@ -33,11 +34,16 @@ def new_ctx(b, w=1440, h=950, scheme="dark"):
     ctx.add_init_script(MOCK)
     ctx.add_init_script("if (window === window.top && !localStorage.getItem('mockdb')) localStorage.setItem('mockdb', " + json.dumps(json.dumps(seed)) + ");")
     return ctx
-def open_page(ctx, pick="Owner"):
+def _ws_order():   # 1.7.1: workspaces in the order "last used first, then the others" — from the data, never by a person's name
+    m = next((v for k, v in seed.items() if k.endswith("/meta")), {})
+    ws = [w["id"] for w in m.get("workspaces", [])]; last = m.get("last")
+    return ([last] + [w for w in ws if w != last]) if last in ws else ws
+def open_page(ctx, pick=0):   # pick: 0 = the last-used workspace, 1 = the other one (or a visible name)
     pg = ctx.new_page()
     pg.on("pageerror", lambda e: errors.append("pageerror: " + str(e)) if "sandboxed" not in str(e) else None)
     pg.goto(U); pg.wait_for_timeout(900)
-    if pg.locator(".app").count() == 0 and pick: pg.get_by_text(pick, exact=True).first.click()
+    pg.wait_for_selector(".app, .ws-opt, #fr-name, .lock", timeout=60000)   # 1.8: wait for the first screen instead of a fixed pause (slow on a loaded machine)
+    if pg.locator(".app").count() == 0 and pick is not None: (pg.locator(f'.ws-opt[data-id="{_ws_order()[pick]}"]') if isinstance(pick, int) else pg.get_by_text(pick, exact=True).first).click()
     pg.wait_for_selector(".app", timeout=10000); pg.wait_for_timeout(500)
     while pg.locator(".modal [data-a=modal-close]").count(): pg.locator(".modal [data-a=modal-close]").first.click(); pg.wait_for_timeout(150)
     # 1.6.0: every project works in Pick; these flows test the older step views, so the projects get their earlier view back for the test only (nothing saved)
@@ -51,14 +57,14 @@ with sync_playwright() as p:
     ctx = new_ctx(b); pg = ctx.new_page(); pg.on("pageerror", lambda e: errors.append(str(e)) if "sandboxed" not in str(e) else None)
     pg.goto(U); pg.wait_for_timeout(900)
     check(pg.evaluate("LANG") == "en", "first page opens in English (no language used on this device yet)")
-    click(pg, "[data-a=boot-lang][data-l=de]"); pg.get_by_text("Owner", exact=True).first.click(); pg.wait_for_selector(".rail"); pg.wait_for_timeout(600)
+    click(pg, "[data-a=boot-lang][data-l=de]"); pg.locator(f'.ws-opt[data-id="{_ws_order()[0]}"]').click(); pg.wait_for_selector(".rail"); pg.wait_for_timeout(600)
     check(pg.evaluate("LANG") == "de" and pg.evaluate("WS.settings.lang") == "de", "Deutsch on the first page → Owner's workspace opens in German and keeps it")
     while pg.locator(".modal [data-a=modal-close]").count(): pg.locator(".modal [data-a=modal-close]").first.click(); pg.wait_for_timeout(150)
     check("Cockpit" in pg.evaluate("document.body.innerText") and "Einstellungen" in pg.evaluate("document.body.innerText"), "screen is German")
     pg.wait_for_function("Store.pending() === 0", timeout=10000); pg.wait_for_timeout(700)
     pg.reload(); pg.wait_for_timeout(900)
     check(pg.evaluate("LANG") == "de", "after reload the first page remembers German (last language on this device)")
-    pg.get_by_text("Second owner", exact=True).first.click(); pg.wait_for_selector(".rail"); pg.wait_for_timeout(500)
+    pg.locator(f'.ws-opt[data-id="{_ws_order()[1]}"]').click(); pg.wait_for_selector(".rail"); pg.wait_for_timeout(500)
     check(pg.evaluate("WS.settings.lang") in ("zh", "en", "de"), "Second owner's workspace keeps its own language when no language was clicked: " + pg.evaluate("WS.settings.lang"))
     ctx.close()
 
@@ -77,7 +83,7 @@ with sync_playwright() as p:
     check(pg.input_value("#pr-in") == "Clocks need a separate shot list", "closing with X keeps the draft; reopening restores it")
     pg.keyboard.press("Escape"); pg.wait_for_timeout(500)
     pg.reload(); pg.wait_for_timeout(900)
-    if pg.locator(".rail").count() == 0: pg.get_by_text("Owner", exact=True).first.click()
+    if pg.locator(".rail").count() == 0: pg.locator(f'.ws-opt[data-id="{_ws_order()[0]}"]').click()
     pg.wait_for_selector(".rail"); pg.wait_for_timeout(400)
     pg.evaluate(f"openProject('{PID}')"); pg.wait_for_timeout(300); pg.evaluate("setPhase('interview')"); pg.wait_for_timeout(300)
     click(pg, "[data-a=qa-add]")
@@ -268,7 +274,7 @@ with sync_playwright() as p:
     code = pg.evaluate("UI.modal && UI.modal.code")
     check(bool(code) and pg.evaluate("META.workspaces.find(w => w.id === WS.id).pinHash.startsWith('pbkdf2$600000$')"), "PIN stored with PBKDF2 + salt; recovery code shown once: " + str(code))
     click(pg, "[data-a=pincode-done]")
-    pg.evaluate("lockNow()"); pg.wait_for_timeout(200); pg.get_by_text("Owner", exact=True).first.click(); pg.wait_for_timeout(200)
+    pg.evaluate("lockNow()"); pg.wait_for_timeout(200); pg.locator(f'.ws-opt[data-id="{_ws_order()[0]}"]').click(); pg.wait_for_timeout(200)
     for i in range(5):
         pg.fill("#pin", "000000"); pg.locator("form[data-form=unlock] button[type=submit]").click(); pg.wait_for_timeout(1800)
     check(pg.locator("text=Too many wrong tries").count() == 1, "after 5 wrong PINs PT asks to wait")
@@ -282,7 +288,7 @@ with sync_playwright() as p:
     check(pg.locator(".rail").count() == 1, "you are back in your workspace, nothing lost (%d projects)" % pg.evaluate("WS.projects.length"))
     # an old (1.2) PIN still works and is upgraded
     pg.evaluate("(async () => { const w = META.workspaces.find(w => w.id === WS.id); w.pinHash = await sha256(w.id + ':' + '555123'); saveMeta(); lockNow(); })()"); pg.wait_for_timeout(300)
-    pg.get_by_text("Owner", exact=True).first.click(); pg.fill("#pin", "555123"); pg.locator("form[data-form=unlock] button[type=submit]").click(); pg.wait_for_timeout(2500)
+    pg.locator(f'.ws-opt[data-id="{_ws_order()[0]}"]').click(); pg.fill("#pin", "555123"); pg.locator("form[data-form=unlock] button[type=submit]").click(); pg.wait_for_timeout(2500)
     check(pg.locator(".rail").count() == 1 and pg.evaluate("META.workspaces.find(w => w.id === WS.id).pinHash.startsWith('pbkdf2$')"), "a PIN from 1.2 still opens and is upgraded")
     ctx.close()
 

@@ -1,7 +1,7 @@
 /* ===================== 1.4 FINISH: from every mode, in one go =====================
    1. Plan: what PT can do on its own, with the cost before anything runs.
-   2. Autopilot: close marks with no real change, merge duplicate problems, fix what blocks (checked fixes only, at most
-      2 rounds per item), update the affected items layer by layer, run the tests once. A pass that does not reduce
+   2. Autopilot: close marks with no real change, merge duplicate problems, fix what blocks (checked fixes only; 1.8: until
+      green, stopping on a repeat, at most 5 rounds), update the affected items layer by layer, run the tests once. A pass that does not reduce
       what blocks is taken back.
    3. Your decisions: one per screen, ★ preselected (Enter), 1/2/3 alternatives, L = later, W = won't fix (with a reason),
       "accept all like this" for PT's similar decisions.
@@ -39,7 +39,7 @@ async function finishRun1(p, g, sum){
   switch (g.fix){
     case "finding-fix": { const ids = refs.map(r => r.slice(8)).filter(id => { const f = arr(p.findings).find(x => x.id === id); return f && num(f.autoRounds, 0) < 2; });
       for (const id of ids){ const f = arr(p.findings).find(x => x.id === id); if (f) f.autoRounds = num(f.autoRounds, 0) + 1; }
-      const s = await fixFindings(p, ids, {rounds: 2, quiet: true}); sum.fixed += s.fixed; sum.needYou += s.needYou; s.changed.forEach(r => sum.changed.add(r));
+      const s = await fixFindings(p, ids, {rounds: FIX_CAP, quiet: true}); sum.fixed += s.fixed; sum.needYou += s.needYou; s.changed.forEach(r => sum.changed.add(r));   // 1.8: fix until green, the same stop rules as Fix for me
       // the items that depend on what was fixed: updated layer by layer (at most 2 layers, only direct dependents each time)
       let layer = [...s.changed];
       for (let d = 0; d < 2 && layer.length && !(F && F.stop); d++){ const u = await updateAffected(p, layer, {auto: true, layer: d + 1}); sum.updated += u.applied; layer = u.next; }
@@ -108,6 +108,7 @@ async function finishAutopilot(p){
   { const rp = addRestore(p, {kind: "manual", label: t("fin.rp")}); const last = arr(p.restore).slice(-1)[0]; F.rp = rp ? rp.id : last ? last.id : null; }
   actOpen(p, t("fin.merge"), {by: "pt"}); sum.merged = mergeDuplicates(p); actClose(p.id);
   render();
+  for (let round = 1; round <= FIX_CAP; round++){   // 1.8 fix until green: whole passes until nothing PT can fix blocks, a pass repeats itself, or the cap (fixNextRound, v180_checks.js)
   for (const g of F.plan.groups.filter(x => x.on)){
     if (F.stop) break;
     g.state = "running"; render();
@@ -127,6 +128,7 @@ async function finishAutopilot(p){
     sum.groups.push({fix: g.fix, state: g.state});
     render();
   }
+  if (!fixNextRound(p, F, round)) break; }
   F.step = "decide"; F.list = finishDecisions(p).map(x => x.key); F.i = 0;
   // "Approve, I'll check each change": the changes PT made come first, each with its Undo
   if (F.checkEach) UI.modal = {kind: "runreview", since: F.startAt, st: F.stage || null};

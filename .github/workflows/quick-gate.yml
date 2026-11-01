@@ -52,11 +52,20 @@ jobs:
       # The hunts, layout and migration checks still need the copy of real data and run in Claude's session (full gate).
       - name: browser for the flow tests
         run: pip install playwright && python3 -m playwright install --with-deps chromium
-      - name: flows on made-up data (1.5 Pick, 1.6 kits, 1.7 pages, Pick contract)
+      - name: flows on made-up data (1.5 Pick, 1.6 kits, 1.7 pages, 1.7.1 time and names, Pick contract)
         run: |
           python3 test/e2e15.py test/fixtures/synthetic.json
           python3 test/e2e16.py test/fixtures/synthetic.json
           python3 test/e2e17.py test/fixtures/synthetic.json
+          python3 test/e2e171.py test/fixtures/synthetic.json
+          python3 test/e2e180_look.py test/fixtures/synthetic.json
+          python3 test/e2e180_rows.py test/fixtures/synthetic.json
+          python3 test/e2e180_kits.py test/fixtures/synthetic.json
+          python3 test/e2e180_checks.py test/fixtures/synthetic.json
+          python3 test/e2e180_decide.py test/fixtures/synthetic.json
+          python3 test/e2e180_health.py test/fixtures/synthetic.json
+          python3 test/e2e180_run.py test/fixtures/synthetic.json
+          python3 test/e2e180_cone.py test/fixtures/synthetic.json
           python3 test/pick_contract.py test/fixtures/synthetic.json
       - name: keep the built file for 7 days
         if: always()
