@@ -36,13 +36,16 @@ with sync_playwright() as pw:
     check("the new project is in Pick", ev(pg, "curP().mode") == "pick")
     check("Pick starts with one button, no empty screen", ev(pg, "!!document.querySelector('.pk-start [data-a=pk-next]')"))
     ev(pg, "document.querySelector('.pk-start [data-a=pk-next]').click()"); wait_ai(pg)
+    # 1.8 (owner, PLAN-1.8 §3): the mock comes first; "yes" / "not like this" is the first decision, then the picks
+    check("1.8: the mock comes first, before any pick", ev(pg, "pk8Stage(curP()) === 'mock' && !!curP().mock && !pickRead(curP()).cards.length && !!document.querySelector('.pk-deck .pg-mock [data-a=mock-yes]')"), ev(pg, "[pk8Stage(curP()), !!curP().mock, pickRead(curP()).cards.length]"))
+    ev(pg, "document.querySelector('.pk-deck .pg-mock [data-a=mock-yes]').click()"); wait_ai(pg); pg.wait_for_timeout(200); wait_ai(pg)
     cards = ev(pg, "pickRead(curP()).cards.map(c => ({t: c.target, n: c.options.length, multi: c.multi, hard: c.hard, rec: c.rec}))")
     check("first round: picks with options", len(cards) >= 2 and all(c["n"] >= 2 for c in cards), cards)
     check("the research started in the background (nothing private in the question)", ev(pg, "(() => { const r = pickRead(curP()).research || {}; const j = WS.jobs.find(x => x.id === r.job); return ['running', 'done'].includes(r.state) && !!j && !/Donation Generator|Owner/.test(j.instructions); })()"), ev(pg, "pickRead(curP()).research"))
     check("examples are in the card itself, readable on a phone (no side preview)", ev(pg, "!!document.querySelector('.pk-card .pk-ex') && !!document.querySelector('.pk-card .pk-sketch')"))
     check("every card has an anchor and one id", ev(pg, "pickRead(curP()).cards.every(c => document.querySelectorAll('#pk-' + c.id).length === 1)"))
     check("picks count in the queue", ev(pg, "queueOf(curP()).filter(x => x.kind === 'pick').length") == len(cards))
-    check("a hard pick has no ★ and blocks publishing", ev(pg, "(() => { const c = pickRead(curP()).cards.find(c => c.hard); return !c || (c.rec === -1 && queueOf(curP()).find(x => x.ref === 'pick:' + c.id).cls === 'block'); })()"))
+    check("1.8: a hard pick may carry PT's ★ but is never pre-selected or taken by itself, and blocks publishing", ev(pg, "(() => { const c = pickRead(curP()).cards.find(c => c.hard); return !c || (!arr(UI.pkSel[c.id]).length && !pickStarable(curP()).some(x => x.id === c.id) && queueOf(curP()).find(x => x.ref === 'pick:' + c.id).cls === 'block'); })()"))
 
     print("3 answering")
     multi = ev(pg, "pickRead(curP()).cards.find(c => c.multi && !c.hard)")
@@ -150,7 +153,7 @@ with sync_playwright() as pw:
         const k = pickOf(p); for (const c of k.cards.filter(c => c.hard)) pickAnswer(p, c.id, {keys: [c.options[0].k]}); p.audience = {customers: false, eu: false}; render(); })()""")
     wait_ai(pg); pg.wait_for_timeout(200); wait_ai(pg)   # picking the platform checks it right away
     rd = ev(pg, "pickReady(curP())")
-    check("ready to try once the idea, result, measure and hard points are decided", all(x["ok"] for x in rd), rd)
+    check("ready to try once the idea, result, hard points and platform are decided (1.8: the measure is asked, not required)", all(x["ok"] for x in rd) and "measure" not in [x["id"] for x in rd], rd)
     last0 = ev(pg, "(arr(curP().acts).slice(-1)[0] || {}).id || ''")
     ev(pg, "document.querySelector('#pk-try [data-a=pk-try]').click()"); pg.wait_for_timeout(300); wait_ai(pg, 30000)
     for _ in range(20):

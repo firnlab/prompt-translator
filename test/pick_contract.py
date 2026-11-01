@@ -130,7 +130,15 @@ with sync_playwright() as pw:
     check("no card answer, valid or broken, ever throws", not any(r["err"] for r in res), [r for r in res if r["err"]])
     check("never more than 8 options kept (more than 4 fold on screen)", all(r["n"] <= 8 for r in res), [r for r in res if r["n"] > 8])
     check("the ★ is always an option that exists (or none)", all(r["rec"] is None or -1 <= r["rec"] < max(1, r["n"]) for r in res), [r for r in res if r["rec"] is not None and not (-1 <= r["rec"] < max(1, r["n"]))])
-    check("a hard pick never has a ★", all(not r["hard"] or r["rec"] == -1 for r in res if r["kept"]), [r for r in res if r["kept"] and r["hard"] and r["rec"] != -1])
+    # 1.8 (owner, PLAN-1.8 §2): hard decisions show PT's ★ too; still only the owner decides (was: "a hard pick never has a ★")
+    check("1.8: a hard pick keeps the ★ the answer gave", next(r for r in res if r["q"] == "Hard with a star?")["rec"] == 0, [r for r in res if r["kept"] and r["hard"]])
+    st = ev(pg, """(async () => { const p = curP(), k = pickOf(p); k.size = 0;
+      k.cards.push({id: 'pk-hs1', q: 'Is a permit needed?', why: '', target: 'legal', hard: true, multi: false, options: [{k: 'A', label: 'Ask first'}, {k: 'B', label: 'Go ahead'}], rec: 0, recWhy: 'x', by: 'pt', at: now()},
+        {id: 'pk-hs2', q: 'Who sees it?', why: '', target: 'audience', hard: false, multi: false, options: [{k: 'A', label: 'Me'}, {k: 'B', label: 'All'}], rec: 0, recWhy: 'x', by: 'pt', at: now()},
+        {id: 'pk-hs3', q: 'Tone?', why: '', target: 'decision', hard: false, multi: false, options: [{k: 'A', label: 'Calm'}, {k: 'B', label: 'Bold'}], rec: 0, recWhy: 'x', by: 'pt', at: now()});
+      const list = pickStarable(p).map(c => c.id); await pickTakeStars(p); const open = ['pk-hs1', 'pk-hs2', 'pk-hs3'].filter(id => !!pickCard(p, id)); const sel = ['pk-hs1', 'pk-hs2'].some(id => arr(UI.pkSel[id]).length);
+      k.cards = k.cards.filter(c => !/^pk-hs/.test(c.id)); render(); return {list, open, sel}; })()""")
+    check("1.8: a hard pick (or one that waits for your call) is never pre-selected and never taken by 'take all ★'; an easy one still is", st["open"] == ["pk-hs1", "pk-hs2"] and "pk-hs3" in st["list"] and not st["sel"], st)
     check("a pick that decides money is hard, even if the AI said otherwise", next(r for r in res if r["q"] == "How much do customers pay?")["hard"])
     check("links: only http(s) and only from the research", all(all(u.startswith("https://example.org/") for u in r["src"]) for r in res), [r["src"] for r in res if r["src"]])
     check("no raw HTML from an answer reaches the screen", not any(r["script"] for r in res), [r for r in res if r["script"]])
