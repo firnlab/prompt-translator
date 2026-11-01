@@ -212,7 +212,7 @@ async function migrateWorkspaces10(){
 /** an empty "Second owner" workspace left in the owner's login from 1.0 (she now has her own login) */
 async function emptySecond ownerWs(){
   if (!Store.isOwner) return null;
-  const w = META.workspaces.find(x => /jiewen/i.test(x.name)); if (!w || META.workspaces.length < 2) return null;
+  const w = META.workspaces.find(x => /second owner/i.test(x.name)); if (!w || META.workspaces.length < 2) return null;
   try{
     const base = Store.root() + "/ws-" + w.id;
     const lists = await Promise.all(["projects","notes","patterns","research","jobs"].map(c => Store.rawList(base + "/" + c)));
@@ -307,7 +307,7 @@ async function openWorkspace(id){
   UI.fatal = null;
   META.last = id; saveMeta();
   applySettings(); UI.loading = false; UI.wsReady = true; UI.unlocked = true;
-  emptySecond ownerWs().then(w => { UI.jiewenEmpty = !META.keepSecond owner && w && w.id !== WS.id ? w : null; if (UI.jiewenEmpty) render(); });
+  emptySecond ownerWs().then(w => { UI.secondWsEmpty = !META.keepSecond owner && w && w.id !== WS.id ? w : null; if (UI.secondWsEmpty) render(); });
   if (UI.pinCode){ UI.modal = UI.pinCode; UI.pinCode = null; UI.pendingPinCode = false; }
   else if (WS.settings.seenVersion !== PT_VERSION){ UI.modal = {kind:"whatsnew", wide:true, from: WS.settings.seenVersion || ""}; WS.settings.seenVersion = PT_VERSION; saveWs(); }
   render();

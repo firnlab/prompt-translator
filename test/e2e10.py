@@ -252,7 +252,7 @@ with sync_playwright() as p:
     pg.fill("#start-in", "每周帮我们家安排晚餐的小工具"); click(pg, "form[data-form=start] button[type=submit]"); pg.wait_for_timeout(300)
     check(pg.locator(".guide").count() == 1, "Second owner defaults to Guided")
     check(pg.locator("[data-a=mode][data-v=journey][aria-pressed=true]").count() == 1, "Second owner defaults to Journey")
-    pg.screenshot(path=str(SHOTS / "13-jiewen.png"), full_page=True)
+    pg.screenshot(path=str(SHOTS / "13-second-owner.png"), full_page=True)
 
     print("14 narrow width")
     pg.set_viewport_size({"width": 420, "height": 900}); pg.wait_for_timeout(300)

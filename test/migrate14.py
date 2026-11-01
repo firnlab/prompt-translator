@@ -32,12 +32,12 @@ with sync_playwright() as pw:
     check("one Undo takes the repairs back, and they do not run again", u["waiting"] == 66 and u["m14"] and u["again"] is None, u)
     ctx.close()
     # Second owner: the empty project takes her workspace language
-    ctx = new_ctx(b); pg = open_page(ctx, pick="Second owner")
+    ctx = new_ctx(b); pg = open_page(ctx, pick=1)
     jl = pg.evaluate("WS.projects.map(p => [p.name, p.lang, p.m14 && p.m14.n])")
     print("  Second owner:", jl)
     check("Second owner: every project is Chinese (also the empty one)", all(x[1] == "zh" for x in jl), jl)
     pg.evaluate("openProject(WS.projects[0].id)"); pg.wait_for_timeout(300)
-    pg.screenshot(path=str(SHOTS / "jiewen-home.png"))
+    pg.screenshot(path=str(SHOTS / "second-owner-home.png"))
     ctx.close()
     # the Bring-to-1.4 card on Watch's overview
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)

@@ -68,7 +68,7 @@ with sync_playwright() as p:
     print("1 boot + migration")
     pg.wait_for_selector(".app", timeout=8000); pg.wait_for_timeout(400)
     names = pg.evaluate("META.workspaces.map(w => w.name)")
-    check(names == ["Owner"], "only Owner's workspace in his login (Second owner has her own): " + str(names))
+    check(len(names) == 1 and names[0] == pg.evaluate('t("ws.default")'), "only the owner's workspace in this login, default name (other people have their own login): " + str(names))
     _v = pg.evaluate("PT_VERSION"); check(pg.locator(f"text=What's new in {_v}").count() == 1, f"What's new {_v} shown once")
     check(pg.evaluate("WS.settings.defaultMode") == "pick" and pg.evaluate("WS.settings.modeBefore150") == "blueprint", "Owner's default view for new projects is Pick (1.5.0); his projects from before keep Blueprint")
     click(pg, "[data-a=modal-close]")
@@ -337,7 +337,7 @@ with sync_playwright() as p:
     pj.fill("#start-in", "每周帮我们家安排晚餐的小工具"); click(pj, "form[data-form=start] button[type=submit]"); pj.wait_for_timeout(300)
     check(pj.evaluate("levelOf(curP())") == "guided" and (pj.locator(".gstrip").count() == 1 or pj.locator("[data-a=fl-pick]").count() >= 3 or pj.locator(".pk").count() == 1), "Second owner defaults to Guided (and is asked which level she wants; in Pick the deck is the guide)")
     check(pj.evaluate("projMode(curP())") == "pick", "Second owner's new projects open in Pick (1.5.0, like Owner's)")
-    pj.screenshot(path=str(SHOTS / "13-jiewen.png"), full_page=True)
+    pj.screenshot(path=str(SHOTS / "13-second-owner.png"), full_page=True)
     ctx2.close()
 
     print("14 narrow width")

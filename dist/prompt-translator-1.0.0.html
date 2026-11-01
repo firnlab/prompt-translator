@@ -4378,7 +4378,7 @@ async function migrateWorkspaces10(){
     const w = META.workspaces[0]; w.name = "Owner";
     try{ const d = await Store.get(Store.root() + "/ws-" + w.id); if (d){ d.name = "Owner"; Store.put(Store.root() + "/ws-" + w.id, d); } }catch(e){}
   }
-  if (!META.workspaces.some(w => /jiewen/i.test(w.name))) await createWorkspace("Second owner", "zh", {guided: true, defaultMode: "journey"});
+  if (!META.workspaces.some(w => /second owner/i.test(w.name))) await createWorkspace("Second owner", "zh", {guided: true, defaultMode: "journey"});
   saveMeta();
 }
 /* a save found newer data written elsewhere (another window, or the other person on the shared login) */

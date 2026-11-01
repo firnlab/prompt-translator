@@ -33,11 +33,15 @@ def new_ctx(b, w=1440, h=950, scheme="dark"):
     ctx.add_init_script(MOCK)
     ctx.add_init_script("if (window === window.top && !localStorage.getItem('mockdb')) localStorage.setItem('mockdb', " + json.dumps(json.dumps(seed)) + ");")
     return ctx
-def open_page(ctx, pick="Owner"):
+def _ws_order():   # 1.7.1: workspaces in the order "last used first, then the others" — from the data, never by a person's name
+    m = next((v for k, v in seed.items() if k.endswith("/meta")), {})
+    ws = [w["id"] for w in m.get("workspaces", [])]; last = m.get("last")
+    return ([last] + [w for w in ws if w != last]) if last in ws else ws
+def open_page(ctx, pick=0):   # pick: 0 = the last-used workspace, 1 = the other one (or a visible name)
     pg = ctx.new_page()
     pg.on("pageerror", lambda e: errors.append("pageerror: " + str(e)) if "sandboxed" not in str(e) else None)
     pg.goto(U); pg.wait_for_timeout(900)
-    if pg.locator(".app").count() == 0 and pick: pg.get_by_text(pick, exact=True).first.click()
+    if pg.locator(".app").count() == 0 and pick is not None: (pg.locator(f'.ws-opt[data-id="{_ws_order()[pick]}"]') if isinstance(pick, int) else pg.get_by_text(pick, exact=True).first).click()
     pg.wait_for_selector(".app", timeout=10000); pg.wait_for_timeout(500)
     while pg.locator(".modal [data-a=modal-close]").count(): pg.locator(".modal [data-a=modal-close]").first.click(); pg.wait_for_timeout(150)
     # 1.6.0: every project works in Pick; these flows test the older step views, so the projects get their earlier view back for the test only (nothing saved)
