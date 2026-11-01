@@ -19396,9 +19396,11 @@ function kitCompileProposals(projects, stats = {}){
 function kit18Models(){
   const M = arr(typeof KP !== "undefined" && KP && KP.models).filter(m => m && m.status === "active");
   const top = M.find(m => m.tier === "top"), cx = M.find(m => m.tier === "complex");
-  return {top: top ? str(top.label) : "", strong: cx ? str(cx.label) : "Claude Opus 5.5"};
+  // PT's own knowledge (knowledge.js, Oct 2026) and the owner's check of 1 Nov 2026: Opus 5.5 is the strongest for building
+  // (higher agentic-coding scores, faster); the top tier (Fable 5.1) only when Opus at higher effort still fails the tests
+  return {top: "", strong: cx ? str(cx.label) : "Claude Opus 5.5", escalate: top ? str(top.label) : ""};
 }
-function kit18Strongest(){ const m = kit18Models(); return m.top ? `${m.top} where the plan offers it, otherwise ${m.strong}` : m.strong; }
+function kit18Strongest(){ const m = kit18Models(); return m.strong + " at high effort (raise the effort before switching models" + (m.escalate ? "; " + m.escalate + " only if it still fails the tests" : "") + ")"; }
 const KIT18_ROUTE = () => `Cheap models only for chunk work: one bounded, checkable piece — the tool's own run-time AI steps are chunk work and use the model PART E and PART L name (the smallest that passes the tool's tests), and so are helpers of this build that extract, classify, summarise or format one item. This build itself, every decision in it, every review and every acceptance judgement run on the strongest model available (${kit18Strongest()}). Never move a decision, a build step or a review to a cheaper model to save credits.`;
 { const orig = buildModelRec; buildModelRec = function(p){
     const r = orig(p) || {}, m = kit18Models();
