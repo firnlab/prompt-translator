@@ -580,16 +580,39 @@ const Runner = {
   async fire(text){ if (!this.id()) throw {code: "no_runner"}; const r = await this.call("fire_trigger", {trigger_id: this.id(), text: text + " " + PT_URL}); this.state = "ok"; return r; },
   /* only on an explicit click ("Set up background runs"): creates this login's own runner */
   /* 1.8.1 (cause 69): the scheduled-task service takes "notifications" only for a task that starts a new session on every run, so PT
-     asks for that (a fresh session per run is right for PT's runs anyway). If the service refuses the setting itself, PT tries once
-     more without "notifications" and without the flag (the service's defaults); any other refusal is shown as it is, never retried. */
+     asks for that (a fresh session per run is right for PT's runs anyway). If the service refuses the setting itself, PT tries again
+     without "notifications" and without the flag (the service's defaults).
+     1.8.2 (cause 70): a task created from this page has no Claude session to take its cloud environment from, so the service asks for
+     one and lists the person's environments. PT takes the one it used before if it is listed, else the first cloud environment
+     ("env_…", not a self-hosted pool), else the first; it remembers it for this login (META.envId) and tries again.
+     Any other refusal is shown as it is, never retried. At most four calls. */
   async create(input){
     if (PT_PREVIEW) throw {code: "preview_blocked"};   // a preview copy never creates a real scheduled task
-    try{ return await this.call("create_trigger", Object.assign({}, input, {create_new_session_on_fire: true})); }
-    catch(e){
-      if (!(e && e.code === "tool_error" && /create_new_session_on_fire|notifications/i.test(str(e.message)))) throw e;
-      const b = Object.assign({}, input); delete b.notifications; delete b.create_new_session_on_fire;
-      return this.call("create_trigger", b);   // ok:preview  create() stops a preview copy on its first line
+    const M = typeof META !== "undefined" && META ? META : {};
+    let a = Object.assign({}, input, {create_new_session_on_fire: true}), last = null;
+    if (M.envId) a.environment_id = M.envId;
+    for (let i = 0; i < 4; i++){
+      try{
+        const r = await this.call("create_trigger", a);   // ok:preview  create() stops a preview copy on its first line
+        if (a.environment_id && M.envId !== a.environment_id){ M.envId = a.environment_id; if (typeof saveMeta === "function") saveMeta(); }
+        return r;
+      }catch(e){
+        last = e;
+        const msg = e && e.code === "tool_error" ? str(e.message) : "";
+        const tail = msg.split(/environment_ids?\s*:/i).slice(1).join(" ");
+        const envs = [...new Set(tail.match(/\b(?:env|ccpool)_[A-Za-z0-9]+/g) || [])].filter(x => x !== a.environment_id);
+        if (/environment_id/i.test(msg) && envs.length){
+          a = Object.assign({}, a, {environment_id: envs.find(x => x === M.envId) || envs.find(x => x.startsWith("env_")) || envs[0]});
+          continue;
+        }
+        if (/create_new_session_on_fire|notifications/i.test(msg) && ("notifications" in a || "create_new_session_on_fire" in a)){
+          a = Object.assign({}, a); delete a.notifications; delete a.create_new_session_on_fire;
+          continue;
+        }
+        throw e;
+      }
     }
+    throw last;
   },
   async setup(){
     const c = await this.create({name: RUNNER_NAME, prompt: RUNNER_PROMPT, initiation: "human_request", notifications: {}});
