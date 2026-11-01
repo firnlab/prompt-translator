@@ -33,6 +33,8 @@ CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("check the rows",  "python3 test/check_the_rows.py", False, 15),   # planted bugs in the rows code must turn the rows test red
     ("flows 1.8 (checks)", "python3 test/e2e180_checks.py", True, 10),   # check rows, lenses per tool, fix until green, 3×/5×, facts by type
     ("flows 1.8 (deciding)","python3 test/e2e180_decide.py", True, 10),   # ★ on hard, your call first, 5 cards, readiness, mock first + quick try, start switch, price first, Bauplan folded
+    ("flows 1.8 health","python3 test/e2e180_health.py", True, 15),   # health rows, second owner day one, the 1.7 move + Undo, export, restore check
+    ("PT checks itself","python3 test/self18.py", False, 15),   # accessibility and performance budgets of PT's own screens
     ("hunt",           "python3 test/hunt.py", True, 25),
     ("hunt 2",         "python3 test/hunt2.py", True, 20),
     ("check the hunt", "python3 test/check_the_hunts.py", False, 70),   # each hunt-2 check turns red when its bug is put back

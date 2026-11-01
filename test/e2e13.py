@@ -42,6 +42,7 @@ def open_page(ctx, pick=0):   # pick: 0 = the last-used workspace, 1 = the other
     pg = ctx.new_page()
     pg.on("pageerror", lambda e: errors.append("pageerror: " + str(e)) if "sandboxed" not in str(e) else None)
     pg.goto(U); pg.wait_for_timeout(900)
+    pg.wait_for_selector(".app, .ws-opt, #fr-name, .lock", timeout=60000)   # 1.8: wait for the first screen instead of a fixed pause (slow on a loaded machine)
     if pg.locator(".app").count() == 0 and pick is not None: (pg.locator(f'.ws-opt[data-id="{_ws_order()[pick]}"]') if isinstance(pick, int) else pg.get_by_text(pick, exact=True).first).click()
     pg.wait_for_selector(".app", timeout=10000); pg.wait_for_timeout(500)
     while pg.locator(".modal [data-a=modal-close]").count(): pg.locator(".modal [data-a=modal-close]").first.click(); pg.wait_for_timeout(150)

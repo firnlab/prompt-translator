@@ -40,10 +40,11 @@ function run18At(y, m, d, hh){
 }
 /** the latest Sunday 14:00 Zürich at or before this instant: the note it belongs to */
 function wk18Last(ms = Date.now()){
-  const z = run18Parts(ms), back = z.wd === 0 && z.h < 14 ? 7 : z.wd;
+  const hh = (typeof note18Get === "function" && parseInt(str(note18Get().time), 10)) || 14;   // 1.8: the owner's (or second owner's) own note time
+  const z = run18Parts(ms), back = z.wd === 0 && z.h < hh ? 7 : z.wd;
   const day = new Date(Date.UTC(z.y, z.m - 1, z.d - back, 12));
   const y = day.getUTCFullYear(), m = day.getUTCMonth() + 1, d = day.getUTCDate();
-  return {key: y + "-" + run18Pad(m) + "-" + run18Pad(d), at: run18At(y, m, d, 14)};
+  return {key: y + "-" + run18Pad(m) + "-" + run18Pad(d), at: run18At(y, m, d, hh)};
 }
 function wk18NextAt(ms = Date.now()){ const L = wk18Last(ms), d = new Date(Date.parse(L.key + "T12:00:00Z") + 7 * RUN18_DAY); return run18At(d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate(), 14); }
 function run18On(){ return !!(typeof WS !== "undefined" && WS && WS.id && UI.wsReady && !UI.fatal && WS._set); }
@@ -522,7 +523,7 @@ function wk18Entries(n){
   if (arr(n.other).length) E.push({sec: "cond", secs: 9999, html: `<div class="item">${stSlot("todo")}<div class="body"><span class="small">${esc(t("wk.c.other", {n: n.other.length}))}</span><ul class="small muted">${n.other.map(o => `<li>${esc(o.q)} — ${esc(t("row.decline", {x: o.cond}))}</li>`).join("")}</ul></div></div>`});
   return E;
 }
-const WK18_SECS = ["wait", "drill", "cond", "tools", "arch", "time"];
+const WK18_SECS = ["wait", "drill", "health", "cond", "tools", "arch", "time"];
 function wk18NoteHTML(n){
   const E = wk18Entries(n), shown = [], more = [];
   let used = 0;
