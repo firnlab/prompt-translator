@@ -37,7 +37,7 @@ Object.assign(ACTIONS, {
   "ver-reload": () => { try{ location.reload(); }catch(e){ toast(t("ver.oldtip", {v: PT_VERSION, n: APPV.latest}), "err"); } },
   "digest-seen": el => { WS.settings.digestSeen = el.dataset.m; saveWs(); render(); },
   /* separate logins (D9) */
-  "runner-setup": async () => { try{ const id = await Runner.setup(); toast(t("rs.done", {id}), "ok"); }catch(e){ toast(mcpErrText(e), "err"); } render(); },
+  "runner-setup": async () => { try{ const id = await Runner.setup(); toast(t("rs.done", {id}) + " " + t("sched.approve"), "ok"); }catch(e){ toast(mcpErrText(e), "err"); } render(); },
   "jw-remove": () => { const w = UI.secondWsEmpty; if (!w) return; confirmBox(t("jw.remove"), t("jw.removeq"), t("jw.remove"), async () => { await removeWorkspace(w); UI.secondWsEmpty = null; toast(t("jw.removed"), "ok"); render(); }); },
   "jw-keep": () => { META.keepSecondWs = true; saveMeta(); UI.secondWsEmpty = null; render(); },
   "fr-lang": el => { UI.firstRun = Object.assign({}, UI.firstRun, {lang: el.dataset.v}); LANG = el.dataset.v; applySettings(); render(); },
