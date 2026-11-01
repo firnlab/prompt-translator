@@ -20,7 +20,7 @@ def wait_ai(pg, ms=15000):
         except Exception: pass
         pg.wait_for_timeout(150)
 def fresh(pg, name="Review project"):
-    ev(pg, "(n) => { newProject(n, {raw: 'Strategies to raise money for families in need'}); UI.home = false; render(); }", name); pg.wait_for_timeout(150)
+    ev(pg, "(n) => { newProject(n, {raw: 'Strategies to raise money for families in need'}); pickOf(curP()).start = 'fast'; UI.home = false; render(); }", name); pg.wait_for_timeout(150)   # 1.8: the cone is the default start; these flows test the picks after the fast start
 def round1(pg):
     ev(pg, "ACTIONS['pk-next']()"); wait_ai(pg)
     if ev(pg, "pk8Stage(curP()) === 'mock' && !!curP().mock"):   # 1.8 (owner): the mock comes first; "yes" is the first decision, then the first round of picks

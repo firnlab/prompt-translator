@@ -20,7 +20,7 @@ with sync_playwright() as pw:
     ctx = new_ctx(b); pg = open_page(ctx); pg.wait_for_timeout(300)
 
     print("1 taps and active minutes")
-    check("the version is 1.7.1", ev(pg, "PT_VERSION") == "1.7.1")
+    check("the version is 1.7.1 or later", [int(x) for x in ev(pg, "PT_VERSION").split(".")] >= [1, 7, 1], ev(pg, "PT_VERSION"))
     t0 = ev(pg, "(metDoc() || {}).taps || 0")
     pg.locator("[data-a=nav][data-v=settings]").first.click(); pg.wait_for_timeout(250)
     t1 = ev(pg, "metDoc().taps")

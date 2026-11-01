@@ -670,3 +670,8 @@ hr18Css();
     if (n.rc) E.push({sec: "health", secs: wk18Secs(n.rc, true), html: `<div class="item wk18-rc">${stSlot("attn")}<div class="body"><span class="small">${esc(n.rc)}</span></div><button class="btn xs" data-a="rc18-open">${esc(t("wk.rc.open"))}</button></div>`});
     for (const c of arr(n.compile)) E.push({sec: "tools", secs: wk18Secs(c, false), html: `<div class="item wk18-cp">${stSlot("todo")}<div class="body"><span class="small">${esc(c)}</span></div></div>`});
     return E; }; }
+/* ===================== 1.8 integration: the cone is built — the day-one screen and the move offer it once ===================== */
+if (typeof coneRerun === "function"){
+  cone18Ready = () => true;
+  cone18Rerun = (p, o = {}) => { if (!p || (typeof coneOfferable === "function" && !coneOfferable(p))) return false; coneRerun(p); return true; };
+}

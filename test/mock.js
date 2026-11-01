@@ -26,6 +26,23 @@
   };
   const user = { async id(){ return window.__uid || (localStorage.getItem("mockuid") || "user-1"); }, async isOwner(){ return localStorage.getItem("mocknotowner") !== "1"; } };
   const downloads = { async save(o){ window.__downloads.push(o.filename); return true; } };
+  /* 1.8 the cone: the sentence (or the words said) come JSON-encoded in an untrusted tag; the answer names 7 families, spans copied from the sentence */
+  function grabU(prompt, label){ const m = new RegExp('<untrusted_\\w+ label="' + label + '"[^>]*>\\n([\\s\\S]*?)\\n</untrusted_').exec(prompt); try{ return m ? JSON.parse(m[1]) : ""; }catch(e){ return ""; } }
+  function coneMock(prompt){
+    const s = grabU(prompt, "sentence"), sp = rx => { const m = rx.exec(s); return m ? m[0] : ""; };
+    const order = /every|weekly|daily|each (week|day)|morning/i.test(s) ? ["C", "B", "K", "A", "D", "J", "G"] : /phone|app\b/i.test(s) ? ["F", "B", "J", "G", "A", "C", "K"] : ["B", "K", "C", "A", "J", "G", "D"];
+    const fams = order.map(f => ({f, title: "Mock kind " + f + " for " + s.slice(0, 24), get: "What you hold with kind " + f, sketch: "+--------+\n| kind " + f + " |\n+--------+", shapes: []}));
+    const cust = sp(/customers?|clients?/i), team = sp(/my team|colleagues|family/i), me = sp(/just for me|only for me|for me|only me/i), out = sp(/\bsends?\b|\bposts?\b/i), page = sp(/\bpage\b/i), timer = sp(/every \w+|weekly|daily/i);
+    return {fams, pre: {aud: cust ? {v: "customers", span: cust} : team && me ? {v: "both", span: me} : team ? {v: "others", span: team} : me ? {v: "me", span: me} : {v: "me", span: ""},
+      out: out ? {v: "yes", span: out} : {v: "no", span: ""}, where: page ? {v: "page", span: page} : {v: "unsure", span: ""}, when: timer ? {v: "timer", span: timer} : {v: "open", span: ""}},
+      star: {f: order[0], why: "I'd lean to this because your sentence names it", doubt: "it must run without you"}};
+  }
+  function coneSayMock(prompt){
+    const said = grabU(prompt, "said");
+    if (/zzz|nothing like/i.test(said)) return {f: "", fit: "none", title: "Said: " + said.slice(0, 30), why: "No family fits"};
+    const f = /e-?mail|digest|weekly|every/i.test(said) ? "C" : /phone/i.test(said) ? "F" : /\bsend|\bpost|\breply/i.test(said) ? "D" : /shop|booking|subscri/i.test(said) ? "E" : "B";
+    return {f, shape: f + "1", fit: "good", title: "Said: " + said.slice(0, 40), why: "It matches what you said"};
+  }
   function respond(prompt){
     const m = /\[\[task:([a-z0-9-]+)\]\]/.exec(prompt); const task = m ? m[1] : "?";
     if (window.__mockOverride){ const o = window.__mockOverride(task, prompt); if (o) return o; }
@@ -137,6 +154,8 @@
     if (task === "pick-understand"){ const own = (() => { const m = /<untrusted_\w+ label="own_words"[^>]*>\n([\s\S]*?)\n<\/untrusted_/.exec(prompt); try{ return m ? JSON.parse(m[1]) : ""; }catch(e){ return ""; } })(); if (/either|oder|或/.test(own)) return {clear: false, keys: [], answer: "", readings: ["You meant the first option", "You meant something new: " + own]}; const keys = [...own.matchAll(/\b([A-H])\b/g)].map(m => m[1]); return {clear: true, keys, answer: own, readings: []}; }
     if (task === "pick-second") return {verdict: "One gap found.", issues: [{q: "Who checks the legal flags before you act?", why: "Two checks may disagree", target: "legal", hard: true, multi: false, options: [{label: "Me, from the canton map"}, {label: "A lawyer for bold ones"}], rec: -1}]};
     if (task === "pick-risk") return window.__pickRisk || {risk: "desire", why: "The parts are known to work; the open question is what the person wants", spike: {}};   // 1.8: which risk comes first
+    if (task === "cone") return window.__cone || coneMock(prompt);   // 1.8 the cone: kinds of tool from one sentence (spans taken from the sentence)
+    if (task === "cone-say") return window.__coneSay || coneSayMock(prompt);
     if (task === "pick-resq") return {research: "fundraising strategies for families in need", platform: "", parts: ["weekly scheduled research", "a page with filters"]};
     if (task === "pick-platform"){ const parts = (() => { const m = /The parts: (\[[^\n]*\])/.exec(prompt); try{ return m ? JSON.parse(m[1]) : []; }catch(e){ return []; } })(); const L = parts.length ? parts : ["weekly scheduled research", "a page with filters"]; return {parts: L.map((x, i) => ({part: x, status: window.__platImpossible && i === 0 ? "impossible" : i % 2 ? "unknown" : "documented", note: "from the platform profile"}))}; }
     if (task === "pick-screen"){ const m = /<untrusted_\w+ label="findings"[^>]*>\n([\s\S]*?)\n<\/untrusted_/.exec(prompt); let L = []; try{ L = JSON.parse(JSON.parse(m[1])); }catch(e){} return {flagged: L.filter(f => /IGNORE PREVIOUS/i.test(f.text)).map(f => ({id: f.id, why: "asks the AI to ignore its rules"}))}; }
