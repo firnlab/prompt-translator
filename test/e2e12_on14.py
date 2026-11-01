@@ -193,8 +193,11 @@ with sync_playwright() as p:
     click(pg, "[data-a=goto][data-ph=launch]"); pg.wait_for_timeout(300)
     check(pg.locator("[data-a=finish-open]").count() >= 1, "Finish is offered on the launch step")
     pg.evaluate("WS.settings.weeklyBudget = 999999")
-    for rnd in range(5):
-        if pg.evaluate("blockingItems(curP()).length") == 0: break
+    for rnd in range(6):
+        # what is left for the examples loop below (criteria not checked on examples) is not Finish's work; deciding "sharpen" again
+        # on the mock (which always answers with one unclear criterion) only makes a new draft and a stale review (1.8: one more round,
+        # the review waits until the check rows are applied)
+        if pg.evaluate("blockingItems(curP()).every(x => x.kind === 'crit-unchecked')"): break
         pg.evaluate("ACTIONS['finish-open']()"); pg.wait_for_timeout(200)
         if pg.evaluate("UI.finish.plan.groups.some(g => g.on)"):
             click(pg, "[data-a=finish-go]")

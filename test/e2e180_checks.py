@@ -261,6 +261,11 @@ with sync_playwright() as pw:
         check(f"{lang}: the check rows render without raw keys", txt and not re.search(r"\b(chk|fix|fact)\.[a-z]+", txt) and ev(pg, "t('chk.panel.title')") in txt, txt[:200])
     ev(pg, "LANG = 'en'; applyLangAttr(); render()")
     check("every check has its name, help and not-needed line in the strings (the keys are built at run time)", ev(pg, "[...LENSES.map(l => l.id), ...CHK_GATES].every(id => t('chk.h.' + id) !== 'chk.h.' + id && t('chk.n.' + id) !== 'chk.n.' + id) && CHK_GATES.every(id => t('chk.g.' + id) !== 'chk.g.' + id) && ['price', 'platform', 'policy', 'other'].every(ty => t('fact.ty.' + ty) !== 'fact.ty.' + ty) && ['green', 'repeat', 'cap', 'budget', 'stopped', 'running'].every(e => t('fix.loop.' + e) !== 'fix.loop.' + e)"))
+    sp = ev(pg, f"""(() => {{ openProject('{mid}'); pgOpen(curP(), 'review'); let n = 0; const ex = CHK_OUT.exec;
+      CHK_OUT.exec = function(){{ n++; return ex.apply(this, arguments); }};
+      const tools = WS.projects.filter(x => chkActive(x)).length;
+      try{{ render(); const one = n; n = 0; render(); return {{tools, one, two: n, outside: (() => {{ n = 0; chkOutward(curP()); chkOutward(curP()); return n; }})()}}; }} finally {{ CHK_OUT.exec = ex; }} }})()""")
+    check("speed (cause 67): one screen reads each tool's words at most once, the next screen reads them again, outside a screen nothing is kept", 1 <= sp["one"] <= sp["tools"] and sp["two"] == sp["one"] and sp["outside"] == 2, sp)
     check("no page errors in the whole run", not errors, errors[:4])
     b.close()
 print(f"\n== e2e180_checks: ok: {len(oks)} failed: {len(fails)} page errors: {len(errors)}")   # "failed: N" — the form check_the_pick.py and the gate read
