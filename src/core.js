@@ -579,8 +579,20 @@ const Runner = {
   /* the page passes its own address, so a preview copy's jobs are read from the preview's storage */
   async fire(text){ if (!this.id()) throw {code: "no_runner"}; const r = await this.call("fire_trigger", {trigger_id: this.id(), text: text + " " + PT_URL}); this.state = "ok"; return r; },
   /* only on an explicit click ("Set up background runs"): creates this login's own runner */
+  /* 1.8.1 (cause 69): the scheduled-task service takes "notifications" only for a task that starts a new session on every run, so PT
+     asks for that (a fresh session per run is right for PT's runs anyway). If the service refuses the setting itself, PT tries once
+     more without "notifications" and without the flag (the service's defaults); any other refusal is shown as it is, never retried. */
+  async create(input){
+    if (PT_PREVIEW) throw {code: "preview_blocked"};   // a preview copy never creates a real scheduled task
+    try{ return await this.call("create_trigger", Object.assign({}, input, {create_new_session_on_fire: true})); }
+    catch(e){
+      if (!(e && e.code === "tool_error" && /create_new_session_on_fire|notifications/i.test(str(e.message)))) throw e;
+      const b = Object.assign({}, input); delete b.notifications; delete b.create_new_session_on_fire;
+      return this.call("create_trigger", b);   // ok:preview  create() stops a preview copy on its first line
+    }
+  },
   async setup(){
-    const c = await this.call("create_trigger", {name: RUNNER_NAME, prompt: RUNNER_PROMPT, initiation: "human_request", notifications: {}});
+    const c = await this.create({name: RUNNER_NAME, prompt: RUNNER_PROMPT, initiation: "human_request", notifications: {}});
     const tr = c && (c.trigger || c.data || c); const id = tr && (tr.id || tr.trigger_id);
     if (!id) throw {code: "upstream_error"};
     META.runnerId = id; if (typeof saveMeta === "function") saveMeta(); this.state = "ok"; return id;

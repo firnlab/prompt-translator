@@ -236,6 +236,7 @@ with sync_playwright() as pw:
     pg.locator("[data-a=wk18-runner-on]").first.click(); pg.wait_for_timeout(600); settle(pg, 200)
     calls = [c for c in ev(pg, "window.__mcp") if c["tool"] == "create_trigger"]
     check("one click creates one scheduled task: Sundays 12:41 Zürich, asked for by you", len(calls) == 1 and calls[0]["input"].get("cron_expression") == "CRON_TZ=Europe/Zurich 41 12 * * 0" and calls[0]["input"].get("initiation") == "human_request", calls)
+    check("…each run in its own new session, notifications off (the service takes notifications only so; cause 69)", len(calls) == 1 and calls[0]["input"].get("create_new_session_on_fire") is True and calls[0]["input"].get("notifications") == {}, calls[:1] and {k: v for k, v in calls[0]["input"].items() if k != "prompt"})
     prm = calls[0]["input"].get("prompt", "") if calls else ""
     check("…its text reads PT's spec, publishes nothing, deletes nothing, changes no scheduled task", "doc_id \"spec\"" in prm and "never publish" in prm and "never delete" in prm and "never create, change or delete a scheduled task" in prm, prm[:400])
     spec = ev(pg, "(R18.docs(wsPath() + '/sunday-run/spec')[0] || {})")
@@ -247,6 +248,20 @@ with sync_playwright() as pw:
     ev(pg, "(() => { Store.isOwner = false; render(); })()"); pg.wait_for_timeout(200)
     check("another login (the second owner) is not offered the switch; her note is built in PT", ev(pg, "!document.querySelector('.wk18-sw') && !!document.querySelector('.wk18-line')"))
     ev(pg, "(() => { Store.isOwner = true; render(); })()")
+    # 1.8.1 (cause 69): a service that refuses the new-session setting gets one more try without notifications; other refusals are shown, never retried
+    def sw_on_again(flag):
+        ev(pg, f"(() => {{ WS.settings.wkRun = {{}}; window.__mcp.length = 0; {flag}; go('cockpit'); }})()"); pg.wait_for_timeout(300)
+        pg.locator("[data-a=wk18-runner-on]").first.click(); pg.wait_for_timeout(600); settle(pg, 200)
+        return [c["input"] for c in ev(pg, "window.__mcp") if c["tool"] == "create_trigger"]
+    c2 = sw_on_again("window.__mcpNoNewSession = true")
+    check("a service that does not know the new-session setting: PT tries once more without it and without notifications, and the switch is on", len(c2) == 2 and c2[0].get("create_new_session_on_fire") is True and "create_new_session_on_fire" not in c2[1] and "notifications" not in c2[1] and c2[1].get("cron_expression") == "CRON_TZ=Europe/Zurich 41 12 * * 0" and ev(pg, "(WS.settings.wkRun || {}).on === true && (WS.settings.wkRun || {}).id === 'trig_new'"), [{k: v for k, v in x.items() if k != "prompt"} for x in c2])
+    c3 = sw_on_again("window.__mcpNoNewSession = false; window.__mcpCreateFail = 'rate limited, try later'")
+    t3 = ev(pg, "[...document.querySelectorAll('#toasts .toast')].map(x => x.textContent).join(' | ')")
+    check("any other refusal: one try only, the message is shown, the switch stays off", len(c3) == 1 and "rate limited" in t3 and not ev(pg, "(WS.settings.wkRun || {}).on"), [len(c3), t3[:200]])
+    ev(pg, "window.__mcpCreateFail = null; window.__mcp.length = 0")
+    rid = ev(pg, "(async () => { const keep = META.runnerId; try{ return await Runner.setup(); } finally { if (keep) META.runnerId = keep; else delete META.runnerId; saveMeta(); } })()")
+    c4 = [c["input"] for c in ev(pg, "window.__mcp") if c["tool"] == "create_trigger"]
+    check("setting up background runs for another login asks for the same (one call, new session per run)", rid == "trig_new" and len(c4) == 1 and c4[0].get("create_new_session_on_fire") is True and c4[0].get("name") == "Prompt Translator runner", [{k: v for k, v in x.items() if k != "prompt"} for x in c4])
 
     print("6 learn from use: PT fixes it and tells; putting it live stays your click")
     r = ev(pg, """(async () => { const E = R18.mk('Run test E'); R18.live(E, '1.0'); const d = now(); window.__calls.length = 0;

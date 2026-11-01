@@ -376,7 +376,7 @@ async function wk18SwitchOn(){
   if (r.id) await Runner.setEnabled(r.id, true);
   else {
     if (PT_PREVIEW) return false;   // never from a preview copy (checked above as well)
-    const c = await Runner.call("create_trigger", {name: WK18_NAME, cron_expression: WK18_CRON, prompt: wk18Prompt(coll), initiation: "human_request", notifications: {}});
+    const c = await Runner.create({name: WK18_NAME, cron_expression: WK18_CRON, prompt: wk18Prompt(coll), initiation: "human_request", notifications: {}});
     const tr = c && (c.trigger || c.data || c), id = tr && (tr.id || tr.trigger_id);
     if (!id) throw {code: "upstream_error"};
     r.id = str(id);
