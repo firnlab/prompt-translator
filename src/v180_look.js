@@ -12,10 +12,10 @@
 
 /* ---------- 1. light by default ---------- */
 { const orig = createWorkspace; createWorkspace = async function(name, lang, extra = {}){ return orig(name, lang, Object.assign({theme: "light", look18: true}, extra)); }; }
-/** one time per workspace: "system" (the old default) becomes "light"; an explicit "dark" choice is kept */
+/** one time per workspace: PT becomes light (owner, 1 Nov 2026: "always light"; an earlier "dark" or "system" is replaced once). Any theme chosen afterwards is kept */
 function look18Migrate(){
   if (typeof WS === "undefined" || !WS || !WS._set || !WS.settings || WS.settings.look18) return false;
-  if (!WS.settings.theme || WS.settings.theme === "system") WS.settings.theme = "light";
+  WS.settings.theme = "light";
   WS.settings.look18 = true; saveWs();
   return true;
 }
