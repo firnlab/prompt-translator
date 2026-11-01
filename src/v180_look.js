@@ -1,0 +1,1 @@
+/* ===================== 1.8 look: style C (friendly expressive), ink blue, always light; status pills; quiet Live tick + Undo; 'Claude drafted this' and 'We assume' labels; motion only where it explains ===================== */

@@ -1235,6 +1235,9 @@ details .menu.float[style*="max-height"]{overflow-y:auto}
 @media (max-width:1000px){.pg-cover-grid{grid-template-columns:1fr}}
 @media (max-width:820px){.pg-track text{font-size:12px}}
 
+/* ===== 1.8 look (styles18.css) ===== */
+/* 1.8 look: style C (friendly expressive), ink blue accent, always light by default. Loaded after styles.css. */
+
 </style>
 <div id="app"></div>
 <script>
@@ -5336,6 +5339,26 @@ Object.assign(STR, {
 "hp.time.how":["Counted since {d}, only numbers and button names, never your text; stays in your login. A tap is a button or choice you press; an active minute is a minute in which you tapped, typed or scrolled. This is the yardstick 1.8 has to beat.","Gezählt seit {d}, nur Zahlen und Knopfnamen, nie dein Text; bleibt in deinem Login. Ein Klick ist ein Knopf oder eine Wahl, die du drückst; eine aktive Minute ist eine Minute, in der du geklickt, geschrieben oder gescrollt hast. Daran muss sich 1.8 messen.","自 {d} 起统计，只记录数字和按钮名称，从不记录你输入的文字；数据只保存在你的登录账号中。点按指你按下的按钮或选项；活跃分钟指你点按、输入或滚动过的分钟。1.8 必须以此为标准做得更好。"],
 "cl.171.added":["Your time in PT: Settings · PT health counts taps and active minutes per day and per new project (numbers only), as the yardstick for 1.8","Deine Zeit in PT: Einstellungen · PT-Zustand zählt Klicks und aktive Minuten pro Tag und pro neuem Projekt (nur Zahlen), als Massstab für 1.8","你在 PT 中花的时间：设置 · PT 健康会按天和按新项目统计点按次数和活跃分钟（只记录数字），作为 1.8 的衡量标准"],
 "cl.171.changed":["No person's name is written into PT's code any more: workspaces are found by their place, the empty-workspace card names the workspace, and kit sharing looks at the names of your other workspaces","In PTs Code steht kein Personenname mehr: Arbeitsbereiche werden über ihre Stelle gefunden, die Karte zum leeren Arbeitsbereich nennt dessen Namen, und das Teilen bei Kits schaut auf die Namen deiner anderen Arbeitsbereiche","PT 的代码中不再写入任何人名：工作区按位置识别，空工作区提示卡会显示该工作区的名称，套件共享会参考你其他工作区的名称"]
+});
+
+/* ===================== 1.8 look — UI STRINGS: [English, Deutsch (CH, du, ss), 简体中文（中国大陆）] ===================== */
+Object.assign(STR, {
+});
+
+/* ===================== 1.8 deciding (★, your call first, 5 cards, readiness, mock first, start switch, map folded) — UI STRINGS: [English, Deutsch (CH, du, ss), 简体中文（中国大陆）] ===================== */
+Object.assign(STR, {
+});
+
+/* ===================== 1.8 checks (lenses per tool, check rows, fix until green, 3×/5×, facts by type) — UI STRINGS: [English, Deutsch (CH, du, ss), 简体中文（中国大陆）] ===================== */
+Object.assign(STR, {
+});
+
+/* ===================== 1.8 decision rows, the cone — UI STRINGS: [English, Deutsch (CH, du, ss), 简体中文（中国大陆）] ===================== */
+Object.assign(STR, {
+});
+
+/* ===================== 1.8 Sunday note, inbox, reports, drill, learn-from-use, health, second owner, migration — UI STRINGS: [English, Deutsch (CH, du, ss), 简体中文（中国大陆）] ===================== */
+Object.assign(STR, {
 });
 
 /* ===================== CORE ===================== */
@@ -17909,6 +17932,20 @@ function metRowHTML(){
   return `<div class="stack" style="gap:4px"><b class="small">${esc(t("hp.time"))}</b><p class="small muted">${esc(line)}${tools ? " " + esc(tools) : ""}</p><p class="small muted">${esc(t("hp.time.how", {d: s.first || metDay()}))}</p></div>`;
 }
 { const orig = ptHealthHTML; ptHealthHTML = function(){ const h = orig(); return h.replace(/<\/div>$/, metRowHTML() + "</div>"); }; }
+
+/* ===================== 1.8 look: style C (friendly expressive), ink blue, always light; status pills; quiet Live tick + Undo; 'Claude drafted this' and 'We assume' labels; motion only where it explains ===================== */
+
+/* ===================== 1.8 deciding: ★ on hard decisions, your call first (money / who sees it / where data lives), 5 cards per round, readiness without measure, mock first, start switch, map folded ===================== */
+
+/* ===================== 1.8 checks: lenses per tool (all seven preselected), check rows for private tools (O4a), fix until green (repeat stop, cap 5, residual risk), tests 3x / 5x outward, facts by type ===================== */
+
+/* ===================== 1.8 decision rows (projection, ids <Branch>.<Stage>.<Step>), events (append-only, hash chain), tiers + undo ===================== */
+
+/* ===================== 1.8 the cone: sentence -> tool families -> biggest cut -> gallery shrinks; D pick-then-verify, E say the ending; policy rows ===================== */
+
+/* ===================== 1.8 running: Sunday note, inbox sorting (reputation, self-archiving), tell PT what's wrong, drill when due, learn-from-use, GitHub build default ===================== */
+
+/* ===================== 1.8 health rows, second owner's own note + Chinese first screen, 1.7 -> 1.8 migration ===================== */
 
 boot();
 

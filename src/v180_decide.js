@@ -1,0 +1,1 @@
+/* ===================== 1.8 deciding: ★ on hard decisions, your call first (money / who sees it / where data lives), 5 cards per round, readiness without measure, mock first, start switch, map folded ===================== */

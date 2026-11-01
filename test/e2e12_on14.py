@@ -9,7 +9,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SHOTS = pathlib.Path("work/shots12"); SHOTS.mkdir(parents=True, exist_ok=True)
 page_html = (ROOT / "dist/prompt-translator.html").read_text()
 wrapped = "<!doctype html><html><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1,viewport-fit=cover'><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style></head><body>" + page_html + "</body></html>"
-TEST_HTML = ROOT / "test/index12b.html"; TEST_HTML.write_text(wrapped)
+TEST_HTML = ROOT / "test" / f"index12b-{__import__('os').getpid()}.html"; TEST_HTML.write_text(wrapped)
 MOCK = (ROOT / "test/mock.js").read_text()
 ONLY = sys.argv[1] if len(sys.argv) > 1 else "all"
 
