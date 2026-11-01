@@ -316,7 +316,7 @@ with sync_playwright() as pw:
     ctx.close()
     # 19 a failed read at start never writes over the stored data
     ctx = new_ctx(b); ctx.add_init_script("window.__mockFailGet = true;"); pg = ctx.new_page(); pg.goto(U); pg.wait_for_timeout(900)
-    try: pg.get_by_text("Owner", exact=True).first.click(timeout=3000)
+    try: pg.locator(f'.ws-opt[data-id="{_ws_order()[0]}"]').click(timeout=3000)   # 1.7.1: by the data's last-used workspace, never a name
     except Exception: pass
     pg.wait_for_timeout(2500)
     w19 = pg.evaluate("({writes: window.__mockWrites || 0, fatal: !!(window.UI && UI.fatal), locked: !!document.querySelector('.lock')})")
