@@ -10,6 +10,8 @@ QUICK = "--quick" in sys.argv
 ONLY = next((x.split("=", 1)[1].split(",") for x in sys.argv if x.startswith("--only=")), None)   # run a part of the gate (names as in CHECKS)
 SKIP = next((x.split("=", 1)[1].split(",") for x in sys.argv if x.startswith("--skip=")), [])
 BAD = re.compile(r"failed:\s*[1-9]|FAILS:\s*[1-9]|ERRORS:\s*[1-9]|page errors:\s*[1-9]|ok, [1-9]\d* failed|MISSING\s+[1-9]|BAD\s+[1-9]|UNIQUE PROBLEMS:\s*[1-9]|[1-9]\d* hard|Traceback|Error: ")
+import os as _os
+SLOW = float(_os.environ.get("GATE_SLOW", "1"))   # time budgets × SLOW on a loaded machine (2 CPUs shared with builders); the checks themselves never change
 CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("build",          "python3 build.py", True, 2),
     ("static checks",  "node test/static_checks.js", True, 2),
@@ -59,12 +61,12 @@ def run_check(name, cmd, mins):
         except subprocess.TimeoutExpired:
             for x in ps: x.kill()
             return False, f"timed out after {mins} min"
-    ok, out = once(mins * 60 - (time.time() - t0))
+    ok, out = once(mins * 60 * SLOW - (time.time() - t0))
     # a red suite runs once more: green the second time means FLAKY (recorded in the ledger and named in the summary, never silent)
     flaky = False
     if not ok and name not in ("build", "static checks", "check the checks", "strings", "unit") and "timed out" not in out:
         with _print_lock: print(f"   {name} red: running it once more to tell a flaky test from a real failure", flush=True)
-        ok2, out2 = once(mins * 60)
+        ok2, out2 = once(mins * 60 * SLOW)
         if ok2:
             flaky = True; ok = True
             with open(ROOT / "work" / "flaky-ledger.txt", "a") as fl: fl.write(time.strftime("%Y-%m-%d %H:%M") + f"  {name}: red, then green\n" + "\n".join("   " + l for l in [l for l in out.strip().splitlines() if l.strip()][-8:]) + "\n")
