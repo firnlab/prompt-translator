@@ -43,7 +43,8 @@ M = [
     ("the protections are approved in one click", [("v150_pick.js", "o(t(\"pk.pf.look\"), () => goRef(\"proof\"), {star: true, opens: true});", "o(t(\"pk.pf.ok\"), () => {}, {star: true, batch: true});")], B),
     # 1.7.0: the pages, honesty, the drill, the mock (e2e17 must turn red)
     ("the Bauplan does nothing again (the Design page loses the map)", [("v170_pages.js", 'const map = comps.length ? `<section class="panel pg-map" data-anchor="bauplan">', 'const map = false ? `<section class="panel pg-map" data-anchor="bauplan">')], "python3 test/e2e17.py"),
-    ("kit decisions come all at once before the design", [("v170_pages.js", "{ const orig = kitQueue; kitQueue = function(p, add){ if (pgKitsReady(p)) return orig(p, add); return orig(p, x => { if (!/^kit-/.test(str(x && x.kind)) || PG_KIT_EARLY.test(x.kind)) add(x); }); }; }", "")], "python3 test/e2e17.py"),
+    ("kit decisions come all at once before the design", [("v170_pages.js", "{ const orig = kitQueue; kitQueue = function(p, add){ if (pgKitsReady(p)) return orig(p, add); return orig(p, x => { if (!/^kit-/.test(str(x && x.kind)) || PG_KIT_EARLY.test(x.kind)) add(x); }); }; }", ""),
+        ("v160_kits.js", "function kitApplies(p){\n  if (!p || !arr(p.arch && p.arch.components).length) return false;", "function kitApplies(p){\n  if (!p) return false;")], "python3 test/e2e17.py"),
     ("a stale fact is not flagged", [("v170_honest.js", "function factStale(d){ return factAge(d) > FACT_DAYS; }", "function factStale(d){ return false; }")], "python3 test/e2e17.py"),
     ("a part that reads and acts is not flagged", [("v170_honest.js", "const both = comps.filter(c => reads.includes(c) && acts.includes(c));", "const both = [];")], "python3 test/e2e17.py"),
     ("the mock runs unsandboxed", [("v170_more.js", 'sandbox="allow-scripts"', 'sandbox="allow-scripts allow-same-origin"')], "python3 test/e2e17.py"),

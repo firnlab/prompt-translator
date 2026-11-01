@@ -73,7 +73,10 @@ with sync_playwright() as pw:
 
     print("5 kit decisions wait for the design station, one at a time")
     ev(pg, "(() => { newProject('Idea board 17', {raw: 'A board where I keep and score my ideas'}); UI.home = false; render(); })()"); pg.wait_for_timeout(200)
-    check("a new project without a design has no kit decision", ev(pg, "!queueOf(curP()).some(x => /^kit-/.test(x.kind))"))
+    # 1.8.0: its home is already known to be a page, so every kit would apply: only "no design yet" may hold the decisions back
+    # (before, the check passed for a project no kit applied to at all, and its planted bug only read as caught)
+    ev(pg, "(() => { const p = curP(); p.tool = p.tool || {}; p.tool.home = {where: 'a page (artifact)', parts: 'one page'}; render(); })()")
+    check("a new project without a design has no kit decision (its home is a page)", ev(pg, "!queueOf(curP()).some(x => /^kit-/.test(x.kind))"))
     ev(pg, ARCH); pg.wait_for_timeout(200)
     nk = ev(pg, "queueOf(curP()).filter(x => /^kit-/.test(x.kind)).length")
     check("with a design the kit decisions appear in the queue", nk >= 1, nk)
