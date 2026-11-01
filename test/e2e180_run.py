@@ -243,6 +243,7 @@ with sync_playwright() as pw:
     check("…its text reads PT's spec, publishes nothing, deletes nothing, changes no scheduled task", "doc_id \"spec\"" in prm and "never publish" in prm and "never delete" in prm and "never create, change or delete a scheduled task" in prm, prm[:400])
     spec = ev(pg, "(R18.docs(wsPath() + '/sunday-run/spec')[0] || {})")
     check("…the spec lists the live tools with their packages and where the drills go", spec and any(x["name"] == "Run test C" for x in spec["inputs"]["tools"]) and spec["inputs"]["drillsColl"].endswith("/drills-in") and "attacker, then the judge" in spec["instructions"], str(spec)[:300])
+    check("…and the line says to turn on automatic approval for the task (nobody watches its runs), until a run has worked", ev(pg, "!!document.querySelector('.wk18-sw .wk18-approve') && document.querySelector('.wk18-sw .wk18-approve').textContent.includes('Automatically approve')"))
     check("…and the line says it is on", ev(pg, "(WS.settings.wkRun || {}).on === true && (WS.settings.wkRun || {}).id === 'trig_new' && !!document.querySelector('.wk18-sw [data-a=wk18-runner-off]')"))
     pg.locator("[data-a=wk18-runner-off]").first.click(); pg.wait_for_timeout(500)
     upd = [c for c in ev(pg, "window.__mcp") if c["tool"] == "update_trigger"]
