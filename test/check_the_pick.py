@@ -81,6 +81,17 @@ M = [
     # 1.8.2 the cloud environment (cause 70)
     ("a scheduled task created from PT gets no cloud environment", [("core.js", 'if (/environment_id/i.test(msg) && envs.length){', 'if (false){')], "python3 test/e2e180_run.py test/fixtures/synthetic.json"),
     ("a self-hosted pool is taken before a cloud environment", [("core.js", 'envs.find(x => x.startsWith("env_")) || ', '')], "python3 test/e2e180_run.py test/fixtures/synthetic.json"),
+    # 1.9 scan (self-scan, 4×4 interview, what changed; e2e190_scan must turn red; the made-up bundle)
+    ("a shortcut is offered for a step that changes something", [("v190_scan.js", "function scan19Safe(name){ const b = scan19Base(name); return SCAN19_SAFE.has(b) && ACT_NO.has(b); }", "function scan19Safe(name){ return true; }")], "python3 test/e2e190_scan.py test/fixtures/synthetic.json"),
+    ("a sequence of only moving around is proposed", [("v190_scan.js", "if (new Set(w).size < 2 || scan19Pure(w)) continue;", "if (new Set(w).size < 2) continue;")], "python3 test/e2e190_scan.py test/fixtures/synthetic.json"),
+    ("a declined workflow comes back before its count doubles", [("v190_scan.js", 'if (d.d === "no") return c.n >= 2 * Math.max(1, num(d.n, 1));', 'if (d.d === "no") return true;')], "python3 test/e2e190_scan.py test/fixtures/synthetic.json"),
+    ("the self-scan runs before Saturday 22:00", [("v190_scan.js", "if (back === 0 && z.h < 22) back = 7;", "")], "python3 test/e2e190_scan.py test/fixtures/synthetic.json"),
+    ("a proposal becomes a shortcut by itself", [("v190_scan.js", "      if (doc.scan.length){ await Store.putNow(wk18Path(doc.key), doc);", '      for (const x of doc.scan) if (x.safe) setTimeout(() => scan19Answer(x.sig, "yes"), 0);\n      if (doc.scan.length){ await Store.putNow(wk18Path(doc.key), doc);')], "python3 test/e2e190_scan.py test/fixtures/synthetic.json"),
+    ("a risky change to a live tool goes ahead without the interview", [("v190_interview.js", "  return {need: why.length > 0 && !small, why, rows: changed.length, small};", "  return {need: false, why, rows: changed.length, small};")], "python3 test/e2e190_scan.py test/fixtures/synthetic.json"),
+    ("a small private change waits for the interview", [("v190_interview.js", "  const small = n <= 1 && (fixOnly || n === 0) && !data && changed.length <= IV19_ROWS;   // one fix, or nothing recorded as changed", '  const small = false; if (!why.length) why.push("out");')], "python3 test/e2e190_scan.py test/fixtures/synthetic.json"),
+    ("a skipped interview area leaves no residual-risk row", [("v190_interview.js", "      if (skip || left.length){", "      if (false){")], "python3 test/e2e190_scan.py test/fixtures/synthetic.json"),
+    ("interview answers are not decision rows", [("v190_interview.js", "ROW_SOURCES.push(function iv19Rows(p, add){", "(function iv19Rows(p, add){")], "python3 test/e2e190_scan.py test/fixtures/synthetic.json"),
+    ("what changed is listed under the wrong version", [("v190_interview.js", "evs.filter(e => str(e.at) > from && str(e.at) <= to)", "evs.filter(e => str(e.at) <= from)")], "python3 test/e2e190_scan.py test/fixtures/synthetic.json"),
 ]
 
 ONLY = next((x.split("=", 1)[1] for x in sys.argv if x.startswith("--only=")), None)   # 1.8: run the planted bugs whose name or test contains this text
