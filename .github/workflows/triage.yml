@@ -1,0 +1,30 @@
+# Inbox triage, room 1 (PLAN-1.8, DESIGN-1.8-rev2 §5 and §17). Deterministic code, no model, no agent:
+# removes secrets from issues, classifies, marks strangers and hostile text, closes near-identical duplicates,
+# writes one record per issue into the private repository. Issue text is read only from the event file inside the
+# script — never interpolated into this workflow — and never written to the public log or summary.
+# The model step ("is this real?") comes later as an Agentic Workflow with zero secrets.
+name: triage
+on:
+  issues:
+    types: [opened, edited, reopened]
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: triage-${{ github.event.issue.number }}
+  cancel-in-progress: false
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          sparse-checkout: tools/triage.py
+          sparse-checkout-cone-mode: false
+      - name: triage
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PT_PRIVATE_TOKEN: ${{ secrets.PT_PRIVATE_TOKEN }}
+          OWNER_LOGINS: firnsmith
+        run: python3 tools/triage.py
