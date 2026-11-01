@@ -318,7 +318,7 @@ with sync_playwright() as p:
     pj.fill("#start-in", "每周帮我们家安排晚餐的小工具"); click(pj, "form[data-form=start] button[type=submit]"); pj.wait_for_timeout(300)
     check(pj.locator(".guide").count() == 1, "Second owner defaults to Guided")
     check(pj.locator("[data-a=mode][data-v=journey][aria-pressed=true]").count() == 1, "Second owner defaults to Journey")
-    pj.screenshot(path=str(SHOTS / "13-jiewen.png"), full_page=True)
+    pj.screenshot(path=str(SHOTS / "13-second-owner.png"), full_page=True)
     ctx2.close()
 
     print("14 narrow width")

@@ -15,10 +15,11 @@ else:
     for f in (BK / "data/users/me").rglob("*.json"):
         seed["data/users/user-1/" + str(f.relative_to(BK / "data/users/me").with_suffix(""))] = json.loads(f.read_text())
 html = (ROOT / "dist/prompt-translator.html").read_text()
-(ROOT / "test/index14.html").write_text("<!doctype html><html><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'></head><body>" + html + "</body></html>")
+PAGE = f"index14-{pathlib.Path(sys.argv[0]).stem}-{__import__('os').getpid()}.html"   # 1.8: one page per run, so suites can run side by side
+(ROOT / "test" / PAGE).write_text("<!doctype html><html><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'></head><body>" + html + "</body></html>")
 srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), functools.partial(type("Q", (http.server.SimpleHTTPRequestHandler,), {"log_message": lambda *a: None}), directory=str(ROOT / "test")))
 threading.Thread(target=srv.serve_forever, daemon=True).start()
-U = "http://127.0.0.1:%d/index14.html" % srv.server_address[1]
+U = "http://127.0.0.1:%d/" % srv.server_address[1] + PAGE
 MOCK = (ROOT / "test/mock.js").read_text()
 errors, fails, oks = [], [], []
 def check(name, cond, info=""):
@@ -28,13 +29,18 @@ def new_ctx(b, w=1440, h=950, scheme="dark"):
     ctx.add_init_script("if (window === window.top) window.__seed = " + json.dumps(seed) + ";")
     ctx.add_init_script(MOCK)
     return ctx
-def open_page(ctx, pick="Owner"):
+def _ws_order():   # 1.7.1: workspaces in the order "last used first, then the others" — from the data, never by a person's name
+    m = next((v for k, v in seed.items() if k.endswith("/meta")), {})
+    ws = [w["id"] for w in m.get("workspaces", [])]; last = m.get("last")
+    return ([last] + [w for w in ws if w != last]) if last in ws else ws
+def open_page(ctx, pick=0):   # pick: 0 = the last-used workspace, 1 = the other one (or a visible name)
     pg = ctx.new_page()
     pg.on("pageerror", lambda e: errors.append("pageerror: " + str(e)[:300]) if "sandboxed" not in str(e) else None)
     pg.on("console", lambda m: errors.append("console: " + m.text[:300]) if m.type == "error" and "fonts.g" not in m.text and "net::" not in m.text and "Failed to load resource" not in m.text else None)
     pg.on("dialog", lambda d: (errors.append("native dialog: " + d.message[:100]), d.dismiss()))
     pg.goto(U); pg.wait_for_timeout(900)
-    if pg.locator(".app").count() == 0 and pick: pg.get_by_text(pick, exact=True).first.click()
+    pg.wait_for_selector(".app, .ws-opt, #fr-name, .lock", timeout=60000)   # 1.8: wait for the first screen instead of a fixed pause (slow on a loaded machine)
+    if pg.locator(".app").count() == 0 and pick is not None: (pg.locator(f'.ws-opt[data-id="{_ws_order()[pick]}"]') if isinstance(pick, int) else pg.get_by_text(pick, exact=True).first).click()
     pg.wait_for_selector(".app", timeout=15000); pg.wait_for_timeout(500)
     close_modals(pg)
     if pathlib.Path(sys.argv[0]).name in ("e2e14.py", "migrate14.py", "smoke14.py"):   # 1.6.0: these flows test the older step views; the projects get their earlier view back for the test only

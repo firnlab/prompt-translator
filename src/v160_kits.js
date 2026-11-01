@@ -31,13 +31,14 @@ function kitSlug(p){ return slug(str(p.name)).replace(/[^a-z0-9-]/g, "").slice(0
 
 /* ---------- storage: PT recommends by rule, the person decides ---------- */
 const KIT_STORAGE = ["local", "db", "artifact"];
-const KIT_SHARED_WORDS = ["team", "colleague", "customer", "client", "member", "other people", "others", "together", "share", "shared", "public", "visitors", "jiewen", "kolleg", "kund", "gemeinsam", "teilen", "andere", "团队", "同事", "客户", "共享", "分享", "其他人", "公开"];
+const KIT_SHARED_WORDS = ["team", "colleague", "customer", "client", "member", "other people", "others", "together", "share", "shared", "public", "visitors", "kolleg", "kund", "gemeinsam", "teilen", "andere", "团队", "同事", "客户", "共享", "分享", "其他人", "公开"];
 const KIT_RECORD_WORDS = ["checklist", "to-do", "todo", "poll", "vote", "sign-up", "signup", "board", "tracker", "list of", "inventory", "schedule", "plan", "roster", "checkliste", "abstimm", "liste", "清单", "投票", "看板", "名单"];
 /** the one rule for the recommendation: shared or read by Claude → db; the page is the record → artifact; private and small → browser storage + export */
 function kitStorageRec(p){
   const ns = p.northStar || {}, aud = p.audience || {}, comps = arr(p.arch && p.arch.components), home = (p.tool && p.tool.home) || {};
   const txt = [ns.goal, ns.users, ns.problem, p.intake && p.intake.raw, ...comps.map(c => c.name + " " + c.role + " " + c.outputs), home.where, home.parts].map(str).join(" ").toLowerCase();
-  const shared = aud.customers === true || KIT_SHARED_WORDS.some(w => txt.includes(w));
+  const others = arr(typeof META !== "undefined" && META.workspaces).filter(w => w.id !== WS.id).map(w => str(w.name).toLowerCase()).filter(n => n.length > 2);   // 1.7.1: the names of the other workspaces, not a name in code
+  const shared = aud.customers === true || KIT_SHARED_WORDS.some(w => txt.includes(w)) || others.some(n => txt.includes(n));
   const claudeReads = comps.some(c => (c.kind === "ai" || c.kind === "hybrid") && /stor|data|record|history|read|write|speicher|daten|数据|记录/.test((c.inputs + " " + c.outputs + " " + c.role).toLowerCase())) || /scheduled|task|aufgabe|定时/.test(str(home.where).toLowerCase() + " " + str(home.parts).toLowerCase());
   const record = KIT_RECORD_WORDS.some(w => txt.includes(w));
   if (shared || claudeReads) return {kind: "db", why: t(shared ? "kit.rec.db.shared" : "kit.rec.db.claude")};

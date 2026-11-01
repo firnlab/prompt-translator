@@ -9,6 +9,7 @@ APP = "\nfunction __zz{n}(p, x){{ {body} }}\n"
 # (name, file, kind, change, expected tag, hard?)  kind: "append" adds text at the end, "sub" replaces the first match, "dupline" repeats the line that matches
 M = [
     ("a comment that swallows the rest of a line (parse error)", "v150_pick.js", "sub", ("saveWs(); toast(t(good", "saveWs();   // note toast(t(good"), "parse", True),
+    ("a comment that swallows statements (still parses, cause 62)", "v14_finish.js", "sub", ("{rounds: FIX_CAP, quiet: true}); sum.fixed += s.fixed;", "{rounds: FIX_CAP, quiet: true});   // the cap sum.fixed += s.fixed;"), "comment", True),
     ("squeezed text: overflow-wrap:anywhere",          "styles.css", "append", ".zz{overflow-wrap:anywhere}", "layout", True),
     ("menus cut off: no top-layer menus",              "v141_ui.js", "sub", ("function menuFloat(", "function menuFloatOff("), "layout", True),
     ("leftover 'Sie': a string key defined twice",     "strings7.js", "dupline", '"it.inpanel":', "names", True),
@@ -21,6 +22,7 @@ M = [
     ("three counts for open work",                     "v14_ui.js", "append", APP.format(n=3, body='return x.cls === "block" || x.cls === "should";'), "count", True),
     ("German ß",                                       "strings7.js", "dupline_edit", ('"it.inpanel":', '"zz.sz":["a", "Strasse und Straße", "街道"],'), "strings", True),
     ("Traditional Chinese",                            "strings7.js", "dupline_edit", ('"it.inpanel":', '"zz.tr":["a", "a", "這個"],'), "strings", True),
+    ("a workspace found by a person's name (cause 59)", "app.js", "sub", ("const w = META.workspaces.find(x => x.id !== META.workspaces[0].id);", "const w = META.workspaces.find(x => /Robin/i.test(x.name));"), "person", True),
     ("missing translation key",                        "views13.js", "append", APP.format(n=4, body='return t("zz.never.defined");'), "strings", True),
     ("a button with no action",                        "views13.js", "append", APP.format(n=5, body="return '<button data-a=\"zz-nothing\">x</button>';"), "handlers", True),
     ("wrapper of a missing function",                  "actions4.js", "append", "\n{ const orig = zzGone; zzGone = function(){ return orig(); }; }\n", "wrappers", True),

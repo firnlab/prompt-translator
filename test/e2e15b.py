@@ -20,9 +20,11 @@ def wait_ai(pg, ms=15000):
         except Exception: pass
         pg.wait_for_timeout(150)
 def fresh(pg, name="Review project"):
-    ev(pg, "(n) => { newProject(n, {raw: 'Strategies to raise money for families in need'}); UI.home = false; render(); }", name); pg.wait_for_timeout(150)
+    ev(pg, "(n) => { newProject(n, {raw: 'Strategies to raise money for families in need'}); pickOf(curP()).start = 'fast'; UI.home = false; render(); }", name); pg.wait_for_timeout(150)   # 1.8: the cone is the default start; these flows test the picks after the fast start
 def round1(pg):
     ev(pg, "ACTIONS['pk-next']()"); wait_ai(pg)
+    if ev(pg, "pk8Stage(curP()) === 'mock' && !!curP().mock"):   # 1.8 (owner): the mock comes first; "yes" is the first decision, then the first round of picks
+        ev(pg, "ACTIONS['mock-yes']()"); wait_ai(pg); pg.wait_for_timeout(200); wait_ai(pg)
 
 with sync_playwright() as pw:
     b = pw.chromium.launch()
@@ -159,8 +161,9 @@ with sync_playwright() as pw:
     check("R29 a result missing sections says which", "existing" in (r29["partial"] or []), r29)
     r30 = ev(pg, "(() => { const k = pickRead(curP()); const c = pickCleanCard({q: 'Q?', options: [{label: 'A'}, {label: 'B'}], src: [{title: 'made up', url: 'https://invented.example/x'}, {title: 'Z', url: 'https://example.org/z'}]}, 1, k); return c.src.map(s => s.url); })()")
     check("R30 card links only from the research", r30 == ["https://example.org/z"], r30)
-    r31 = ev(pg, "pickScrub('Owner at valentin.tischer@example.com, AHV 756.1234.5678.97, see https://my.site/page, Bahnhofstrasse 12 Zürich', curP())")
-    check("R31 research questions lose names, e-mail, AHV, links and street addresses", not re.search(r"Owner|example\.com|756\.1234|my\.site|Bahnhofstrasse 12", r31), r31)
+    _wsn = ev(pg, "WS.name")   # 1.7.1: the real workspace name of the data copy, never a name written into the test
+    r31 = ev(pg, "pickScrub(WS.name + ' at max.muster@example.com, AHV 756.1234.5678.97, see https://my.site/page, Bahnhofstrasse 12 Zürich', curP())")
+    check("R31 research questions lose names, e-mail, AHV, links and street addresses", not re.search(re.escape(_wsn) + r"|example\.com|756\.1234|my\.site|Bahnhofstrasse 12", r31, re.I), r31)
     check("R31 you see (and can change) what PT asked the web", ev(pg, "(() => { const k = pickOf(curP()); k.research = Object.assign({}, k.research || {}, {state: 'done', topic: 'fundraising strategies'}); render(); return !!document.querySelector('.pk-asked [data-a=pk-res-edit]'); })()"))
     check("R32 research without progress for 15 minutes counts as stuck", ev(pg, "(() => { UI.jobSeen = {jz: {n: '0:sent', at: Date.now() - 16 * 60000}}; WS.jobs.push({id: 'jz', kind: 'pickres', status: 'sent', steps: []}); const r = pickJobAlive({job: 'jz', at: new Date(Date.now() - 20 * 60000).toISOString()}); WS.jobs = WS.jobs.filter(j => j.id !== 'jz'); return r === false; })()"))
     r32 = ev(pg, """(() => { const p = curP(), k = pickOf(p); k.log.push({id: 'pe-nw', cid: 'pk-nw', q: 'Decided without waiting?', answer: 'Yes', keys: ['A'], target: 'money', noWait: true, at: now(), card: {q: 'Decided without waiting?', options: [{k: 'A', label: 'Yes'}, {k: 'B', label: 'No'}], rec: -1}});
@@ -306,7 +309,7 @@ with sync_playwright() as pw:
     pg.set_viewport_size({"width": 1440, "height": 900})
     check("all new Pick screens at 1440 / 1024 / 390: no sideways scroll, controls at least 24 px", not sq, sq)
     # Second owner's workspace gets Pick as the default too (opened for real)
-    jw = ev(pg, """async () => { const w = META.workspaces.find(x => /jiewen/i.test(x.name)); if (!w) return {none: true}; const back = WS.id; await openWorkspace(w.id); const r = {mode: WS.settings.defaultMode, keep: WS.projects.every(p => projMode(p) !== 'pick' || p.mode === 'pick' || str(p.createdAt) > str(WS.settings.m150))}; await openWorkspace(back); return r; }""")
+    jw = ev(pg, """async () => { const w = META.workspaces.find(x => x.id !== WS.id); if (!w) return {none: true}; const back = WS.id; await openWorkspace(w.id); const r = {mode: WS.settings.defaultMode, keep: WS.projects.every(p => projMode(p) !== 'pick' || p.mode === 'pick' || str(p.createdAt) > str(WS.settings.m150))}; await openWorkspace(back); return r; }""")
     check("Second owner's workspace: Pick is the default, her projects keep their view", jw.get("none") or (jw["mode"] == "pick" and jw["keep"]), jw)
     ctx.close(); b.close()
 print("ok:", len(oks), "failed:", len(fails), "page errors:", len(errors))

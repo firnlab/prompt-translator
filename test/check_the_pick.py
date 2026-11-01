@@ -4,10 +4,15 @@ Run: python3 test/check_the_pick.py        (about 20 minutes; never touches src/
 import pathlib, shutil, subprocess, sys, tempfile, os
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 C, E, B = "python3 test/pick_contract.py", "python3 test/e2e15.py", "python3 test/e2e15b.py"
+D = "python3 test/e2e180_decide.py"   # 1.8 deciding
+CN = "python3 test/e2e180_cone.py test/fixtures/synthetic.json"   # 1.8 the cone
 # (name, [(file, old, new), …], test that must fail)
 M = [
     ("research questions keep people's names", [("v150_pick.js", "for (const n of [...people, ...people.flatMap(n => n.split(/[\\s._-]+/))].filter(v => v.trim().length > 2)) x = x.replace(rx(n), \"[name]\");", "")], C),
-    ("a hard pick gets a ★", [("v150_pick.js", "rec: hard ? -1 : recAt,", "rec: recAt,")], C),
+    # 1.8 (owner): hard picks DO show PT's ★ now ("a hard pick gets a ★" is no longer a bug); the bug is a hard ★ taken by itself
+    ("a hard pick's ★ is taken by 'take all ★'", [("v150_pick.js", "pickOpenCards(p).filter(c => !c.qkey && !c.hard && c.rec >= 0", "pickOpenCards(p).filter(c => !c.qkey && c.rec >= 0"),
+        ("v180_decide.js", "return orig(p).filter(c => !c.hard && !pk8CardCallFirst(p, c));", "return orig(p);"),
+        ("v180_decide.js", "if (c && o.assumed && (c.hard || (cf && !call))) return null;", "")], C),
     ("a blog confirms what a platform can do", [("v150_pick.js", "if (x.kind === \"platform\" && status && status !== \"unknown\" && !first) status = \"unknown\";", "")], C),
     ("Undo leaves a pick open and decided", [("v150_pick.js", "try{ if (p && pickCoherent(p)){ touch(p); actRebase(p); } }", "try{ }")], C),
     ("an AI answer that breaks a card rule is used without asking again", [("v150_pick.js", "check: o => arr(o.cards).flatMap(c => pickCardChecks(c, k, lang))});\n  if (!r) return null;\n  const q = pickLive(p, ws0); if (!q) return null;\n  const kk = pickOf(q);\n  const asked", "});\n  if (!r) return null;\n  const q = pickLive(p, ws0); if (!q) return null;\n  const kk = pickOf(q);\n  const asked")], B),
@@ -38,18 +43,48 @@ M = [
     ("the protections are approved in one click", [("v150_pick.js", "o(t(\"pk.pf.look\"), () => goRef(\"proof\"), {star: true, opens: true});", "o(t(\"pk.pf.ok\"), () => {}, {star: true, batch: true});")], B),
     # 1.7.0: the pages, honesty, the drill, the mock (e2e17 must turn red)
     ("the Bauplan does nothing again (the Design page loses the map)", [("v170_pages.js", 'const map = comps.length ? `<section class="panel pg-map" data-anchor="bauplan">', 'const map = false ? `<section class="panel pg-map" data-anchor="bauplan">')], "python3 test/e2e17.py"),
-    ("kit decisions come all at once before the design", [("v170_pages.js", "{ const orig = kitQueue; kitQueue = function(p, add){ if (pgKitsReady(p)) return orig(p, add); return orig(p, x => { if (!/^kit-/.test(str(x && x.kind)) || PG_KIT_EARLY.test(x.kind)) add(x); }); }; }", "")], "python3 test/e2e17.py"),
+    ("kit decisions come all at once before the design", [("v170_pages.js", "{ const orig = kitQueue; kitQueue = function(p, add){ if (pgKitsReady(p)) return orig(p, add); return orig(p, x => { if (!/^kit-/.test(str(x && x.kind)) || PG_KIT_EARLY.test(x.kind)) add(x); }); }; }", ""),
+        ("v160_kits.js", "function kitApplies(p){\n  if (!p || !arr(p.arch && p.arch.components).length) return false;", "function kitApplies(p){\n  if (!p) return false;")], "python3 test/e2e17.py"),
     ("a stale fact is not flagged", [("v170_honest.js", "function factStale(d){ return factAge(d) > FACT_DAYS; }", "function factStale(d){ return false; }")], "python3 test/e2e17.py"),
     ("a part that reads and acts is not flagged", [("v170_honest.js", "const both = comps.filter(c => reads.includes(c) && acts.includes(c));", "const both = [];")], "python3 test/e2e17.py"),
     ("the mock runs unsandboxed", [("v170_more.js", 'sandbox="allow-scripts"', 'sandbox="allow-scripts allow-same-origin"')], "python3 test/e2e17.py"),
     ("an undefended attack never reaches the queue", [("v170_honest.js", "{ const orig = kitQueue; kitQueue = function(p, add){ orig(p, add); rtQueue(p, add); }; }", "")], "python3 test/e2e17.py"),
     ("Finish hides what it changed", [("v170_pages.js", 'if (F && UI.finish === F && F.step === "done" && F.startAt) return h.replace(/<\\/section>\\s*$/, pgChangeList(p, F.startAt) + "</section>");', "")], "python3 test/e2e17.py"),
+    # 1.8 checks, fixing and facts (e2e180_checks must turn red)
+    ("a private tool's check row is applied without a tap", [("v180_checks.js", 'return chkPrivate(p) ? "open" : "apply";', 'return "apply";')], "python3 test/e2e180_checks.py"),
+    ("a tool that acts outward runs its tests only 3 times", [("v180_checks.js", "function chkTrials(p){ return chkOutward(p) ? CHK_TRIALS_OUT : TRIALS; }", "function chkTrials(p){ return TRIALS; }")], "python3 test/e2e180_checks.py"),
+    ("a fix proposed twice is tried again", [("v14_fix.js", "if (round > 1 && fixRepeats(seen, changed, after)){", "if (false){")], "python3 test/e2e180_checks.py"),
+    ("the fifth round leaves no residual risk", [("v14_fix.js", "capped: round === rounds && rounds >= FIX_CAP && !(UI.finish && UI.finish.stop)", "capped: false")], "python3 test/e2e180_checks.py"),
+    ("a price past its budget is still used (one 90-day rule again)", [("v180_checks.js", "const FACT_BUDGET = {price: 20, platform: 45, policy: 180, other: 90};", "const FACT_BUDGET = {price: 90, platform: 90, policy: 90, other: 90};")], "python3 test/e2e180_checks.py"),
+    # 1.8 deciding (e2e180_decide must turn red)
+    ("your call first shows the ★ before your call", [("v180_decide.js", 'const card = cf && !call ? Object.assign({}, c, {rec: -1, recWhy: "", mind: ""}) : cf ? Object.assign({}, c, {recWhy: ""}) : c;', "const card = c;")], D),
+    ("a first version needs the measure again", [("v180_decide.js", 'return orig(p).filter(x => x.id !== "measure");', "return orig(p);")], D),
+    ("the picks come before the mock", [("v180_decide.js", "if (!k.mf && !k.log.length && !k.cards.length) return pk8Begin(p);", "if (false) return pk8Begin(p);")], D),
+    ("a technical risk skips the quick try", [("v180_decide.js", 'if (r && r.risk === "technical") return pk8SpikeStart(q, r);', "")], D),
+    ("a round makes three cards again", [("v180_decide.js", "if (!need.length && (o == null || o.n == null || o.n === 3)) o = Object.assign({}, o, {n: PK8_ROUND});", "")], D),
+    ("the four routes show before the price is read", [("v180_decide.js", 'if (x && x.kind === "kit-rebuild"){ if (pk8PriceWaits(p)) return;', 'if (x && x.kind === "kit-rebuild"){ if (false) return;')], D),
+    ("the Bauplan opens by default", [("v180_decide.js", "const open = !!(UI.pk8Map && UI.pk8Map[p.id]);", "const open = true;")], D),
+    # 1.8 the cone (e2e180_cone must turn red; the made-up bundle, so no real data is needed)
+    ("the cone is not the default start for a new tool", [("v180_cone.js", 'function coneStartMode(p){ const s = pickRead(p).start; return s === "fast" || s === "questions" ? s : "cone"; }', 'function coneStartMode(p){ const s = pickRead(p).start; return s === "cone" || s === "questions" ? s : "fast"; }')], CN),
+    ("the gallery shows kinds the inference never named (decoys)", [("v180_cone.js", "  if (!fams.length) return null;", "  for (const f of coneRank(sentence)) if (fams.length < 8 && !fams.some(x => x.f === f)) fams.push(coneFamDefault(f));\n  if (!fams.length) return null;")], CN),
+    ("an answer cuts nothing in the gallery", [("v180_cone.js", '  if (!v || v === "unsure") return true;', "  return true;")], CN),
+    ("who it is for is not asked first", [("v180_cone.js", 'if (!A.aud) return "aud";', 'if (!A.aud && Object.keys(A).length >= 3) return "aud";')], CN),
+    ("cut cards vanish without a way back", [("v180_cone.js", "const rem = removed.length ?", "const rem = false ?")], CN),
+    ("the cone shows PT's ★ before the cards were looked at", [("v180_cone.js", "function coneStarShown(p){ return !!(p && UI.coneStar && UI.coneStar[p.id]); }", "function coneStarShown(p){ return !!p; }")], CN),
+    ("pick then verify asks every question", [("v180_cone.js", '    if (CONE_OPTS[d].some(v => v !== "unsure" && !S.some(s => coneFits(s, d, v)))) out.push(d);', "    out.push(d);")], CN),
+    ("a 1.7 tool's earlier decision is replaced without a tap", [("v180_cone.js", "  if (coneConflict(c0, d, v) && !replace){", "  if (false && coneConflict(c0, d, v) && !replace){")], CN),
+    ("a cone answer is not a decision row", [("v180_cone.js", "ROW_SOURCES.push(coneRowSrc);", "")], CN),
+    ("the kind's outward action does not reach the checks", [("v180_cone.js", 'return e && e.out ? e.out : "";', 'return "";')], CN),
 ]
 
+ONLY = next((x.split("=", 1)[1] for x in sys.argv if x.startswith("--only=")), None)   # 1.8: run the planted bugs whose name or test contains this text
+if ONLY: M = [m for m in M if ONLY in m[0] or ONLY in m[2]]
+import re as _re
 def run(tmp, cmd):
     r = subprocess.run(cmd, shell=True, cwd=tmp, capture_output=True, text=True, timeout=1800)
     out = r.stdout + r.stderr
-    return r.returncode == 0 and "failed: 0" in out and "page errors: 0" in out, out
+    # 1.8: e2e17 ends with "N ok, 0 failed, page errors: 0" — that form counts as green too (before, its planted bugs always read as caught)
+    return r.returncode == 0 and ("failed: 0" in out or bool(_re.search(r"\b0 failed\b", out))) and "page errors: 0" in out, out
 
 with tempfile.TemporaryDirectory() as td:
     tmp = pathlib.Path(td)

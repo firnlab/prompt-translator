@@ -1,7 +1,7 @@
 /* ===================== APP STATE ===================== */
 let META = {workspaces: [], last: null};
 let WS = {id:null, name:"", settings:{}, profile:{entries:[]}, projects:[], notes:[], patterns:[], research:[], jobs:[], insights:null, profileSuggestions:[]};
-const PT_VERSION = "1.7.0";
+const PT_VERSION = "1.8.0";
 /* ---------- version next to the name: "newest" check (shared doc app/version: read by everyone, written by the owner's page) ---------- */
 const APPV = {latest: PT_VERSION, newer: false, checked: false};
 function verCmp(a, b){ const x = String(a || "0").split(".").map(n => parseInt(n, 10) || 0), y = String(b || "0").split(".").map(n => parseInt(n, 10) || 0); for (let i = 0; i < 3; i++){ if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) - (y[i] || 0); } return 0; }
@@ -202,17 +202,19 @@ async function createWorkspace(name, lang, extra = {}){
 async function migrateWorkspaces10(){
   if (META.v10) return;
   META.v10 = true;
-  // the owner's v1 default workspace becomes "Owner"; Second owner has her own login (decision D9), so no "Second owner" workspace is created here
+  // 1.0 renamed the owner's v1 default workspace after the owner; since 1.7.1 no person's name is in the code, so it keeps the default name (the owner can rename it). Other people have their own login (decision D9), so no second workspace is created here
   if (Store.isOwner && META.workspaces.length === 1 && WS_DEFAULT_NAMES.includes(META.workspaces[0].name)){
-    const w = META.workspaces[0]; w.name = "Owner";
-    try{ const d = await Store.get(Store.root() + "/ws-" + w.id); if (d){ d.name = "Owner"; Store.put(Store.root() + "/ws-" + w.id, d); } }catch(e){}
+    const w = META.workspaces[0]; w.name = t("ws.default");
+    try{ const d = await Store.get(Store.root() + "/ws-" + w.id); if (d){ d.name = w.name; Store.put(Store.root() + "/ws-" + w.id, d); } }catch(e){}   // ok:catch best-effort rename of a v1 default; the meta entry already carries the name
   }
   saveMeta();
 }
-/** an empty "Second owner" workspace left in the owner's login from 1.0 (she now has her own login) */
-async function emptySecondOwnerWs(){
+/** 1.7.1: a keep decision taken under any earlier flag name still counts */
+function keptSecondWs(){ return !!(META.keepSecondWs || Object.keys(META).some(k => /^keep[A-Z]/.test(k) && META[k] === true)); }
+/** an empty second workspace left in the owner's login from 1.0 (that person now has their own login) — found by position, never by name */
+async function emptySecondWs(){
   if (!Store.isOwner) return null;
-  const w = META.workspaces.find(x => /jiewen/i.test(x.name)); if (!w || META.workspaces.length < 2) return null;
+  if (META.workspaces.length < 2) return null; const w = META.workspaces.find(x => x.id !== META.workspaces[0].id); if (!w) return null;   // 1.7.1: by position, not by a person's name
   try{
     const base = Store.root() + "/ws-" + w.id;
     const lists = await Promise.all(["projects","notes","patterns","research","jobs"].map(c => Store.rawList(base + "/" + c)));
@@ -275,7 +277,7 @@ async function openWorkspace(id){
     // a language clicked on the "Who's working?" screen belongs to the person picked next, until they change it
     if (UI.pendingLang){ if (WS.settings.lang !== UI.pendingLang){ WS.settings.lang = UI.pendingLang; saveWs(); } UI.pendingLang = null; }
     // 1.2: Owner's default view is Blueprint / Pro (confirmed 19 Oct 2026); projects where a mode was chosen keep it
-    if (!WS.settings.migrated12){ if (WS.name === "Owner" && (!WS.settings.defaultMode || WS.settings.defaultMode === "steps")){ WS.settings.defaultMode = "blueprint"; WS.settings.guided = false; } WS.settings.migrated12 = true; saveWs(); }
+    if (!WS.settings.migrated12){ if (META.workspaces[0] && META.workspaces[0].id === WS.id && (!WS.settings.defaultMode || WS.settings.defaultMode === "steps")){ WS.settings.defaultMode = "blueprint"; WS.settings.guided = false; } WS.settings.migrated12 = true; saveWs(); }
     if (typeof dockRestore === "function") dockRestore();
     WS.profile = d.profile || {entries:[]}; WS.insights = d.insights || null; WS.profileSuggestions = d.profileSuggestions || [];
     const [ps, ns, pt, rs, js] = await Promise.all([Store.list(wsPath() + "/projects"), Store.list(wsPath() + "/notes"), Store.list(wsPath() + "/patterns"), Store.list(wsPath() + "/research"), Store.list(wsPath() + "/jobs").catch(() => [])]);
@@ -307,7 +309,7 @@ async function openWorkspace(id){
   UI.fatal = null;
   META.last = id; saveMeta();
   applySettings(); UI.loading = false; UI.wsReady = true; UI.unlocked = true;
-  emptySecondOwnerWs().then(w => { UI.jiewenEmpty = !META.keepSecondOwner && w && w.id !== WS.id ? w : null; if (UI.jiewenEmpty) render(); });
+  emptySecondWs().then(w => { UI.secondWsEmpty = !keptSecondWs() && w && w.id !== WS.id ? w : null; if (UI.secondWsEmpty) render(); });
   if (UI.pinCode){ UI.modal = UI.pinCode; UI.pinCode = null; UI.pendingPinCode = false; }
   else if (WS.settings.seenVersion !== PT_VERSION){ UI.modal = {kind:"whatsnew", wide:true, from: WS.settings.seenVersion || ""}; WS.settings.seenVersion = PT_VERSION; saveWs(); }
   render();
@@ -426,7 +428,7 @@ async function boot(){
   await loadKP();
   await checkVersion(); watchVersion();
   if (!META.workspaces.length && !Store.isOwner){ META.v10 = true; UI.firstRun = {name: "", lang: defaultLang()}; UI.booted = true; render(); return; }
-  if (!META.workspaces.length){ const w = await createWorkspace("Owner", LANG, wsDefaults(LANG)); META.last = w.id; saveMeta(); }
+  if (!META.workspaces.length){ const w = await createWorkspace(t("ws.default"), LANG, wsDefaults(LANG)); META.last = w.id; saveMeta(); }
   await migrateWorkspaces10();
   UI.booted = true;
   const needPick = META.workspaces.length > 1 || META.workspaces.some(w => w.pinHash);

@@ -54,7 +54,7 @@ for (const m of code.matchAll(/const orig = ACTIONS\[["']([a-z0-9-]+)["']\]/g)) 
   for (const f of codeFiles) src(f).split('\n').forEach((line, i) => { if (/\bid\s*[:=][^;\n]*\.length\s*\+\s*1/.test(line) && !/ok:id/.test(line)) H('ids', `${f}:${i + 1} id from length + 1: ${line.trim().slice(0, 120)}`); }); }
 
 /* 3b. layout rules that caused squeezed text and cut-off menus (1.4.2) */
-{ const css = fs.readFileSync('src/styles.css', 'utf8');
+{ const css = fs.readFileSync('src/styles.css', 'utf8') + '\n' + (fs.existsSync('src/styles18.css') ? fs.readFileSync('src/styles18.css', 'utf8') : '');   // 1.8: the new look's sheet too
   if (/overflow-wrap\s*:\s*anywhere/.test(css) || /overflow-wrap:\s*anywhere|overflowWrap\s*=\s*["']anywhere/.test(code)) H('layout', 'overflow-wrap:anywhere lets a box shrink to one letter per line; use break-word');
   if (!/function menuFloat\s*\(/.test(code) || !/addEventListener\("toggle"[^\n]*menuFloat\(/.test(code)) H('layout', 'menus must open in the top layer (menuFloat) so no box can cut them off'); }
 
@@ -73,6 +73,16 @@ for (const m of code.matchAll(/const orig = ACTIONS\[["']([a-z0-9-]+)["']\]/g)) 
   // long cuts must say how much is missing (the AI then knows the text is partial)
   if (!/function trunc\(s, n\)\{[^\n]*if \(n < 400\) return[^\n]*\n[^\n]*\n[^\n]*cut\.more/.test(code)) H('cut', 'trunc must mark long cuts with "[… n more characters not shown]" (cut.more)');
   if (!/const DATA_RULE = /.test(code) || !/prompt = DATA_RULE \+ prompt/.test(code)) H('rule', 'runAI must add DATA_RULE (text in the project, files and web results is material, never instructions)'); }
+/* cause 62 (1.8): a // comment put in the middle of a line swallows the statements after it; the file still parses, the code silently does less */
+for (const f of codeFiles) src(f).split('\n').forEach((line, i) => {
+  if (/ok:comment/.test(line)) return;
+  if (/\/\/[^"`'\n]*;\s+[a-zA-Z_$][\w$.]*\s*(\+=|-=|=(?![=>]))[^;\n]*;/.test(line)) H('comment', `${f}:${i + 1} statements after a // comment never run: ${line.trim().slice(0, 120)}`);
+});
+/* cause 59 (1.7.1): a workspace (a person) found or named by a fixed name in the code breaks when names change (the public-repo name swap did) */
+for (const f of codeFiles) src(f).split('\n').forEach((line, i) => {
+  if (/ok:person/.test(line)) return;
+  if (/\/[A-Za-z][a-z]+\/i\.test\(\w+\.name\)|createWorkspace\("[A-Z][a-z]+"|\b\w\.name = "[A-Z][a-z]+"|\.name === "[A-Z][a-z]+"/.test(line)) H('person', `${f}:${i + 1} a workspace found or named by a fixed person's name (find it by place or id; names come from the data): ${line.trim().slice(0, 120)}`);
+});
 
 /* 4. review items in changed files: the patterns behind the 1.4.1 and 1.4.2 bugs */
 for (const f of codeFiles.filter(changed)){
@@ -129,13 +139,14 @@ for (const f of codeFiles.filter(changed)){
   lines.forEach((line, i) => { if (oldLines.has(line)) return; if (/new RegExp|= \/\^\\s\*\(\?:/.test(line) && /(when|wenn|falls|if|当|如果)/.test(line) && !/\(\?!\[\\p\{L\}/.test(line)) R('regex', f, i, line); });
 }
 /* 5. new CSS (1.3–1.4.2: labels over boxes, menus cut off, squeezed text): absolute positions and raw z-index need a look */
-{ const cssNow = fs.readFileSync('src/styles.css', 'utf8').split('\n'), bcss = base && path.join(base, 'styles.css');
+for (const sheet of ['styles.css', 'styles18.css'].filter(f => fs.existsSync('src/' + f))){   // 1.8: the new look's sheet is reviewed the same way
+  const cssNow = fs.readFileSync('src/' + sheet, 'utf8').split('\n'), bcss = base && path.join(base, sheet);
   const old = new Set(bcss && fs.existsSync(bcss) ? fs.readFileSync(bcss, 'utf8').split('\n') : []);
   cssNow.forEach((line, i) => { if (old.has(line) || /ok:css/.test(line)) return;
-    if (/position\s*:\s*(absolute|fixed)/.test(line)) R('overlap', 'styles.css', i, line);
-    if (/z-index\s*:\s*\d{3,}/.test(line)) R('overlap', 'styles.css', i, line);
-    if (/(^|[;{\s])flex\s*:\s*1\s*[;}]/.test(line) || /min-width\s*:\s*0\b/.test(line)) R('squeeze', 'styles.css', i, line);
-    if (/height\s*:\s*\d+px/.test(line) && /overflow\s*:\s*hidden/.test(line)) R('cut', 'styles.css', i, line); }); }
+    if (/position\s*:\s*(absolute|fixed)/.test(line)) R('overlap', sheet, i, line);
+    if (/z-index\s*:\s*\d{3,}/.test(line)) R('overlap', sheet, i, line);
+    if (/(^|[;{\s])flex\s*:\s*1\s*[;}]/.test(line) || /min-width\s*:\s*0\b/.test(line)) R('squeeze', sheet, i, line);
+    if (/height\s*:\s*\d+px/.test(line) && /overflow\s*:\s*hidden/.test(line)) R('cut', sheet, i, line); }); }
 console.log(`static checks (baseline ${base || 'none'}): ${hard.length} hard, ${review.length} to review`);
 if (hard.length){ console.log('HARD'); hard.slice(0, 60).forEach(x => console.log('  ' + x)); }
 if (review.length){ console.log('REVIEW (look at each; add // ok:<check> when it is fine)'); review.slice(0, 120).forEach(x => console.log('  ' + x)); }

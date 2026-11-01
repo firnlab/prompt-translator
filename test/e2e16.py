@@ -32,7 +32,8 @@ with sync_playwright() as pw:
     ev(pg, ARCH, ["artifact page", None])
     q = ev(pg, "(() => { const x = queueOf(curP()).find(x => x.kind === 'kit-storage'); return x && {cls: x.cls, who: x.who, ph: x.ph, ref: x.ref, title: x.title, stage: x.stage}; })()")
     check("a page in the design → the storage decision waits in the queue (should, you, arch)", q and q["cls"] == "should" and q["who"] == "you" and q["ph"] == "arch" and q["ref"] == "kit:storage", q)
-    check("…and in the Pick deck with three options and a star on the recommendation", ev(pg, "(() => { const c = pickDeck(curP()).find(c => c.kind === 'kit-storage'); return !!c && c.options.length === 3 && c.rec >= 0 && c.options.every(o => o.label && o.text); })()"))
+    # 1.8 (owner): where the data lives is "your call first" — the ★ on the recommendation shows after your own answer (was: ★ shown at once)
+    check("…and in the Pick deck with three options; the ★ on the recommendation waits for your call", ev(pg, "(() => { const c = pickDeck(curP()).find(c => c.kind === 'kit-storage'), x = queueOf(curP()).find(x => x.kind === 'kit-storage'); return !!c && c.options.length === 3 && c.callFirst && c.rec === -1 && PK8_QO(curP(), x).findIndex(o => o.star) === KIT_STORAGE.indexOf(kitStorageRec(curP()).kind) && c.options.every(o => o.label && o.text); })()"))
     check("…and in the counts for you", ev(pg, "queueCounts(curP()).you") >= 1)
     check("the queue item has a name, not a raw id", ev(pg, "refLabel(curP(), 'kit:storage')") == ev(pg, "t('kit.q.storage')"))
 
@@ -51,7 +52,7 @@ with sync_playwright() as pw:
 
     print("3 answering")
     n0 = ev(pg, "curP().decisions.length"); a0 = ev(pg, "arr(curP().acts).filter(a => !a.undone).length")
-    r = ev(pg, "(async () => { const x = queueOf(curP()).find(x => x.kind === 'kit-storage'); const o = qOptions(curP(), x); const i = o.findIndex(y => y.star); return [await qDo(curP(), x, i), i]; })()")
+    r = ev(pg, "(async () => { const x = queueOf(curP()).find(x => x.kind === 'kit-storage'); const o = PK8_QO(curP(), x); const i = o.findIndex(y => y.star); return [await qDo(curP(), x, i), i]; })()")   # 1.8: the ★ is read from the options before your-call-first hides it
     check("the starred option is PT's recommendation", r[1] == ev(pg, "KIT_STORAGE.indexOf(kitStorageRec(curP()).kind)"), r)
     st = ev(pg, "kitStorageDecided(curP())")
     check("one click decides: stored with by=you and the recommendation it followed", st and st["kind"] == "local" and st["by"] == "you" and st["rec"] == "local", st)
@@ -105,7 +106,7 @@ with sync_playwright() as pw:
     ev(pg, "(() => { newProject('Price radar', {raw: 'Every morning check three shop pages for price drops and tell me'}); UI.home = false; render(); })()")
     ev(pg, ARCH, ["scheduled task", {"raw": "Every morning check three shop pages for price drops and tell me", "northStar": {"problem": "", "goal": "Tell me about price drops every morning", "success": "", "users": "me", "constraints": "", "now": ""}}])
     check("a scheduled design → kit 2 applies, kit 1 does not", ev(pg, "kit2Applies(curP()) && !kitApplies(curP())"))
-    qs = ev(pg, "queueOf(curP()).filter(x => x.kind.startsWith('kit-')).map(x => [x.kind, x.cls, x.who])")
+    qs = ev(pg, "queueOf(curP()).filter(x => x.kind.startsWith('kit-') && !['kit-ai', 'kit-customer'].includes(x.kind)).map(x => [x.kind, x.cls, x.who])")
     check("two decisions wait: engine and results (should, you)", sorted(qs) == [["kit-engine", "should", "you"], ["kit-results", "should", "you"]], qs)
     check("engine: hourly or slower → the included scheduled task", ev(pg, "kitEngineRec(curP()).kind") == "scheduled")
     check("results: nothing to approve, no table → a page", ev(pg, "kitResultsRec(curP()).kind") == "page")
@@ -116,7 +117,7 @@ with sync_playwright() as pw:
     ev(pg, "(() => { const p = curP(); p.intake.raw = 'Every morning check three shop pages for price drops and tell me'; p.northStar.goal = 'Tell me about price drops every morning'; })()")
     n0 = ev(pg, "curP().decisions.length"); a0 = ev(pg, "arr(curP().acts).filter(a => !a.undone).length")
     ev(pg, "(async () => { for (const kind of ['kit-engine', 'kit-results']){ const x = queueOf(curP()).find(x => x.kind === kind); await qDo(curP(), x, qOptions(curP(), x).findIndex(o => o.star)); } })()"); pg.wait_for_timeout(60)
-    check("two clicks decide both: two decision lines, two Undo steps, queue empty of kit items", ev(pg, "curP().decisions.length") == n0 + 2 and ev(pg, "arr(curP().acts).filter(a => !a.undone).length") == a0 + 2 and ev(pg, "!queueOf(curP()).some(x => x.kind.startsWith('kit-'))"), ev(pg, "arr(curP().acts).filter(a => !a.undone).map(a => a.label)"))
+    check("two clicks decide both: two decision lines, two Undo steps, queue empty of kit items", ev(pg, "curP().decisions.length") == n0 + 2 and ev(pg, "arr(curP().acts).filter(a => !a.undone).length") == a0 + 2 and ev(pg, "!queueOf(curP()).some(x => x.kind.startsWith('kit-') && !['kit-ai', 'kit-customer'].includes(x.kind))"), ev(pg, "arr(curP().acts).filter(a => !a.undone).map(a => a.label)"))
     check("stored as your decisions following the recommendation", ev(pg, "[kitRead(curP()).engine.kind, kitRead(curP()).results.kind, kitRead(curP()).engine.rec]") == ["scheduled", "page", "scheduled"])
     pr = ev(pg, "buildPrompt('architecture', {proj: curP(), rules: ['simple'], body: 'design', schema: '{}'})")
     check("the design prompt gets the scheduled facts, both decisions and the watchdog (daily)", "<kit_scheduled" in pr and pr.count("DECIDED by the person") == 2 and "Watchdog: ON" in pr and "<kit_artifact" not in pr)
@@ -181,12 +182,12 @@ with sync_playwright() as pw:
     ev(pg, "(() => { newProject('Recipe shop', {raw: 'A website where people subscribe and pay CHF 5 a month for my recipes'}); UI.home = false; render(); })()")
     ev(pg, ARCH, ["code repository (web app)", {"raw": "A website where people subscribe and pay CHF 5 a month for my recipes", "northStar": {"problem": "", "goal": "Sell recipe subscriptions worldwide", "success": "", "users": "home cooks", "constraints": "", "now": ""}}])
     check("a web app with payments → kit 3, not kit 1", ev(pg, "kit3Applies(curP()) && !kitApplies(curP()) && kit3Pays(curP()) && kit3Logs(curP())"))
-    qs = ev(pg, "queueOf(curP()).filter(x => x.kind.startsWith('kit-')).map(x => x.kind).sort()")
+    qs = ev(pg, "queueOf(curP()).filter(x => x.kind.startsWith('kit-') && !['kit-ai', 'kit-customer'].includes(x.kind)).map(x => x.kind).sort()")
     check("four decisions wait: hosting, payments, backend, login", qs == ["kit-backend", "kit-host", "kit-login", "kit-pay"], qs)
     recs = ev(pg, "[kitHostRec(curP()).kind, kitPayRec(curP()).kind, kitBackendRec(curP()).kind, kitLoginRec(curP()).kind]")
     check("worldwide digital subscription → Cloudflare, merchant of record, Supabase, magic link", recs == ["cloudflare", "mor", "supabase", "magic"], recs)
-    opts = ev(pg, "(() => { const x = queueOf(curP()).find(x => x.kind === 'kit-host'); return qOptions(curP(), x).map(o => [o.label, !!o.star]); })()")
-    check("hosting shows all four options with their cost, the recommendation starred", len(opts) == 4 and sum(1 for o in opts if o[1]) == 1 and any("USD 20" in o[0] for o in opts), opts)
+    opts = ev(pg, "(() => { const x = queueOf(curP()).find(x => x.kind === 'kit-host'); return PK8_QO(curP(), x).map(o => [o.label, !!o.star]); })()")   # 1.8: hosting is "your call first"; the ★ is read before it is hidden
+    check("hosting shows all four options with their cost, the recommendation starred (1.8: shown after your call)", len(opts) == 4 and sum(1 for o in opts if o[1]) == 1 and any("USD 20" in o[0] for o in opts) and not ev(pg, "(() => { const x = queueOf(curP()).find(x => x.kind === 'kit-host'); return qOptions(curP(), x).some(o => o.star); })()"), opts)
     ev(pg, "(() => { const p = curP(); p.intake.raw = 'A website for Swiss customers who pay with TWINT for my recipes'; p.northStar.goal = 'Sell recipes in Switzerland'; })()")
     check("Swiss customers + TWINT → Stripe", ev(pg, "kitPayRec(curP()).kind") == "stripe")
     ev(pg, "(() => { const p = curP(); p.intake.raw = 'A static page that shows my recipes, nothing else'; p.northStar.goal = 'Show my recipes'; p.northStar.users = 'anyone'; p.arch.components = [{id: 'c1', name: 'Recipe site', kind: 'code', role: 'shows recipes', inputs: 'markdown', outputs: 'website', reason: '', reqIds: []}]; })()")
@@ -194,7 +195,7 @@ with sync_playwright() as pw:
     check("…so only two decisions wait", ev(pg, "queueOf(curP()).filter(x => x.kind.startsWith('kit-')).map(x => x.kind).sort()") == ["kit-backend", "kit-host"])
     ev(pg, "(() => { const p = curP(); p.intake.raw = 'A website where people subscribe and pay CHF 5 a month for my recipes'; p.northStar.goal = 'Sell recipe subscriptions worldwide'; })()")
     n0 = ev(pg, "curP().decisions.length")
-    ev(pg, "(async () => { for (const k of ['kit-host', 'kit-pay', 'kit-backend', 'kit-login']){ const x = queueOf(curP()).find(x => x.kind === k); await qDo(curP(), x, qOptions(curP(), x).findIndex(o => o.star)); } })()"); pg.wait_for_timeout(60)
+    ev(pg, "(async () => { for (const k of ['kit-host', 'kit-pay', 'kit-backend', 'kit-login']){ const x = queueOf(curP()).find(x => x.kind === k); await qDo(curP(), x, PK8_QO(curP(), x).findIndex(o => o.star)); } })()"); pg.wait_for_timeout(60)   # 1.8: money / where data lives are "your call first"; the ★ is read before it is hidden
     check("four clicks decide all four; nothing left in the queue", ev(pg, "curP().decisions.length") == n0 + 4 and ev(pg, "!queueOf(curP()).some(x => x.kind.startsWith('kit-'))") and ev(pg, "[kitRead(curP()).host.kind, kitRead(curP()).pay.kind, kitRead(curP()).backend.kind, kitRead(curP()).login.kind]") == ["cloudflare", "mor", "supabase", "magic"])
     pr = ev(pg, "buildPrompt('architecture', {proj: curP(), rules: ['simple'], body: 'design', schema: '{}'})")
     check("the design prompt: web facts, four decisions, the build-or-use card against an external builder", "<kit_web_app" in pr and pr.count("DECIDED by the person") == 4 and "build-or-use card" in pr and "external builder" in pr)
@@ -207,7 +208,7 @@ with sync_playwright() as pw:
     print("11 kit 5: media")
     ev(pg, "(() => { newProject('Story pictures', {raw: 'Make an illustration for each bedtime story I write, read it aloud to me'}); UI.home = false; render(); })()")
     ev(pg, ARCH, ["artifact page", {"raw": "Make an illustration for each bedtime story I write, read it aloud to me", "northStar": {"problem": "", "goal": "Illustrated stories read aloud, for me", "success": "", "users": "me", "constraints": "", "now": ""}}])
-    check("images + voice → kit 5 with two decisions (no design one)", ev(pg, "kit5Applies(curP()) && kit5Img(curP()) && kit5Voice(curP()) && !kit5Design(curP())") and ev(pg, "queueOf(curP()).filter(x => x.kind.startsWith('kit-')).map(x => x.kind).sort()") == ["kit-img", "kit-storage", "kit-voice"])
+    check("images + voice → kit 5 with two decisions (no design one)", ev(pg, "kit5Applies(curP()) && kit5Img(curP()) && kit5Voice(curP()) && !kit5Design(curP())") and ev(pg, "queueOf(curP()).filter(x => x.kind.startsWith('kit-') && !['kit-ai', 'kit-customer'].includes(x.kind)).map(x => x.kind).sort()") == ["kit-img", "kit-storage", "kit-voice"])
     check("private tool → fal.ai and the browser voice recommended", ev(pg, "[kitImgRec(curP()).kind, kitVoiceRec(curP()).kind, kit5Public(curP())]") == ["fal", "browser", False])
     ev(pg, "(() => { const p = curP(); p.intake.raw = 'Illustrated stories I sell to customers as a deck'; p.northStar.goal = 'Sell illustrated story decks'; })()")
     check("published or sold → an open model, ElevenLabs, Gamma for the deck; marked public", ev(pg, "[kitImgRec(curP()).kind, kitVoiceRec(curP()).kind, kitDesignRec(curP()).kind, kit5Public(curP())]") == ["open", "elevenlabs", "gamma", True])
@@ -288,9 +289,11 @@ with sync_playwright() as pw:
     check("hard open picks do not block a first version (only real blockers do)", ev(pg, "(() => { const p = curP(); p.audience = {customers: false, eu: false}; pickOf(p).cards.push({id: 'pk-hard9', q: 'Money?', why: '', target: 'money', hard: true, multi: false, options: [{k: 'A', label: 'x'}, {k: 'B', label: 'y'}], rec: -1, by: 'pt', at: now()}); const ok = pickReady(p).find(x => x.id === 'hard').ok; pickOf(p).cards = pickOf(p).cards.filter(c => c.id !== 'pk-hard9'); return ok; })()"))
 
     print("14 an existing paid product")
-    ev(pg, "(() => { newProject('Dictation', {raw: 'A dictation tool like Wispr Flow, just for me'}); UI.home = false; render(); })()")
+    ev(pg, "(() => { newProject('Dictation', {raw: 'A dictation tool like Wispr Flow, just for me'}); UI.home = false; render(); pk8PriceStart(curP()); })()")   # 1.8 (owner): the price is read on the maker's page before the four routes show
+    try: pg.wait_for_function("pk8Price(curP()) && pk8Price(curP()).state === 'done'", timeout=8000)
+    except Exception: pass
     check("a named product → the route question, hard, with the product's name", ev(pg, "(() => { const x = queueOf(curP()).find(x => x.kind === 'kit-rebuild'); return kit7Applies(curP()) && kit7Product(curP()) === 'wispr flow' && !!x && x.hard && x.title.toLowerCase().includes('wispr flow'); })()"))
-    opts = ev(pg, "(() => { const x = queueOf(curP()).find(x => x.kind === 'kit-rebuild'); return qOptions(curP(), x).map(o => [o.label, !!o.star]); })()")
+    opts = ev(pg, "(() => { const x = queueOf(curP()).find(x => x.kind === 'kit-rebuild'); return PK8_QO(curP(), x).map(o => [o.label, !!o.star]); })()")   # 1.8: the route is a money decision, "your call first"; the ★ is read before it is hidden
     check("private: four routes, clean-room starred, REA offered but never starred", len(opts) == 4 and [o[1] for o in opts] == [False, True, False, False] and any("REA" in o[0] for o in opts), opts)
     ev(pg, "(() => { curP().intake.raw = 'A dictation tool like Wispr Flow that I sell to customers'; })()")
     opts = ev(pg, "(() => { const x = queueOf(curP()).find(x => x.kind === 'kit-rebuild'); return qOptions(curP(), x).map(o => o.label); })()")
