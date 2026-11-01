@@ -98,25 +98,29 @@ with sync_playwright() as pw:
     SKIP = re.compile(r"publish|release|runner|pilot|live|launch|delete|reset|import|export|engine|kp-|research|scan|recap|tool-report")
     undo_bad, toast_bad, tried = [], [], 0
     snap = "(vol) => { const o = JSON.parse(JSON.stringify(curP())); for (const k of [...DIFF_SKIP, ...vol]) delete o[k]; const prune = x => { if (x && typeof x === 'object' && !Array.isArray(x)){ for (const k of Object.keys(x)){ prune(x[k]); const v = x[k]; if (v == null || (typeof v === 'object' && !Array.isArray(v) && !Object.keys(v).length) || (Array.isArray(v) && !v.length) || v === '') delete x[k]; } } else if (Array.isArray(x)) x.forEach(prune); }; prune(o); return JSON.stringify(o); }"   # empty objects/lists made outside an action are not a difference
+    # 1.8.0: "idle" = no AI call and no job PT started since `j0` still on its way, for 1.2 s (PT's automatic steps start 300 / 600 / 900 ms
+    # after the step before, a research job takes a few seconds); with half a second the check sometimes read a half-finished chain
+    def settle(j0):
+        for n_ in range(60):
+            try: pg.wait_for_function("AI.running.size === 0", timeout=20000)
+            except Exception: pass
+            pg.wait_for_timeout(1200)
+            if pg.evaluate("(j0) => AI.running.size === 0 && (!arr(WS.jobs).some(j => j && !j0.includes(j.id) && !j.applied && j.status !== 'notsent') || %d > 8)" % n_, j0): break
     for js in SCREENS(pid):
         pg.evaluate(js); pg.wait_for_timeout(100)
         vis = pg.evaluate("(ai) => [...new Set([...document.querySelectorAll('.app [data-a]')].filter(e => e.offsetParent && !e.disabled).map(e => e.dataset.a))].filter(a => ai.includes(a))", aiacts)
         for a in vis:
             if SKIP.search(a): continue
-            pg.evaluate(js); pg.wait_for_timeout(60)
+            jn = pg.evaluate("arr(WS.jobs).map(j => j && j.id)"); pg.evaluate(js); pg.wait_for_timeout(60)
+            settle(jn)   # 1.8.0: opening a step starts PT's own automatic steps (300-900 ms later); they belong to the visit, not to the click
             pg.evaluate("(() => { const p = curP(); for (const f of ['loopOf', 'goalOf', 'problemOf', 'engineOf']) try{ if (typeof window[f] === 'function') window[f](p); }catch(e){} })()")   # default states (loop idle) exist before, as they would after any visit
             before = pg.evaluate(snap, VOLATILE); n0 = pg.evaluate("arr(curP().acts).map(a => a.id)"); j0 = pg.evaluate("arr(WS.jobs).map(j => j && j.id)")
+            pg.evaluate("document.querySelectorAll('#toasts .toast').forEach(t => t.remove())")   # a toast from the visit is not the click's
             pg.evaluate("(a) => { const e = [...document.querySelectorAll('.app [data-a=\"' + a + '\"]')].find(e => e.offsetParent && !e.disabled); if (e) e.click(); }", a)
             pg.wait_for_timeout(150)
             if pg.evaluate("!!(UI.modal && UI.modal.kind === 'cost')"): pg.evaluate("ACTIONS['cost-go'] && ACTIONS['cost-go']({dataset: {v: 'once'}})")
             # 1.6.0: automatic steps chain with short gaps between AI calls; wait until PT has been idle for a while
-            # 1.8.0: the gaps are up to 0.9 s (autoEngine starts its steps 300 / 600 / 900 ms after a step) and a background job (research)
-            # may still be on its way; with half a second the check sometimes read a half-finished chain and blamed Undo for the rest
-            for n_ in range(60):
-                try: pg.wait_for_function("AI.running.size === 0", timeout=20000)
-                except Exception: pass
-                pg.wait_for_timeout(1200)
-                if pg.evaluate("(j0) => AI.running.size === 0 && (!arr(WS.jobs).some(j => j && !j0.includes(j.id) && !j.applied && j.status !== 'notsent') || %d > 8)" % n_, j0): break
+            settle(j0)
             pg.wait_for_timeout(150)
             # 6: a toast Undo must belong to a fresh action
             tb = pg.evaluate("(() => { const b = [...document.querySelectorAll('#toasts .toast button')].find(x => /undo|rückg|撤销/i.test(x.textContent)); if (!b) return null; const a = lastAct(curP()); return a ? Date.now() - new Date(a.at).getTime() : -1; })()")
