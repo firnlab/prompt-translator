@@ -35,4 +35,17 @@ Test fixes after the merge: the health test follows the merged cone; flows 1.2 s
 is left (the mock always answers with one unclear criterion); the rail keeps project names on one line (hunt 13).
 
 ## Gate and publish
-(filled in after the run)
+- Full gate, part 1 (all but click everything, `GATE_SLOW=1.5 --jobs=2`): 31 suites green; red: hunt (5 Undo, 13 squeeze) and check
+  the Pick tests (one planted bug read as missed); the run was then cut by its time limit during the Pick rerun.
+- Fixes: cause 68 (queue rows and tool states squeezed at 1024 with the inspector, `styles18.css`); hunt 5 waits for the visit's
+  and the click's own automatic steps (test timing, not PT); the kit-timing test and its planted bug now test something real.
+- After the fixes: hunt 21/0; check the Pick tests 57 of 57 caught (55 in one run, cut by the session's time limit, the last two
+  and the changed one alone); every other suite again (the style change can touch any screen): 31 of 31 green. Check the hunt
+  (73 minutes, planted hunt-2 bugs) was green in part 1 and not run again: the change after it is two style rules and test timing.
+- Click everything (alone, three levels side by side): green, 0 problems (70 minutes).
+- Published (1 Nov 2026, about 15:00 Zürich): preview version `1793541188-7ab4` (before: `1792946526-0c4b`, 1.7.0); main version
+  `1793541397-6111` (before: `1792946573-2d87`, 1.7.0). Same capabilities as 1.7.0, carried forward.
+- Live re-test of the preview: the published page is byte for byte the tested build; smoke, the 1.8 look test (98) and the 1.7.1
+  test (28) pass on the live page.
+- Code commit: `51e2953` (the built file is the one from `0d4f6b2`; the commit after it changed tests only).
+- Baseline for the next static review: `src_v180_backup/`.
