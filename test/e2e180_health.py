@@ -196,6 +196,12 @@ with sync_playwright() as pw:
     check("…shown on the row as earlier reds", re.search(r"Earlier reds: 1", ev(pg, "T18H.row('fleet').text")) is not None, ev(pg, "T18H.row('fleet').text")[-300:])
     hn = ev(pg, f"""(() => {{ const q = WS.projects.find(p => p.id === '{q}'); q.pick = q.pick || {{}}; q.pick.platformParts = arr(q.pick.platformParts).concat([{{part: 'planted part', status: 'documented', date: new Date(Date.now() - 60 * 86400000).toISOString().slice(0, 10)}}]); render(); return T18H.row('honesty'); }})()""")
     check("honesty: a platform fact 60 days old is past its 45-day budget; with facts by type PT no longer shows it as certain — one signal = watch", hn["st"] == "watch" and "planted part" in hn["text"], [hn["st"], hn["text"][:400]])
+    # 1.8: for a private tool with a design the drill is a check row: listed only when the tool takes in outside text (reads, web,
+    # acts outward) and due only once applied (a shared tool keeps today's behaviour). The made-up bundle's tool is private and reads
+    # nothing; the real data's was shared. So the test's tool reads news from websites and the row is applied, as a person would.
+    ev(pg, f"""(() => {{ const q = WS.projects.find(p => p.id === '{q}'); q.tool.home = Object.assign({{}}, q.tool.home, {{parts: str((q.tool.home || {{}}).parts) + ' reads news from websites'}});
+      if (chkActive(q) && !chkShared(q)) chkSet(q, 'drill', 'apply'); render(); }})()""")
+    check("the drill is on for the live tool (applied, or a shared tool)", ev(pg, f"chkGateOn(WS.projects.find(p => p.id === '{q}'), 'drill')"))
     sc = ev(pg, f"""(() => {{ const q = WS.projects.find(p => p.id === '{q}'); q.findings.push({{id: 'F-hr18', lens: 'security', severity: 'high', status: 'open', issue: 'planted', fix: '', version: q.versionNo || 0, at: now(), audit: [], reopened: 0}}); render(); return T18H.row('security'); }})()""")
     check("security: an open finding and a drill due on a live tool — act", sc["st"] == "act", sc["text"][:300])
     lines = ev(pg, "health18Lines()")
