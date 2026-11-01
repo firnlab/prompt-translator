@@ -148,9 +148,11 @@ with sync_playwright() as pw:
     check("hostile research: no unknown kinds, no javascript: links", not rr["hostile"]["badSrc"] and "evil" not in rr["hostile"]["kinds"], rr["hostile"])
     check("a lookup for a pick that is gone breaks nothing", not rr["card"]["err"], rr["card"])
     print("3 contract: private details never reach a research question")
-    sc = ev(pg, "pickScrub('Owner and Second owner at v.t@example.com, +41 79 123 45 67, AHV 756.1234.5678.97, IBAN CH93 0076 2011 6238 5295 7, https://site.example/p, Bahnhofstrasse 12, Contract project', curP())")
+    # 1.7.1: the people's names are the data copy's own workspace names, never names written into the test
+    _names = ev(pg, "META.workspaces.map(w => w.name).filter(n => n.trim().length > 2)")
+    sc = ev(pg, "pickScrub(META.workspaces.map(w => w.name).join(' and ') + ' at v.t@example.com, +41 79 123 45 67, AHV 756.1234.5678.97, IBAN CH93 0076 2011 6238 5295 7, https://site.example/p, Bahnhofstrasse 12, Contract project', curP())")
     import re as _re
-    check("names, e-mail, phone, AHV, IBAN, links, street and the project's name are removed", not _re.search(r"Owner|Second owner|example\.com|123 45|756\.1234|CH93|site\.example|Bahnhofstrasse 12|Contract project", sc), sc)
+    check("names, e-mail, phone, AHV, IBAN, links, street and the project's name are removed", bool(_names) and not _re.search("|".join(_re.escape(n) for n in _names) + r"|example\.com|123 45|756\.1234|CH93|site\.example|Bahnhofstrasse 12|Contract project", sc, _re.I), [_names, sc])
     print("4 Undo after PT touched the decision")
     u = ev(pg, """(() => { const p = curP(), k = pickOf(p); k.size = 0; k.cards.push({id: 'pk-u1', q: 'Undo me?', why: '', target: 'decision', hard: false, multi: false, options: [{k: 'A', label: 'Yes'}, {k: 'B', label: 'No'}], rec: 0, by: 'pt', at: now()});
       pickAnswer(p, 'pk-u1', {keys: ['A']}); actClose(p.id); const e = k.log.find(x => x.cid === 'pk-u1');

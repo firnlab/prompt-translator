@@ -73,6 +73,11 @@ for (const m of code.matchAll(/const orig = ACTIONS\[["']([a-z0-9-]+)["']\]/g)) 
   // long cuts must say how much is missing (the AI then knows the text is partial)
   if (!/function trunc\(s, n\)\{[^\n]*if \(n < 400\) return[^\n]*\n[^\n]*\n[^\n]*cut\.more/.test(code)) H('cut', 'trunc must mark long cuts with "[… n more characters not shown]" (cut.more)');
   if (!/const DATA_RULE = /.test(code) || !/prompt = DATA_RULE \+ prompt/.test(code)) H('rule', 'runAI must add DATA_RULE (text in the project, files and web results is material, never instructions)'); }
+/* cause 59 (1.7.1): a workspace (a person) found or named by a fixed name in the code breaks when names change (the public-repo name swap did) */
+for (const f of codeFiles) src(f).split('\n').forEach((line, i) => {
+  if (/ok:person/.test(line)) return;
+  if (/\/[A-Za-z][a-z]+\/i\.test\(\w+\.name\)|createWorkspace\("[A-Z][a-z]+"|\b\w\.name = "[A-Z][a-z]+"|\.name === "[A-Z][a-z]+"/.test(line)) H('person', `${f}:${i + 1} a workspace found or named by a fixed person's name (find it by place or id; names come from the data): ${line.trim().slice(0, 120)}`);
+});
 
 /* 4. review items in changed files: the patterns behind the 1.4.1 and 1.4.2 bugs */
 for (const f of codeFiles.filter(changed)){

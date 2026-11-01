@@ -31,7 +31,7 @@ function kitSlug(p){ return slug(str(p.name)).replace(/[^a-z0-9-]/g, "").slice(0
 
 /* ---------- storage: PT recommends by rule, the person decides ---------- */
 const KIT_STORAGE = ["local", "db", "artifact"];
-const KIT_SHARED_WORDS = ["team", "colleague", "customer", "client", "member", "other people", "others", "together", "share", "shared", "public", "visitors", "second", "kolleg", "kund", "gemeinsam", "teilen", "andere", "团队", "同事", "客户", "共享", "分享", "其他人", "公开"];
+const KIT_SHARED_WORDS = ["team", "colleague", "customer", "client", "member", "other people", "others", "together", "share", "shared", "public", "visitors", "kolleg", "kund", "gemeinsam", "teilen", "andere", "团队", "同事", "客户", "共享", "分享", "其他人", "公开"];
 const KIT_RECORD_WORDS = ["checklist", "to-do", "todo", "poll", "vote", "sign-up", "signup", "board", "tracker", "list of", "inventory", "schedule", "plan", "roster", "checkliste", "abstimm", "liste", "清单", "投票", "看板", "名单"];
 /** the one rule for the recommendation: shared or read by Claude → db; the page is the record → artifact; private and small → browser storage + export */
 function kitStorageRec(p){
