@@ -49,3 +49,4 @@ is left (the mock always answers with one unclear criterion); the rail keeps pro
   test (28) pass on the live page.
 - Code commit: `51e2953` (the built file is the one from `0d4f6b2`; the commit after it changed tests only).
 - Baseline for the next static review: `src_v180_backup/`.
+- After the publish, CI (quick-gate, made-up bundle) was red on one Health test check (test only: the 1.8 drill is a check row, see RELEASE-CHECKS); fixed in the test, the CI list run locally on the made-up bundle: green. The published file is unchanged.
