@@ -1,0 +1,363 @@
+{
+ "checked": "2026-11-01",
+ "tools": [
+  {
+   "id": "rea",
+   "repo": "morluto/rea",
+   "tag": "rea-agents-6.8.0",
+   "licence_file": "LICENSE",
+   "licence_head": "MIT License Copyright (c) 2026 morluto Permission is hereby granted, free of charge, to any person obtaining a copy of t",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "rea-rea-agents-6.8.0.tar.gz",
+     "sha256": "3cdf86c09b7236aa6a6cd0c155758615ff9fb434f9da7c2b24e9ef2e8aa3e58d",
+     "bytes": 19443882,
+     "from": "https://api.github.com/repos/morluto/rea/tarball/rea-agents-6.8.0"
+    }
+   ]
+  },
+  {
+   "id": "ghidra",
+   "repo": "NationalSecurityAgency/ghidra",
+   "tag": "Ghidra_12.2_build",
+   "licence_file": "LICENSE",
+   "licence_head": "Apache License Version 2.0, January 2004 http://www.apache.org/licenses/ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "ghidra-Ghidra_12.2_build.tar.gz",
+     "sha256": "2944b547e49a795b47fa498071cc25f1b7b5fd865bb26477882a7b31f1ea360c",
+     "bytes": 80867057,
+     "from": "https://api.github.com/repos/NationalSecurityAgency/ghidra/tarball/Ghidra_12.2_build"
+    },
+    {
+     "file": "ghidra-ghidra_12.2_PUBLIC_20261016.zip",
+     "sha256": "2c2cd776db3c1f6a097ba418922378ac3649cadd5e844a6f5f088ae628a7be67",
+     "bytes": 569712708,
+     "from": "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.2_build/ghidra_12.2_PUBLIC_20261016.zip"
+    }
+   ]
+  },
+  {
+   "id": "mitmproxy",
+   "repo": "mitmproxy/mitmproxy",
+   "tag": "v12.3.1",
+   "licence_file": "LICENSE",
+   "licence_head": "Copyright (c) 2013, Aldo Cortesi. All rights reserved. Permission is hereby granted, free of charge, to any person obtai",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "mitmproxy-v12.3.1.tar.gz",
+     "sha256": "25032f6ff0af7cc29a9279a5767e78aea204c35188e5fb9c1ba08371f128a3e5",
+     "bytes": 29984773,
+     "from": "https://api.github.com/repos/mitmproxy/mitmproxy/tarball/v12.3.1"
+    }
+   ]
+  },
+  {
+   "id": "jadx",
+   "repo": "skylot/jadx",
+   "tag": "v1.5.6",
+   "licence_file": "LICENSE",
+   "licence_head": "Apache License Version 2.0, January 2004 http://www.apache.org/licenses/ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "jadx-v1.5.6.tar.gz",
+     "sha256": "9afc3d43fc753ec9f16d6cdf582acce647e7d755460f8922190e3b817efd9a47",
+     "bytes": 2197597,
+     "from": "https://api.github.com/repos/skylot/jadx/tarball/v1.5.6"
+    }
+   ]
+  },
+  {
+   "id": "frida",
+   "repo": "frida/frida",
+   "tag": "17.25.0",
+   "licence_file": "COPYING",
+   "licence_head": "wxWindows Library Licence, Version 3.1 ====================================== Copyright (c) 1998-2005 Julian Smart, Robe",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "frida-17.25.0.tar.gz",
+     "sha256": "e08d99b54ebe22822afb1ff003291f499a571f673ace035f8e7de7a0380b21c4",
+     "bytes": 31999,
+     "from": "https://api.github.com/repos/frida/frida/tarball/17.25.0"
+    }
+   ]
+  },
+  {
+   "id": "promptfoo",
+   "repo": "promptfoo/promptfoo",
+   "tag": "0.125.1",
+   "licence_file": "LICENSE",
+   "licence_head": "Copyright (c) Promptfoo 2025 Permission is hereby granted, free of charge, to any person obtaining a copy of this softwa",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "promptfoo-0.125.1.tar.gz",
+     "sha256": "38c6c5460b7c9f514c6a26c21fb23a906134b6d70548b5291cf46f560ad34de4",
+     "bytes": 183670345,
+     "from": "https://api.github.com/repos/promptfoo/promptfoo/tarball/0.125.1"
+    }
+   ]
+  },
+  {
+   "id": "gitleaks",
+   "repo": "gitleaks/gitleaks",
+   "tag": "v8.30.1",
+   "licence_file": "LICENSE",
+   "licence_head": "MIT License Copyright (c) 2019 Zachary Rice Permission is hereby granted, free of charge, to any person obtaining a copy",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "gitleaks-v8.30.1.tar.gz",
+     "sha256": "dccad08b346424cea740ba1d9ac8a5d13a5bcdc3424eb27b8a0f3ed1507802f0",
+     "bytes": 306213,
+     "from": "https://api.github.com/repos/gitleaks/gitleaks/tarball/v8.30.1"
+    }
+   ]
+  },
+  {
+   "id": "garak",
+   "repo": "NVIDIA/garak",
+   "tag": "v0.17.1",
+   "licence_file": "LICENSE",
+   "licence_head": "Apache License Version 2.0, January 2004 http://www.apache.org/licenses/ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "garak-v0.17.1.tar.gz",
+     "sha256": "2f750593d80a0d5b9aa6692814f04b4c92a65876f5f8f1f4724d57b9a9560051",
+     "bytes": 3994981,
+     "from": "https://api.github.com/repos/NVIDIA/garak/tarball/v0.17.1"
+    }
+   ]
+  },
+  {
+   "id": "owasp-llm",
+   "repo": "OWASP/www-project-top-10-for-large-language-model-applications",
+   "tag": "2024",
+   "licence_file": "LICENSE.md",
+   "licence_head": "# License This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License. ## You are fr",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "owasp-llm-2024.tar.gz",
+     "sha256": "cc2198b694f1901d8a96b620e5dca080fb0a9bfe13a7d95401cb845827c37aaf",
+     "bytes": 299709745,
+     "from": "https://api.github.com/repos/OWASP/www-project-top-10-for-large-language-model-applications/tarball/2024"
+    }
+   ]
+  },
+  {
+   "id": "claude-code-action",
+   "repo": "anthropics/claude-code-action",
+   "tag": "v1",
+   "licence_file": "LICENSE",
+   "licence_head": "MIT License Copyright (c) 2025 Anthropic, PBC Permission is hereby granted, free of charge, to any person obtaining a co",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "claude-code-action-v1.tar.gz",
+     "sha256": "7e1224d788a1bb4099f8391d504d01ae4823d90bd0a08f9cda1fc49c9e554f72",
+     "bytes": 364587,
+     "from": "https://api.github.com/repos/anthropics/claude-code-action/tarball/v1"
+    }
+   ]
+  },
+  {
+   "id": "mcp-servers",
+   "repo": "modelcontextprotocol/servers",
+   "tag": "v2.2.0",
+   "licence_file": "LICENSE",
+   "licence_head": "The MCP project is undergoing a licensing transition from the MIT License to the Apache License, Version 2.0 (\"Apache-2.",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "mcp-servers-v2.2.0.tar.gz",
+     "sha256": "87957330e11f74f96ffc41e3c61b04f37599e0a0370820289a9268481bce3a8c",
+     "bytes": 1215144,
+     "from": "https://api.github.com/repos/modelcontextprotocol/servers/tarball/v2.2.0"
+    }
+   ]
+  },
+  {
+   "id": "playwright-mcp",
+   "repo": "microsoft/playwright-mcp",
+   "tag": "v0.0.84",
+   "licence_file": "LICENSE",
+   "licence_head": "Apache License Version 2.0, January 2004 http://www.apache.org/licenses/ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "playwright-mcp-v0.0.84.tar.gz",
+     "sha256": "ae9b4cc3f0f4cfe301096acce02ec1b2e0cd27f5a726307154e5e39566720113",
+     "bytes": 78759,
+     "from": "https://api.github.com/repos/microsoft/playwright-mcp/tarball/v0.0.84"
+    }
+   ]
+  },
+  {
+   "id": "activepieces",
+   "repo": "activepieces/activepieces",
+   "tag": "0.92.3-hotfix.2",
+   "licence_file": "LICENSE",
+   "licence_head": "Copyright (c) 2020-2024 Activepieces Inc. Portions of this software are licensed as follows: * All content that resides ",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "activepieces-0.92.3-hotfix.2.tar.gz",
+     "sha256": "85a83c5401ff422fb9116d9507b1cca0920f8ffcb3c33f2bc208d564dd4a721f",
+     "bytes": 76424559,
+     "from": "https://api.github.com/repos/activepieces/activepieces/tarball/0.92.3-hotfix.2"
+    }
+   ]
+  },
+  {
+   "id": "faster-whisper",
+   "repo": "SYSTRAN/faster-whisper",
+   "tag": "v1.2.1",
+   "licence_file": "LICENSE",
+   "licence_head": "MIT License Copyright (c) 2023 SYSTRAN Permission is hereby granted, free of charge, to any person obtaining a copy of t",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "faster-whisper-v1.2.1.tar.gz",
+     "sha256": "bb977de133a0418dad55f7400307c0db6c53ccccfa87628eeef5527f88096702",
+     "bytes": 21407958,
+     "from": "https://api.github.com/repos/SYSTRAN/faster-whisper/tarball/v1.2.1"
+    }
+   ]
+  },
+  {
+   "id": "whisper-cpp",
+   "repo": "ggml-org/whisper.cpp",
+   "tag": "v1.9.5",
+   "licence_file": "LICENSE",
+   "licence_head": "MIT License Copyright (c) 2023-2026 The ggml authors Permission is hereby granted, free of charge, to any person obtaini",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "whisper-cpp-v1.9.5.tar.gz",
+     "sha256": "469e96407d4a5f5a72288160f3b5bf0ec69f218b09d68cee2d552a27b525a469",
+     "bytes": 9628078,
+     "from": "https://api.github.com/repos/ggml-org/whisper.cpp/tarball/v1.9.5"
+    }
+   ]
+  },
+  {
+   "id": "kokoro",
+   "repo": "hexgrad/kokoro",
+   "tag": "main",
+   "licence_file": "LICENSE",
+   "licence_head": "Apache License Version 2.0, January 2004 http://www.apache.org/licenses/ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "kokoro-main.tar.gz",
+     "sha256": "9e6c7574fed034014d033b11a79ba35b855674e15633098e3417063177118a7c",
+     "bytes": 26200778,
+     "from": "https://api.github.com/repos/hexgrad/kokoro/tarball/main"
+    }
+   ]
+  },
+  {
+   "id": "ollama",
+   "repo": "ollama/ollama",
+   "tag": "v0.40.13",
+   "licence_file": "LICENSE",
+   "licence_head": "MIT License Copyright (c) Ollama Permission is hereby granted, free of charge, to any person obtaining a copy of this so",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "ollama-v0.40.13.tar.gz",
+     "sha256": "13628e7475d586a2fb898ba72b1e1cd24341a28d197c8b16fb29a52a8dbc6a9f",
+     "bytes": 26949220,
+     "from": "https://api.github.com/repos/ollama/ollama/tarball/v0.40.13"
+    }
+   ]
+  },
+  {
+   "id": "capacitor",
+   "repo": "ionic-team/capacitor",
+   "tag": "7.6.10",
+   "licence_file": "LICENSE",
+   "licence_head": "MIT License Copyright (c) 2017-present Drifty Co. Permission is hereby granted, free of charge, to any person obtaining ",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "capacitor-7.6.10.tar.gz",
+     "sha256": "bfd276047bc499305c88c1eb3d019ac3e329b582ec7b92c2e5dcfabaafe69d52",
+     "bytes": 1038136,
+     "from": "https://api.github.com/repos/ionic-team/capacitor/tarball/7.6.10"
+    }
+   ]
+  },
+  {
+   "id": "expo",
+   "repo": "expo/expo",
+   "tag": "expo-template-tabs@58.0.31",
+   "licence_file": "LICENSE",
+   "licence_head": "The MIT License (MIT) Copyright (c) 2015-present 650 Industries, Inc. (aka Expo) Permission is hereby granted, free of c",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "expo-expo-template-tabs@58.0.31.tar.gz",
+     "sha256": "c180f9fafa102021e9dc6e023c083dd063a9a42585625553b67dc2148130fca0",
+     "bytes": 172199167,
+     "from": "https://api.github.com/repos/expo/expo/tarball/expo-template-tabs@58.0.31"
+    }
+   ]
+  },
+  {
+   "id": "vite",
+   "repo": "vitejs/vite",
+   "tag": "create-vite@9.3.3",
+   "licence_file": "LICENSE",
+   "licence_head": "MIT License Copyright (c) 2019-present, VoidZero Inc. and Vite contributors Permission is hereby granted, free of charge",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "vite-create-vite@9.3.3.tar.gz",
+     "sha256": "d783cdf8da728676b88296a79f2556456a47b9a2193d9d49f86c9e0024e384a2",
+     "bytes": 12987404,
+     "from": "https://api.github.com/repos/vitejs/vite/tarball/create-vite@9.3.3"
+    }
+   ]
+  },
+  {
+   "id": "wrangler",
+   "repo": "cloudflare/workers-sdk",
+   "tag": "@cloudflare/pages-shared@0.13.205",
+   "licence_file": "LICENSE-MIT",
+   "licence_head": "Copyright (c) 2020 Cloudflare, Inc. <wrangler@cloudflare.com> Permission is hereby granted, free of charge, to any perso",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "wrangler-@cloudflare_pages-shared@0.13.205.tar.gz",
+     "sha256": "f87096af3cdebd94f7858b27bb64dcb8d603440030e00d6436edf6feaf5719ca",
+     "bytes": 10071779,
+     "from": "https://api.github.com/repos/cloudflare/workers-sdk/tarball/@cloudflare/pages-shared@0.13.205"
+    }
+   ]
+  },
+  {
+   "id": "chartjs",
+   "repo": "chartjs/Chart.js",
+   "tag": "v4.6.1",
+   "licence_file": "LICENSE.md",
+   "licence_head": "The MIT License (MIT) Copyright (c) 2014-2024 Chart.js Contributors Permission is hereby granted, free of charge, to any",
+   "licence_ok": true,
+   "files": [
+    {
+     "file": "chartjs-v4.6.1.tar.gz",
+     "sha256": "e4d52a444681a68f96e40f864f6e2c39d57ce8cf3fd3e5c9a41121b69bd0f38f",
+     "bytes": 12628001,
+     "from": "https://api.github.com/repos/chartjs/Chart.js/tarball/v4.6.1"
+    }
+   ]
+  }
+ ]
+}
