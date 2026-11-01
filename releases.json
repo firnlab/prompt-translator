@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "version": "1.8.0",
+    "date": "2026-11-01",
+    "commit": "51e295383b60ab827b7ab7f236a07668398a6c66",
+    "main": {
+      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+      "live": "1793541397-6111",
+      "previous": "1792946573-2d87"
+    },
+    "preview": {
+      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+      "live": "1793541188-7ab4",
+      "previous": "1792946526-0c4b"
+    },
+    "notes": "1.8.0: the friendlier look (always light, ink blue), deciding with ★ on hard questions and your earlier call first, check rows per tool with fix-until-green, facts with an age, decision rows with Undo and the Decisions page, the cone (start from one sentence), running (Sunday note, inbox sorting, tell PT what's wrong), Health and the move of 1.7 projects with a restore point, kits on Opus 5.5; 1.7.1 (time baseline, name independence) is inside. Previous versions in the private archive (1.0-1.7)."
+  }
+]
