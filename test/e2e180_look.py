@@ -1,6 +1,6 @@
 """1.8 look (decided by the owner on 1 Nov 2026), on a COPY of the real data (or the made-up bundle) with the mock runtime.
 Covers: light by default (a new workspace, the screen before a workspace opens, the one-time step from "system" to "light",
-an explicit "dark" kept, "system" still choosable); contrast of text, accent and status pills in light and dark (WCAG AA:
+every workspace light once, later choices kept, "system" still choosable); contrast of text, accent and status pills in light and dark (WCAG AA:
 text 4.5:1, controls 3:1); pills and the one big main button; no web font left; status = glyph + word; two-tone navigation
 icons with a word; the quiet "Live" line and PT's real rollback behind it (never a fake Undo); "Claude drafted this · you
 decide" and "We assume … — change" in three languages; motion: no hover lifts or glows, reduced motion = fades only;
@@ -65,13 +65,14 @@ with sync_playwright() as pw:
     pg0.close()
     pg = open_page(ctx)
     wsid = ev(pg, "WS.id"); st0 = seed_theme(wsid)
-    exp = "light" if st0 in (None, "", "system") else st0
-    check("an existing workspace was moved once: 'system' (or nothing) became light, an explicit choice stayed", ev(pg, "WS.settings.theme") == exp and ev(pg, "WS.settings.look18 === true"), [st0, ev(pg, "WS.settings.theme")])
+    exp = "light"   # owner, 1 Nov 2026: always light — every workspace becomes light once, whatever it had
+    check("an existing workspace was moved once to light (it had: " + str(st0) + ")", ev(pg, "WS.settings.theme") == exp and ev(pg, "WS.settings.look18 === true"), [st0, ev(pg, "WS.settings.theme")])
     check("…and the page shows that theme", ev(pg, "document.documentElement.dataset.theme") == exp)
     r = ev(pg, """async () => {
       const keep = WS.settings.theme; const out = {};
       WS.settings.theme = 'system'; delete WS.settings.look18; applySettings(); out.sys = [WS.settings.theme, WS.settings.look18, document.documentElement.dataset.theme];
       WS.settings.theme = 'dark'; delete WS.settings.look18; applySettings(); out.dark = [WS.settings.theme, document.documentElement.dataset.theme];
+      WS.settings.theme = 'dark'; applySettings(); out.dark2 = [WS.settings.theme, document.documentElement.dataset.theme];
       WS.settings.theme = 'system'; applySettings(); out.again = [WS.settings.theme, document.documentElement.dataset.theme];
       out.sysdark = getComputedStyle(document.body).backgroundColor;   // the device is dark in this context
       WS.settings.theme = keep; applySettings();
@@ -79,7 +80,8 @@ with sync_playwright() as pw:
       const d = await Store.get(Store.root() + '/ws-' + w.id); out.fresh = d && d.settings && d.settings.theme;
       await removeWorkspace(w); return out; }""")
     check("the one-time step turns 'system' into 'light'", r["sys"][0] == "light" and r["sys"][1] is True and r["sys"][2] == "light", r)
-    check("an explicit 'dark' is kept", r["dark"] == ["dark", "dark"], r)
+    check("an earlier 'dark' also becomes light once (owner: always light)", r["dark"] == ["light", "light"], r)
+    check("'dark' chosen afterwards stays (no second move)", r["dark2"] == ["dark", "dark"], r)
     check("'system' can still be chosen afterwards and stays (no second move)", r["again"] == ["system", "system"], r)
     check("'system' follows the device (dark here)", r["sysdark"] == "rgb(17, 21, 27)", r["sysdark"])
     check("a new workspace starts light", r["fresh"] == "light", r)
