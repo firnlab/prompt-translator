@@ -192,7 +192,7 @@ with sync_playwright() as pw:
     check("…back to one signal: the red ends, and the history says what came after", f3[0] == "watch" and f3[1] and f3[1][-1]["to"] and f3[1][-1]["after"] == "watch", f3)
     check("…shown on the row as earlier reds", re.search(r"Earlier reds: 1", ev(pg, "T18H.row('fleet').text")) is not None, ev(pg, "T18H.row('fleet').text")[-300:])
     hn = ev(pg, f"""(() => {{ const q = WS.projects.find(p => p.id === '{q}'); q.pick = q.pick || {{}}; q.pick.platformParts = arr(q.pick.platformParts).concat([{{part: 'planted part', status: 'documented', date: new Date(Date.now() - 60 * 86400000).toISOString().slice(0, 10)}}]); render(); return T18H.row('honesty'); }})()""")
-    check("honesty: a platform fact 60 days old is past its 45-day budget and still shown as certain — act", hn["st"] == "act" and "planted part" in hn["text"], hn["text"][:400])
+    check("honesty: a platform fact 60 days old is past its 45-day budget; with facts by type PT no longer shows it as certain — one signal = watch", hn["st"] == "watch" and "planted part" in hn["text"], [hn["st"], hn["text"][:400]])
     sc = ev(pg, f"""(() => {{ const q = WS.projects.find(p => p.id === '{q}'); q.findings.push({{id: 'F-hr18', lens: 'security', severity: 'high', status: 'open', issue: 'planted', fix: '', version: q.versionNo || 0, at: now(), audit: [], reopened: 0}}); render(); return T18H.row('security'); }})()""")
     check("security: an open finding and a drill due on a live tool — act", sc["st"] == "act", sc["text"][:300])
     lines = ev(pg, "health18Lines()")
