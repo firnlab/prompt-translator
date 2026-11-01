@@ -30,5 +30,21 @@
       "previous": "1793541188-7ab4"
     },
     "notes": "1.8.1: turning on the Sunday preparation run (and a second login's runner) works again: every scheduled task PT creates asks for a new session per run, which the scheduled-task service now requires when notifications are set; one retry without notifications if the service refuses those settings; never from a preview copy."
+  },
+  {
+    "version": "1.8.2",
+    "date": "2026-11-01",
+    "commit": "c7fb5b6f00483a8267acb6250d8b02c7d4cae60e",
+    "main": {
+      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+      "live": "1793568295-4f03",
+      "previous": "1793554626-3ad8"
+    },
+    "preview": {
+      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+      "live": "1793568176-3b15",
+      "previous": "1793554511-e0e7"
+    },
+    "notes": "1.8.2: a scheduled task created from PT takes the cloud environment the scheduled-task service lists (a page has no session to take it from) and PT remembers it; PT tells the owner to turn on automatic approval for such a task. Proven first with a one-button live check."
   }
 ]
