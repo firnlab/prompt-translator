@@ -50,6 +50,9 @@ with sync_playwright() as pw:
     print("3 the Bauplan on the Design page (1.6 bug: Karte · Bauplan did nothing)")
     pg.locator(".pg-bar .sp-st[data-v=design]").first.click(); pg.wait_for_timeout(400)
     n = ev(pg, "arr(curP().arch.components).length")
+    # 1.8 (owner): the Bauplan is folded by default; one click opens it (was: open at once)
+    check("1.8: the Bauplan is folded by default, with one button to open it", ev(pg, "!!document.querySelector('.pg[data-page=design] .pg-map.folded [data-a=pk8-map]')"))
+    ev(pg, "(() => { const b = document.querySelector('.pg[data-page=design] .pg-map [data-a=pk8-map]'); if (b) b.click(); })()"); pg.wait_for_timeout(300)
     check("the Design page shows the Bauplan with every part", ev(pg, "(() => { const m = document.querySelector('.pg[data-page=design] .pg-map'); return !!m && m.querySelectorAll('.part, .mpart, [data-a=selpart]').length >= " + str(n) + "; })()"), ev(pg, "(() => { const m = document.querySelector('.pg[data-page=design] .pg-map'); return m ? m.innerHTML.slice(0, 300) : 'no map'; })()"))
     check("…and the kit decisions block", ev(pg, "!!document.querySelector('.pg[data-page=design] .pg-kits') || !kitApplies(curP())"))
     check("…and 'all details' folded, opening the steps of the page", ev(pg, "!!document.querySelector('.pg[data-page=design] .pg-details [data-a=pg-details]')"))
@@ -78,7 +81,7 @@ with sync_playwright() as pw:
     pg.locator(".pg-track, .pg-bar").first.wait_for(timeout=3000)
     ev(pg, "pgOpen(curP(), 'design')"); pg.wait_for_timeout(300)
     check("the Design page lists every open kit decision", ev(pg, "document.querySelectorAll('.pg[data-page=design] .pg-kits .pg-row').length") == nk, ev(pg, "document.querySelectorAll('.pg[data-page=design] .pg-kits .pg-row').length"))
-    r = ev(pg, "(async () => { const x = queueOf(curP()).find(x => x.kind === 'kit-storage'); if (!x) return 'none'; const o = qOptions(curP(), x); const r = await qDo(curP(), x, o.findIndex(y => y.star)); render(); return r; })()")
+    r = ev(pg, "(async () => { const x = queueOf(curP()).find(x => x.kind === 'kit-storage'); if (!x) return 'none'; const o = PK8_QO(curP(), x); const r = await qDo(curP(), x, o.findIndex(y => y.star)); render(); return r; })()")   # 1.8: where data lives is "your call first"; the ★ is read before it is hidden
     pg.wait_for_timeout(200)
     check("a kit decision taken on the page shows as decided with Change", ev(pg, "(() => { const L = kitDecidedList(curP()); return L.length === 1 && L[0].key === 'storage' && !!document.querySelector('.pg-kits .item [data-a=q-goto][data-ref=\"kit:storage\"]'); })()"), ev(pg, "kitDecidedList(curP())"))
     ev(pg, "undoAct(curP(), arr(curP().acts).filter(a => !a.undone && !a.undoOf).slice(-1)[0].id); render()"); pg.wait_for_timeout(150)

@@ -4,10 +4,14 @@ Run: python3 test/check_the_pick.py        (about 20 minutes; never touches src/
 import pathlib, shutil, subprocess, sys, tempfile, os
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 C, E, B = "python3 test/pick_contract.py", "python3 test/e2e15.py", "python3 test/e2e15b.py"
+D = "python3 test/e2e180_decide.py"   # 1.8 deciding
 # (name, [(file, old, new), …], test that must fail)
 M = [
     ("research questions keep people's names", [("v150_pick.js", "for (const n of [...people, ...people.flatMap(n => n.split(/[\\s._-]+/))].filter(v => v.trim().length > 2)) x = x.replace(rx(n), \"[name]\");", "")], C),
-    ("a hard pick gets a ★", [("v150_pick.js", "rec: hard ? -1 : recAt,", "rec: recAt,")], C),
+    # 1.8 (owner): hard picks DO show PT's ★ now ("a hard pick gets a ★" is no longer a bug); the bug is a hard ★ taken by itself
+    ("a hard pick's ★ is taken by 'take all ★'", [("v150_pick.js", "pickOpenCards(p).filter(c => !c.qkey && !c.hard && c.rec >= 0", "pickOpenCards(p).filter(c => !c.qkey && c.rec >= 0"),
+        ("v180_decide.js", "return orig(p).filter(c => !c.hard && !pk8CardCallFirst(p, c));", "return orig(p);"),
+        ("v180_decide.js", "if (c && o.assumed && (c.hard || (cf && !call))) return null;", "")], C),
     ("a blog confirms what a platform can do", [("v150_pick.js", "if (x.kind === \"platform\" && status && status !== \"unknown\" && !first) status = \"unknown\";", "")], C),
     ("Undo leaves a pick open and decided", [("v150_pick.js", "try{ if (p && pickCoherent(p)){ touch(p); actRebase(p); } }", "try{ }")], C),
     ("an AI answer that breaks a card rule is used without asking again", [("v150_pick.js", "check: o => arr(o.cards).flatMap(c => pickCardChecks(c, k, lang))});\n  if (!r) return null;\n  const q = pickLive(p, ws0); if (!q) return null;\n  const kk = pickOf(q);\n  const asked", "});\n  if (!r) return null;\n  const q = pickLive(p, ws0); if (!q) return null;\n  const kk = pickOf(q);\n  const asked")], B),
@@ -50,6 +54,14 @@ M = [
     ("a fix proposed twice is tried again", [("v14_fix.js", "if (round > 1 && fixRepeats(seen, changed, after)){", "if (false){")], "python3 test/e2e180_checks.py"),
     ("the fifth round leaves no residual risk", [("v14_fix.js", "capped: round === rounds && rounds >= FIX_CAP && !(UI.finish && UI.finish.stop)", "capped: false")], "python3 test/e2e180_checks.py"),
     ("a price past its budget is still used (one 90-day rule again)", [("v180_checks.js", "const FACT_BUDGET = {price: 20, platform: 45, policy: 180, other: 90};", "const FACT_BUDGET = {price: 90, platform: 90, policy: 90, other: 90};")], "python3 test/e2e180_checks.py"),
+    # 1.8 deciding (e2e180_decide must turn red)
+    ("your call first shows the ★ before your call", [("v180_decide.js", 'const card = cf && !call ? Object.assign({}, c, {rec: -1, recWhy: "", mind: ""}) : cf ? Object.assign({}, c, {recWhy: ""}) : c;', "const card = c;")], D),
+    ("a first version needs the measure again", [("v180_decide.js", 'return orig(p).filter(x => x.id !== "measure");', "return orig(p);")], D),
+    ("the picks come before the mock", [("v180_decide.js", "if (!k.mf && !k.log.length && !k.cards.length) return pk8Begin(p);", "if (false) return pk8Begin(p);")], D),
+    ("a technical risk skips the quick try", [("v180_decide.js", 'if (r && r.risk === "technical") return pk8SpikeStart(q, r);', "")], D),
+    ("a round makes three cards again", [("v180_decide.js", "if (!need.length && (o == null || o.n == null || o.n === 3)) o = Object.assign({}, o, {n: PK8_ROUND});", "")], D),
+    ("the four routes show before the price is read", [("v180_decide.js", 'if (x && x.kind === "kit-rebuild"){ if (pk8PriceWaits(p)) return;', 'if (x && x.kind === "kit-rebuild"){ if (false) return;')], D),
+    ("the Bauplan opens by default", [("v180_decide.js", "const open = !!(UI.pk8Map && UI.pk8Map[p.id]);", "const open = true;")], D),
 ]
 
 ONLY = next((x.split("=", 1)[1] for x in sys.argv if x.startswith("--only=")), None)   # 1.8: run the planted bugs whose name or test contains this text
