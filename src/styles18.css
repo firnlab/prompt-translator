@@ -239,6 +239,11 @@ label.fld{color:var(--fg-2);font-weight:500}
 /* the status slot as a pill: glyph + word (v180_look.js adds the word) */
 .sslot.pill18{width:max-content;height:auto;min-height:22px;display:inline-flex;align-items:center;gap:4px;padding:1px 9px 1px 3px;border-radius:var(--r-pill);font-size:11.5px;font-weight:600;line-height:1.25;white-space:nowrap;max-width:100%;flex:none;vertical-align:middle}
 .sslot.pill18 svg{width:16px;height:16px;flex:none}
+/* the status is a word now, so a narrow queue row (1024 with the inspector) puts the actions on the next line instead of squeezing the text (hunt 13, cause 68) */
+.qrow{flex-wrap:wrap}
+.qrow>.qbody{flex:1 1 12em}
+.qrow>.qacts{margin-left:auto}
+@media (min-width:821px){.tsgrid{grid-template-columns:repeat(auto-fit,minmax(11em,1fr))}}   /* the three tool states: two per line when the step column is narrow (same hunt) */
 .sslot.pill18 .ssw{white-space:nowrap}
 .sslot.pill18.ss-ok,.sslot.pill18.ss-done{background:var(--ok-soft);color:var(--ok)}
 .sslot.pill18.ss-as{background:var(--as-soft);color:var(--as)}
