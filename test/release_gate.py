@@ -38,7 +38,9 @@ CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("flows 1.8 (the cone)","python3 test/e2e180_cone.py", True, 10),   # kinds of tool from one sentence, biggest cut, the gallery shrinks, ★ after the scan, D pick-then-verify, E say the ending, check rows, decision rows, 1.7 re-run
     ("flows 1.9 care",  "python3 test/e2e190_care.py", True, 15),   # R1a export line, R2 how customers get AI, R3 AI ceiling, R5 push switch, R7 key renewal (fake clock)
     ("PT outside claude.ai", "python3 test/plain_browser.py", True, 5),
-    ("flows 1.9 fleet", "python3 test/e2e190_fleet.py", True, 15),   # update all of your tools to a kit: card = GO, one at a time, two greens, stop on red, others prepared   # R1b: the built file in plain Chromium reads an export, read-only, writes nothing
+    ("flows 1.9 fleet", "python3 test/e2e190_fleet.py", True, 15),
+    ("flows 1.9 scan", "python3 test/e2e190_scan.py", True, 15),   # self-scan (names only, propose only), the 4×4 interview, "What changed" per version
+    ("changelog", "python3 test/changelog_test.py && python3 tools/changelog.py --check", True, 2),   # CHANGELOG.md is generated and up to date   # update all of your tools to a kit: card = GO, one at a time, two greens, stop on red, others prepared   # R1b: the built file in plain Chromium reads an export, read-only, writes nothing
     ("hunt",           "python3 test/hunt.py", True, 25),
     ("hunt 2",         "python3 test/hunt2.py", True, 20),
     ("check the hunt", "python3 test/check_the_hunts.py", False, 70),   # each hunt-2 check turns red when its bug is put back

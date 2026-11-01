@@ -1,4 +1,4 @@
-<title>Prompt Translator 1.8.2</title>
+<title>Prompt Translator 1.9.0</title>
 <style>
 /* Layout concept: mission-control workspace — slim navigation rail, one focused work surface with a persistent North Star band, and a notes drawer on the right. Dark-first instrument panel; light mode mirrors it. */
 :root{
@@ -6688,6 +6688,8 @@ Object.assign(STR, {
 "cl.181.fixed":["Turning on the Sunday preparation run (and setting up background runs for another login) failed: the scheduled-task service now wants every run in its own new session when notifications are set. PT asks for that, and tries once more without the notification setting if the service still refuses. A preview copy never creates a scheduled task","Das Einschalten des sonntäglichen Vorbereitungslaufs (und das Einrichten von Hintergrundläufen für ein anderes Login) schlug fehl: Der Dienst für geplante Aufgaben will jetzt jeden Lauf in einer eigenen neuen Sitzung, wenn Benachrichtigungen gesetzt sind. PT verlangt das jetzt und versucht es noch einmal ohne die Benachrichtigungs-Einstellung, falls der Dienst trotzdem ablehnt. Eine Vorschau-Kopie erstellt nie eine geplante Aufgabe","开启周日准备运行（以及为其他登录账号设置后台运行）时失败：设置通知时，定时任务服务现在要求每次运行都在新的会话中进行。PT 现在会这样请求；如果服务仍然拒绝，PT 会去掉通知设置再试一次。预览副本从不创建定时任务"],
 "cl.182.fixed":["Turning on the Sunday preparation run still failed: a task created from PT has no Claude session to take its cloud environment from, so the scheduled-task service asks which one. PT now takes one from the list the service sends (a normal cloud environment before a self-hosted one) and remembers it for your login. It also tells you to turn on automatic approval for the new task, since nobody watches its runs","Das Einschalten des sonntäglichen Vorbereitungslaufs schlug noch fehl: Eine Aufgabe, die PT erstellt, hat keine Claude-Sitzung, von der sie ihre Cloud-Umgebung übernehmen kann, darum fragt der Dienst für geplante Aufgaben nach einer. PT nimmt jetzt eine aus der Liste, die der Dienst schickt (eine normale Cloud-Umgebung vor einer selbst gehosteten), und merkt sie sich für dein Login. Ausserdem sagt PT dir, dass du für die neue Aufgabe die automatische Genehmigung einschalten sollst, weil niemand den Läufen zuschaut","开启周日准备运行时仍然失败：由 PT 创建的任务没有可以继承云环境的 Claude 会话，因此定时任务服务会询问使用哪个环境。PT 现在会从服务发来的列表中选择一个（优先选择普通云环境，而不是自托管环境），并为你的登录账号记住它。PT 还会提醒你为新任务开启自动批准，因为运行时无人值守"],
 "sched.approve":["Open this scheduled task's settings once and turn on “Automatically approve”: nobody watches its runs, so without it a run stops and waits for you.","Öffne die Einstellungen dieser geplanten Aufgabe einmal und schalte „Automatically approve“ (automatisch genehmigen) ein: Niemand schaut den Läufen zu, ohne das hält ein Lauf an und wartet auf dich.","请打开这个定时任务的设置一次，开启“Automatically approve”（自动批准）：运行时无人值守，否则运行会停下来等你。"],
+"cl.190.added":["Your two most repeated workflows (counted on Saturday nights, action names only) are offered in the Sunday note as one-tap shortcuts; only suggested, nothing runs by itself|A 4×4 interview (product, design, practical, edge cases) before a big or risky change to a live tool; every answer becomes a decision, a skipped area a noted risk|Update my tools to the current kit: one card, then one tool at a time, two green live checks each, stops at the first problem; other people's tools are prepared for them|Every three months a reminder to save a full export, and an export opens read-only in any browser outside claude.ai, without AI|Customer tools with AI ask how customers get it: code only, each customer's own Claude login, or a server-backed key with a required monthly limit (built only when you pick it)|From February 2027 PT suggests a monthly AI ceiling from three months of counts; one tap sets it and PT keeps to it|Push to your phone when something needs you (Settings, off by default)|From October 2027 a reminder to renew the two keys, with the steps|A public changelog with every release, and “What changed” for each version of a tool", "Deine zwei häufigsten Abläufe (am Samstagabend gezählt, nur Aktionsnamen) werden im Sonntagszettel als Abkürzung mit einem Tipp vorgeschlagen; nur vorgeschlagen, nichts läuft von selbst|Ein 4×4-Interview (Produkt, Gestaltung, Praxis, Sonderfälle) vor einer grossen oder heiklen Änderung an einem laufenden Tool; jede Antwort wird zu einer Entscheidung, ein übersprungener Bereich zu einem notierten Risiko|Meine Tools auf den aktuellen Bausatz bringen: eine Karte, dann ein Tool nach dem anderen, je zwei grüne Live-Prüfungen, Halt beim ersten Problem; Tools anderer werden für sie vorbereitet|Alle drei Monate eine Erinnerung, einen vollständigen Export zu speichern, und ein Export öffnet sich schreibgeschützt in jedem Browser ausserhalb von claude.ai, ohne KI|Kunden-Tools mit KI fragen, wie Kunden sie bekommen: nur Code, das eigene Claude-Login jedes Kunden oder ein Server-Schlüssel mit einem nötigen Monatslimit (gebaut nur, wenn du ihn wählst)|Ab Februar 2027 schlägt PT aus drei Monaten Zählung eine monatliche KI-Obergrenze vor; ein Tipp setzt sie, und PT hält sich daran|Push aufs Handy, wenn etwas dich braucht (Einstellungen, standardmässig aus)|Ab Oktober 2027 eine Erinnerung, die zwei Schlüssel zu erneuern, mit den Schritten|Ein öffentliches Änderungsprotokoll mit jeder Version, und „Was sich geändert hat“ für jede Version eines Tools", "你最常重复的两个流程（周六晚上统计，只记操作名称）会在周日便条中作为一键快捷方式提出；只是建议，不会自动运行|在对已上线工具做大改动或有风险的改动前，进行 4×4 访谈（产品、设计、实际操作、特殊情况）；每个回答都成为一项决定，跳过的部分记为风险|把我的工具更新到当前模板：一张确认卡，然后逐个工具进行，每个工具需连续两次上线检查通过，遇到第一个问题即停止；他人的工具会为他们准备好|每三个月提醒你保存一次完整导出；导出文件可在 claude.ai 之外的任何浏览器中只读打开，不使用 AI|带 AI 的客户工具会询问客户如何获得 AI：只用代码、每位客户自己的 Claude 登录，或带必填月度上限的服务器密钥（只有你选择时才构建）|从 2027 年 2 月起，PT 根据三个月的统计建议每月 AI 上限；一键即可设置，PT 会遵守|有事需要你时推送到手机（设置中，默认关闭）|从 2027 年 10 月起提醒你更新两个密钥，并附步骤|每次发布都有公开的更新日志，工具的每个版本都有“改了什么”"],
+"cl.190.changed":["Opened outside claude.ai, PT shows a read-only viewer for an export instead of starting an editable copy in the browser", "Ausserhalb von claude.ai geöffnet, zeigt PT eine schreibgeschützte Ansicht für einen Export, statt eine bearbeitbare Kopie im Browser zu starten", "在 claude.ai 之外打开时，PT 显示导出文件的只读查看器，而不是在浏览器中启动可编辑的副本"],
 });
 
 /* ===================== 1.9 care (the owner's reminders R1, R2, R3, R5, R7; src/v190_care.js) — UI STRINGS: [English, Deutsch (CH, du, ss), 简体中文（中国大陆）] ===================== */
@@ -6820,6 +6822,136 @@ Object.assign(STR, {
 "care.keys.never":["PT never sees, asks for or stores a key.","PT sieht, verlangt oder speichert nie einen Schlüssel.","PT 从不查看、索要或保存任何密钥。"],
 "care.keys.done":["Both renewed","Beide erneuert","两个都已更新"],
 "care.keys.saved":["Noted. PT reminds you again in 11 months.","Notiert. PT erinnert dich in 11 Monaten wieder.","已记录。PT 会在 11 个月后再次提醒你。"],
+});
+
+/* ===================== 1.9 self-scan, 4×4 interview, what changed per version — UI STRINGS: [English, Deutsch (CH, du, ss), 简体中文（中国大陆）] ===================== */
+Object.assign(STR, {
+/* the self-scan: proposals in the Sunday note, shortcuts and ideas in the Inbox */
+"wk.s.scan":["Your repeated steps","Deine wiederholten Schritte","你重复的步骤"],
+"scan.q":["You did {x} {n}× in 4 weeks. Make it one tap?","Du hast {x} in 4 Wochen {n}-mal gemacht. Daraus einen Tipp machen?","4 周内你做了 {n} 次：{x}。要变成一键完成吗？"],
+"scan.yes":["Yes, one tap","Ja, ein Tipp","好，一键完成"],
+"scan.yes.what":["Yes saves a shortcut in the Inbox: one tap there runs the same steps in this order. Its steps only look and move around; they change nothing.","Ja speichert eine Abkürzung im Eingang: Ein Tipp dort macht dieselben Schritte in dieser Reihenfolge. Ihre Schritte schauen nur und wechseln die Ansicht; sie ändern nichts.","选“好”会在收件箱里保存一个快捷方式：在那里点一下，就按这个顺序执行相同的步骤。这些步骤只查看和切换页面，不改动任何东西。"],
+"scan.idea":["Note it as an idea","Als Idee notieren","记为想法"],
+"scan.idea.why":["Not as a shortcut: {x} can change, publish, send or spend something, and a shortcut only takes steps that look and move around.","Nicht als Abkürzung: {x} kann etwas ändern, veröffentlichen, senden oder kosten, und eine Abkürzung macht nur Schritte, die schauen und die Ansicht wechseln.","不能做成快捷方式：{x} 可能会修改、发布、发送或花钱，而快捷方式只包含查看和切换页面的步骤。"],
+"scan.only":["A proposal only: nothing runs by itself.","Nur ein Vorschlag: Nichts läuft von selbst.","这只是建议：不会自动运行任何东西。"],
+"scan.no":["No","Nein","不用"],
+"scan.no.title":["Not this one — why? (optional)","Diesen nicht – warum? (freiwillig)","不要这个——原因？（可选）"],
+"scan.no.ph":["e.g. I like doing these steps myself","z. B. Ich mache diese Schritte lieber selbst","例如：我更喜欢自己做这些步骤"],
+"scan.later":["Later","Später","以后再说"],
+"scan.st.yes":["Saved as a shortcut in the Inbox.","Als Abkürzung im Eingang gespeichert.","已作为快捷方式保存在收件箱。"],
+"scan.st.idea":["Noted as an idea in the Inbox.","Als Idee im Eingang notiert.","已作为想法记在收件箱。"],
+"scan.st.later":["Later: a later Sunday note asks again.","Später: Eine spätere Sonntagsnotiz fragt wieder.","以后再说：之后的周日简报会再问。"],
+"scan.st.no":["No: not proposed again unless you do it twice as often","Nein: Kommt nur wieder, wenn du es doppelt so oft machst","不用：除非你做的次数翻倍，否则不会再建议"],
+"scan.done.yes":["Shortcut saved in the Inbox","Abkürzung im Eingang gespeichert","快捷方式已保存到收件箱"],
+"scan.done.idea":["Noted as an idea in the Inbox","Als Idee im Eingang notiert","已作为想法记在收件箱"],
+"scan.done.later":["A later Sunday note asks again","Eine spätere Sonntagsnotiz fragt wieder","之后的周日简报会再问"],
+"scan.done.no":["Not proposed again unless it doubles","Kommt nur wieder, wenn es sich verdoppelt","除非次数翻倍，否则不会再建议"],
+"scan.cut":["Shortcut","Abkürzung","快捷方式"],
+"scan.cut.sub":["One tap runs the steps in order ({n} in all), each by pressing its own button; it stops when a step is not on the screen.","Ein Tipp macht die Schritte der Reihe nach ({n} insgesamt), jeden mit seinem eigenen Knopf; sie hält an, wenn ein Schritt nicht auf dem Bildschirm ist.","点一下按顺序执行这些步骤（共 {n} 步），每一步都按它自己的按钮；某一步不在屏幕上时就停下。"],
+"scan.run":["Run","Ausführen","运行"],
+"scan.del":["Remove","Entfernen","移除"],
+"scan.idealine":["Idea: make these steps one tap","Idee: diese Schritte zu einem Tipp machen","想法：把这些步骤变成一键完成"],
+"scan.removed":["removed from the Inbox","aus dem Eingang entfernt","已从收件箱移除"],
+"scan.run.unsafe":["This shortcut has a step that is not on the allow-list, so it does not run.","Diese Abkürzung hat einen Schritt, der nicht auf der erlaubten Liste steht, darum läuft sie nicht.","这个快捷方式包含不在允许清单上的步骤，因此不会运行。"],
+"scan.run.stop":["Stopped at step {k} of {n}: “{x}” is not on the screen.","Angehalten bei Schritt {k} von {n}: «{x}» ist nicht auf dem Bildschirm.","在第 {k} 步（共 {n} 步）停下：“{x}”不在屏幕上。"],
+"scan.run.done":["Done: every step ran ({n})","Fertig: jeder Schritt gemacht ({n})","完成：每一步都已执行（{n}）"],
+/* PT's action names in plain words (an unknown name is shown as it is) */
+"scan.a.nav":["Go to {x}","Zu {x}","前往{x}"],
+"scan.a.tab":["Tab “{x}”","Reiter «{x}»","标签“{x}”"],
+"scan.a.goto":["Step “{x}”","Schritt «{x}»","步骤“{x}”"],
+"scan.a.pg":["Page “{x}”","Seite «{x}»","页面“{x}”"],
+"scan.a.set":["Change “{x}”","«{x}» ändern","修改“{x}”"],
+"scan.a.form":["Send “{x}”","«{x}» senden","提交“{x}”"],
+"scan.a.home":["Cover","Deckblatt","封面"],
+"scan.a.rows-open":["Decisions page","Seite «Entscheide»","“决定”页面"],
+"scan.a.rows-verify":["Check the decision history","Entscheid-Verlauf prüfen","检查决定历史"],
+"scan.a.wk18-open":["Open the Sunday note","Sonntagsnotiz öffnen","打开周日简报"],
+"scan.a.wk18-pick":["Pick a Sunday note","Sonntagsnotiz wählen","选择一份周日简报"],
+"scan.a.wk18-go":["Go to a waiting decision","Zu einem offenen Entscheid","前往待定的决定"],
+"scan.a.ib18-tell":["Tell PT what's wrong","Sag PT, was nicht stimmt","告诉 PT 哪里不对"],
+"scan.a.ib18-open":["Open a report's tool","Tool einer Meldung öffnen","打开报告所属的工具"],
+"scan.a.ib18-toggle":["Include or leave out a report","Meldung aufnehmen oder weglassen","纳入或排除一条报告"],
+"scan.a.ib18-noise":["Mark a report “not real”","Meldung als «nicht echt» markieren","把报告标为“不是真的”"],
+"scan.a.q-goto":["Open a decision","Einen Entscheid öffnen","打开一个决定"],
+"scan.a.q-pick":["Choose an answer","Eine Antwort wählen","选择一个答案"],
+"scan.a.q-do":["Take an answer","Eine Antwort übernehmen","采用一个答案"],
+"scan.a.whatsnew":["What's new","Was ist neu","新功能"],
+"scan.a.palette":["Command search","Befehlssuche","命令搜索"],
+"scan.a.open-project":["Open a tool","Ein Tool öffnen","打开一个工具"],
+"scan.a.release":["Publish a version","Eine Version veröffentlichen","发布一个版本"],
+"scan.a.lfu18-open":["Open the prepared fix","Vorbereitete Korrektur öffnen","打开准备好的修复"],
+
+/* the 4×4 interview before a big or risky change to a live tool */
+"iv.title":["4×4 interview","4×4-Interview","4×4 访谈"],
+"iv.sub":["Before this change to “{x}” (live as v{v}): four areas, up to four questions each, one area at a time. Skip any area; what you skip is written down as a residual risk.","Vor dieser Änderung an «{x}» (live als v{v}): vier Bereiche, je bis zu vier Fragen, ein Bereich nach dem anderen. Jeden Bereich kannst du überspringen; was du überspringst, wird als Restrisiko notiert.","在修改“{x}”（当前上线版本 v{v}）之前：四个方面，每个方面最多四个问题，一次一个方面。任何方面都可以跳过；跳过的内容会记为剩余风险。"],
+"iv.because":["Why: {x}","Warum: {x}","原因：{x}"],
+"iv.why.out":["it acts outward","es handelt nach aussen","它会对外操作"],
+"iv.why.shared":["others or customers use it","andere oder Kunden nutzen es","其他人或客户在使用"],
+"iv.why.money":["money is involved","es geht um Geld","涉及金钱"],
+"iv.why.data":["the change touches the shape or storage of data","die Änderung betrifft Form oder Speicherung der Daten","这次修改涉及数据的结构或存储"],
+"iv.why.rows":["more than 3 decisions changed since the live version","seit der Live-Version haben sich mehr als 3 Entscheide geändert","自上线版本以来已有超过 3 个决定改变"],
+"iv.a.product":["Product","Produkt","产品"],
+"iv.a.design":["Design","Gestaltung","设计"],
+"iv.a.practical":["Practical","Praktisches","实际操作"],
+"iv.a.edge":["Edge cases","Grenzfälle","边界情况"],
+"iv.a.product.sub":["What the change is for, who it serves, what must stay as it is.","Wozu die Änderung dient, wem sie nützt, was bleiben muss, wie es ist.","这次修改为了什么、为谁服务、哪些必须保持不变。"],
+"iv.a.design.sub":["How it looks and reads for the people who use it.","Wie es für die Leute aussieht und sich liest, die es nutzen.","对使用者来说它看起来和读起来是什么样。"],
+"iv.a.practical.sub":["Data, cost, time, who does what, going live and undoing it.","Daten, Kosten, Zeit, wer was macht, live stellen und rückgängig machen.","数据、成本、时间、谁做什么、如何上线和撤销。"],
+"iv.a.edge.sub":["What can go wrong.","Was schiefgehen kann.","可能出什么问题。"],
+"iv.line":["a change to v{v} waits for the 4×4 interview","eine Änderung an v{v} wartet auf das 4×4-Interview","对 v{v} 的修改正在等待 4×4 访谈"],
+"iv.line.sub":["Questions: up to {n} in four areas, a few minutes; each area can be skipped (written down as a residual risk). The change waits until then.","Fragen: bis zu {n} in vier Bereichen, ein paar Minuten; jeder Bereich lässt sich überspringen (als Restrisiko notiert). Bis dahin wartet die Änderung.","四个方面最多 {n} 个问题，只需几分钟；每个方面都可跳过（记为剩余风险）。在此之前，修改会一直等待。"],
+"iv.start":["Start","Starten","开始"],
+"iv.go":["Go on","Weiter","继续"],
+"iv.skipall":["Skip the rest","Den Rest überspringen","跳过剩余部分"],
+"iv.skip0":["Skip the interview","Interview überspringen","跳过访谈"],
+"iv.skiparea":["Skip this area","Diesen Bereich überspringen","跳过这个方面"],
+"iv.save":["Save answers · next area","Antworten speichern · nächster Bereich","保存回答 · 下一个方面"],
+"iv.skip.what":["Whatever you skip or leave empty becomes a residual-risk row; your answers become decision rows.","Was du überspringst oder leer lässt, wird zu einer Restrisiko-Zeile; deine Antworten werden Entscheidungszeilen.","跳过或留空的内容会成为剩余风险行；你的回答会成为决定行。"],
+"iv.own":["Your answer","Deine Antwort","你的回答"],
+"iv.own.or":["…or in your words","…oder in deinen Worten","……或用你自己的话"],
+"iv.need":["Answer at least one question, or skip the area","Beantworte mindestens eine Frage oder überspring den Bereich","请至少回答一个问题，或跳过这个方面"],
+"iv.areaof":["Area {i} of 4: {x}","Bereich {i} von 4: {x}","第 {i} 个方面（共 4 个）：{x}"],
+"iv.intro":["PT makes the questions for this change with one AI call (up to {n}), then asks them one area at a time.","PT macht die Fragen zu dieser Änderung mit einem KI-Aufruf (bis zu {n}) und stellt sie dann Bereich für Bereich.","PT 会用一次 AI 调用为这次修改生成最多 {n} 个问题，然后一次一个方面地提问。"],
+"iv.make":["Make the questions","Fragen machen","生成问题"],
+"iv.retry":["Try again","Nochmals versuchen","再试一次"],
+"iv.err":["The questions could not be made. Try again, or skip (the skipped areas are written down as a residual risk).","Die Fragen liessen sich nicht machen. Versuch es nochmals oder überspring sie (die übersprungenen Bereiche werden als Restrisiko notiert).","无法生成问题。请再试一次，或跳过（跳过的方面会记为剩余风险）。"],
+"iv.making":["Making the interview questions…","Interviewfragen werden gemacht…","正在生成访谈问题……"],
+"iv.later":["Later","Später","以后再说"],
+"iv.skipped":["skipped","übersprungen","已跳过"],
+"iv.none":["nothing to ask","nichts zu fragen","无需提问"],
+"iv.gone":["This interview is no longer open.","Dieses Interview ist nicht mehr offen.","这个访谈已不再进行。"],
+"iv.end.done":["Interview done: your answers are decision rows.","Interview fertig: Deine Antworten sind Entscheidungszeilen.","访谈完成：你的回答已成为决定行。"],
+"iv.end.skipped":["Interview skipped: written down as a residual risk.","Interview übersprungen: als Restrisiko notiert.","已跳过访谈：已记为剩余风险。"],
+"iv.end.rows":["Rows: {x}","Zeilen: {x}","行：{x}"],
+"iv.end.prepare":["PT now prepares the update with your answers; putting it live stays your click.","PT bereitet jetzt das Update mit deinen Antworten vor; live stellen bleibt dein Klick.","PT 现在会根据你的回答准备更新；上线仍由你点击。"],
+"iv.end.impact":["PT now works out what your changed mind affects, with your answers.","PT arbeitet jetzt mit deinen Antworten aus, was deine Meinungsänderung betrifft.","PT 现在会结合你的回答，找出你改变主意所影响的内容。"],
+"iv.end.release":["The new version can be published now, with one tap.","Die neue Version kann jetzt mit einem Tipp veröffentlicht werden.","现在可以一键发布新版本。"],
+"iv.release":["Publish v{v} now","v{v} jetzt veröffentlichen","立即发布 v{v}"],
+"iv.waits":["“{x}”: the change waits for the 4×4 interview","«{x}»: Die Änderung wartet auf das 4×4-Interview","“{x}”：这次修改正在等待 4×4 访谈"],
+"iv.act.wait":["Change waits for the 4×4 interview","Änderung wartet auf das 4×4-Interview","修改等待 4×4 访谈"],
+"iv.act.qs":["4×4 interview questions made","4×4-Interviewfragen gemacht","已生成 4×4 访谈问题"],
+"iv.act.area":["Interview answered: {x}","Interview beantwortet: {x}","访谈已回答：{x}"],
+"iv.act.skip":["Interview area skipped: {x}","Interviewbereich übersprungen: {x}","已跳过访谈方面：{x}"],
+"iv.act.skipall":["Interview skipped","Interview übersprungen","已跳过访谈"],
+"iv.row.why":["4×4 interview, {x}, before the change to v{v}","4×4-Interview, {x}, vor der Änderung an v{v}","4×4 访谈，{x}，在修改 v{v} 之前"],
+"iv.risk.q":["Residual risk: {x} not asked before the change to v{v}","Restrisiko: {x} vor der Änderung an v{v} nicht gefragt","剩余风险：修改 v{v} 前未询问“{x}”"],
+"iv.risk.skip":["Skipped — questions not answered: {n}","Übersprungen – nicht beantwortete Fragen: {n}","已跳过——未回答的问题：{n}"],
+"iv.risk.skip0":["Skipped before the questions were made","Übersprungen, bevor die Fragen gemacht waren","在生成问题之前就已跳过"],
+"iv.risk.open":["Left open — questions without an answer: {n}","Offen gelassen – Fragen ohne Antwort: {n}","留空——没有回答的问题：{n}"],
+"iv.change.rows":["Decisions changed since the live version: {n}","Seit der Live-Version geänderte Entscheide: {n}","自上线版本以来更改的决定：{n}"],
+
+/* what changed in each version (the tool's Versions view) */
+"wc.title":["What changed in each version","Was sich in jeder Version geändert hat","每个版本的变化"],
+"wc.sub":["From the decision events: the decisions that changed since the version before.","Aus den Entscheid-Ereignissen: die Entscheide, die sich seit der vorherigen Version geändert haben.","来自决定事件：自上一个版本以来改变的决定。"],
+"wc.new":["{q}: {x} (new)","{q}: {x} (neu)","{q}：{x}（新）"],
+"wc.changed":["{q}: {a} → {b}","{q}: {a} → {b}","{q}：{a} → {b}"],
+"wc.back":["{q}: “{a}” taken back","{q}: «{a}» zurückgenommen","{q}：已撤回“{a}”"],
+"wc.none":["No decision changed.","Kein Entscheid hat sich geändert.","没有决定发生变化。"],
+"wc.before":["Published before PT kept decision events (1.8).","Veröffentlicht, bevor PT Entscheid-Ereignisse führte (1.8).","在 PT 开始记录决定事件（1.8）之前发布。"],
+"wc.first":["First version: the decisions it started with ({n})","Erste Version: die Entscheide, mit denen sie begann ({n})","第一个版本：起始时的决定（{n}）"],
+"wc.pending":["Not published yet (since v{v})","Noch nicht veröffentlicht (seit v{v})","尚未发布（自 v{v} 起）"],
+"wc.more":["{n} more","{n} weitere","还有 {n} 项"],
+"wc.q.gone":["A decision that is no longer in the tool","Ein Entscheid, der nicht mehr im Tool ist","一个已不在工具中的决定"],
 });
 
 /* ===================== 1.9 fleet: update all of your tools when a kit changes — UI STRINGS: [English, Deutsch (CH, du, ss), 简体中文（中国大陆）] ===================== */
@@ -10017,7 +10149,7 @@ function fixCost(p, ids){ const n = arr(p.findings).filter(f => ids.includes(f.i
 /* ===================== APP STATE ===================== */
 let META = {workspaces: [], last: null};
 let WS = {id:null, name:"", settings:{}, profile:{entries:[]}, projects:[], notes:[], patterns:[], research:[], jobs:[], insights:null, profileSuggestions:[]};
-const PT_VERSION = "1.8.2";
+const PT_VERSION = "1.9.0";
 /* ---------- version next to the name: "newest" check (shared doc app/version: read by everyone, written by the owner's page) ---------- */
 const APPV = {latest: PT_VERSION, newer: false, checked: false};
 function verCmp(a, b){ const x = String(a || "0").split(".").map(n => parseInt(n, 10) || 0), y = String(b || "0").split(".").map(n => parseInt(n, 10) || 0); for (let i = 0; i < 3; i++){ if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) - (y[i] || 0); } return 0; }
@@ -12006,6 +12138,7 @@ function rpPreview(p, pv){
     ${row(t("rev.problems"), arr(s.findings).length, p.findings.length)}${row(t("test.title"), arr(s.tests).length, p.tests.length)}</tbody></table></div>`;
 }
 const CHANGELOG = [
+  {v: "1.9.0", d: "2026-11-02", added: "cl.190.added", changed: "cl.190.changed"},
   {v: "1.8.2", d: "2026-11-01", fixed: "cl.182.fixed"},
   {v: "1.8.1", d: "2026-11-01", fixed: "cl.181.fixed"},
   {v: "1.8.0", d: "2026-11-01", added: "cl.180.added", changed: "cl.180.changed"},
@@ -24564,6 +24697,634 @@ const FL19_CSS = `
 @media (max-width:599px){ .fl19-cols{grid-template-columns:minmax(0,1fr)} }`;
 function fl19Css(){ if (typeof document === "undefined" || document.getElementById("fl19-css")) return; const s = document.createElement("style"); s.id = "fl19-css"; s.textContent = FL19_CSS; (document.head || document.body).appendChild(s); }
 fl19Css();
+
+/* ===================== 1.9 self-scan: the owner's own repeated steps, proposed in the Sunday note (PLAN-1.9 D, PLAN-1.8 video round 6) =====================
+   Code only, no AI, names only (DESIGN-1.8-rev2 §17 "self-scan = code, sequence counting").
+   1. What is kept: the 1.7.1 day document (<workspace>/metrics-<day>/<tab id>) gets a list "seq" of the action names you tapped, in
+      order — PT's own names (a [data-a] action, "set:<field>" for a changed choice, "form:<name>" for a sent form), never text. A
+      button that goes to a fixed place keeps that place's id with it ("nav:settings", "tab:health", "goto:review", "pg-open:run"), so a
+      shortcut can find the same button again. A pause of ten minutes or more is the mark "." (a sequence never runs across it). At
+      most SCAN19_CAP names per document; after that the day's list stops growing.
+   2. The scan: each Saturday at 22:00 Zürich, or the first time PT is open after it, PT counts the step sequences of 3 to 6 names you
+      repeated over the 28 days up to that Saturday. Closing, folding and scrolling steps are noise and are left out; a sequence made
+      only of moving around (navigation) is ignored, as is one action repeated. Occurrences that overlap count once. Kept: the two most
+      repeated with at least 4 repetitions (a longer sequence wins a tie; the same workflow seen from another step — one inside the other, or the same steps in a loop started elsewhere — is not proposed twice). Stored as
+      <workspace>/scan/<Saturday>: names and counts only.
+   3. The Sunday note proposes them: "You did A → B → C 9 times in 4 weeks. Make it one tap?" — Yes (a shortcut row in the Inbox runs
+      the same steps in order with one tap; offered ONLY when every step is on SCAN19_SAFE: steps that look, move around or copy, never
+      ones that change, delete, publish, send or spend; otherwise "Note it as an idea" instead) · No (an optional reason; not proposed
+      again unless its count doubles) · Later (asked again in a later note). Proposals only: nothing runs by itself, ever.
+   4. Each workspace has its own documents, scans and answers (the owner's and the second owner's notes stay separate). */
+const SCAN19_CAP = 500, SCAN19_MIN = 3, SCAN19_MAX = 6, SCAN19_REP = 4, SCAN19_DAYS = 28, SCAN19_PAUSE = 10 * 60000, SCAN19_BREAK = ".";
+/* a button that goes to a fixed place keeps the place's id (a PT value, never text) */
+const SCAN19_QUAL = new Set(["nav", "tab", "goto", "pg-open"]);
+/* noise: closing, folding, scrolling and pointing steps carry no intent of their own; the scan's own buttons never become steps */
+const SCAN19_NOISE = new Set(["modal-close", "close-overlay", "top", "fold14", "toggle-exp", "xp-more", "xp-fold", "qa-fold", "tray-close", "tray-show", "item-box-close",
+  "rc-close", "clearsel", "map-zoom", "map-full", "nav-back", "nav-close", "help-seg", "set-help", "bm-toggle", "selpart", "flags-show", "mark-show", "pg-details", "rows-hist",
+  "ib18-more", "scan19-run", "scan19-yes", "scan19-no", "scan19-later", "scan19-idea", "scan19-del", "scan19-delidea", "radio", "checkbox", "select-one"]);
+/* navigation: moving between screens, steps and pages; a sequence of only these is ignored */
+const SCAN19_NAV = new Set(["nav", "tab", "goto", "home", "pg-open", "pg-step", "open-project", "stage", "phase", "mode", "nav-step", "q-goto", "goto-ref", "item-open",
+  "wk18-open", "wk18-pick", "wk18-go", "wk18-rows", "rows-open", "ib18-open", "lfu18-open", "q-tab", "fin-nav", "cmap"]);
+/* the allow-list for shortcuts: steps that only look, move around or copy (each is also in PT's own list of actions that change no
+   project, ACT_NO). Never a step that changes, deletes, publishes, sends, buys or spends. */
+const SCAN19_SAFE = new Set(["nav", "tab", "goto", "home", "pg-open", "q-goto", "goto-ref", "item-open", "q-tab", "q-more",
+  "wk18-open", "wk18-pick", "wk18-go", "wk18-rows", "rows-open", "rows-verify", "ib18-open", "ib18-tell", "lfu18-open", "bld18-copy-cmd", "bld18-copy-title",
+  "whatsnew", "palette", "panel", "toggle-drawer", "dock-toggle", "card-open", "fs-all", "ex-open", "q-show", "q-walk", "dc-open"]);
+const SCAN19 = {ev: null, lastAt: 0, running: false, busy: null, last: null, ws: "", timer: 0};
+
+/* ---------- 1. the names, in order, in the day document ---------- */
+function scan19Base(s){ const a = str(s).split(":")[0]; return SCAN19_QUAL.has(a) || a === "set" || a === "form" ? a : str(s); }
+function scan19Qual(name){
+  const e = SCAN19.ev, el = e && e.target && e.target.closest ? e.target.closest("[data-a]") : null;
+  if (!SCAN19_QUAL.has(name) || !el || el.dataset.a !== name) return name;
+  const v = str(el.dataset.v || el.dataset.ph);
+  return /^[a-z][a-z0-9_-]{0,23}$/.test(v) ? name + ":" + v : name;
+}
+function scan19Push(name){
+  if (typeof metDoc !== "function") return;
+  const d = metDoc(); if (!d) return;
+  if (!Array.isArray(d.seq)) d.seq = [];
+  if (d.seq.length >= SCAN19_CAP) return;   // capped per day (one document per day and page load)
+  const n = scan19Qual(str(name).slice(0, 40) || "?").slice(0, 40), t0 = Date.now();
+  if (SCAN19.lastAt && t0 - SCAN19.lastAt >= SCAN19_PAUSE && d.seq.length && d.seq[d.seq.length - 1] !== SCAN19_BREAK) d.seq.push(SCAN19_BREAK);
+  if (d.seq.length < SCAN19_CAP) d.seq.push(n);
+  SCAN19.lastAt = t0; MET.dirty = true;
+}
+/* the window sees the click before the 1.7.1 counter on the document does: the button's place id is read from the same click */
+window.addEventListener("click", e => { if (e.isTrusted) SCAN19.ev = e; }, true);
+{ const orig = metTap; metTap = function(name){ const r = orig.apply(this, arguments); try{ scan19Push(name); }catch(e){ onAppError(e && e.message, "scan19:push"); } return r; }; }
+
+/* ---------- 2. counting (pure functions: the tests call them directly) ---------- */
+/** a stream of names → the parts between pauses, without noise */
+function scan19Parts(stream){
+  const out = [[]];
+  for (const x of arr(stream)){
+    const s = str(x);
+    if (s === SCAN19_BREAK){ if (out[out.length - 1].length) out.push([]); continue; }
+    if (!s || SCAN19_NOISE.has(scan19Base(s)) || SCAN19_NOISE.has(s)) continue;
+    out[out.length - 1].push(s);
+  }
+  return out.filter(x => x.length >= SCAN19_MIN);
+}
+function scan19Pure(w){ return w.every(x => SCAN19_NAV.has(scan19Base(x))); }
+/** every sequence of 3–6 names with how often it was done (overlapping occurrences count once) */
+function scan19Count(streams){
+  const C = new Map();
+  for (const st of arr(streams)) for (const part of scan19Parts(st)) for (let len = SCAN19_MIN; len <= SCAN19_MAX; len++){
+    const end = new Map();
+    for (let i = 0; i + len <= part.length; i++){
+      const w = part.slice(i, i + len);
+      if (new Set(w).size < 2 || scan19Pure(w)) continue;   // one action repeated, or only moving around
+      const k = w.join(" > ");
+      if (end.has(k) && end.get(k) > i) continue;           // overlaps the occurrence counted before
+      end.set(k, i + len);
+      const c = C.get(k) || {sig: k, seq: w, n: 0}; c.n++; C.set(k, c);
+    }
+  }
+  return [...C.values()].sort(scan19Order);
+}
+function scan19Order(a, b){ return b.n - a.n || b.seq.length - a.seq.length || (a.sig < b.sig ? -1 : a.sig > b.sig ? 1 : 0); }
+function scan19Inside(a, b){ if (a.length > b.length) return false; for (let i = 0; i + a.length <= b.length; i++) if (a.every((x, j) => x === b[i + j])) return true; return false; }
+/** the same workflow seen from another step: one inside the other, one a part of the other done again and again ("A B C t" and
+    "C t A B"), or both share all steps but one in a row */
+function scan19Same(a, b){
+  if (scan19Inside(a, b) || scan19Inside(b, a) || scan19Inside(a, b.concat(b)) || scan19Inside(b, a.concat(a))) return true;
+  const k = Math.min(a.length, b.length) - 1;
+  for (let i = 0; i + k <= a.length; i++) if (scan19Inside(a.slice(i, i + k), b)) return true;
+  return false;
+}
+/** may this sequence be proposed (again)? No = only once its count has doubled; Yes / idea = it is already in the Inbox */
+function scan19Open(c, dec){
+  const d = (dec || {})[c.sig]; if (!d) return true;
+  if (d.d === "later") return true;
+  if (d.d === "no") return c.n >= 2 * Math.max(1, num(d.n, 1));
+  return false;
+}
+/** the two most repeated (at least 4 times), never one inside the other */
+function scan19Pick(cands, dec){
+  const out = [];
+  for (const c of arr(cands).filter(x => x && x.n >= SCAN19_REP && scan19Open(x, dec)).sort(scan19Order)){
+    if (out.length >= 2) break;
+    if (out.some(o => scan19Same(c.seq, o.seq))) continue;
+    out.push(c);
+  }
+  return out;
+}
+function scan19Safe(name){ const b = scan19Base(name); return SCAN19_SAFE.has(b) && ACT_NO.has(b); }
+function scan19AllSafe(seq){ return arr(seq).length > 0 && arr(seq).every(scan19Safe); }
+
+/* ---------- 3. Saturday 22:00 Zürich ---------- */
+/** the latest Saturday 22:00 Zürich at or before this instant: the scan it belongs to */
+function scan19Last(ms = Date.now()){
+  const z = run18Parts(ms); let back = (z.wd + 1) % 7;   // Saturday 0, Sunday 1 … Friday 6
+  if (back === 0 && z.h < 22) back = 7;
+  const day = new Date(Date.UTC(z.y, z.m - 1, z.d - back, 12)), y = day.getUTCFullYear(), m = day.getUTCMonth() + 1, d = day.getUTCDate();
+  return {key: y + "-" + run18Pad(m) + "-" + run18Pad(d), at: run18At(y, m, d, 22)};
+}
+function scan19Path(key){ return wsPath() + "/scan/" + key; }
+function scan19Dec(){ const s = (WS.settings || {}).scan19; return s && typeof s === "object" ? s : {}; }
+function scan19Set(fn){ const s = Object.assign({dec: {}, cuts: [], ideas: []}, clone(scan19Dec())); s.dec = s.dec || {}; s.cuts = arr(s.cuts); s.ideas = arr(s.ideas); fn(s);
+  const keys = Object.keys(s.dec); if (keys.length > 80) for (const k of keys.sort((a, b) => str(s.dec[a].at).localeCompare(str(s.dec[b].at))).slice(0, keys.length - 80)) delete s.dec[k];
+  WS.settings.scan19 = s; saveWs(); }
+/** the day documents of the 28 days up to the scan (every page load of this workspace; this window's own day as it is now) */
+async function scan19Docs(at){
+  const days = new Set(); for (let x = at - (SCAN19_DAYS - 1) * RUN18_DAY - RUN18_DAY / 2; x <= at; x += RUN18_DAY / 2) days.add(metDay(new Date(x)));
+  const lists = await Promise.all([...days].map(d => Store.list(wsPath() + "/metrics-" + d).catch(() => [])));
+  const docs = lists.flat().filter(d => d && d.id !== TAB_ID && (!d.ws || d.ws === WS.id));
+  if (MET.doc && MET.doc.ws === WS.id && days.has(MET.doc.day)) docs.push(MET.doc);
+  return docs.filter(d => Array.isArray(d.seq) && d.seq.length).sort((a, b) => str(a.day).localeCompare(str(b.day)) || str(a.first).localeCompare(str(b.first)));
+}
+/** count once per Saturday; the result is kept (names and counts only) */
+async function scan19Run(key, at){
+  const ws = WS.id, docs = await scan19Docs(at);
+  if (WS.id !== ws) return null;
+  const cands = scan19Count(docs.map(d => d.seq)), dec = scan19Dec().dec;
+  const doc = {v: 1, id: key, key, at: now(), upto: new Date(at).toISOString(), days: SCAN19_DAYS, docs: docs.length, steps: docs.reduce((s, d) => s + d.seq.filter(x => x !== SCAN19_BREAK).length, 0),
+    cands: cands.filter(c => c.n >= SCAN19_REP).slice(0, 12).map(c => ({sig: c.sig, seq: c.seq, n: c.n})), top: scan19Pick(cands, dec).map(c => ({sig: c.sig, seq: c.seq, n: c.n, safe: scan19AllSafe(c.seq)})), by: "pt"};
+  await Store.putNow(scan19Path(key), doc);
+  return doc;
+}
+async function scan19Ensure(ms = Date.now()){
+  if (!run18On()) return null;
+  const {key, at} = scan19Last(ms);
+  if (SCAN19.last && SCAN19.ws === WS.id && SCAN19.last.key === key) return SCAN19.last;
+  if (SCAN19.busy) return SCAN19.busy;
+  const ws = WS.id;
+  SCAN19.busy = (async () => {
+    try{
+      let doc = await Store.get(scan19Path(key)).catch(() => null);
+      if (WS.id !== ws) return null;
+      if (!doc || doc.key !== key) doc = await scan19Run(key, at);
+      if (doc && WS.id === ws){ SCAN19.last = doc; SCAN19.ws = ws; }
+      return doc;
+    }catch(e){ onAppError(e && e.message, "scan19:run"); return null; }
+    finally{ SCAN19.busy = null; }
+  })();
+  return SCAN19.busy;
+}
+function scan19SatOf(noteKey){ const d = new Date(Date.parse(noteKey + "T12:00:00Z") - RUN18_DAY); return d.toISOString().slice(0, 10); }
+
+/* ---------- 4. the Sunday note: two proposals at most ---------- */
+{ const orig = wk18Build; wk18Build = async function(key){
+    try{ await scan19Ensure(); }catch(e){ onAppError(e && e.message, "scan19:note"); }   // a Sunday note built on its first opening still gets the Saturday scan
+    const doc = await orig.apply(this, arguments);
+    if (doc){ try{
+      const sc = SCAN19.last && SCAN19.ws === WS.id && SCAN19.last.key === scan19SatOf(key) ? SCAN19.last : null;
+      doc.scan = sc ? scan19Pick(arr(sc.cands), scan19Dec().dec).map(c => ({sig: c.sig, seq: c.seq, n: c.n, safe: scan19AllSafe(c.seq), key: sc.key})) : [];
+      if (doc.scan.length){ await Store.putNow(wk18Path(doc.key), doc); RUN18.notes.set(doc.key, doc); }
+    }catch(e){ onAppError(e && e.message, "scan19:note"); } }
+    return doc; }; }
+if (!WK18_SECS.includes("scan")) WK18_SECS.splice(Math.max(0, WK18_SECS.indexOf("tools")), 0, "scan");
+/** an action name in plain words (PT's own labels; an unknown name is shown as it is) */
+function scan19Label(name){
+  const s = str(name), [a, v] = [scan19Base(s), s.includes(":") ? s.slice(s.indexOf(":") + 1) : ""];
+  if (a === "nav") return t("scan.a.nav", {x: STR["nav." + v] ? t("nav." + v) : v === "weekly" ? t("wk.nav") : v || "?"});
+  if (a === "tab") return t("scan.a.tab", {x: STR["set.tab." + v] ? t("set.tab." + v) : v || "?"});
+  if (a === "goto") return t("scan.a.goto", {x: STR["ph." + v] ? phName(v) : v || "?"});
+  if (a === "pg-open") return t("scan.a.pg", {x: STR["sp.st." + v] ? t("sp.st." + v) : v || "?"});
+  if (a === "set") return t("scan.a.set", {x: v});
+  if (a === "form") return t("scan.a.form", {x: v});
+  return STR["scan.a." + s] ? t("scan.a." + s) : s;
+}
+/** "You did A → B → C 9 times in 4 weeks. Make it one tap?" */
+function scan19Ask(x){ return t("scan.q", {x: arr(x.seq).map(scan19Label).join(" → "), n: x.n}); }
+function scan19SeqHTML(seq){ return `<span class="scan19-seq">${arr(seq).map(x => `<span class="chip">${esc(scan19Label(x))}</span>`).join(`<span aria-hidden="true"> → </span>`)}</span>`; }
+function scan19Unsafe(seq){ return arr(seq).filter(x => !scan19Safe(x)).map(scan19Label); }
+function scan19State(sig){ const d = scan19Dec().dec || {}; return d[sig] || null; }
+function scan19PropHTML(x){
+  const d = scan19State(x.sig), sig = esc(x.sig);
+  const ask = `<b class="small">${esc(scan19Ask(x))}</b>`;
+  if (d && d.key === x.key){
+    const st = d.d === "yes" ? t("scan.st.yes") : d.d === "idea" ? t("scan.st.idea") : d.d === "later" ? t("scan.st.later") : t("scan.st.no") + (d.why ? " — " + d.why : "");
+    return `<div class="item scan19-p done" data-sig="${sig}">${stSlot(d.d === "yes" || d.d === "idea" ? "ok" : "todo")}<div class="body">${ask}<span class="small muted">${esc(st)}</span></div></div>`;
+  }
+  const bad = scan19Unsafe(x.seq);
+  const yes = x.safe && !bad.length ? `<button class="btn xs primary" data-a="scan19-yes" data-sig="${sig}">${ic("bolt")}${esc(t("scan.yes"))}</button>` : `<button class="btn xs" data-a="scan19-idea" data-sig="${sig}">${ic("note")}${esc(t("scan.idea"))}</button>`;
+  return `<div class="item scan19-p" data-sig="${sig}">${stSlot("attn")}<div class="body">${ask}
+    <span class="small muted">${esc(x.safe && !bad.length ? t("scan.yes.what") : t("scan.idea.why", {x: bad.join(", ")}))}</span><span class="small muted">${esc(t("scan.only"))}</span></div>
+    <div class="qacts">${yes}<button class="btn xs ghost" data-a="scan19-no" data-sig="${sig}">${esc(t("scan.no"))}</button><button class="btn xs ghost" data-a="scan19-later" data-sig="${sig}">${esc(t("scan.later"))}</button></div></div>`;
+}
+{ const orig = wk18Entries; wk18Entries = function(n){
+    const E = orig(n);
+    for (const x of arr(n.scan)) E.push({sec: "scan", secs: wk18Secs(scan19Ask(x) + t("scan.yes.what"), true), html: scan19PropHTML(x)});
+    return E; }; }
+/** the proposal as the newest note that holds it shows it */
+function scan19Find(sig){ for (const nt of RUN18.notes ? wk18Sorted() : []) for (const x of arr(nt.scan)) if (x.sig === sig) return x; return null; }
+function scan19Answer(sig, d, why = ""){
+  const x = scan19Find(sig); if (!x) return;
+  if (d === "yes" && !(x.safe && scan19AllSafe(x.seq))) d = "idea";   // a shortcut only of steps on the allow-list, checked again here
+  scan19Set(s => {
+    s.dec[sig] = {d, n: x.n, at: now(), key: x.key, ...(why ? {why: str(why).trim().slice(0, 300)} : {})};
+    if (d === "yes" && !s.cuts.some(c => c.sig === sig)) s.cuts.push({id: uid("sc"), sig, seq: x.seq.slice(0, SCAN19_MAX), n: x.n, at: now()});
+    if (d === "idea" && !s.ideas.some(c => c.sig === sig)) s.ideas.push({id: uid("si"), sig, seq: x.seq.slice(0, SCAN19_MAX), n: x.n, at: now(), why: scan19Unsafe(x.seq).slice(0, 6)});
+    s.cuts = s.cuts.slice(-12); s.ideas = s.ideas.slice(-20);
+  });
+  render();
+  toast(t(d === "yes" ? "scan.done.yes" : d === "idea" ? "scan.done.idea" : d === "later" ? "scan.done.later" : "scan.done.no"), d === "yes" || d === "idea" ? "ok" : "");
+}
+
+/* ---------- 5. the Inbox: your shortcuts (one tap runs the same steps in order) and the ideas ---------- */
+function scan19InboxHTML(){
+  const s = scan19Dec(), cuts = arr(s.cuts), ideas = arr(s.ideas);
+  return cuts.map(c => `<div class="item scan19-cut" data-id="${esc(c.id)}">${stSlot("ok")}<div class="body"><span class="small"><b>${esc(t("scan.cut"))}</b></span>${scan19SeqHTML(c.seq)}<span class="small muted">${esc(t("scan.cut.sub", {n: c.seq.length}))}</span></div>
+      <div class="qacts"><button class="btn xs primary" data-a="scan19-run" data-id="${esc(c.id)}" ${SCAN19.running ? "disabled" : ""}>${ic("play")}${esc(t("scan.run"))}</button><button class="btn xs ghost" data-a="scan19-del" data-id="${esc(c.id)}">${esc(t("scan.del"))}</button></div></div>`).join("")
+    + ideas.map(c => `<div class="item scan19-idea" data-id="${esc(c.id)}">${stSlot("todo")}<div class="body"><span class="small"><b>${esc(t("scan.idealine"))}</b></span>${scan19SeqHTML(c.seq)}<span class="small muted">${esc(t("scan.idea.why", {x: arr(c.why).join(", ") || "—"}))}</span></div>
+      <div class="qacts"><button class="btn xs ghost" data-a="scan19-delidea" data-id="${esc(c.id)}">${esc(t("scan.del"))}</button></div></div>`).join("");
+}
+{ const orig = ib18HomeHTML; ib18HomeHTML = function(){
+    const h = orig.apply(this, arguments); if (!h) return h;
+    let add = ""; try{ add = scan19InboxHTML(); }catch(e){ onAppError(e && e.message, "scan19:inbox"); }
+    return add ? h.replace('<div class="list">', '<div class="list">' + add) : h; }; }
+/** the button for one step: the same action at the same place, visible and not disabled */
+function scan19Button(name){
+  const s = str(name), a = scan19Base(s), v = s.includes(":") ? s.slice(s.indexOf(":") + 1) : "";
+  if (!/^[a-z0-9-]+$/.test(a) || (v && !/^[a-z][a-z0-9_-]{0,23}$/.test(v))) return null;
+  const sel = v ? `[data-a="${a}"][data-v="${v}"], [data-a="${a}"][data-ph="${v}"]` : `[data-a="${a}"]`;
+  return [...document.querySelectorAll(sel)].find(el => el.getClientRects().length && !el.disabled && !el.closest("[hidden], .scan19-cut")) || null;
+}
+/** one tap: the steps in order, each by pressing its own button; stops at the first step that is not on the screen */
+async function scan19Go(id){
+  const c = arr(scan19Dec().cuts).find(x => x.id === id); if (!c || SCAN19.running) return false;
+  if (!scan19AllSafe(c.seq)){ toast(t("scan.run.unsafe"), "err"); return false; }
+  SCAN19.running = true;
+  try{
+    for (let i = 0; i < c.seq.length; i++){
+      const el = scan19Button(c.seq[i]);
+      if (!el){ toast(t("scan.run.stop", {k: i + 1, n: c.seq.length, x: scan19Label(c.seq[i])}), "err"); return false; }
+      el.click();
+      await new Promise(r => setTimeout(r, 260));
+    }
+    toast(t("scan.run.done", {n: c.seq.length}), "ok");
+    return true;
+  }finally{ SCAN19.running = false; }
+}
+Object.assign(ACTIONS, {
+  "scan19-yes": el => scan19Answer(str(el.dataset.sig), "yes"),
+  "scan19-idea": el => scan19Answer(str(el.dataset.sig), "idea"),
+  "scan19-later": el => scan19Answer(str(el.dataset.sig), "later"),
+  "scan19-no": el => { const sig = str(el.dataset.sig); promptBox(t("scan.no.title"), {ph: t("scan.no.ph"), yes: t("scan.no")}, v => scan19Answer(sig, "no", v)); },
+  "scan19-run": el => { scan19Go(str(el.dataset.id)); },
+  "scan19-del": el => { const id = str(el.dataset.id); scan19Set(s => { const c = s.cuts.find(x => x.id === id); s.cuts = s.cuts.filter(x => x.id !== id); if (c) s.dec[c.sig] = {d: "no", n: c.n, at: now(), why: t("scan.removed")}; }); render(); },
+  "scan19-delidea": el => { const id = str(el.dataset.id); scan19Set(s => { const c = s.ideas.find(x => x.id === id); s.ideas = s.ideas.filter(x => x.id !== id); if (c) s.dec[c.sig] = {d: "no", n: c.n, at: now(), why: t("scan.removed")}; }); render(); }
+});
+for (const a of ["scan19-yes", "scan19-idea", "scan19-later", "scan19-no", "scan19-run", "scan19-del", "scan19-delidea"]) ACT_NO.add(a);
+
+/* ---------- 6. when: on opening (after Saturday 22:00) and while PT stays open over it ---------- */
+{ const orig = run18OnOpen; run18OnOpen = function(){
+    const r = orig.apply(this, arguments), ws = WS.id;
+    SCAN19.last = null; SCAN19.ws = "";
+    setTimeout(() => { if (WS.id === ws && run18On()) scan19Ensure().catch(e => onAppError(e && e.message, "scan19:open")); }, 2600);
+    return r; }; }
+setInterval(() => { try{ if (run18On() && !SCAN19.busy) scan19Ensure(); }catch(e){ onAppError(e && e.message, "scan19:tick"); } }, 300000);
+
+/* ===================== 1.9 the 4×4 interview before a big or risky change to a live tool; "What changed" per version (PLAN-1.9 D, PLAN-1.8 video round 9, 10) =====================
+   1. Where a change to a live tool starts in 1.8, PT first runs the risk check (code, no AI):
+        - an update prepared from the inbox (aiPrepareUpdate): reports the owner included, "Tell PT what's wrong", and learn-from-use
+          plans PT prepares by itself (lfu18Check) all start here;
+        - a changed mind on a live tool (aiImpact, "change my mind");
+        - a new version of a live tool published from changed decisions (doRelease of an update).
+      Risky or big = the tool acts outward, is shared or for customers, or involves money; the change touches the shape or the storage
+      of data; or more than IV19_ROWS decision rows changed since the live version. Never for a small change (one fix, no data, few
+      rows) and never for a change that is private-only and small. Nothing here asks an AI.
+   2. Then the change waits for the interview: up to 16 questions in four areas (product, design, practical, edge cases), made by ONE
+      AI call when the owner starts it, shown one area at a time. Each area can be skipped. Every answer is a decision row asserted by
+      the owner (ROW_SOURCES, so the 1.8 rows write the events); a skipped area — or questions left empty — is a residual-risk row. When
+      the interview is done or skipped the change goes on: a prepared update is prepared, a changed mind is worked out, a new version can
+      be published with one tap. The answers reach the AI steps of that change (<interview_answers>, the owner's words as data).
+      One interview per live version: the next change after the new version is live is checked again.
+   3. What changed: in a tool's Versions view (the Release step on the Run page), each published version lists the decision rows that
+      changed since the version before, from the 1.8 events, in plain words; changes not yet published are listed on top. */
+const IV19_AREAS = ["product", "design", "practical", "edge"], IV19_ID = {product: "p", design: "d", practical: "r", edge: "e"}, IV19_ROWS = 3, IV19_PER = 4;
+/* a change that touches the shape or the storage of data (English, German, Chinese) */
+const IV19_DATA = /\b(?:data(?:\s|-)?(?:shape|model|structure|format|schema|layout)|schemas?|fields?|columns?|storage|database|migrat\w*|stored (?:data|records|items|entries)|(?:store|stores|keep|keeps|save|saves) (?:the |its |their |more |new |every |each |all )?(?:data|records|history|entries)|record (?:format|shape))\b|daten(?:struktur|format|modell|bank)|\bfeld(?:er)?\b|\bspalten?\b|\bspeicher\w*|\bmigration|字段|存储|数据库|数据结构|数据格式|迁移/i;
+const IV19 = {busy: new Set()};
+
+/* ---------- the record on the project (p.iv19; part of Undo, survives reload) ---------- */
+function iv19Read(p){ return p && p.iv19 && Array.isArray(p.iv19.list) ? p.iv19 : {list: []}; }
+function iv19Of(p){ if (!p.iv19 || !Array.isArray(p.iv19.list)) p.iv19 = {list: []}; return p.iv19; }   // ok:field  iv19 is new in 1.9, made on first use (older projects have none); in Undo and saved with the project
+function iv19Get(p, id){ return iv19Read(p).list.find(x => x && x.id === id) || null; }
+function iv19LiveV(p){ return p && p.live ? str(p.live.v) : ""; }
+/** the interview of the change to the version that is live now */
+function iv19Cur(p){ const v = iv19LiveV(p); if (!v) return null; return iv19Read(p).list.filter(x => x && x.live === v).slice(-1)[0] || null; }
+function iv19Settled(p){ const iv = iv19Cur(p); return !!iv && (iv.state === "done" || iv.state === "skipped"); }
+function iv19Waiting(p){ const iv = iv19Cur(p); return iv && iv.state === "wait" ? iv : null; }
+function iv19All(){ return run18Projects().map(p => ({p, iv: iv19Waiting(p)})).filter(x => x.iv); }
+
+/* ---------- 1. the risk check (code) ---------- */
+/** decision rows changed since the live version (from the events; the interview's own rows never count) */
+function iv19RowsSince(p){
+  const L = ROWS.L[p.id], since = p.live ? str(p.live.since) : ""; if (!L || !L.ready || !since) return [];
+  const s = new Set(); for (const e of L.list) if (["taken", "changed", "undone"].includes(e.type) && str(e.at) > since && e.src && !str(e.src).startsWith("iv19:")) s.add(str(e.src));
+  return [...s];
+}
+async function iv19Risk(p, {text = "", n = 1, fixOnly = false} = {}){
+  const why = [], s = run18Quiet(() => chkSignals(p));
+  if (s.out) why.push("out");
+  if (s.shared) why.push("shared");
+  if (s.money) why.push("money");
+  try{ await rowsEnsure(p); }catch(e){ onAppError(e && e.message, "iv19:rows"); }
+  const changed = iv19RowsSince(p), data = IV19_DATA.test(str(text)) || changed.some(x => /^kit:(storage|record|backend)/.test(x));
+  if (data) why.push("data");
+  if (changed.length > IV19_ROWS) why.push("rows");
+  const small = n <= 1 && (fixOnly || n === 0) && !data && changed.length <= IV19_ROWS;   // one fix, or nothing recorded as changed
+  return {need: why.length > 0 && !small, why, rows: changed.length, small};
+}
+/** the change waits for the interview when the risk check says so; returns true while it waits */
+async function iv19Gate(p, c){
+  if (!p || !p.live || !rowsOn() || iv19Settled(p)) return false;
+  const r = await iv19Risk(p, c); if (!r.need) return false;
+  const q = WS.projects.find(x => x.id === p.id); if (!q || !q.live) return false;
+  let iv = iv19Waiting(q);
+  actOpen(q, t("iv.act.wait"), {by: "pt"});
+  if (iv){ iv.why = [...new Set(arr(iv.why).concat(r.why))]; iv.items = [...new Set(arr(iv.items).concat(arr(c.items)))]; if (c.wish) iv.wish = str(c.wish); if (c.from !== "prepare" || !iv.from) iv.from = c.from; }
+  else {
+    iv = {id: uid("iv"), live: iv19LiveV(q), from: c.from, why: r.why, rows: r.rows, items: arr(c.items), wish: str(c.wish || ""), lfu: !!c.lfu, at: now(), state: "wait", qs: null, ans: {}, areas: {}};
+    const o = iv19Of(q); o.list.push(iv); if (o.list.length > 20) o.list.splice(0, o.list.length - 20);
+  }
+  touch(q); actCloseSoon(q.id);
+  if (c.open){ UI.modal = {kind: "iv19", pid: q.id, iv: iv.id}; }
+  render();
+  toast(t("iv.waits", {x: q.name}), "");
+  return true;
+}
+/* an update prepared from the inbox (also learn-from-use and "Tell PT what's wrong"): it reads its list of items right away, so the
+   list is put back exactly as it was when the check began (learn-from-use changes it for a moment) */
+{ const orig = aiPrepareUpdate; aiPrepareUpdate = async function(p){
+    const inc = p ? arr(p.inbox).filter(i => i && i.on && !i.done) : [];
+    if (!p || !p.live || !inc.length || iv19Settled(p) || !rowsOn()) return orig.apply(this, arguments);
+    const snap = arr(p.inbox).map(i => [i, i.on]), lfu = !!RUN18.lfuBusy;
+    // how many changes: each report one; run records of the same failure are one change together (learn-from-use groups them)
+    const n = inc.filter(i => i.src !== "run").length + new Set(inc.filter(i => i.src === "run").map(i => rowNorm(ib18Text(i)).slice(0, 80))).size;
+    let wait = false;
+    try{ wait = await iv19Gate(p, {from: "prepare", items: inc.map(i => i.id), lfu, open: !lfu, text: inc.map(ib18Text).join("\n"), n, fixOnly: inc.every(i => ib18Kind(i) === "bug" || ib18Kind(i) === "error")}); }
+    catch(e){ onAppError(e && e.message, "iv19:prepare"); }
+    if (wait) return;
+    const cur = arr(p.inbox).map(i => [i, i.on]);
+    for (const [i, on] of snap) i.on = on;
+    const run = orig.call(this, p);
+    for (const [i, on] of cur) i.on = on;
+    return run; }; }
+/* a changed mind on a live tool */
+{ const orig = aiImpact; aiImpact = async function(p, wish, o = {}){
+    if (!p || !p.live || (o && o.verify) || iv19Settled(p) || !rowsOn()) return orig.apply(this, arguments);
+    let wait = false;
+    try{ wait = await iv19Gate(p, {from: "impact", wish: str(wish), open: true, text: str(wish), n: 2, fixOnly: false}); }catch(e){ onAppError(e && e.message, "iv19:impact"); }
+    return wait ? null : orig.apply(this, arguments); }; }
+/* a new version of a live tool (from changed decisions or a prepared update) */
+{ const orig = doRelease; doRelease = async function(p){
+    if (!p || !p.live || iv19Settled(p) || !rowsOn() || releaseGate(p).length) return orig.apply(this, arguments);
+    const ch = arr(p.plan && p.plan.state !== "deployed" && p.plan.state !== "released" ? p.plan.changes : []);
+    let wait = false;
+    try{ wait = await iv19Gate(p, {from: "release", open: true, text: ch.map(c => str(c.x)).join("\n"), n: ch.length, fixOnly: ch.length > 0 && ch.every(c => c.k === "fix")}); }catch(e){ onAppError(e && e.message, "iv19:release"); }
+    return wait ? undefined : orig.apply(this, arguments); }; }
+
+/* ---------- 2. the questions: one AI call, four areas ---------- */
+function iv19ChangeText(p, iv){
+  if (iv.from === "impact") return str(iv.wish);
+  if (iv.from === "release"){ const ch = arr(p.plan && p.plan.changes); return ch.length ? ch.map(c => "- " + str(c.x)).join("\n") : t("iv.change.rows", {n: iv19RowsSince(p).length}); }
+  const want = new Set(arr(iv.items));
+  return arr(p.inbox).filter(i => i && want.has(i.id)).map(i => "- " + ib18Text(i).slice(0, 1500)).join("\n");   // ok:cut  each report as the update plan reads it
+}
+const IV19_WHY_EN = {out: "it acts outward (sends, posts, publishes, pays or orders)", shared: "other people or customers use it", money: "it involves money", data: "the change touches the shape or the storage of data", rows: "several earlier decisions change"};
+function iv19Clean(o){
+  const qs = {}; let n = 0;
+  for (const a of IV19_AREAS){
+    qs[a] = arr(o && o.areas && o.areas[a]).filter(x => x && str(x.q).trim()).slice(0, IV19_PER)
+      .map((x, i) => ({id: IV19_ID[a] + (i + 1), q: rowCut(str(x.q).trim(), 300), why: rowCut(str(x.why).trim(), 200), options: arr(x.options).map(y => rowCut(str(y).trim(), 120)).filter(Boolean).slice(0, 4)}));
+    n += qs[a].length;
+  }
+  return n ? qs : null;
+}
+async function iv19Make(p0, id){
+  const iv0 = iv19Get(p0, id); if (!iv0 || iv0.state !== "wait" || IV19.busy.has(id)) return false;
+  const ws0 = WS.id, pid = p0.id;
+  IV19.busy.add(id); render();
+  try{
+    const prompt = buildPrompt("iv19", {proj: p0, rules: ["simple"], context: projectContext(p0),
+      body: `The tool is live as v${iv0.live}. A change to it is about to start, and the risk check found it big or risky: ${arr(iv0.why).map(w => IV19_WHY_EN[w] || w).join("; ")}.
+Before anything is prepared, the person answers a short interview, so the change is built on their answers. The change:
+${untrusted("change", iv19ChangeText(p0, iv0))}
+Write the interview in four areas, at most four questions each, the most important first:
+- product: what the change is for, who it serves, what must stay exactly as it is, how the person will know it worked;
+- design: how it looks and reads for the people who use it, what they see first, what changes for them;
+- practical: the data and where it is kept, cost, time, who does what, how the change goes live and how it is undone;
+- edge: what can go wrong (wrong, missing or hostile input, many uses at once, acting outward by mistake, running over budget).
+For each question: "q", one short question in plain words without jargon; "why", one short line on what the answer decides; "options", two to four short typical answers, or [] when only the person's own words fit. Ask only what the person can answer and what changes the work; never ask what the project above already settles. Fewer than four in an area is fine; never pad an area.`,
+      schema: `{"areas":{"product":[{"q":"…","why":"…","options":["…","…"]}],"design":[],"practical":[],"edge":[]}}`});
+    const r = await runAI("iv19", t("iv.making"), prompt, {pid, step: "update", validate: o => !!iv19Clean(o)});
+    const p = WS.id === ws0 ? WS.projects.find(x => x.id === pid) : null, iv = p && iv19Get(p, id);
+    if (!p || !iv || iv.state !== "wait") return false;
+    actOpen(p, t("iv.act.qs"), {by: "pt"});
+    const qs = r ? iv19Clean(r) : null;
+    if (qs){ iv.qs = qs; iv.made = now(); iv.err = ""; for (const a of IV19_AREAS) if (!qs[a].length) iv.areas = Object.assign({}, iv.areas, {[a]: {st: "none", at: now()}}); iv.area = iv19NextArea(iv); }
+    else iv.err = now();
+    touch(p); actCloseSoon(p.id);
+    return !!qs;
+  }finally{ IV19.busy.delete(id); render(); }
+}
+function iv19NextArea(iv){ return IV19_AREAS.find(a => !(iv.areas || {})[a] && arr(iv.qs && iv.qs[a]).length) || ""; }
+/** after an area: the next one, or the end (done; skipped when nothing was answered) */
+function iv19Step(p, iv){
+  iv.area = iv19NextArea(iv);
+  if (iv.area) return false;
+  iv.state = Object.keys(iv.ans || {}).length ? "done" : "skipped"; iv.doneAt = now();
+  return true;
+}
+function iv19SkipArea(p, iv, a){ iv.areas = Object.assign({}, iv.areas, {[a]: {st: "skip", at: now()}}); }
+/** the change goes on: a prepared update is prepared, a changed mind worked out; a new version waits for one tap */
+async function iv19Continue(pid, id){
+  const p = WS.projects.find(x => x.id === pid), iv = p && iv19Get(p, id); if (!iv || !iv19Settled(p)) return;
+  if (iv.from === "prepare"){
+    const want = new Set(arr(iv.items)), before = arr(p.inbox).map(i => [i, i.on]);
+    if (iv.lfu) for (const i of arr(p.inbox)) i.on = want.has(i.id) && !i.done;
+    else for (const i of arr(p.inbox)) if (want.has(i.id) && !i.done) i.on = true;
+    const run = aiPrepareUpdate(p);   // it takes its list of items right away
+    if (iv.lfu) for (const [i, on] of before) if (!want.has(i.id)) i.on = on;
+    await run;
+    const q = WS.projects.find(x => x.id === pid);
+    if (q && iv.lfu && q.plan && q.plan.state === "checking" && !q.plan.by){ q.plan.by = "pt"; q.plan.lfu = arr(q.plan.changes).length; touch(q); }   // a learn-from-use change stays PT's prepared change
+  } else if (iv.from === "impact" && iv.wish){
+    const r = await aiImpact(p, iv.wish); if (!r) return;
+    UI.review = Object.assign(r, {mode: "impact", wish: iv.wish, pid}); UI.modal = {kind: "review", wide: true};
+  }
+  render();
+}
+
+/* ---------- 3. answers and skipped areas are decision rows (asserted by the owner) ---------- */
+ROW_SOURCES.push(function iv19Rows(p, add){
+  for (const iv of iv19Read(p).list){
+    if (!iv || !iv.id) continue;
+    for (const a of IV19_AREAS){
+      const qs = arr(iv.qs && iv.qs[a]), st = (iv.areas || {})[a], area = t("iv.a." + a);
+      for (const q of qs){ const x = (iv.ans || {})[q.id]; if (!x) continue;
+        add({src: "iv19:" + iv.id + ":" + q.id, ref: "", branch: "U", stage: 10, question: q.q, options: arr(q.options).map(o => ({label: o, why: ""})), star: null, why: t("iv.row.why", {x: area, v: iv.live}),
+          decided: true, val: str(x.a), chosen: str(x.a), by: "owner", at: str(x.at)}); }
+      const skip = !!st && st.st === "skip", left = st && st.st === "done" ? arr(st.open) : [];
+      if (skip || left.length){   // a skipped area, or questions left empty: the residual risk is written down
+        const n = skip ? qs.length : left.length;
+        add({src: "iv19:" + iv.id + ":risk:" + a, ref: "", branch: "U", stage: 10, base: "notify", question: t("iv.risk.q", {x: area, v: iv.live}), options: [], star: null,
+          why: qs.filter(q => skip || left.includes(q.id)).map(q => q.q).join(" · "),
+          decided: true, val: skip ? "skipped" : "open", chosen: skip ? (n ? t("iv.risk.skip", {n}) : t("iv.risk.skip0")) : t("iv.risk.open", {n}), by: "owner", at: str(st.at || iv.doneAt)});
+      }
+    }
+  }
+});
+/* the answers reach the AI steps of the change (the owner's own words, as data) */
+function iv19ContextBlock(p){
+  const iv = iv19Cur(p); if (!iv || iv.state !== "done") return "";
+  const out = [];
+  for (const a of IV19_AREAS) for (const q of arr(iv.qs && iv.qs[a])){ const x = (iv.ans || {})[q.id]; if (x) out.push({area: a, q: q.q, answer: str(x.a)}); }
+  const skipped = IV19_AREAS.filter(a => ((iv.areas || {})[a] || {}).st === "skip");
+  if (!out.length) return "";
+  return `<interview_answers decided_by="the person" before="the change to v${iv.live}">\n${untrusted("interview_answers", JSON.stringify(out))}\nThe person answered these before this change; build the change on them and never ask them again.${skipped.length ? " Areas the person skipped (residual risk, be careful there): " + skipped.join(", ") + "." : ""}\n</interview_answers>`;
+}
+{ const orig = projectContext; projectContext = function(p, o = {}){ const s = orig(p, o); if (!p || (o && o.only && !arr(o.only).includes("decisions"))) return s; let b = ""; try{ b = iv19ContextBlock(p); }catch(e){ onAppError(e && e.message, "iv19:context"); } return b ? s + "\n" + b : s; }; }
+
+/* ---------- 4. the screens: the interview, the line in the Inbox and on the Run page ---------- */
+function iv19WhyText(iv){ return arr(iv.why).map(w => t("iv.why." + w)).join(" · "); }
+function iv19Count(iv){ return iv.qs ? IV19_AREAS.reduce((s, a) => s + arr(iv.qs[a]).length, 0) : IV19_AREAS.length * IV19_PER; }
+function iv19LineHTML(p, iv){
+  return `<div class="item iv19-line" data-iv="${esc(iv.id)}">${stSlot("attn")}<div class="body"><span class="small"><b>${esc(p.name)}</b> · ${esc(t("iv.line", {v: iv.live}))}</span>
+    <span class="small muted">${esc(t("iv.because", {x: iv19WhyText(iv)}))}</span><span class="small muted">${esc(t("iv.line.sub", {n: iv19Count(iv)}))}</span></div>
+    <div class="qacts"><button class="btn xs primary" data-a="iv19-open" data-pid="${esc(p.id)}">${ic("ask")}${esc(t(iv.qs ? "iv.go" : "iv.start"))}</button><button class="btn xs ghost" data-a="iv19-skipall" data-pid="${esc(p.id)}">${esc(t("iv.skip0"))}</button></div></div>`;
+}
+{ const orig = ib18HomeHTML; ib18HomeHTML = function(){
+    const h = orig.apply(this, arguments); if (!h) return h;
+    let add = ""; try{ add = iv19All().map(x => iv19LineHTML(x.p, x.iv)).join(""); }catch(e){ onAppError(e && e.message, "iv19:inbox"); }
+    return add ? h.replace('<div class="list">', '<div class="list">' + add) : h; }; }
+{ const orig = pgBody; pgBody = function(p, id){ const h = orig(p, id); if (id !== "run") return h; let a = ""; try{ const iv = iv19Waiting(p); if (iv) a = `<section class="panel iv19-run"><div class="list">${iv19LineHTML(p, iv)}</div></section>`; }catch(e){ onAppError(e && e.message, "iv19:run"); } return a + h; }; }
+function iv19AreasHTML(iv){
+  return `<div class="row iv19-areas" role="list">${IV19_AREAS.map((a, i) => { const st = ((iv.areas || {})[a] || {}).st || (iv.area === a ? "cur" : "todo");
+    return `<span class="chip ${st === "done" ? "ok" : st === "skip" ? "warn" : ""}" role="listitem" ${iv.area === a ? 'aria-current="step"' : ""}>${i + 1} · ${esc(t("iv.a." + a))}${st === "done" ? " ✓" : st === "skip" ? " · " + esc(t("iv.skipped")) : st === "none" ? " · " + esc(t("iv.none")) : ""}</span>`; }).join("")}</div>`;
+}
+function iv19QHTML(iv, q){
+  const x = (iv.ans || {})[q.id];
+  const opts = arr(q.options).map((o, i) => `<label class="chk small"><input type="radio" name="o-${esc(q.id)}" value="${i}" ${x && x.opt === i ? "checked" : ""}>${esc(o)}</label>`).join("");
+  return `<fieldset class="iv19-q stack" style="gap:4px"><legend class="small"><b>${esc(q.q)}</b></legend>${q.why ? `<span class="small muted">${esc(q.why)}</span>` : ""}
+    ${opts ? `<div class="stack" style="gap:2px">${opts}</div>` : ""}<label class="fld"><span class="small muted">${esc(t(opts ? "iv.own.or" : "iv.own"))}</span><input type="text" name="a-${esc(q.id)}" value="${esc(x && x.opt == null ? x.a : "")}" maxlength="600"></label></fieldset>`;
+}
+MODAL14.iv19 = (m, p0, hd) => {
+  const p = WS.projects.find(x => x.id === m.pid), iv = p && (iv19Get(p, m.iv) || iv19Cur(p));
+  const H = hd(t("iv.title"));
+  if (!iv) return `${H}<p class="small muted">${esc(t("iv.gone"))}</p>`;
+  const head = `${H}<p class="sub">${esc(t("iv.sub", {x: p.name, v: iv.live}))}</p><p class="small">${esc(t("iv.because", {x: iv19WhyText(iv)}))}</p>${iv19AreasHTML(iv)}`;
+  if (iv.state !== "wait"){
+    const rows = run18Rows(p).filter(r => r.src.startsWith("iv19:" + iv.id + ":") && !r.prov).map(r => r.id);
+    const go = iv.from === "release" && p.live && iv19Settled(p) ? `<button class="btn primary" data-a="iv19-release" data-pid="${esc(p.id)}">${ic("check")}${esc(t("iv.release", {v: nextRelease(p, releaseKind(arr(p.plan && p.plan.changes)))}))}</button>` : "";
+    return `${head}<p>${stSlot("ok")} ${esc(t(iv.state === "done" ? "iv.end.done" : "iv.end.skipped"))}</p>${rows.length ? `<p class="small muted">${esc(t("iv.end.rows", {x: rows.join(", ")}))}</p>` : ""}<p class="small muted">${esc(t("iv.end." + (iv.from || "prepare")))}</p>
+      <div class="row end"><button class="btn ghost" data-a="modal-close">${esc(t("btn.close"))}</button>${go}</div>`;
+  }
+  const busy = IV19.busy.has(iv.id) || (typeof aiBusy === "function" && aiBusy("iv19"));
+  if (!iv.qs) return `${head}<p class="small muted">${esc(t("iv.intro", {n: IV19_AREAS.length * IV19_PER}))}</p>${iv.err ? `<p class="small warn-t">${esc(t("iv.err"))}</p>` : ""}${busy ? `<div class="busy"><span class="pulse"></span>${esc(t("iv.making"))}</div>` : ""}
+    <div class="row end"><button class="btn ghost" data-a="iv19-skipall" data-pid="${esc(p.id)}">${esc(t("iv.skip0"))}</button><button class="btn ghost" data-a="modal-close">${esc(t("iv.later"))}</button><button class="btn primary" data-a="iv19-make" data-pid="${esc(p.id)}" ${busy ? "disabled" : ""}>${ic("spark")}${esc(t(iv.err ? "iv.retry" : "iv.make"))}</button></div>`;
+  const a = iv.area || iv19NextArea(iv), qs = arr(iv.qs[a]);
+  return `${head}<form class="stack iv19-form" data-form="iv19-area" data-pid="${esc(p.id)}" data-iv="${esc(iv.id)}" data-area="${esc(a)}">
+    <h3 class="small">${esc(t("iv.areaof", {i: IV19_AREAS.indexOf(a) + 1, x: t("iv.a." + a)}))}</h3><p class="small muted">${esc(t("iv.a." + a + ".sub"))}</p>
+    ${qs.map(q => iv19QHTML(iv, q)).join("")}
+    <p class="small muted">${esc(t("iv.skip.what"))}</p>
+    <div class="row end"><button class="btn ghost" type="button" data-a="iv19-skipall" data-pid="${esc(p.id)}">${esc(t(Object.keys(iv.areas || {}).some(k => (iv.areas[k] || {}).st !== "none") ? "iv.skipall" : "iv.skip0"))}</button><button class="btn ghost" type="button" data-a="iv19-skiparea" data-pid="${esc(p.id)}" data-area="${esc(a)}">${esc(t("iv.skiparea"))}</button><button class="btn primary" type="submit">${ic("check")}${esc(t("iv.save"))}</button></div></form>`;
+};
+FORMS["iv19-area"] = f => {
+  const p = WS.projects.find(x => x.id === f.dataset.pid), iv = p && iv19Get(p, f.dataset.iv), a = str(f.dataset.area);
+  if (!iv || iv.state !== "wait" || !iv.qs || !IV19_AREAS.includes(a)) return;
+  const got = {};
+  for (const q of arr(iv.qs[a])){
+    const own = str((f.querySelector(`[name="a-${q.id}"]`) || {}).value).trim(), o = f.querySelector(`[name="o-${q.id}"]:checked`), i = o ? +o.value : -1;
+    const pick = i >= 0 ? str(q.options[i]) : "";
+    if (own || pick) got[q.id] = Object.assign({a: (own || pick).slice(0, 600), at: now()}, !own && pick ? {opt: i} : {});
+  }
+  if (!Object.keys(got).length){ toast(t("iv.need"), "err"); return; }
+  actOpen(p, t("iv.act.area", {x: t("iv.a." + a)}), {by: "you"});
+  iv.ans = Object.assign({}, iv.ans, got);
+  iv.areas = Object.assign({}, iv.areas, {[a]: {st: "done", at: now(), open: arr(iv.qs[a]).filter(q => !got[q.id]).map(q => q.id)}});
+  const end = iv19Step(p, iv);
+  touch(p); actCloseSoon(p.id); render();
+  if (end){ toast(t("iv.end.done"), "ok"); iv19Continue(p.id, iv.id); }
+};
+Object.assign(ACTIONS, {
+  "iv19-open": el => { const p = WS.projects.find(x => x.id === el.dataset.pid), iv = p && iv19Waiting(p); if (!iv) return; UI.modal = {kind: "iv19", pid: p.id, iv: iv.id}; render(); },
+  "iv19-make": el => { const p = WS.projects.find(x => x.id === el.dataset.pid), iv = p && iv19Waiting(p); if (!iv) return; UI.modal = {kind: "iv19", pid: p.id, iv: iv.id}; iv19Make(p, iv.id); },
+  "iv19-skiparea": el => { const p = WS.projects.find(x => x.id === el.dataset.pid), iv = p && iv19Waiting(p), a = str(el.dataset.area); if (!iv || !IV19_AREAS.includes(a)) return;
+    actOpen(p, t("iv.act.skip", {x: t("iv.a." + a)}), {by: "you"}); iv19SkipArea(p, iv, a); const end = iv19Step(p, iv); touch(p); actCloseSoon(p.id); render();
+    if (end){ toast(t(iv.state === "done" ? "iv.end.done" : "iv.end.skipped"), ""); iv19Continue(p.id, iv.id); } },
+  "iv19-skipall": el => { const p = WS.projects.find(x => x.id === el.dataset.pid), iv = p && iv19Waiting(p); if (!iv) return;
+    actOpen(p, t("iv.act.skipall"), {by: "you"}); for (const a of IV19_AREAS) if (!(iv.areas || {})[a]) iv19SkipArea(p, iv, a); iv19Step(p, iv); touch(p); actCloseSoon(p.id);
+    UI.modal = {kind: "iv19", pid: p.id, iv: iv.id}; render(); toast(t(iv.state === "done" ? "iv.end.done" : "iv.end.skipped"), ""); iv19Continue(p.id, iv.id); },
+  "iv19-release": el => { const p = WS.projects.find(x => x.id === el.dataset.pid); if (!p || !iv19Settled(p)) return; UI.modal = null; render(); if (UI.pid !== p.id) openProject(p.id); doRelease(p); }
+});
+for (const a of ["iv19-open", "iv19-make"]) ACT_NO.add(a);
+
+/* ---------- 5. What changed: per published version, the decision rows that changed since the version before ---------- */
+const WC19_CAP = 12;
+/** the rows of one stretch of time: the value before it → the value after it (a row taken and taken back inside it is left out) */
+function wc19Items(evs, qOf){
+  const by = new Map();
+  for (const e of evs){ const k = str(e.src); if (!k) continue; const c = by.get(k); by.set(k, {first: c ? c.first : e, last: e}); }
+  const out = [];
+  for (const [src, {first, last}] of by){
+    const before = first.type === "taken" ? "" : str(first.data && first.data.from), after = last.type === "undone" ? "" : str(last.data && last.data.chosen);
+    if (before === after) continue;
+    const q = qOf.get(src) || t("wc.q.gone"), who = last.by && last.by !== "owner" ? rowByText(last.by) : "";
+    out.push({src, row: str(last.row), q, before, after, who, text: !before ? t("wc.new", {q, x: after}) : !after ? t("wc.back", {q, a: before}) : t("wc.changed", {q, a: before, b: after})});
+  }
+  return out;
+}
+/** per published version (newest first) the rows that changed since the one before; the changes not published yet on top.
+    Kept until the events, the versions, the project or the language change (cause 67: a screen never works out all rows twice) */
+const WC19_MEMO = new Map();
+function wc19Of(p){
+  const L = ROWS.L[p.id]; if (!L || !L.ready) return null;
+  const rels = arr(p.releases).filter(r => r && r.v).slice().sort((a, b) => str(a.at).localeCompare(str(b.at)));
+  const key = [L.list.length, L.tail ? L.tail.id : "", rels.map(r => r.v + "@" + r.at).join(","), p.live ? p.live.v : "", str(p.updatedAt), LANG].join("|"), m = WC19_MEMO.get(p.id);
+  if (m && m.key === key) return m.val;
+  const val = wc19Compute(p, L, rels);
+  WC19_MEMO.set(p.id, {key, val});
+  return val;
+}
+function wc19Compute(p, L, rels){
+  const log0 = L.list.length ? str(L.list[0].at) : "", base = !log0 || rels.some(r => str(r.at) < log0);
+  /* the first event of a project holds the decisions it already had (1.8: "started" or "migrated"): they count as taken then — for
+     the first version; when a version was published before the log began, they are the starting point, not a change */
+  const evs = L.list.flatMap(e => ["started", "migrated", "rows"].includes(e.type) ? (base ? [] : arr(e.data && e.data.rows).filter(r => r && r.src && r.val != null).map(r => ({type: "taken", src: r.src, row: r.row, at: e.at, by: r.by, data: {chosen: r.chosen, val: r.val}}))) : [e])
+    .filter(e => ["taken", "changed", "undone"].includes(e.type) && !str(e.src).startsWith("iv19:"));
+  const qOf = new Map();
+  for (const r of run18Rows(p)) qOf.set(r.src, str(r.question));
+  for (const e of L.list) if (e.src && e.data && e.data.q && !qOf.has(e.src)) qOf.set(e.src, str(e.data.q));
+  const vers = rels.map((r, i) => { const from = i ? str(rels[i - 1].at) : "", to = str(r.at);
+    return {v: str(r.v), at: to, first: i === 0, live: !!(p.live && p.live.v === r.v), unknown: !log0 || to < log0, items: wc19Items(evs.filter(e => str(e.at) > from && str(e.at) <= to), qOf)}; });
+  const last = rels.length ? str(rels[rels.length - 1].at) : "";
+  return {pending: rels.length ? wc19Items(evs.filter(e => str(e.at) > last), qOf) : [], vers: vers.reverse()};
+}
+function wc19ListHTML(items){
+  const li = x => `<li><span class="mono small">${esc(x.row)}</span> ${esc(x.text)}${x.who ? ` <span class="muted">· ${esc(x.who)}</span>` : ""}</li>`;
+  const shown = items.slice(0, WC19_CAP), more = items.slice(WC19_CAP);
+  return `<ul class="small wc19-list">${shown.map(li).join("")}</ul>${more.length ? `<details class="small"><summary>${esc(t("wc.more", {n: more.length}))}</summary><ul class="small">${more.map(li).join("")}</ul></details>` : ""}`;
+}
+function wc19HTML(p){
+  if (!p || !arr(p.releases).length) return "";
+  const W = wc19Of(p);
+  if (!W){ if (rowsOn() && !(ROWS.L[p.id] && (ROWS.L[p.id].loading || ROWS.L[p.id].failed))) rowsEnsure(p).then(L => { if (L && L.ready && UI.pid === p.id) render(); }); return `<section class="panel wc19" data-anchor="wc19"><h3>${ic("log")} ${esc(t("wc.title"))}</h3><p class="small muted">${esc(t("row.loading"))}</p></section>`; }
+  const ver = x => `<div class="wc19-v" data-v="${esc(x.v)}"><div class="row"><b class="mono">v${esc(x.v)}</b><span class="small muted">${esc(fmtDay(x.at))}</span>${x.live ? `<span class="chip ok">${esc(t("rel.live"))}</span>` : ""}</div>
+    ${x.unknown && !x.items.length ? `<p class="small muted">${esc(t("wc.before"))}</p>` : !x.items.length ? `<p class="small muted">${esc(t("wc.none"))}</p>`
+      : x.first ? `<details class="small"><summary>${esc(t("wc.first", {n: x.items.length}))}</summary>${wc19ListHTML(x.items)}</details>` : wc19ListHTML(x.items)}</div>`;
+  return `<section class="panel wc19" data-anchor="wc19"><h3>${ic("log")} ${esc(t("wc.title"))}</h3><p class="small muted">${esc(t("wc.sub"))}</p>
+    ${W.pending.length ? `<div class="wc19-v pending"><b class="small">${esc(t("wc.pending", {v: W.vers[0] ? W.vers[0].v : ""}))}</b>${wc19ListHTML(W.pending)}</div>` : ""}
+    ${W.vers.map(ver).join("")}</section>`;
+}
+{ const orig = phRelease; phRelease = function(p){ const h = orig.apply(this, arguments); let a = ""; try{ a = wc19HTML(p); }catch(e){ onAppError(e && e.message, "wc19"); } return h + a; }; }
+
+/* ---------- 6. the look of the new parts (the 1.8 look's tokens; injected like Health's sheet) ---------- */
+const IV19_CSS = `
+.iv19-q{border:1px solid var(--line);border-radius:12px;padding:8px 12px 10px;margin:0;min-width:0}
+.iv19-q legend{padding:0 4px;max-width:100%}
+.iv19-q .fld input{width:100%}
+.iv19-areas{gap:6px}
+.scan19-seq{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:2px 0}
+.wc19-v{border-top:1px solid var(--line);padding:8px 0 4px;display:flex;flex-direction:column;gap:4px}
+.wc19-v.pending{border-top:0}
+.wc19-list{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:2px}`;
+function iv19Css(){ if (typeof document === "undefined" || document.getElementById("iv19-css")) return; const s = document.createElement("style"); s.id = "iv19-css"; s.textContent = IV19_CSS; (document.head || document.body).appendChild(s); }
+iv19Css();
 
 boot();
 

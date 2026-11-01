@@ -301,3 +301,17 @@ window.__pickFixture = function(p){
     return c;
   };
 })();
+/* 1.9 the 4×4 interview: one AI call makes up to four questions in each of four areas. Added as a default answer behind
+   window.__mockOverride, so a test that sets its own override (and passes other tasks on) keeps working unchanged.
+   window.__iv19: another answer for a test (for example {} = no questions). */
+(function(){ if (window !== window.top) return;
+  const iv19 = () => ({areas: {
+    product: [{q: "What must the change do for the people who use the tool?", why: "It decides what counts as done", options: ["Save time", "Fewer mistakes"]}, {q: "What must stay exactly as it is?", why: "It decides what is not touched", options: []}, {q: "Who notices the change first?", why: "It decides who to tell", options: ["Me", "My users"]}, {q: "How will you know it worked?", why: "It becomes the check", options: []}],
+    design: [{q: "Where should the new part show?", why: "It decides the layout", options: ["On top", "In a menu"]}, {q: "What should the label say?", why: "It decides the wording", options: []}],
+    practical: [{q: "Where is the new data kept?", why: "It decides the storage", options: ["With the tool", "In a sheet"]}, {q: "How is the change undone if it goes wrong?", why: "It decides the restore plan", options: []}],
+    edge: [{q: "What happens with an empty entry?", why: "It decides the empty state", options: ["Skip it", "Ask again"]}, {q: "What if two people change the same entry?", why: "It decides the conflict rule", options: []}]}});
+  let user = null;
+  // the function read is bound to the override set at that moment; setting it back unwraps it again (no chain points at itself)
+  const wrap = u => { const f = (task, prompt) => (u ? u(task, prompt) : null) || (task === "iv19" ? (window.__iv19 || iv19()) : null); f.__inner = u; f.__iv19 = true; return f; };
+  Object.defineProperty(window, "__mockOverride", {configurable: true, get(){ return wrap(user); }, set(f){ user = f && f.__iv19 ? f.__inner : f; }});
+})();
