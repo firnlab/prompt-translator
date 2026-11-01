@@ -89,6 +89,20 @@ M = [
     ("a stored kit run does not go on when PT opens again", [("v190_fleet.js", "    try{ if (WS && WS.id === id) fl19Resume(); }catch(e){", "    try{ }catch(e){")], "python3 test/e2e190_fleet.py test/fixtures/synthetic.json"),
     ("a preview copy runs the kit update", [("v190_fleet.js", '  if (PT_PREVIEW){ toast(t("pv.blocked"), "err"); return null; }   // a preview copy never republishes real tools\n', "")], "python3 test/e2e190_fleet.py test/fixtures/synthetic.json"),
     ("Cancel lets the waiting tools of the kit run start", [("v190_fleet.js", '  const nx = R.cancelledAt ? null : R.tools.find(x => x.state === "waiting");', '  const nx = R.tools.find(x => x.state === "waiting");')], "python3 test/e2e190_fleet.py test/fixtures/synthetic.json"),
+    # 1.9 care (e2e190_care / plain_browser must turn red; the made-up bundle)
+    ("a full export is not recorded (the export reminder never goes away)", [("v190_care.js", "if (full) Promise.resolve(r).then(ok => { if (ok === true) care19Exported(); }, () => null);", "")], "python3 test/e2e190_care.py test/fixtures/synthetic.json"),
+    ("a failed download counts as a saved export", [("v190_care.js", "if (ok === true) care19Exported();", "care19Exported();")], "python3 test/e2e190_care.py test/fixtures/synthetic.json"),
+    ("the AI ceiling is proposed before February 2027", [("v190_care.js", "str(key) < CARE19_CEIL_FROM || ", "")], "python3 test/e2e190_care.py test/fixtures/synthetic.json"),
+    ("the AI ceiling is proposed with fewer than 60 days of counts", [("v190_care.js", "if (days < CARE19_CEIL_MIN_DAYS) return null;", "")], "python3 test/e2e190_care.py test/fixtures/synthetic.json"),
+    ("automatic AI work goes on above the ceiling", [("v190_care.js", "{ const orig = autoOK; autoOK = function(){ return orig.apply(this, arguments) && !care19Over(); }; }", "")], "python3 test/e2e190_care.py test/fixtures/synthetic.json"),
+    ("an AI step you start above the ceiling runs without asking", [("v190_care.js", '      if (!(await care19Ask())) throw {code: "cancelled"};\n', "")], "python3 test/e2e190_care.py test/fixtures/synthetic.json"),
+    ("push on leaves the old Sunday task running", [("v190_care.js", "  if (cur && cur !== id){ try{ await Runner.setEnabled(cur, false); }", "  if (false){ try{ await Runner.setEnabled(cur, false); }")], "python3 test/e2e190_care.py test/fixtures/synthetic.json"),
+    ("the push task runs without the noteworthy-only rule", [("v190_care.js", "prompt: want ? care19PushPrompt(coll) : wk18Prompt(coll)", "prompt: wk18Prompt(coll)")], "python3 test/e2e190_care.py test/fixtures/synthetic.json"),
+    ("the key renewal shows before 4 Oct 2027", [("v190_care.js", "const day = care19Day(ms); if (day < CARE19_KEYS_FROM) return false;", "const day = care19Day(ms);")], "python3 test/e2e190_care.py test/fixtures/synthetic.json"),
+    ("the server-backed key is recorded without a monthly limit", [("v190_care.js", 'if (!(v >= 1)){ m.err = true; m.limit = ""; render(); focusSoon("care19-limit"); return; }', ""),
+        ("v190_care.js", "const v = Math.floor(num(limit, 0)); if (!p || !(v >= 1)) return false;", "const v = Math.floor(num(limit, 0)); if (!p) return false;")], "python3 test/e2e190_care.py test/fixtures/synthetic.json"),
+    ("the viewer outside claude.ai writes to the browser's storage", [("v190_care.js", '    VIEW19.sel = -1;\n  }catch(e){ VIEW19.err = t("care.v.bad"); }', '    VIEW19.sel = -1; try{ localStorage.setItem("pt:v19", "1"); }catch(e2){ console.warn(e2); }\n  }catch(e){ VIEW19.err = t("care.v.bad"); }')], "python3 test/plain_browser.py test/fixtures/synthetic.json"),
+    ("PT outside claude.ai falls back to the editable local mode", [("v190_care.js", "if (view19Wanted()){ for (let i = 0;", "if (false){ for (let i = 0;")], "python3 test/plain_browser.py test/fixtures/synthetic.json"),
 ]
 
 ONLY = next((x.split("=", 1)[1] for x in sys.argv if x.startswith("--only=")), None)   # 1.8: run the planted bugs whose name or test contains this text
