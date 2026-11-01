@@ -81,8 +81,9 @@ async function aiCheckBatch(p, fs, before, after){
 }
 function lintErrSet(p, secIds){ return new Set(lintPackage(p).filter(l => l.sev === "error" && (!secIds || secIds.includes(l.sec))).map(l => l.sec + "|" + l.key)); }
 
-/** fix a set of findings: groups that share items, up to 3 rounds each (the 2nd and 3rd with the checker's note) */
-async function fixFindings(p, ids, {rounds = 3, quiet = false} = {}){
+/** fix a set of findings: groups that share items, round after round until the checker confirms (each later round with the checker's note);
+    1.8 (owner, 31 Oct 2026): the same fix proposed twice stops and shows before → after; FIX_CAP (5) rounds is the breaker, the last one writes the residual risk */
+async function fixFindings(p, ids, {rounds = FIX_CAP, quiet = false} = {}){
   const sum = {fixed: 0, partly: 0, needYou: 0, changed: new Set(), failed: 0};
   let todo = arr(p.findings).filter(f => ids.includes(f.id) && OPEN_F.includes(f.status));
   if (!todo.length) return sum;
@@ -95,6 +96,7 @@ async function fixFindings(p, ids, {rounds = 3, quiet = false} = {}){
     const grp = "g" + uid("x");   // the fix and its check are one Undo step together
     const orig = {}, acts = [];   // the text before the first round, and every round's action (so a rejected fix can be taken back completely)
     let lint0 = null;
+    const seen = new Map();   // 1.8: the text every round proposed per item, to see a fix proposed twice
     for (let round = 1; round <= rounds && open.length; round++){
       actClose(p.id);
       if (UI.finish && UI.finish.stop) break;
@@ -107,8 +109,16 @@ async function fixFindings(p, ids, {rounds = 3, quiet = false} = {}){
       actOpen(p, t("fx.act", {x: trunc(open[0].issue, 50)}), {by: "pt", grp});
       const changed = applyFixAnswer(p, open, r);
       const actA = actClose(p.id); if (actA) acts.push(actA);
-      if (!changed.length){ for (const f of open){ f.audit = arr(f.audit); f.audit.push({at: now(), what: t("aud.notapplied"), by: t("aud.fixer")}); } break; }
       const after = snapTargets(p, changed);
+      // 1.8: the fixer proposed what an earlier round already proposed (nothing new, or a text it had before): stop, it goes to you with before → after
+      if (round > 1 && fixRepeats(seen, changed, after)){
+        actOpen(p, t("fx.act", {x: trunc(open[0].issue, 50)}) + " · " + t("aud.checker"), {by: "pt", grp});
+        for (const f of open){ const mine = findingTargets(p, f).filter(rf => changed.includes(rf)); if (mine.length){ f.fixRun = {at: now(), round, act: actA && actA.id, before: Object.fromEntries(mine.map(rf => [rf, before[rf] || ""])), after: Object.fromEntries(mine.map(rf => [rf, after[rf] || ""]))}; f.before = Object.values(f.fixRun.before).join("\n\n"); f.after = Object.values(f.fixRun.after).join("\n\n"); } }
+        fixGiveBack(p, open, {notes, acts, okRefs, round, sum, repeat: true});
+        break;
+      }
+      for (const [rf, v] of Object.entries(after)) seen.set(rf, [...arr(seen.get(rf)), v]);
+      if (!changed.length){ for (const f of open){ f.audit = arr(f.audit); f.audit.push({at: now(), what: t("aud.notapplied"), by: t("aud.fixer")}); } break; }
       const res = await aiCheckBatch(p, open, before, after);
       actOpen(p, t("fx.act", {x: trunc(open[0].issue, 50)}) + " · " + t("aud.checker"), {by: "pt", grp});   // what the check decides belongs to the same Undo step as the fix
       if (!res){ for (const f of open){ f.status = "waiting"; f.audit = arr(f.audit); f.audit.push({at: now(), what: t("fx.notchecked"), by: t("aud.checker")}); } sum.failed++; break; }
@@ -139,14 +149,7 @@ async function fixFindings(p, ids, {rounds = 3, quiet = false} = {}){
       }
       // what the checker rejected in the last round is taken back; it comes to you as a proposal with the reason
       if (round === rounds || (UI.finish && UI.finish.stop)){
-        for (const f of next){
-          const mine = Object.keys(f.fixRun ? f.fixRun.after : {});
-          f.proposal = {at: now(), fields: Object.fromEntries(mine.map(rf => [rf, (itemObj(p, rf) ? Object.fromEntries(targetFields(rf).map(fl => [fl, (itemObj(p, rf) || {})[fl]])) : {})])), note: notes[f.id], round};
-          if (!f.partly){ const kept = new Set(); for (let ai = acts.length - 1; ai >= 0; ai--){ const back = mine.filter(rf => !okRefs.has(rf) || ai >= okRefs.get(rf)); revertRefs(p, acts[ai], back, kept); } for (const rf of kept) markPT(p, rf, "changed", t("fx.notback", {x: trunc(f.issue, 120)})); }
-          else { for (const rf of mine) markPT(p, rf, "changed", t("fx.partlywhy", {a: f.partly.done, b: f.partly.total, x: trunc(f.issue, 120)})); sum.partly++; }
-          f.status = "open"; f.needsYou = {why: notes[f.id], at: now()}; f.reopened = (f.reopened || 0) + 1;
-          sum.needYou++;
-        }
+        fixGiveBack(p, next, {notes, acts, okRefs, round, sum, capped: round === rounds && rounds >= FIX_CAP && !(UI.finish && UI.finish.stop)});
         break;
       }
       open = next;
@@ -160,6 +163,22 @@ async function fixFindings(p, ids, {rounds = 3, quiet = false} = {}){
   if (!quiet){ render(); toast(t("fx.toast", {a: sum.fixed, b: sum.needYou}), sum.needYou ? "" : "ok"); }
   return sum;
 }
+/** the findings the fixing stops on go back to you: their unconfirmed change is taken back and kept as a proposal (before → after);
+    a repeated fix says so, the last round of the cap writes down the residual risk (1.8) */
+function fixGiveBack(p, list, {notes, acts, okRefs, round, sum, repeat = false, capped = false}){
+  for (const f of list){
+    const mine = Object.keys(f.fixRun ? f.fixRun.after : {});
+    if (repeat){ notes[f.id] = t("fx.repeat", {n: round}) + (notes[f.id] ? " · " + notes[f.id] : ""); f.audit = arr(f.audit); f.audit.push({at: now(), what: notes[f.id], by: t("aud.fixer")}); }
+    f.proposal = {at: now(), fields: Object.fromEntries(mine.map(rf => [rf, (itemObj(p, rf) ? Object.fromEntries(targetFields(rf).map(fl => [fl, (itemObj(p, rf) || {})[fl]])) : {})])), note: notes[f.id], round, ...(repeat ? {repeat: true} : {})};
+    if (!f.partly){ const kept = new Set(); for (let ai = acts.length - 1; ai >= 0; ai--){ const back = mine.filter(rf => !okRefs.has(rf) || ai >= okRefs.get(rf)); revertRefs(p, acts[ai], back, kept); } for (const rf of kept) markPT(p, rf, "changed", t("fx.notback", {x: trunc(f.issue, 120)})); }
+    else { for (const rf of mine) markPT(p, rf, "changed", t("fx.partlywhy", {a: f.partly.done, b: f.partly.total, x: trunc(f.issue, 120)})); sum.partly++; }
+    f.status = "open"; f.needsYou = {why: notes[f.id], at: now()}; f.reopened = (f.reopened || 0) + 1;
+    if (capped){ f.residual = {at: now(), rounds: round, text: t("fx.residual", {n: round, s: t("sev." + f.severity), x: trunc(f.issue, 160), y: notes[f.id] || t("fx.notsolved")})}; f.needsYou.why = f.residual.text; f.audit = arr(f.audit); f.audit.push({at: now(), what: f.residual.text, by: t("aud.checker")}); }
+    sum.needYou++;
+  }
+}
+/** a round proposes what an earlier round already proposed: nothing changed (the same fix as now), or every changed item got a text it had before */
+function fixRepeats(seen, changed, after){ return !changed.length || changed.every(rf => arr(seen.get(rf)).includes(after[rf])); }
 /** take back the changes of one fixer action for the given items only */
 function revertRefs(p, a, refs, kept = null){
   if (!a) return;
