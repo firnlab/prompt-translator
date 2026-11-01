@@ -14,5 +14,21 @@
       "previous": "1792946526-0c4b"
     },
     "notes": "1.8.0: the friendlier look (always light, ink blue), deciding with ★ on hard questions and your earlier call first, check rows per tool with fix-until-green, facts with an age, decision rows with Undo and the Decisions page, the cone (start from one sentence), running (Sunday note, inbox sorting, tell PT what's wrong), Health and the move of 1.7 projects with a restore point, kits on Opus 5.5; 1.7.1 (time baseline, name independence) is inside. Previous versions in the private archive (1.0-1.7)."
+  },
+  {
+    "version": "1.8.1",
+    "date": "2026-11-01",
+    "commit": "fb8e8f7340597e8fa47c23e72924e34b30d010b1",
+    "main": {
+      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+      "live": "1793554626-3ad8",
+      "previous": "1793541397-6111"
+    },
+    "preview": {
+      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+      "live": "1793554511-e0e7",
+      "previous": "1793541188-7ab4"
+    },
+    "notes": "1.8.1: turning on the Sunday preparation run (and a second login's runner) works again: every scheduled task PT creates asks for a new session per run, which the scheduled-task service now requires when notifications are set; one retry without notifications if the service refuses those settings; never from a preview copy."
   }
 ]

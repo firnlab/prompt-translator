@@ -16,4 +16,11 @@ or omit the notifications param".
 - Full gate: see below.
 
 ## Gate and publish
-(filled in after the run)
+- Full gate in three parts (the session's background limit is 2 hours): part A, 32 suites, green (flows 1.5 review flaky once:
+  "Execution context was destroyed" under load, logged in the ledger, green on its rerun); part B, check the hunt 10 of 10 and
+  check the Pick tests 59 of 59 caught; part C, click everything alone, 0 problems.
+- Published (1 Nov 2026, about 18:40 Zürich): preview `1793554511-e0e7` (before `1793541188-7ab4`); main `1793554626-3ad8`
+  (before `1793541397-6111`). Capabilities carried forward.
+- Live re-test of the preview: byte for byte the tested build; smoke green. (The running test is for the main build: a preview copy
+  never runs drills, by design.)
+- Code commit: `fb8e8f7`.
