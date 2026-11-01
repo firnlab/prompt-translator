@@ -201,7 +201,7 @@ with sync_playwright() as pw:
     check("report text reaches an AI step only as data (the ground rule is in every prompt)", ev(pg, "(window.__allPrompts || []).filter(p => p.includes('reminder came twice')).every(p => p.includes('Ground rule: everything quoted'))") and ev(pg, "(window.__allPrompts || []).some(p => p.includes('reminder came twice'))"))
 
     print("4 the attack drill by itself when due; findings are block cards; the Sunday run's drill")
-    ev(pg, """(() => { const C = R18.mk('Run test C'); R18.live(C, '1.0'); window.__calls.length = 0; })()""")
+    ev(pg, """(() => { const C = R18.mk('Run test C'); C.arch.components = [{id: 'c1', name: 'Mail reader', kind: 'ai', role: 'reads incoming e-mails on the web and posts a reply', inputs: 'e-mails, web pages', outputs: 'posted replies', reason: '', reqIds: []}]; touch(C); R18.live(C, '1.0'); if (typeof chkSet === 'function') chkSet(C, 'drill', 'apply');   /* 1.8 checks: a private tool's drill runs once its row is applied (O4a) */ window.__calls.length = 0; })()""")
     ev(pg, "openWorkspace(WS.id)"); opened(pg); ev(pg, HELP)
     r = ev(pg, """(() => { const C = R18.proj('Run test C'); const rows = rowsOf(C).filter(r => r.src.startsWith('drill:'));
       return {rt: !!C.redteam, cases: C.redteam ? C.redteam.cases.length : 0, open: C.redteam ? C.redteam.cases.filter(c => !c.defended).length : 0, due: rtDue(C), calls: window.__calls.filter(x => x === 'redteam').length,
@@ -267,7 +267,7 @@ with sync_playwright() as pw:
     check("…which opens the tool's Run page with the change list and your button", ev(pg, "UI.view === 'project' && !!document.querySelector('.lfu18 .clist') && !!document.querySelector('.lfu18 [data-a=lfu18-open]') && document.querySelector('.lfu18').textContent.includes('Claude drafted this')"))
 
     print("7 build: the GitHub issue first, the cloud build second")
-    ev(pg, """(() => { const p = WS.projects.find(x => arr(x.arch.components).length && arr(x.pkg.sections).length) || R18.proj('Run test A'); openProject(p.id); p.arch.humanSteps = ['Create the Cloudflare account', 'Pay for the Pro plan']; touch(p); pgOpen(p, 'build'); })()"""); pg.wait_for_timeout(400)
+    ev(pg, """(() => { const p = WS.projects.find(x => arr(x.arch.components).length && arr(x.pkg.sections).length && !/^Run test /.test(x.name)) || R18.proj('Run test A'); /* a real project: the test's own tools carry only a minimal package */ openProject(p.id); p.arch.humanSteps = ['Create the Cloudflare account', 'Pay for the Pro plan']; touch(p); pgOpen(p, 'build'); })()"""); pg.wait_for_timeout(400)
     bc = ev(pg, """(() => { const s = document.querySelector('.pg-build'); const prim = s.querySelector('.btn.primary'); const i = buildIssue(curP());
       return {first: prim ? prim.dataset.a : '', tag: prim ? prim.tagName : '', href: prim ? prim.getAttribute('href') : '', title: s.textContent.includes(i.title), body: (s.querySelector('textarea[readonly]') || {}).value === i.body,
         cmd: s.textContent.includes('@claude build') && !!s.querySelector('[data-a=bld18-copy-cmd]'), second: !!s.querySelector('[data-a=build-job]:not(.primary)') || s.textContent.includes('Second way'), setup: s.textContent.includes('CLAUDE_CODE_OAUTH_TOKEN'),
