@@ -25,6 +25,8 @@ CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("flows 1.7 (pages)","python3 test/e2e17.py", True, 15),   # the cover and the seven pages, honesty, ledger, cost, security, drill, mock, pass, learn, health
     ("flows 1.7.1 (time, names)","python3 test/e2e171.py", True, 10),   # owner-time baseline (taps, active minutes) and name independence
     ("flows 1.8 look",  "python3 test/e2e180_look.py", True, 15),   # style C, ink blue, light; pills, Live line, Claude labels, sparklines, contrast, widths
+    ("flows 1.8 rows",  "python3 test/e2e180_rows.py", True, 10),   # decision rows, events chain, tiers, undo, Decisions page, migration
+    ("check the rows",  "python3 test/check_the_rows.py", False, 15),   # planted bugs in the rows code must turn the rows test red
     ("hunt",           "python3 test/hunt.py", True, 25),
     ("hunt 2",         "python3 test/hunt2.py", True, 20),
     ("check the hunt", "python3 test/check_the_hunts.py", False, 70),   # each hunt-2 check turns red when its bug is put back
