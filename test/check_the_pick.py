@@ -81,6 +81,14 @@ M = [
     # 1.8.2 the cloud environment (cause 70)
     ("a scheduled task created from PT gets no cloud environment", [("core.js", 'if (/environment_id/i.test(msg) && envs.length){', 'if (false){')], "python3 test/e2e180_run.py test/fixtures/synthetic.json"),
     ("a self-hosted pool is taken before a cloud environment", [("core.js", 'envs.find(x => x.startsWith("env_")) || ', '')], "python3 test/e2e180_run.py test/fixtures/synthetic.json"),
+    # 1.9 fleet (e2e190_fleet must turn red; the made-up bundle)
+    ("the next tool starts after one green live check", [("v190_fleet.js", 'if (n >= 2 && runs[n - 1] && runs[n - 1].ok === true && runs[n - 2] && runs[n - 2].ok === true) return {green: true, why: ""};', 'if (runs[n - 1] && runs[n - 1].ok === true) return {green: true, why: ""};')], "python3 test/e2e190_fleet.py test/fixtures/synthetic.json"),
+    ("the kit run goes on after a red", [("v190_fleet.js", "  else { R.stoppedAt = x.end; R.reason = x.note; }", "  else setTimeout(fl19Next, 0);")], "python3 test/e2e190_fleet.py test/fixtures/synthetic.json"),
+    ("another person's tool is republished by the kit run", [("v190_fleet.js", '  if (p && str(p.sharedFrom)) return "shared";\n', "")], "python3 test/e2e190_fleet.py test/fixtures/synthetic.json"),
+    ("the kit run starts without its put-live card", [("v190_fleet.js", 'UI.modal = {kind: "fl19go", mode: "start", wide: true}; render(); },', 'fl19Start("start"); },')], "python3 test/e2e190_fleet.py test/fixtures/synthetic.json"),
+    ("a stored kit run does not go on when PT opens again", [("v190_fleet.js", "    try{ if (WS && WS.id === id) fl19Resume(); }catch(e){", "    try{ }catch(e){")], "python3 test/e2e190_fleet.py test/fixtures/synthetic.json"),
+    ("a preview copy runs the kit update", [("v190_fleet.js", '  if (PT_PREVIEW){ toast(t("pv.blocked"), "err"); return null; }   // a preview copy never republishes real tools\n', "")], "python3 test/e2e190_fleet.py test/fixtures/synthetic.json"),
+    ("Cancel lets the waiting tools of the kit run start", [("v190_fleet.js", '  const nx = R.cancelledAt ? null : R.tools.find(x => x.state === "waiting");', '  const nx = R.tools.find(x => x.state === "waiting");')], "python3 test/e2e190_fleet.py test/fixtures/synthetic.json"),
 ]
 
 ONLY = next((x.split("=", 1)[1] for x in sys.argv if x.startswith("--only=")), None)   # 1.8: run the planted bugs whose name or test contains this text

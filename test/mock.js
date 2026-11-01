@@ -217,6 +217,7 @@
       decisions: [{q: "Which product first?", answer: "NIR-absorbing privacy eyewear"}], founderQs: ["What is the launch country?"], contradictions: ["SR-12 says daily, SR-40 says weekly for the same report"], notes: ["GenSpark had no public API", "exports were unreliable"]},
     build: {report:{brief:"x", parts:[{id:"c1",built:true},{id:"c2",built:true},{id:"c3",built:true}], checks:[{step:1,ok:true}], tests:[{id:"T1",pass:true},{id:"T2",pass:true}], artifacts:["https://claude.ai/artifact/MOCK"], triggers:[{id:"trig_mock1",name:"Weekly scout"}], personSteps:[], couldNotDo:[]}}
   };
+  JOBRES.update.smoke = {runs: [{ok: true, at: "2026-11-01T10:00:00Z", note: "opens; the main path works"}, {ok: true, at: "2026-11-01T10:01:00Z", note: "opens; the main path works"}]};   // 1.9 fleet: the live check, twice in a row (two greens)
   const mcp = {
     async callTool(server, tool, input){
       const rec = {tool, input}; window.__mcp.push(rec);
@@ -224,6 +225,8 @@
       if (tool === "fire_trigger"){
         const m = /PT job (\S+) (\S+)/.exec(input.text || "");
         if (m){ setTimeout(() => { const d = load(); const p = m[1] + "/" + m[2]; const j = d[p]; if (!j) return; let res = JSON.parse(JSON.stringify(JOBRES[j.kind] || {}));
+          if (j.kind === "update" && window.__mockHold) return;   // 1.9 fleet: window.__mockHold keeps an update running (the test finishes it by writing the job)
+          if (j.kind === "update" && window.__mockUpdate) res = window.__mockUpdate(j, res) || res;   // 1.9 fleet: window.__mockUpdate(job, result) → a red result, a single green, versions
           if (j.kind === "pilot"){ const ts = (j.inputs && j.inputs.candidate && Array.isArray(j.inputs.candidate.tests)) ? j.inputs.candidate.tests : []; if (ts.length) res.tests = ts.map(x => ({id: x.id, pass: true, reason: "ok"})); }   // a result for every test sent (1.4.2: projects have more tests)
           if (j.kind === "pickres" && j.inputs && j.inputs.mode === "price") res = window.__mockPrice || {product: j.inputs.product, price: "USD 15", period: "month", plan: "Pro", url: "https://example.org/pricing", date: "2026-10-30", free: "2,000 words a week", note: "Cheaper when paid yearly"};   // 1.8: a product's price on the maker's page (window.__mockPrice: another answer, e.g. no price)
           if (j.kind === "collect") res.items = res.items.map(x => Object.assign(x, {tool: (j.inputs.tools[0] || {}).tool}));
