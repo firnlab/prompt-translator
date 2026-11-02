@@ -133,6 +133,11 @@ M = [
     ("the second-lab provider list offers a lab the workflow cannot call", [("v191_lab.js", 'const LAB2_PROVIDERS = [["openai", "OpenAI"], ["google", "Google"]];', 'const LAB2_PROVIDERS = [["openai", "OpenAI"], ["google", "Google"], ["mistral", "Mistral"]];')], "python3 test/e2e191_judge.py test/fixtures/synthetic.json"),
     ("the second-lab week forgets the Claude weeks", [("v191_lab.js", 'lab2Week(ms).w % 2 === 0 ? P[1] : t("lab2.claude")', "P[1]")], "python3 test/e2e191_judge.py test/fixtures/synthetic.json"),
     ("the GitHub build issue drops the acceptance lines from tool.json", [("v191_lab.js", 'write "acceptance" as every acceptance line of PART C', 'write what you like')], "python3 test/e2e191_judge.py test/fixtures/synthetic.json"),
+    # 1.9.2 pseudo-localisation: a text that bypasses the strings, a long label that pushes a phone screen sideways
+    ("a button label is written in English in the code", [("views_pages.js", '${esc(t("notes.add"))}</button></form>', 'Add note</button></form>')], "python3 test/pseudo19.py test/fixtures/synthetic.json"),
+    ("the Build page shows the vault lines in English only", [("v170_vault.js", '${esc(STR["vault.use." + x.id] ? t("vault.use." + x.id) : x.use)}', '${esc(x.use)}')], "python3 test/pseudo19.py test/fixtures/synthetic.json"),
+    ("the notes page keeps its fixed filter column on a phone", [("views_pages.js", '<div class="grid2 side220">', '<div class="grid2" style="grid-template-columns:220px minmax(0,1fr)">')], "python3 test/pseudo19.py test/fixtures/synthetic.json"),
+    ("a row of buttons in a top bar is as wide as its longest label", [("styles18.css", ":is(.row,.topbar,.panel-h,.head,.controw,.fullstep)>:is(.row,.controw){min-width:0;max-width:100%}", "")], "python3 test/pseudo19.py test/fixtures/synthetic.json"),
 ]
 
 ONLY = next((x.split("=", 1)[1] for x in sys.argv if x.startswith("--only=")), None)   # 1.8: run the planted bugs whose name or test contains this text

@@ -23,7 +23,7 @@ function viewNotes(){
     <form class="panel" data-form="new-note" style="flex-direction:row;align-items:flex-start;gap:10px;flex-wrap:wrap"><textarea id="nn-text" rows="2" placeholder="${esc(t("notes.quickph"))}" style="flex:1;min-width:240px"></textarea>
       <select id="nn-proj" style="width:auto;max-width:220px" aria-label="${esc(t("notes.project"))}"><option value="">${esc(t("notes.personal"))}</option>${WS.projects.filter(p => p.status !== "archived").map(p => `<option value="${p.id}" ${f === "p:" + p.id ? "selected" : ""}>${esc(p.name)}</option>`).join("")}</select>
       <button class="btn primary" type="submit">${ic("plus")}${esc(t("notes.add"))}</button></form>
-    <div class="grid2" style="grid-template-columns:220px minmax(0,1fr)">
+    <div class="grid2 side220">
       <nav class="stack" style="gap:2px" aria-label="${esc(t("notes.filters"))}">
         ${fbtn("inbox", t("notes.inbox"))}${fbtn("all", t("notes.all"))}${fbtn("pinned", t("notes.pinned"))}${fbtn("personal", t("notes.personal"))}
         <div class="nav-label">${esc(t("nav.projects"))}</div>

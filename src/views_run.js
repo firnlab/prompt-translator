@@ -171,6 +171,7 @@ function rpPreview(p, pv){
     ${row(t("rev.problems"), arr(s.findings).length, p.findings.length)}${row(t("test.title"), arr(s.tests).length, p.tests.length)}</tbody></table></div>`;
 }
 const CHANGELOG = [
+  {v: "1.9.2", d: "2026-11-02", added: "cl.192.added", fixed: "cl.192.fixed"},
   {v: "1.9.1", d: "2026-11-02", added: "cl.191.added", changed: "cl.191.changed"},
   {v: "1.9.0", d: "2026-11-02", added: "cl.190.added", changed: "cl.190.changed"},
   {v: "1.8.2", d: "2026-11-01", fixed: "cl.182.fixed"},

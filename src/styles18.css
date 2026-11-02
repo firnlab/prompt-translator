@@ -374,3 +374,12 @@ details.more .mi:hover,details.more .mi:focus-visible{background:var(--accent-so
   .modal{border-radius:20px;padding:16px}
   .panel{padding:14px}
 }
+
+/* 1.9.2 (pseudo-localisation, test/pseudo19.py): longer labels (German runs about 30 % longer than English) never push a page sideways.
+   A row inside a row, a top bar or a panel head may be narrower than its buttons' one-line width: the buttons then wrap their label
+   (max-width:100%) instead of widening the row; a button's parts wrap too (the cost pill goes under the label); the notes page's
+   filter column becomes one column on a narrow screen like every other two-column grid. */
+:is(.row,.topbar,.panel-h,.head,.controw,.fullstep)>:is(.row,.controw){min-width:0;max-width:100%}   /* ok:css nothing gets squeezed: the buttons inside wrap their label (test/pseudo19.py at 390 px) */
+.btn{flex-wrap:wrap}
+.grid2.side220{grid-template-columns:220px minmax(0,1fr)}
+@container main (max-width: 860px){ .grid2.side220{grid-template-columns:minmax(0,1fr)} }
