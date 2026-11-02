@@ -71,6 +71,7 @@ jobs:
           python3 test/e2e190_fleet.py test/fixtures/synthetic.json
           python3 test/e2e190_scan.py test/fixtures/synthetic.json
           python3 test/e2e191_judge.py test/fixtures/synthetic.json
+          python3 test/pseudo19.py test/fixtures/synthetic.json
           python3 test/changelog_test.py
           python3 tools/changelog.py --check
           python3 test/pick_contract.py test/fixtures/synthetic.json

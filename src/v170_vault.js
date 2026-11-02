@@ -30,6 +30,6 @@ function vaultCard(p){
   const T = vaultTools(p).filter(t => t.group !== "reverse engineering" || (rb && rb.kind === "rea") || t.id === "mitmproxy");
   if (!T.length) return "";
   return `<section class="panel pg-vault" data-anchor="vault"><div class="row"><h3 style="flex:1 1 12em">${ic("lock")} ${esc(t("vault.title"))}</h3><span class="small muted">${esc(t("vault.sub", {d: fmtDay(VAULT.checked)}))}</span></div>
-    <div class="list">${T.map(x => `<div class="item">${stSlot("ok")}<div class="body"><b class="small">${esc(x.name)} <span class="muted">· ${esc(x.licence || t("vault.nolic"))}</span></b><span class="small muted">${esc(x.use)}</span></div></div>`).join("")}</div></section>`;
+    <div class="list">${T.map(x => `<div class="item">${stSlot("ok")}<div class="body"><b class="small"><span translate="no">${esc(x.name)}</span> <span class="muted">· ${x.licence ? `<span translate="no">${esc(x.licence)}</span>` : esc(t("vault.nolic"))}</span></b><span class="small muted"${STR["vault.use." + x.id] ? "" : ' lang="en"'}>${esc(STR["vault.use." + x.id] ? t("vault.use." + x.id) : x.use)}</span></div></div>`).join("")}</div></section>`;
 }
 { const orig = pgBody; pgBody = function(p, id){ const h = orig(p, id); if (id === "build") return h.replace('<section class="pg-details', vaultCard(p) + '<section class="pg-details'); return h; }; }

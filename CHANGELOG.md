@@ -5,6 +5,17 @@ notes PT shows in "What's new" (`CHANGELOG` in `src/views_run.js`, the `cl.<vers
 (published date and release notes). Do not edit it by hand: `python3 tools/changelog.py` writes it, `--check` says when it is stale.
 Versions before 1.8 were published from the private archive repository (see RELEASES-ARCHIVE.md).
 
+## 1.9.2 — 2026-11-02
+
+### Added
+
+- A release check with stretched stand-in text: every text PT shows must come from its three languages, no label may be cut off and no page may scroll sideways, at desktop and at phone width
+
+### Fixed
+
+- The list of tools from the Firnlab vault now says what each one is for in German and Chinese too
+- On a phone, rows of buttons and the notes page no longer push the page sideways when a label is long
+
 ## 1.9.1 — 2026-11-02
 
 Release notes: 1.9.1: the independent check (a judge after every build, verified update and pasted build report; green only when every acceptance line holds, the floors pass and the commit came first; a kit run is green only with a judge pass), the second opinion from another lab (off until SECOND_LAB_API_KEY is added in GitHub), the GitHub build room in firnlab/tools (independent judge in the pull request, hidden test twins off until the pt-private key is added).

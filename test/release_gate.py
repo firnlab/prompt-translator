@@ -41,6 +41,7 @@ CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("flows 1.9 fleet", "python3 test/e2e190_fleet.py", True, 15),
     ("flows 1.9 scan", "python3 test/e2e190_scan.py", True, 15),   # self-scan (names only, propose only), the 4×4 interview, "What changed" per version
     ("flows 1.9.1 judge", "python3 test/e2e191_judge.py", True, 15),   # the independent judge (gate row, job after build/update, commit first, hard floors, release gate, block card, kit run) and the second-lab row (key only in GitHub, PART R, reviews)
+    ("pseudo-localisation", "python3 test/pseudo19.py", True, 10),   # 1.9.2: every text from the strings, the L() objects or the data; no raw key, no cut label, no sideways scrolling with ~40 % longer text at 1440 and 390 px
     ("changelog", "python3 test/changelog_test.py && python3 tools/changelog.py --check", True, 2),   # CHANGELOG.md is generated and up to date   # update all of your tools to a kit: card = GO, one at a time, two greens, stop on red, others prepared   # R1b: the built file in plain Chromium reads an export, read-only, writes nothing
     ("hunt",           "python3 test/hunt.py", True, 25),
     ("hunt 2",         "python3 test/hunt2.py", True, 20),

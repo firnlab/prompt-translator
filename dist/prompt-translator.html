@@ -1,4 +1,4 @@
-<title>Prompt Translator 1.9.1</title>
+<title>Prompt Translator 1.9.2</title>
 <style>
 /* Layout concept: mission-control workspace — slim navigation rail, one focused work surface with a persistent North Star band, and a notes drawer on the right. Dark-first instrument panel; light mode mirrors it. */
 :root{
@@ -1609,6 +1609,15 @@ details.more .mi:hover,details.more .mi:focus-visible{background:var(--accent-so
   .modal{border-radius:20px;padding:16px}
   .panel{padding:14px}
 }
+
+/* 1.9.2 (pseudo-localisation, test/pseudo19.py): longer labels (German runs about 30 % longer than English) never push a page sideways.
+   A row inside a row, a top bar or a panel head may be narrower than its buttons' one-line width: the buttons then wrap their label
+   (max-width:100%) instead of widening the row; a button's parts wrap too (the cost pill goes under the label); the notes page's
+   filter column becomes one column on a narrow screen like every other two-column grid. */
+:is(.row,.topbar,.panel-h,.head,.controw,.fullstep)>:is(.row,.controw){min-width:0;max-width:100%}   /* ok:css nothing gets squeezed: the buttons inside wrap their label (test/pseudo19.py at 390 px) */
+.btn{flex-wrap:wrap}
+.grid2.side220{grid-template-columns:220px minmax(0,1fr)}
+@container main (max-width: 860px){ .grid2.side220{grid-template-columns:minmax(0,1fr)} }
 
 </style>
 <div id="app"></div>
@@ -7196,6 +7205,38 @@ Object.assign(STR, {
 "cl.191.changed":["Updating your tools to the current kit counts a tool as green only when the independent check passes too, where it is on","Beim Aktualisieren deiner Tools auf den aktuellen Bausatz gilt ein Tool nur dann als grün, wenn auch die unabhängige Prüfung besteht, wo sie an ist","将工具更新到当前套件时，只有在独立检查也通过（如已开启）时，该工具才算通过"]
 });
 
+/* ===================== 1.9.2 pseudo-localisation: texts that bypassed the strings table — UI STRINGS: [English, Deutsch (CH, du, ss), 简体中文（中国大陆）] =====================
+   The vault's "what it is for" lines (vault/vault.json "use") on the Build page. English = vault.json word for word (test/pseudo19.py
+   checks it, so a changed or new vault line asks for its German and Chinese before the gate is green). The builder's brief (PART O)
+   keeps the English line. Names and licences are names (translate="no"). */
+Object.assign(STR, {
+"vault.use.rea":["laptop only; drives Ghidra/IDA/Hopper for native binaries, reads JS/Electron and .NET statically; only on software the owner owns and whose licence allows; findings go to the model provider","nur auf dem Laptop; steuert Ghidra/IDA/Hopper für native Programme, liest JS/Electron und .NET statisch; nur bei Software, die dir gehört und deren Lizenz es erlaubt; Befunde gehen an den Modellanbieter","仅在笔记本电脑上；驱动 Ghidra/IDA/Hopper 分析原生程序，静态读取 JS/Electron 和 .NET；仅限你拥有且许可证允许的软件；发现会发送给模型提供商"],
+"vault.use.ghidra":["the disassembler REA drives; same rules as REA","der Disassembler, den REA steuert; gleiche Regeln wie bei REA","REA 驱动的反汇编器；规则与 REA 相同"],
+"vault.use.mitmproxy":["observe an app's own network traffic for interoperability (public APIs, formats); never to bypass a protection","beobachtet den eigenen Netzwerkverkehr einer App für die Zusammenarbeit mit ihr (öffentliche APIs, Formate); nie, um einen Schutz zu umgehen","为实现互操作性（公开 API、格式）观察应用自身的网络流量；绝不用于绕过保护措施"],
+"vault.use.jadx":["read Android packages for the open-device route; same rules as REA","liest Android-Pakete für den Weg über offene Geräte; gleiche Regeln wie bei REA","为开放设备路线读取 Android 安装包；规则与 REA 相同"],
+"vault.use.frida":["live instrumentation of a running app on the owner's own device only; rarely, and never where the licence or terms forbid it","Live-Instrumentierung einer laufenden App, nur auf deinem eigenen Gerät; selten, und nie, wo Lizenz oder Nutzungsbedingungen es verbieten","仅在你自己的设备上对运行中的应用进行实时插桩；很少使用，许可证或条款禁止时绝不使用"],
+"vault.use.promptfoo":["weekly red-team of PT's prompts and every tool's brief against the OWASP LLM attack classes; runs locally","wöchentliche Red-Team-Prüfung von PTs Prompts und dem Bauauftrag jedes Tools gegen die OWASP-LLM-Angriffsklassen; läuft lokal","每周按 OWASP LLM 攻击类别对 PT 的提示词和每个工具的构建说明进行红队测试；在本地运行"],
+"vault.use.gitleaks":["secret scanning in every firnlab repository next to the data guard","sucht in jedem firnlab-Repository nach Schlüsseln und Passwörtern, zusätzlich zum Datenwächter","在每个 firnlab 仓库中扫描密钥和密码，作为数据守卫之外的补充"],
+"vault.use.garak":["second LLM vulnerability scanner with a broader probe set; heavier, for the quarterly deep pass","zweiter Schwachstellen-Scanner für LLMs mit breiterem Testsatz; aufwendiger, für die gründliche Prüfung jedes Quartal","第二个 LLM 漏洞扫描器，探测项更广；较重，用于每季度的深度检查"],
+"vault.use.owasp-llm":["the attack classes PT's proof rules and red-team cases cite; re-read monthly","die Angriffsklassen, auf die sich PTs Prüfregeln und Red-Team-Fälle beziehen; jeden Monat neu gelesen","PT 的验证规则和红队用例所引用的攻击类别；每月重读一次"],
+"vault.use.claude-code-action":["build-without-a-chat: a GitHub issue labelled build becomes a pull request; runs on the owner's subscription token, stored only in GitHub secrets","Bauen ohne Chat: ein GitHub-Issue mit dem Label build wird zum Pull-Request; läuft mit dem Token deines Abos, der nur in den GitHub-Secrets liegt","无需对话即可构建：带 build 标签的 GitHub issue 会变成拉取请求；使用你订阅的令牌运行，令牌只保存在 GitHub secrets 中"],
+"vault.use.mcp-servers":["filesystem, fetch, git, memory, time for tools PT builds","Dateisystem, Abrufen, Git, Gedächtnis, Zeit für Tools, die PT baut","为 PT 构建的工具提供文件系统、抓取、git、记忆和时间功能"],
+"vault.use.playwright-mcp":["do-it-for-me in the browser on the laptop, with a gate at every irreversible step","«mach es für mich» im Browser auf dem Laptop, mit einer Sperre vor jedem Schritt, der sich nicht rückgängig machen lässt","在笔记本电脑的浏览器中“替我完成”，每个不可撤销的步骤前都有一道关卡"],
+"vault.use.activepieces":["self-hosted automation with MCP as the free alternative to paid Zapier/n8n; the ee folder is commercial and is not used","selbst betriebene Automatisierung mit MCP als kostenlose Alternative zu bezahltem Zapier/n8n; der Ordner ee ist kommerziell und wird nicht genutzt","自托管的自动化工具，支持 MCP，可免费替代付费的 Zapier/n8n；ee 文件夹为商业版，不使用"],
+"vault.use.faster-whisper":["dictation inside a tool, on the laptop; the clean-room base for a dictation tool","Diktieren in einem Tool, auf dem Laptop; die saubere Grundlage für ein Diktier-Tool","在工具中进行听写，在笔记本电脑上运行；听写工具的洁净室基础"],
+"vault.use.whisper-cpp":["dictation in a native or offline tool","Diktieren in einem nativen oder Offline-Tool","在原生或离线工具中进行听写"],
+"vault.use.kokoro":["speech out at zero credits; weights under Apache-2.0 on Hugging Face","Sprachausgabe ohne Credits; Gewichte unter Apache-2.0 auf Hugging Face","零额度消耗的语音输出；模型权重以 Apache-2.0 发布在 Hugging Face 上"],
+"vault.use.ollama":["AI inside a tool at zero credits on the laptop","KI in einem Tool ohne Credits, auf dem Laptop","在笔记本电脑上的工具内使用 AI，零额度消耗"],
+"vault.use.capacitor":["PWA to native app for kit 4; EU direct install","von der PWA zur nativen App für Bausatz 4; direkte Installation in der EU","用于模板 4，将 PWA 变成原生应用；在欧盟直接安装"],
+"vault.use.expo":["native apps for kit 4; EAS free tier","native Apps für Bausatz 4; kostenlose EAS-Stufe","用于模板 4 的原生应用；EAS 免费套餐"],
+"vault.use.vite":["the build tool for kit 3 web apps","das Build-Werkzeug für Web-Apps aus Bausatz 3","模板 3 网页应用的构建工具"],
+"vault.use.wrangler":["Cloudflare Pages and Workers for kit 3 hosting","Cloudflare Pages und Workers für das Hosting von Bausatz 3","用于模板 3 托管的 Cloudflare Pages 和 Workers"],
+/* the public changelog */
+"cl.192.added":["A release check with stretched stand-in text: every text PT shows must come from its three languages, no label may be cut off and no page may scroll sideways, at desktop and at phone width","Eine Release-Prüfung mit gedehntem Platzhaltertext: jeder Text, den PT zeigt, muss aus seinen drei Sprachen kommen, keine Beschriftung darf abgeschnitten sein und keine Seite seitlich scrollen, am Bildschirm wie am Handy","一项使用加长占位文本的发布检查：PT 显示的每段文字都必须来自它的三种语言，任何标签都不能被截断，任何页面都不能横向滚动，在桌面和手机宽度下都是如此"],
+"cl.192.fixed":["The list of tools from the Firnlab vault now says what each one is for in German and Chinese too|On a phone, rows of buttons and the notes page no longer push the page sideways when a label is long","Die Liste «Werkzeuge aus dem Firnlab-Tresor» sagt jetzt auch auf Deutsch und Chinesisch, wofür jedes da ist|Auf dem Handy schieben Reihen von Knöpfen und die Notizen-Seite die Seite nicht mehr zur Seite, wenn eine Beschriftung lang ist","“来自 Firnlab 宝库的工具”列表现在也用德语和中文说明每个工具的用途|在手机上，按钮行和笔记页面不会再因为标签过长而把页面推向一侧"],
+"vault.use.chartjs":["charts inside tools PT builds","Diagramme in Tools, die PT baut","PT 构建的工具中的图表"],
+});
+
 /* ===================== CORE ===================== */
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
@@ -10288,7 +10329,7 @@ function fixCost(p, ids){ const n = arr(p.findings).filter(f => ids.includes(f.i
 /* ===================== APP STATE ===================== */
 let META = {workspaces: [], last: null};
 let WS = {id:null, name:"", settings:{}, profile:{entries:[]}, projects:[], notes:[], patterns:[], research:[], jobs:[], insights:null, profileSuggestions:[]};
-const PT_VERSION = "1.9.1";
+const PT_VERSION = "1.9.2";
 /* ---------- version next to the name: "newest" check (shared doc app/version: read by everyone, written by the owner's page) ---------- */
 const APPV = {latest: PT_VERSION, newer: false, checked: false};
 function verCmp(a, b){ const x = String(a || "0").split(".").map(n => parseInt(n, 10) || 0), y = String(b || "0").split(".").map(n => parseInt(n, 10) || 0); for (let i = 0; i < 3; i++){ if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) - (y[i] || 0); } return 0; }
@@ -12277,6 +12318,7 @@ function rpPreview(p, pv){
     ${row(t("rev.problems"), arr(s.findings).length, p.findings.length)}${row(t("test.title"), arr(s.tests).length, p.tests.length)}</tbody></table></div>`;
 }
 const CHANGELOG = [
+  {v: "1.9.2", d: "2026-11-02", added: "cl.192.added", fixed: "cl.192.fixed"},
   {v: "1.9.1", d: "2026-11-02", added: "cl.191.added", changed: "cl.191.changed"},
   {v: "1.9.0", d: "2026-11-02", added: "cl.190.added", changed: "cl.190.changed"},
   {v: "1.8.2", d: "2026-11-01", fixed: "cl.182.fixed"},
@@ -12713,7 +12755,7 @@ function viewNotes(){
     <form class="panel" data-form="new-note" style="flex-direction:row;align-items:flex-start;gap:10px;flex-wrap:wrap"><textarea id="nn-text" rows="2" placeholder="${esc(t("notes.quickph"))}" style="flex:1;min-width:240px"></textarea>
       <select id="nn-proj" style="width:auto;max-width:220px" aria-label="${esc(t("notes.project"))}"><option value="">${esc(t("notes.personal"))}</option>${WS.projects.filter(p => p.status !== "archived").map(p => `<option value="${p.id}" ${f === "p:" + p.id ? "selected" : ""}>${esc(p.name)}</option>`).join("")}</select>
       <button class="btn primary" type="submit">${ic("plus")}${esc(t("notes.add"))}</button></form>
-    <div class="grid2" style="grid-template-columns:220px minmax(0,1fr)">
+    <div class="grid2 side220">
       <nav class="stack" style="gap:2px" aria-label="${esc(t("notes.filters"))}">
         ${fbtn("inbox", t("notes.inbox"))}${fbtn("all", t("notes.all"))}${fbtn("pinned", t("notes.pinned"))}${fbtn("personal", t("notes.personal"))}
         <div class="nav-label">${esc(t("nav.projects"))}</div>
@@ -19733,7 +19775,7 @@ function vaultCard(p){
   const T = vaultTools(p).filter(t => t.group !== "reverse engineering" || (rb && rb.kind === "rea") || t.id === "mitmproxy");
   if (!T.length) return "";
   return `<section class="panel pg-vault" data-anchor="vault"><div class="row"><h3 style="flex:1 1 12em">${ic("lock")} ${esc(t("vault.title"))}</h3><span class="small muted">${esc(t("vault.sub", {d: fmtDay(VAULT.checked)}))}</span></div>
-    <div class="list">${T.map(x => `<div class="item">${stSlot("ok")}<div class="body"><b class="small">${esc(x.name)} <span class="muted">· ${esc(x.licence || t("vault.nolic"))}</span></b><span class="small muted">${esc(x.use)}</span></div></div>`).join("")}</div></section>`;
+    <div class="list">${T.map(x => `<div class="item">${stSlot("ok")}<div class="body"><b class="small"><span translate="no">${esc(x.name)}</span> <span class="muted">· ${x.licence ? `<span translate="no">${esc(x.licence)}</span>` : esc(t("vault.nolic"))}</span></b><span class="small muted"${STR["vault.use." + x.id] ? "" : ' lang="en"'}>${esc(STR["vault.use." + x.id] ? t("vault.use." + x.id) : x.use)}</span></div></div>`).join("")}</div></section>`;
 }
 { const orig = pgBody; pgBody = function(p, id){ const h = orig(p, id); if (id === "build") return h.replace('<section class="pg-details', vaultCard(p) + '<section class="pg-details'); return h; }; }
 
