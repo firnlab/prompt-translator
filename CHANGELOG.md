@@ -7,6 +7,8 @@ Versions before 1.8 were published from the private archive repository (see RELE
 
 ## 1.9.1 — 2026-11-02
 
+Release notes: 1.9.1: the independent check (a judge after every build, verified update and pasted build report; green only when every acceptance line holds, the floors pass and the commit came first; a kit run is green only with a judge pass), the second opinion from another lab (off until SECOND_LAB_API_KEY is added in GitHub), the GitHub build room in firnlab/tools (independent judge in the pull request, hidden test twins off until the pt-private key is added).
+
 ### Added
 
 - An independent check after every build and every update: a fresh Claude that never saw the builder's notes writes its plan first, then checks every acceptance line with evidence and the security and accessibility floors; anything not green blocks the release, and one tap turns it into fixes. Tools other people use always get it; a private tool when you apply its row

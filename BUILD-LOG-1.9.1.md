@@ -33,4 +33,11 @@ Two sides, built apart and then checked against each other.
   pt-private key in firnlab/tools); the second-lab review (needs a key, off until then). From 1.9.0 still: push, the kit run.
 
 ## Gate and publish
-(filled in after the gate)
+- Integration: cause 73 found before the gate (see above); one parse error from a comment placed mid-statement, caught by the
+  static checks before the gate.
+- Full gate in four parts (the session's background limit is 2 hours): part A 38 of 38 green; part B1 check the Pick tests
+  107 of 107 caught; part B2 check the hunt 10 of 10; part C click everything alone, 0 problems. No flaky test this time.
+- Published (2 Nov 2026, about 10:30 Zürich): preview `1793611842-c79f` (before `1793588849-f17a`); main `1793612057-67af`
+  (before `1793588961-aa84`). Capabilities carried forward.
+- Live re-test: preview and main byte for byte the tested builds; smoke green and PT outside claude.ai green on the live preview.
+- Code commit: `0343edc`.
