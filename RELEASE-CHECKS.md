@@ -296,3 +296,16 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   adds no second approval step. Rule: PT names only a lock that exists; a promise about someone else's platform is checked against
   its official page first. Check: static check `claims` (no string promises a GitHub approval step for a build, in any language);
   planted bug "a build promised to wait for a GitHub approval (cause 75)" in `check_the_checks.py`.
+
+## 1.9.4 key renewal (src/v190_care.js R7, src/strings18.js `care.keys.*`, src/strings24.js, test/e2e190_care.py part 7)
+- Cause 76: the Sunday note's "Renew 2 keys" (from 4 Oct 2027) named only prompt-translator's secrets. The build repository
+  (`firnlab/tools` by default) keeps its own `CLAUDE_CODE_OAUTH_TOKEN` and, from 2 Nov 2026, its own `PT_PRIVATE_TOKEN` for
+  the sealed twins. After a renewal by the old steps its builds stop at the first step that uses an expired key ("git clone
+  failed" at the sealed twins step), with no word about a key. Found when the owner added the twins key (2 Nov 2026).
+- Now: each part of the card puts its new key into prompt-translator and then into the build repository (its Actions secrets
+  page, `buildRepo()` so Settings › General is followed), before the next key is copied: GitHub shows a new key only once, so
+  the terminal stays open until the Claude key is in both places. One pt-private key (Contents read/write on pt-private only)
+  serves both repositories. Rule: every place PT tells the owner to keep a key is on the renewal card. Checks: `e2e190_care.py`
+  part 7 (each key ends in the build repository, the link follows the setting, no placeholder left); planted bugs "the key
+  renewal leaves the build repository out of the pt-private key (cause 76)" and "the build repository's key page ignores
+  Settings › General (cause 76)" in `check_the_pick.py`.

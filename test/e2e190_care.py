@@ -310,7 +310,7 @@ with sync_playwright() as pw:
         check(f"{lang}: the Economy lines in the language, no raw keys" + (", no ß" if lang == "de" else ""), ec and not raw_keys(ec) and "ß" not in ec and ev(pg, "t('hr.e.title')") in ec, ec[:200])
     ev(pg, "(() => { LANG = 'en'; applyLangAttr(); WS.settings.aiCeiling.calls = 100000; saveWs(); render(); })()")
 
-    print("7 R7: renew the two keys (from 4 Oct 2027)")
+    print("7 R7: renew the two keys (from 4 Oct 2027), in prompt-translator and the build repository")
     ev(pg, "(() => { delete META.keys19; })()")
     ctx.clock.set_system_time("2027-10-03T12:05:00Z"); pg.wait_for_timeout(200); new_note(pg); go_note(pg)
     check("the Sunday before 4 Oct 2027: no key line", not ev(pg, "!!document.querySelector('.care19-keys')"))
@@ -320,7 +320,20 @@ with sync_playwright() as pw:
     check("…with the Claude build key steps (claude setup-token → Settings › Environments › build › CLAUDE_CODE_OAUTH_TOKEN)", all(x in kt for x in ("claude setup-token", "Environments", "build", "CLAUDE_CODE_OAUTH_TOKEN", "Update secret")), kt[:600])
     check("…and the pt-private key steps (personal access tokens → Regenerate, 1 year → Actions › PT_PRIVATE_TOKEN)", all(x in kt for x in ("Fine-grained tokens", "pt-private", "Regenerate token", "1 year", "Secrets and variables", "PT_PRIVATE_TOKEN")), kt[:900])
     links = ev(pg, "[...document.querySelectorAll('.care19-keys a')].map(a => a.getAttribute('href'))")
-    check("…with links to the three settings pages, and no field to type a key into", sorted(links) == sorted(["https://github.com/firnlab/prompt-translator/settings/environments", "https://github.com/settings/personal-access-tokens", "https://github.com/firnlab/prompt-translator/settings/secrets/actions"]) and not ev(pg, "document.querySelectorAll('.care19-keys input, .care19-keys textarea').length"), links)
+    TOOLS_ACT = "https://github.com/firnlab/tools/settings/secrets/actions"
+    check("…with links to the four settings pages (the tools one in both parts), and no field to type a key into", sorted(links) == sorted(["https://github.com/firnlab/prompt-translator/settings/environments", TOOLS_ACT, "https://github.com/settings/personal-access-tokens", "https://github.com/firnlab/prompt-translator/settings/secrets/actions", TOOLS_ACT]) and not ev(pg, "document.querySelectorAll('.care19-keys input, .care19-keys textarea').length"), links)
+    # cause 76 (1.9.4): the build repository keeps its own copy of both keys; each part puts its new key there too, while it is still copied
+    parts = ev(pg, "[...document.querySelectorAll('.care19-keys ol.care19-steps')].map(o => [...o.querySelectorAll('li')].map(li => li.innerText))")
+    def ends_in_tools(steps, secret):
+        i = next((j for j, x in enumerate(steps) if "prompt-translator" in x and secret in x), -1)
+        return i >= 0 and any("firnlab/tools" in x and secret in x for x in steps[i + 1:])
+    check("…each key goes into prompt-translator and then into firnlab/tools (cause 76)", len(parts) == 2 and ends_in_tools(parts[0], "CLAUDE_CODE_OAUTH_TOKEN") and ends_in_tools(parts[1], "PT_PRIVATE_TOKEN"), parts)
+    check("…the terminal stays open until the Claude key is in both places", len(parts) == 2 and "Keep the terminal open" in parts[0][3] and "close the terminal" in parts[0][-1], parts[:1])
+    check("…no placeholder left in the text", "{r}" not in kt and "{r}" not in " ".join(sum(parts, [])), kt[:300])
+    ev(pg, "(() => { WS.settings.kit = Object.assign({}, WS.settings.kit || {}, {repo: 'firnlab/tools-b'}); render(); })()"); pg.wait_for_timeout(250)
+    l2 = ev(pg, "[...document.querySelectorAll('.care19-keys a')].map(a => a.getAttribute('href'))"); k2 = ev(pg, "(document.querySelector('.care19-keys') || {}).innerText || ''")
+    check("…another build repository in Settings › General: its name and its settings page", l2.count("https://github.com/firnlab/tools-b/settings/secrets/actions") == 2 and "firnlab/tools-b" in k2, l2)
+    ev(pg, "(() => { delete WS.settings.kit.repo; render(); })()"); pg.wait_for_timeout(250)
     ev(pg, "(() => { Store.isOwner = false; render(); })()"); pg.wait_for_timeout(200)
     check("another login does not see it", not ev(pg, "!!document.querySelector('.care19-keys')"))
     ev(pg, "(() => { Store.isOwner = true; render(); })()"); pg.wait_for_timeout(200)
@@ -337,7 +350,7 @@ with sync_playwright() as pw:
     for lang in ("de", "zh"):
         ev(pg, f"(() => {{ LANG = '{lang}'; applyLangAttr(); render(); }})()"); pg.wait_for_timeout(300)
         kt = ev(pg, "(document.querySelector('.care19-keys') || {}).innerText || ''")
-        check(f"{lang}: the key steps in the language, no raw keys" + (", no ß" if lang == "de" else ""), kt and not raw_keys(kt) and "ß" not in kt and "CLAUDE_CODE_OAUTH_TOKEN" in kt, kt[:200])
+        check(f"{lang}: the key steps in the language, no raw keys" + (", no ß" if lang == "de" else ""), kt and not raw_keys(kt) and "ß" not in kt and "CLAUDE_CODE_OAUTH_TOKEN" in kt and kt.count("firnlab/tools") >= 3 and "{r}" not in kt, kt[:200])
     ev(pg, "(() => { LANG = 'en'; applyLangAttr(); render(); })()")
     pg.set_viewport_size({"width": 390, "height": 844}); go_note(pg)
     sx = ev(pg, "(() => { const m = document.querySelector('.main'); return Math.max(document.documentElement.scrollWidth - innerWidth, m ? m.scrollWidth - m.clientWidth : 0); })()")
