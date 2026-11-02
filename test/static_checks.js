@@ -83,6 +83,12 @@ for (const f of codeFiles) src(f).split('\n').forEach((line, i) => {
   if (/ok:person/.test(line)) return;
   if (/\/[A-Za-z][a-z]+\/i\.test\(\w+\.name\)|createWorkspace\("[A-Z][a-z]+"|\b\w\.name = "[A-Z][a-z]+"|\.name === "[A-Z][a-z]+"/.test(line)) H('person', `${f}:${i + 1} a workspace found or named by a fixed person's name (find it by place or id; names come from the data): ${line.trim().slice(0, 120)}`);
 });
+/* cause 75 (1.9.3): PT promised that GitHub waits for the owner's approval before a build in the tools repository. That repository is private,
+   and GitHub offers required reviewers only on public repositories (Free, Pro, Team): the only lock is the login check on the comment.
+   No text may promise a GitHub approval step for a build, in any of the three languages. */
+{ const PROMISE = [/GitHub[^.]*\b(waits|asks)\b[^.]*\bapprov|approval in the build environment/i, /GitHub[^.]*\b(wartet|fragt)\b[^.]*Freigabe|Build-Umgebung auf deine Freigabe/, /GitHub[^。；]*(等待你的批准|请你批准)/];
+  for (const k in STR){ const r = STR[k]; if (!Array.isArray(r)) continue;
+    r.forEach((x, i) => { if (PROMISE[i] && PROMISE[i].test(String(x))) H('claims', `${k} [${['en', 'de', 'zh'][i]}] promises a GitHub approval step for a build, which a private repository does not have: "${String(x).slice(0, 110)}"`); }); } }
 
 /* 4. review items in changed files: the patterns behind the 1.4.1 and 1.4.2 bugs */
 for (const f of codeFiles.filter(changed)){
