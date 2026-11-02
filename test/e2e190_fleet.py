@@ -94,7 +94,7 @@ with sync_playwright() as pw:
       const c = mk([{v: '1.2', at: now()}, {v: '1.0', at: '2026-09-01T10:00:00.000Z'}], {kitVersion: '1.7.0'}); kitRecordVersions(c, '1.2');
       const d = mk([{v: '1.0', at: new Date(Date.now() + 1000).toISOString()}], {artifacts: [page], versions: [{url: page, version: 'v-s-2', at: now()}]});
       const e = mk([{v: '1.0', at: '2026-09-01T10:00:00.000Z'}], {artifacts: [page], versions: [{url: page, version: 'v-s-3', at: now()}]});
-      return {a: [a.tool.kitVersion, a.tool.versions.map(x => x.kitVersion)], b: [b.tool.kitVersion || '', hr18KitOf(b)], c: c.tool.kitVersion, d: hr18KitOf(d), e: hr18KitOf(e), brief: buildBriefText(a).includes('Firnlab kit 1.8.0: write "kitVersion": "1.8.0"')}; })()""")
+      return {a: [a.tool.kitVersion, a.tool.versions.map(x => x.kitVersion)], b: [b.tool.kitVersion || '', hr18KitOf(b)], c: c.tool.kitVersion, d: hr18KitOf(d), e: hr18KitOf(e), brief: buildBriefText(a).includes('Kit version 1.8.0 (the Firnlab kits as of this version): write "kitVersion": "1.8.0"')}; })()""")
     check("a first release stamps the kit it was built with (the tool and its page version)", sp["a"] == ["1.8.0", ["1.8.0"]], sp)
     check("…a later release of a page tool keeps its kit (it updates only what changed)", sp["b"] == ["", "1.7.0"], sp)
     check("…a tool with nothing to republish gets the current kit with each release", sp["c"] == "1.8.0", sp)
@@ -136,7 +136,7 @@ with sync_playwright() as pw:
     jin = ev(pg, f"(() => {{ const j = WS.jobs.find(x => x.id === '{J[0]['id'] if J else ''}'); return j ? {{title: j.title, i: j.inputs, s: j.instructions}} : null; }})()")
     check("…the job: the kit (from 1.7.0 to 1.8.0), the run, the acceptance lines, the pages and the previous versions", jin and jin["i"]["fleet"] == R["id"] and jin["i"]["kit"] == {"from": "1.7.0", "to": "1.8.0"} and len(jin["i"]["acceptance"]) == 2
           and jin["i"]["pages"] == ["https://claude.ai/artifact/FLEETAAAAAAAAAAAAAAAAA"] and jin["i"]["previous"] and "kit 1.7.0 → 1.8.0" in jin["title"], jin and {k: jin["i"].get(k) for k in ("fleet", "kit", "pages", "previous")})
-    check("…its instructions: rebuild with the brief, acceptance lines, republish in place, live check twice in a row, previous version back on a red", jin and all(x in jin["s"] for x in ("Firnlab kit 1.8.0", "inputs.acceptance", "Republish in place", "twice in a row", "republish the previous version", '"rolledBack": true')), jin and jin["s"][-1500:])
+    check("…its instructions: rebuild with the brief, acceptance lines, republish in place, live check twice in a row, previous version back on a red", jin and all(x in jin["s"] for x in ("kit version 1.8.0", "inputs.acceptance", "Republish in place", "twice in a row", "republish the previous version", '"rolledBack": true')), jin and jin["s"][-1500:])
     a = ev(pg, f"(() => {{ const p = FL.P('{A}'); const rp = arr(p.restore).slice(-1)[0] || {{}}; const u = arr(p.updates).slice(-1)[0] || {{}}; return {{rp: [rp.kind, rp.label, rp.id === FL.run().tools[0].rp], u: [u.fleet, u.kit, u.state, u.job, u.from, u.to], log: arr(p.activity).some(x => /Update to kit 1\\.8\\.0 started/.test(x.text)), brief: p.brief && p.brief.kit}}; }})()")
     check("…a restore point 'Before kit 1.8.0' before the tool starts (the run keeps its id)", a["rp"] == ["fleet", "Before kit 1.8.0", True], a)
     check("…the update is in the tool's record (the run, the kit, the job), the version number stays", a["u"][:4] == [R["id"], "1.8.0", "running", J[0]["id"] if J else ""] and a["u"][4] == a["u"][5] == "1.0", a)
@@ -167,7 +167,7 @@ with sync_playwright() as pw:
       return L.list.filter(e => e.type === 'taken' && String(e.src).startsWith('ver:https://claude.ai/artifact/FLEETAAAAAAAAAAAAAAAAA@v-job')).map(e => ({{cause: e.cause, rp: e.rp === rp, by: e.by, hash: !!e.hash}})); }})()""")
     check("…the new page version is an event in the tool's decision record: the kit run, the restore point before it", evs and evs[-1]["cause"] == "fleet" and evs[-1]["rp"] and evs[-1]["hash"], evs)
     check("…other people's and nothing-to-republish tools never got a job", ev(pg, f"FL.jobs(['{D}', '{E}', '{F}']).length") == 0)
-    pe = ev(pg, f"(() => {{ const R = FL.run(), o = R.others.find(x => x.pid === '{E}'), p = FL.P('{E}'), d = window.__mockdb(), k = Object.keys(d).find(k => k.endsWith('/briefs/' + (p.brief || {{}}).id)); return {{o, kit: p.tool.kitVersion || '', brief: k ? String(d[k].text || '').includes('Firnlab kit 1.8.0') : false, log: arr(p.activity).some(x => /they publish it themselves/.test(x.text))}}; }})()")
+    pe = ev(pg, f"(() => {{ const R = FL.run(), o = R.others.find(x => x.pid === '{E}'), p = FL.P('{E}'), d = window.__mockdb(), k = Object.keys(d).find(k => k.endsWith('/briefs/' + (p.brief || {{}}).id)); return {{o, kit: p.tool.kitVersion || '', brief: k ? String(d[k].text || '').includes('Kit version 1.8.0') : false, log: arr(p.activity).some(x => /they publish it themselves/.test(x.text))}}; }})()")
     check("another person's tool: the new version is prepared (the brief with kit 1.8.0 stored), listed, never republished", pe["o"] and pe["o"]["at"] and pe["brief"] and pe["log"] and pe["kit"] == "", pe)
     ev(pg, "FL.health()"); pg.wait_for_timeout(300)
     h = ev(pg, "FL.card('health')")

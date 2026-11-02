@@ -264,4 +264,5 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
 - Self-scan: action names only (the 1.7.1 day document gets a capped `seq`; `e2e171` still checks numbers and names only), counted on Saturday night, two proposals at most, propose only; a shortcut only for look/move/copy steps (`SCAN19_SAFE`). Checks: `e2e190_scan.py` + 10 planted bugs.
 - 4×4 interview before a big or risky change to a live tool (outward, shared/customers, money, data shape, > 3 rows changed); a single fix is exempt; answers become owner rows, a skipped area a residual-risk row.
 - `CHANGELOG.md` is generated (`tools/changelog.py`); the gate and CI fail when it is stale (`changelog_test.py`, 7 planted bugs).
+- Cause 71 (integration): the fleet part wrote "Firnlab kit 1.8.0: …" into every build brief. "Firnlab kit 1" names kit number 1 (pages), so the 1.6 kit test read a scheduled tool's brief as carrying the page kit. The line now says "Kit version 1.8.0 (the Firnlab kits as of this version)"; a kit number and the kit version are never written the same way. Check: `e2e16.py` (it found it), `e2e190_fleet.py` follows the wording.
 

@@ -89,7 +89,7 @@ function fl19StampBuild(p, kit, from = 0){
 { const orig = storeBrief; storeBrief = function(p){ const r = orig.apply(this, arguments); try{ if (p && p.brief) p.brief.kit = fl19Kit(); }catch(e){ onAppError(e && e.message, "fleet:brief"); } return r; }; }
 { const orig = buildBriefText; buildBriefText = function(p){
     const k = fl19Kit();
-    return orig.apply(this, arguments) + `\nFirnlab kit ${k}: write "kitVersion": "${k}" into the tool's tool.json (firnlab/tools/<slug>/) and add "kit": "${k}" to the build report.`; }; }
+    return orig.apply(this, arguments) + `\nKit version ${k} (the Firnlab kits as of this version): write "kitVersion": "${k}" into the tool's tool.json (firnlab/tools/<slug>/) and add "kit": "${k}" to the build report.`; }; }
 
 /* ---------- 2. the run ---------- */
 /** the update job of a kit run: the existing update job, told what the kit run needs (acceptance lines, republish in place, the live
@@ -105,7 +105,7 @@ function fl19StampBuild(p, kit, from = 0){
       onStart: job => { if (on) on(job); x.jobId = job.id; saveWs(); },
       instructions: str(o.instructions) + `
 
-This update moves the tool to Firnlab kit ${run.kit} (it was built with kit ${x.from}). The owner started it with one click for the whole kit run (the GO); it is one tool of a run that updates the owner's tools one after another.
+This update moves the tool to kit version ${run.kit} (it was built with kit version ${x.from}). The owner started it with one click for the whole kit run (the GO); it is one tool of a run that updates the owner's tools one after another.
 - Rebuild what the kit changes, following the new build brief (its PART P and the kit steps carry kit ${run.kit}); keep everything else as it is and keep all stored data.
 - Acceptance lines: inputs.acceptance (PART C of the brief) — run every line before you republish. A failing line means: do not republish; report it in "tests" and "issues".${acc.length ? "" : " This tool has no acceptance lines: the live check is its only check."}
 - Republish in place: the pages in inputs.pages (and inputs.artifacts) keep their url; claude.ai keeps the previous version, so it stays restorable. Change scheduled tasks only where the kit needs it. Write "kitVersion": "${run.kit}" into the tool's tool.json in firnlab/tools if it has one.
