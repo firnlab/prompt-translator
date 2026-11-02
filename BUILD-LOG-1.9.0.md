@@ -20,4 +20,11 @@ Not in 1.9.0 (1.9.1, PLAN-1.9 waves): sealed twins, independent judge, second-la
 - The kit run: rebuild, republish in place, two live checks, rollback to the previous version, on real tools.
 
 ## Gate and publish
-(filled in after the run)
+- Integration: one red on the first part A (the 1.6 kit test read the new kit-version line in the brief as kit number 1, cause 71);
+  fixed, then the whole part A again.
+- Full gate in three parts: part A 37 of 37 green; part B check the hunt 10 of 10, check the Pick tests 90 of 90 caught
+  (run one after the other, the session's background limit is 2 hours); part C click everything alone, 0 problems.
+- Published (2 Nov 2026, about 04:10 Zürich): preview `1793588849-f17a` (before `1793568176-3b15`); main `1793588961-aa84`
+  (before `1793568295-4f03`). Capabilities carried forward.
+- Live re-test of the preview: byte for byte the tested build; smoke green; PT outside claude.ai green on the live file.
+- Code commit: `8ffd349`.

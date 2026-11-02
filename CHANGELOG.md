@@ -7,6 +7,8 @@ Versions before 1.8 were published from the private archive repository (see RELE
 
 ## 1.9.0 — 2026-11-02
 
+Release notes: 1.9.0: self-scan with one-tap shortcuts (propose only), the 4×4 interview before big changes to live tools, update my tools to the current kit (one card, one tool at a time, stops at the first problem), the owner's reminders (quarterly export + read-only viewer outside claude.ai, AI ceiling from Feb 2027, push switch off by default, key renewal from Oct 2027, server-backed AI as a choice with a required limit), a generated public changelog.
+
 ### Added
 
 - Your two most repeated workflows (counted on Saturday nights, action names only) are offered in the Sunday note as one-tap shortcuts; only suggested, nothing runs by itself

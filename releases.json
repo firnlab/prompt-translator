@@ -46,5 +46,21 @@
       "previous": "1793554511-e0e7"
     },
     "notes": "1.8.2: a scheduled task created from PT takes the cloud environment the scheduled-task service lists (a page has no session to take it from) and PT remembers it; PT tells the owner to turn on automatic approval for such a task. Proven first with a one-button live check."
+  },
+  {
+    "version": "1.9.0",
+    "date": "2026-11-02",
+    "commit": "8ffd34967929e6cf6373eb2d2d5de1cd938bee08",
+    "main": {
+      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+      "live": "1793588961-aa84",
+      "previous": "1793568295-4f03"
+    },
+    "preview": {
+      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+      "live": "1793588849-f17a",
+      "previous": "1793568176-3b15"
+    },
+    "notes": "1.9.0: self-scan with one-tap shortcuts (propose only), the 4×4 interview before big changes to live tools, update my tools to the current kit (one card, one tool at a time, stops at the first problem), the owner's reminders (quarterly export + read-only viewer outside claude.ai, AI ceiling from Feb 2027, push switch off by default, key renewal from Oct 2027, server-backed AI as a choice with a required limit), a generated public changelog."
   }
 ]
