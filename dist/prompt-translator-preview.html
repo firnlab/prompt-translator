@@ -1,4 +1,4 @@
-<title>Prompt Translator 1.9.0 Preview</title>
+<title>Prompt Translator 1.9.1 Preview</title>
 <style>
 /* Layout concept: mission-control workspace — slim navigation rail, one focused work surface with a persistent North Star band, and a notes drawer on the right. Dark-first instrument panel; light mode mirrors it. */
 :root{
@@ -7157,7 +7157,6 @@ Object.assign(STR, {
 "lab2.ev.none":["only you use it, nothing goes out, no money","nur du nutzt es, nichts geht hinaus, kein Geld","只有你使用，不对外，不涉及金钱"],
 "lab2.cost":["about CHF {a}–{b} per review (estimate: about {k}k tokens read and 4k written at frontier-model prices; {p} bills it to your key, outside your Claude plan) · inside the GitHub build, about {m} min · 1 tap now; skipping costs nothing.","etwa CHF {a}–{b} pro Prüfung (Schätzung: etwa {k}k Tokens gelesen und 4k geschrieben, zu Preisen von Spitzenmodellen; {p} verrechnet es über deinen Schlüssel, ausserhalb deines Claude-Abos) · im GitHub-Build, etwa {m} Min. · 1 Klick jetzt; Weglassen kostet nichts.","每次审阅约 CHF {a}–{b}（估算：按前沿模型价格，约读取 {k}k 个 token、写入 4k；由 {p} 通过你的密钥计费，不在你的 Claude 订阅内）· 在 GitHub 构建中进行，约 {m} 分钟 · 现在点按 1 次；跳过不花费任何东西。"],
 "lab2.prov.any":["the provider","der Anbieter","服务商"],
-"lab2.prov.multi":["{x} (several labs behind one key: {y})","{x} (mehrere Labore hinter einem Schlüssel: {y})","{x}（一个密钥可用多家实验室：{y}）"],
 "lab2.off.nokey":["Off: no second-lab key yet. Add SECOND_LAB_API_KEY as a repository secret in GitHub, then mark it in Settings › General (kit defaults). Until then this check cannot be applied.","Aus: noch kein Schlüssel für ein zweites Labor. Lege SECOND_LAB_API_KEY in GitHub als Repository-Secret an und vermerke es dann unter Einstellungen › Allgemein (Bausatz-Vorgaben). Bis dahin lässt sich diese Prüfung nicht anwenden.","关闭：尚无第二家实验室的密钥。请在 GitHub 中把 SECOND_LAB_API_KEY 添加为仓库机密，然后在 设置 › 常规（套件默认值）中标记。在此之前无法应用此检查。"],
 "lab2.off.star":["Once the key is there, PT's ★ would be {x}: {y}","Sobald der Schlüssel da ist, wäre PTs ★ {x}: {y}","密钥就绪后，PT 的 ★ 会是“{x}”：{y}"],
 "lab2.st.off":["off","aus","关闭"],
@@ -7165,7 +7164,7 @@ Object.assign(STR, {
 "lab2.only":["Runs only in GitHub builds (the build issue): the key lives only in GitHub's secret store.","Läuft nur in GitHub-Builds (das Build-Issue): der Schlüssel liegt nur im Secret-Speicher von GitHub.","仅在 GitHub 构建（构建 issue）中运行：密钥只保存在 GitHub 的机密存储中。"],
 "lab2.week":["This week ({w}) the reviewer is {x}.","Diese Woche ({w}) prüft {x}.","本周（{w}）由 {x} 审阅。"],
 "lab2.runner":["Only in GitHub builds: this draft was built through background runs, so it had no second-lab review.","Nur in GitHub-Builds: dieser Entwurf wurde über Hintergrundläufe gebaut, darum gab es keine Zweitmeinung.","仅限 GitHub 构建：这一稿是通过后台运行构建的，因此没有第二家实验室的审阅。"],
-"lab2.bld":["This tool gets a second opinion from another lab ({x} this week) in the GitHub build (PART R); the cloud build skips it: only in GitHub builds.","Dieses Tool bekommt im GitHub-Build eine Zweitmeinung von einem anderen Labor (diese Woche {x}, PART R); der Cloud-Build lässt sie aus: nur in GitHub-Builds.","此工具会在 GitHub 构建中获得另一家实验室的第二意见（本周为 {x}，PART R）；云端构建会跳过：仅限 GitHub 构建。"],
+"lab2.bld":["This tool gets a second opinion from another lab in the GitHub build, after the pull request opens (this week's reviewer: {x}; PART R); the cloud build skips it: only in GitHub builds.","Dieses Tool bekommt im GitHub-Build eine Zweitmeinung von einem anderen Labor, nachdem der Pull Request offen ist (Prüfer diese Woche: {x}; PART R); der Cloud-Build lässt sie aus: nur in GitHub-Builds.","此工具会在 GitHub 构建中、拉取请求打开后获得另一家实验室的第二意见（本周审阅者：{x}；PART R）；云端构建会跳过它：仅限 GitHub 构建。"],
 /* the reviews of a build report */
 "lab2.rev.title":["Second-lab review","Zweitmeinung eines anderen Labors","第二家实验室审阅"],
 "lab2.rev.line":["{lab} · week {w} · findings: {n} — must-fix {m} (fixed {f}), unsure {u}, overthinking {o}","{lab} · Woche {w} · Befunde: {n} — Muss-Korrektur {m} (behoben {f}), unsicher {u}, übertrieben {o}","{lab} · 第 {w} 周 · 发现：{n} 项——必须修复 {m}（已修复 {f}），不确定 {u}，过度担心 {o}"],
@@ -7173,8 +7172,6 @@ Object.assign(STR, {
 "lab2.rev.findings":["Findings ({n})","Befunde ({n})","发现（{n}）"],
 "lab2.rev.res":["Residual risk:","Restrisiko:","剩余风险："],
 "lab2.rev.skipped":["Not reviewed: {x}","Nicht geprüft: {x}","未审阅：{x}"],
-"lab2.rev.none":["This build report has no second-lab review.","Dieser Baubericht enthält keine Zweitmeinung.","这份构建报告中没有第二家实验室的审阅。"],
-"lab2.rev.later":["The review comes with the build report of a GitHub build.","Die Zweitmeinung kommt mit dem Baubericht eines GitHub-Builds.","审阅结果会随 GitHub 构建的构建报告一起提供。"],
 "lab2.j.mustfix":["must-fix","Muss-Korrektur","必须修复"],
 "lab2.j.unsure":["unsure","unsicher","不确定"],
 "lab2.j.overthinking":["overthinking","übertrieben","过度担心"],
@@ -7191,9 +7188,12 @@ Object.assign(STR, {
 "lab2.set.needprov":["Pick the provider of the key first.","Wähle zuerst den Anbieter des Schlüssels.","请先选择密钥的服务商。"],
 "lab2.set.saved":["Noted: SECOND_LAB_API_KEY is in GitHub (provider: {p}). PT never sees the key.","Vermerkt: SECOND_LAB_API_KEY liegt in GitHub (Anbieter: {p}). PT sieht den Schlüssel nie.","已记录：SECOND_LAB_API_KEY 已在 GitHub 中（服务商：{p}）。PT 永远看不到密钥。"],
 "lab2.set.cleared":["Noted: no second-lab key. The second-opinion check is off.","Vermerkt: kein Schlüssel fürs zweite Labor. Die Zweitmeinung ist aus.","已记录：没有第二家实验室密钥。第二意见检查已关闭。"],
-"lab2.set.alt":["Labs alternate week by week ({x}): week {w} is {y}.","Die Labore wechseln Woche für Woche ({x}): Woche {w} ist {y}.","实验室每周轮换（{x}）：第 {w} 周为 {y}。"],
-"lab2.set.one":["One lab behind this key ({x}): it reviews every week.","Ein Labor hinter diesem Schlüssel ({x}): es prüft jede Woche.","此密钥背后只有一家实验室（{x}）：每周都由它审阅。"],
-"lab2.set.how":["How: GitHub › {r} › Settings › Secrets and variables › Actions › New repository secret, name SECOND_LAB_API_KEY. Set a monthly spending limit at the provider first. PT has no field for the key, never asks for it and never sees it: this only notes that you added it.","So geht es: GitHub › {r} › Settings › Secrets and variables › Actions › New repository secret, Name SECOND_LAB_API_KEY. Setze zuerst beim Anbieter ein monatliches Ausgabenlimit. PT hat kein Feld für den Schlüssel, fragt nie danach und sieht ihn nie: hier wird nur vermerkt, dass du ihn angelegt hast.","操作：GitHub › {r} › Settings › Secrets and variables › Actions › New repository secret，名称 SECOND_LAB_API_KEY。请先在服务商处设置每月消费上限。PT 没有用于密钥的输入框，从不索要也看不到密钥：这里只记录你已添加。"]
+"lab2.set.alt":["Even ISO weeks {x} reviews, odd weeks a fresh Claude reviewer (this is how the GitHub workflow alternates): week {w} is {y}.","In geraden ISO-Wochen prüft {x}, in ungeraden ein frischer Claude-Prüfer (so wechselt der GitHub-Workflow ab): Woche {w} ist {y}.","偶数 ISO 周由 {x} 审阅，奇数周由一个全新的 Claude 审阅者审阅（GitHub 工作流就是这样轮换的）：第 {w} 周为 {y}。"],
+"lab2.claude":["a fresh Claude reviewer","ein frischer Claude-Prüfer","一个全新的 Claude 审阅者"],
+"lab2.rev.inpr":["The review runs in the GitHub build after the pull request opens: its result is in the pull request (.checks/{x}/review.json and its comment).","Die Prüfung läuft im GitHub-Build, nachdem der Pull Request offen ist: das Ergebnis steht im Pull Request (.checks/{x}/review.json und sein Kommentar).","审阅在 GitHub 构建中、拉取请求打开后进行：结果在拉取请求中（.checks/{x}/review.json 及其评论）。"],
+"lab2.set.how":["How: first set a monthly spending limit at the provider. Then GitHub › {r} › Settings › Secrets and variables › Actions: New repository secret SECOND_LAB_API_KEY (the key), and on the Variables tab SECOND_LAB_PROVIDER (openai or google) and SECOND_LAB_MODEL (the model name). PT has no field for the key, never asks for it and never sees it: this only notes that you added it.","So geht es: zuerst beim Anbieter ein monatliches Ausgabenlimit setzen. Dann GitHub › {r} › Settings › Secrets and variables › Actions: New repository secret SECOND_LAB_API_KEY (der Schlüssel), und im Reiter Variables SECOND_LAB_PROVIDER (openai oder google) und SECOND_LAB_MODEL (der Modellname). PT hat kein Feld für den Schlüssel, fragt nie danach und sieht ihn nie: hier wird nur vermerkt, dass du ihn angelegt hast.","操作：先在服务商处设置每月消费上限。然后 GitHub › {r} › Settings › Secrets and variables › Actions：New repository secret SECOND_LAB_API_KEY（密钥），并在 Variables 选项卡中设置 SECOND_LAB_PROVIDER（openai 或 google）和 SECOND_LAB_MODEL（模型名称）。PT 没有用于密钥的输入框，从不索要也看不到密钥：这里只记录你已添加。"],
+"cl.191.added":["An independent check after every build and every update: a fresh Claude that never saw the builder's notes writes its plan first, then checks every acceptance line with evidence and the security and accessibility floors; anything not green blocks the release, and one tap turns it into fixes. Tools other people use always get it; a private tool when you apply its row|A second opinion from another lab for tools built in GitHub: a check row that stays off until you add a second-lab key in GitHub (with a spending limit at the provider) and note it in Settings; PT never sees the key. Even weeks the other lab reviews, odd weeks a fresh Claude|The GitHub build room (firnlab/tools) runs the independent check on every pull request and keeps hidden test twins in the private repository, never shown to the builder; the twins stay off until the private-repository key is added there","Eine unabhängige Prüfung nach jedem Build und jedem Update: ein frischer Claude, der die Notizen des Erbauers nie gesehen hat, schreibt zuerst seinen Plan und prüft dann jede Abnahmezeile mit Belegen sowie die Untergrenzen für Sicherheit und Barrierefreiheit; was nicht grün ist, blockiert die Freigabe, und ein Tipp macht daraus Korrekturen. Tools, die andere nutzen, bekommen sie immer; ein privates Tool, wenn du die Zeile anwendest|Eine Zweitmeinung von einem anderen Labor für Tools, die in GitHub gebaut werden: eine Prüfzeile, die aus bleibt, bis du einen Schlüssel fürs zweite Labor in GitHub anlegst (mit Ausgabenlimit beim Anbieter) und ihn in den Einstellungen vermerkst; PT sieht den Schlüssel nie. In geraden Wochen prüft das andere Labor, in ungeraden ein frischer Claude|Der GitHub-Bauraum (firnlab/tools) führt die unabhängige Prüfung bei jedem Pull Request aus und hält versteckte Test-Zwillinge im privaten Repository, die der Erbauer nie sieht; die Zwillinge bleiben aus, bis dort der Schlüssel fürs private Repository angelegt ist","每次构建和每次更新后都有一次独立检查：一个从未看过构建者笔记的全新 Claude 先写下计划，然后用证据检查每一条验收标准以及安全和无障碍底线；未通过的会阻止发布，点按一次即可变成修复项。其他人使用的工具始终进行此检查；私人工具在你应用该行后进行|为在 GitHub 中构建的工具提供另一家实验室的第二意见：这一检查行在你于 GitHub 中添加第二家实验室的密钥（并在服务商处设置消费上限）并在设置中记录之前保持关闭；PT 从不接触密钥。偶数周由另一家实验室审阅，奇数周由全新的 Claude 审阅|GitHub 构建室（firnlab/tools）会在每个拉取请求上运行独立检查，并在私有仓库中保存隐藏的测试孪生用例，构建者永远看不到；在那里添加私有仓库密钥之前，孪生用例保持关闭"],
+"cl.191.changed":["Updating your tools to the current kit counts a tool as green only when the independent check passes too, where it is on","Beim Aktualisieren deiner Tools auf den aktuellen Bausatz gilt ein Tool nur dann als grün, wenn auch die unabhängige Prüfung besteht, wo sie an ist","将工具更新到当前套件时，只有在独立检查也通过（如已开启）时，该工具才算通过"]
 });
 
 /* ===================== CORE ===================== */
@@ -10288,7 +10288,7 @@ function fixCost(p, ids){ const n = arr(p.findings).filter(f => ids.includes(f.i
 /* ===================== APP STATE ===================== */
 let META = {workspaces: [], last: null};
 let WS = {id:null, name:"", settings:{}, profile:{entries:[]}, projects:[], notes:[], patterns:[], research:[], jobs:[], insights:null, profileSuggestions:[]};
-const PT_VERSION = "1.9.0";
+const PT_VERSION = "1.9.1";
 /* ---------- version next to the name: "newest" check (shared doc app/version: read by everyone, written by the owner's page) ---------- */
 const APPV = {latest: PT_VERSION, newer: false, checked: false};
 function verCmp(a, b){ const x = String(a || "0").split(".").map(n => parseInt(n, 10) || 0), y = String(b || "0").split(".").map(n => parseInt(n, 10) || 0); for (let i = 0; i < 3; i++){ if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) - (y[i] || 0); } return 0; }
@@ -12277,6 +12277,7 @@ function rpPreview(p, pv){
     ${row(t("rev.problems"), arr(s.findings).length, p.findings.length)}${row(t("test.title"), arr(s.tests).length, p.tests.length)}</tbody></table></div>`;
 }
 const CHANGELOG = [
+  {v: "1.9.1", d: "2026-11-02", added: "cl.191.added", changed: "cl.191.changed"},
   {v: "1.9.0", d: "2026-11-02", added: "cl.190.added", changed: "cl.190.changed"},
   {v: "1.8.2", d: "2026-11-01", fixed: "cl.182.fixed"},
   {v: "1.8.1", d: "2026-11-01", fixed: "cl.181.fixed"},
@@ -25835,14 +25836,19 @@ jdgCss();
       judges each finding; only agreed must-fix are fixed; unsure → one more opinion, then residual risk; never a review loop; the lab
       alternates week by week where the key reaches more than one lab. A build through the runner skips it ("only in GitHub builds"),
       and the row and the Build page say so.
+      Aligned with firnlab/tools 1.9.1 (.github/workflows/claude-build.yml, scripts/second_lab.py): the WORKFLOW runs the review after
+      the pull request opens, and the key reaches only its review script, never a Claude step. So PART R tells the builder only to mark
+      the row in tool.json ("decisions": [{"id": "lab2", "v": "apply"}]) and never to call another lab or look for the key; the result
+      lands in the pull request (.checks/<slug>/review.json and its comment). Providers: the two the script speaks (OpenAI, Google);
+      even ISO weeks that lab reviews, odd weeks a fresh Claude reviewer; repository variables SECOND_LAB_PROVIDER and SECOND_LAB_MODEL.
    4. PT shows the reviews of a build report next to it (Release) and the newest on the row. */
-const LAB2_PROVIDERS = [["openai", "OpenAI", ["OpenAI"]], ["google", "Google", ["Google"]], ["mistral", "Mistral", ["Mistral"]], ["xai", "xAI", ["xAI"]], ["openrouter", "OpenRouter", ["OpenAI", "Google"]]];
+const LAB2_PROVIDERS = [["openai", "OpenAI"], ["google", "Google"]];   // what firnlab/tools scripts/second_lab.py speaks (nothing else would run)
 const LAB2_JUDGED = ["must-fix", "unsure", "overthinking"];
 CHK_GATES.push("lab2");
 
 /* ---------- 0. the key's record (never the key), the week's lab ---------- */
 function lab2Prov(id){ return LAB2_PROVIDERS.find(x => x[0] === id) || null; }
-function lab2ProvName(id){ const P = lab2Prov(id); return !P ? "" : P[2].length > 1 ? t("lab2.prov.multi", {x: P[1], y: P[2].join(", ")}) : P[1]; }
+function lab2ProvName(id){ const P = lab2Prov(id); return P ? P[1] : ""; }
 /** the owner marked SECOND_LAB_API_KEY as added in GitHub, with its provider */
 function lab2Set(){ const s = WS && WS.settings && WS.settings.lab2; return s && typeof s === "object" && s.key === "github" && lab2Prov(str(s.provider)) ? s : null; }
 /** ISO week (labs alternate week by week) */
@@ -25852,7 +25858,8 @@ function lab2Week(ms = Date.now()){
   const y = u.getUTCFullYear(), w = Math.ceil(((u - Date.UTC(y, 0, 1)) / 86400000 + 1) / 7);
   return {y, w, label: y + "-W" + String(w).padStart(2, "0")};
 }
-function lab2Lab(s = lab2Set(), ms = Date.now()){ const P = s ? lab2Prov(str(s.provider)) : null; return P ? P[2][lab2Week(ms).w % P[2].length] : ""; }
+/** who reviews in that week (as the workflow decides): even ISO week the provider's lab, odd week a fresh Claude reviewer */
+function lab2Lab(s = lab2Set(), ms = Date.now()){ const P = s ? lab2Prov(str(s.provider)) : null; return !P ? "" : lab2Week(ms).w % 2 === 0 ? P[1] : t("lab2.claude"); }
 /** the review runs for this tool: the key is marked and you applied the row */
 function lab2On(p){ return !!p && !!lab2Set() && chkActive(p) && (chkRowOf(p, "lab2") || {}).v === "apply"; }
 /** the tool was built through background runs (the runner has no key): no review there */
@@ -25887,7 +25894,8 @@ function lab2Hurts(S){ const w = []; if (S && S.shared) w.push(t("lab2.ev.shared
 /** the cost of one review: tokens of the diff and the acceptance lines, at frontier-model prices (an estimate; the provider's list decides) */
 function lab2Cost(p){
   const len = arr(p && p.pkg && p.pkg.sections).reduce((n, s) => n + str(s && s.content).length, 0) + arr(p && p.tests).length * 400 + 6000;
-  const inTok = Math.round(len / 4 * 2) + 2000, outTok = 4000, up = x => Math.max(0.05, Math.ceil(x * 20) / 20);
+  // the workflow cuts the diff at 60 000 characters and each answer at 2 000 tokens: one review plus at most one more opinion
+  const inTok = Math.min(Math.round(len / 4 * 2) + 2000, 34000), outTok = 4000, up = x => Math.max(0.05, Math.ceil(x * 20) / 20);
   return {k: Math.round(inTok / 1000), a: up((inTok * 2 + outTok * 8) / 1e6), b: up((inTok * 15 + outTok * 60) / 1e6 * 2), m: Math.max(2, Math.min(20, Math.round(inTok / 4000) + 2))};
 }
 function lab2CostLine(p){ const c = lab2Cost(p), s = lab2Set(); return t("lab2.cost", {a: c.a.toFixed(2), b: c.b.toFixed(2), k: c.k, p: s ? lab2Prov(s.provider)[1] : t("lab2.prov.any"), m: c.m}); }
@@ -25931,21 +25939,25 @@ function lab2OffRowHTML(p){
 /* ---------- 2. the brief (PART R), the GitHub build issue, the Build page ---------- */
 function lab2BriefPart(p){
   const s = lab2Set(), P = lab2Prov(s.provider), W = lab2Week(), lab = lab2Lab(s), next = lab2Lab(s, Date.now() + 7 * 86400000);
-  const alt = P[2].length > 1 ? `Labs alternate week by week: this is ISO week ${W.label}, so this week's reviewer is ${lab} (next week: ${next}).` : `Only one other lab is behind this key (${lab}): it reviews every week; the alternation starts when the key reaches a second lab.`;
   return `\nPART R · SECOND-LAB REVIEW (only in the GitHub build; Firnlab 1.9.1)
-Run this part only when you are the GitHub build workflow in ${buildRepo()} and the repository secret SECOND_LAB_API_KEY is available to this run (provider: ${P[1]}). Never print, log, echo, commit or write the key anywhere; use it only in the request to the provider. In any other build (Prompt Translator's background runner, a chat, a laptop): skip this part, write "reviews": [] and "reviewSkipped": "only in GitHub builds" into the build report, and go on.
-${alt}
-1. After every check in PART A passed and before you open the pull request, send the reviewer the diff of this build and PART C (the acceptance lines), nothing else (no key, no personal data). Ask for findings only: what is wrong, unsafe or missing, each with where and why.
-2. Judge every finding yourself: "must-fix" (it breaks an acceptance line, a security or accessibility floor, or loses data), "unsure", or "overthinking" (style, taste, or a risk the requirements already accept).
-3. Fix only the must-fix findings you agree with, then run the affected checks again. Never send the fixes back for another review: there is no review loop.
-4. For each "unsure" finding ask one more opinion, once (the other lab behind the key if it has one, otherwise a fresh Claude session without your notes). Still unsure: do not fix it; write it under "residual" with why.
-5. Record it in the build report: "reviews": [{"lab": "${lab}", "week": "${W.label}", "findings": [{"text": "…", "judged": "must-fix|unsure|overthinking", "fixed": true|false}], "residual": ["…"]}]. The provider bills each call to the owner's key (its spending limit is set at the provider): one review of the diff, plus at most one more opinion per unsure finding.`;
+The GitHub build workflow in ${buildRepo()} runs this review itself, after you open the pull request: the key (repository secret SECOND_LAB_API_KEY, provider: ${P[1]}) reaches only its review script, never you. Never call another lab, never look for, print, log or write the key. ISO week ${W.label}: the reviewer is ${lab} (next week: ${next}); even weeks ${P[1]}, odd weeks a fresh Claude reviewer.
+1. In <tool folder>/tool.json add {"id": "lab2", "v": "apply"} to "decisions": that is how the workflow knows this tool gets the review.
+2. Nothing else for it in your build. The workflow then asks the reviewer about the diff and the acceptance lines (no key, no personal data), and a separate step judges every finding "must-fix" (it breaks an acceptance line, a security or accessibility floor, or loses data), "unsure" or "overthinking"; it fixes only agreed must-fix findings, asks one more opinion, once, on the unsure ones, and leaves the rest as residual risk. There is no review loop.
+3. The result lands in the pull request: .checks/<tool folder>/review.json ({"lab", "week", "findings": [{"text", "judged", "fixed"}], "residual"}) and a comment.
+In any other build (Prompt Translator's background runner, a chat, a laptop) there is no review: write "reviews": [] and "reviewSkipped": "only in GitHub builds" into the build report. The provider bills each call to the owner's key (its spending limit is set at the provider): one review of the diff, plus at most one more opinion.`;
 }
 { const orig = buildBriefText; buildBriefText = function(p){ const s = orig.apply(this, arguments); return lab2On(p) ? s + lab2BriefPart(p) : s; }; }
+/** the GitHub build issue: tool.json carries what the build room's later steps read (the acceptance lines for the independent judge and
+    the sealed twins; the lab2 row for the second-lab review), so the issue says how to fill it */
+function lab2ToolJsonLine(p){
+  const L = typeof jdgLines === "function" ? jdgLines(p) : [];
+  return ` In ${typeof kitSlug === "function" ? kitSlug(p) : "<slug>"}/tool.json (from _template/tool.json) write "acceptance" as every acceptance line of PART C: {"id": "<its id>", "line": "<what must hold>"}${L.length ? " (" + L.length + " lines: " + L.slice(0, 12).map(l => l.id).join(", ") + (L.length > 12 ? ", …" : "") + ")" : ""}; the build room's independent judge checks the pull request against them.` +
+    (lab2On(p) ? ` Add {"id": "lab2", "v": "apply"} to "decisions": the workflow then runs the second-lab review of PART R after the pull request opens (the key reaches only its script, never you).` : "");
+}
 { const orig = buildIssue; buildIssue = function(p){
     const r = orig.apply(this, arguments);
-    if (!r || !lab2On(p)) return r;
-    const s = lab2Set(), line = ` This build runs the second-lab review of PART R with the repository secret SECOND_LAB_API_KEY (provider: ${lab2Prov(s.provider)[1]}): never print or log the key, record the review in the report.`;
+    if (!r) return r;
+    const line = lab2ToolJsonLine(p);
     const ins = b => { const i = str(b).indexOf("\n\n"); return i < 0 ? str(b) + line : b.slice(0, i) + line + b.slice(i); };
     r.body = ins(r.body);
     try{ const u = new URL(r.url); u.searchParams.set("body", ins(u.searchParams.get("body") || "")); r.url = u.toString(); }catch(e){ onAppError(e && e.message, "lab2:issue"); }
@@ -25972,7 +25984,8 @@ function lab2ReviewsHTML(p){
       ${c.open ? `<span class="small warn-t">${esc(t("lab2.rev.unfixed", {n: c.open}))}</span>` : ""}
       ${r.findings.length ? `<details class="small"><summary>${esc(t("lab2.rev.findings", {n: r.findings.length}))}</summary><ul class="lab2-f">${r.findings.map(f => `<li data-judged="${esc(f.judged)}" data-fixed="${f.fixed ? 1 : 0}"><b>${esc(t("lab2.j." + f.judged.replace("-", "")))}</b> · ${esc(t(f.fixed ? "lab2.fixed" : "lab2.notfixed"))} — ${esc(f.text)}</li>`).join("")}</ul></details>` : ""}
       ${r.residual.length ? `<div class="small"><b>${esc(t("lab2.rev.res"))}</b><ul class="lab2-res">${r.residual.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}</div>`; };
-  const body = R.length ? R.map(one).join("") : `<span class="small ${skipped ? "muted" : "warn-t"}">${esc(skipped ? t("lab2.rev.skipped", {x: skipped}) : rep ? t("lab2.rev.none") : t("lab2.rev.later"))}</span>`;
+  const slug = typeof kitSlug === "function" ? kitSlug(p) : "<slug>";
+  const body = R.length ? R.map(one).join("") : `<span class="small muted">${esc(skipped ? t("lab2.rev.skipped", {x: skipped}) : t("lab2.rev.inpr", {x: slug}))}</span>`;
   return `<div class="panel flat lab2-rev" data-anchor="lab2-reviews"><b>${esc(t("lab2.rev.title"))}</b>${rep && rep.draft ? `<span class="small muted">${esc(t("draft.n", {n: rep.draft}))}</span>` : ""}${body}</div>`;
 }
 { const orig = phRelease; phRelease = function(p){
@@ -25986,7 +25999,7 @@ function lab2SettingsHTML(){
   const s = lab2Set(), raw = (WS && WS.settings && WS.settings.lab2) || {}, prov = str(UI.lab2Prov || raw.provider), P = lab2Prov(prov);
   const opts = [["", t("lab2.set.pick")], ...LAB2_PROVIDERS.map(x => [x[0], lab2ProvName(x[0])])];
   const sel = `<select data-a-change="lab2-prov" aria-label="${esc(t("lab2.set.prov"))}">${opts.map(o => `<option value="${esc(o[0])}" ${o[0] === prov ? "selected" : ""}>${esc(o[1])}</option>`).join("")}</select>`;
-  const labs = P ? (P[2].length > 1 ? t("lab2.set.alt", {x: P[2].join(" · "), w: lab2Week().label, y: lab2Lab({provider: prov})}) : t("lab2.set.one", {x: P[2][0]})) : "";
+  const labs = P ? t("lab2.set.alt", {x: P[1], w: lab2Week().label, y: lab2Lab({provider: prov})}) : "";
   return `<div class="stack lab2-set" data-lab2="settings" style="gap:6px"><h4>${esc(t("lab2.set.title"))}</h4>
     <p class="small"><b class="lab2-state">${esc(s ? t("lab2.set.on", {p: lab2ProvName(s.provider)}) : t("lab2.set.none"))}</b></p>
     <div class="row" style="gap:8px;flex-wrap:wrap;align-items:flex-end"><label class="fld" style="flex:1 1 14em"><span>${esc(t("lab2.set.prov"))}</span>${sel}</label>

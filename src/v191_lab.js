@@ -14,14 +14,19 @@
       judges each finding; only agreed must-fix are fixed; unsure → one more opinion, then residual risk; never a review loop; the lab
       alternates week by week where the key reaches more than one lab. A build through the runner skips it ("only in GitHub builds"),
       and the row and the Build page say so.
+      Aligned with firnlab/tools 1.9.1 (.github/workflows/claude-build.yml, scripts/second_lab.py): the WORKFLOW runs the review after
+      the pull request opens, and the key reaches only its review script, never a Claude step. So PART R tells the builder only to mark
+      the row in tool.json ("decisions": [{"id": "lab2", "v": "apply"}]) and never to call another lab or look for the key; the result
+      lands in the pull request (.checks/<slug>/review.json and its comment). Providers: the two the script speaks (OpenAI, Google);
+      even ISO weeks that lab reviews, odd weeks a fresh Claude reviewer; repository variables SECOND_LAB_PROVIDER and SECOND_LAB_MODEL.
    4. PT shows the reviews of a build report next to it (Release) and the newest on the row. */
-const LAB2_PROVIDERS = [["openai", "OpenAI", ["OpenAI"]], ["google", "Google", ["Google"]], ["mistral", "Mistral", ["Mistral"]], ["xai", "xAI", ["xAI"]], ["openrouter", "OpenRouter", ["OpenAI", "Google"]]];
+const LAB2_PROVIDERS = [["openai", "OpenAI"], ["google", "Google"]];   // what firnlab/tools scripts/second_lab.py speaks (nothing else would run)
 const LAB2_JUDGED = ["must-fix", "unsure", "overthinking"];
 CHK_GATES.push("lab2");
 
 /* ---------- 0. the key's record (never the key), the week's lab ---------- */
 function lab2Prov(id){ return LAB2_PROVIDERS.find(x => x[0] === id) || null; }
-function lab2ProvName(id){ const P = lab2Prov(id); return !P ? "" : P[2].length > 1 ? t("lab2.prov.multi", {x: P[1], y: P[2].join(", ")}) : P[1]; }
+function lab2ProvName(id){ const P = lab2Prov(id); return P ? P[1] : ""; }
 /** the owner marked SECOND_LAB_API_KEY as added in GitHub, with its provider */
 function lab2Set(){ const s = WS && WS.settings && WS.settings.lab2; return s && typeof s === "object" && s.key === "github" && lab2Prov(str(s.provider)) ? s : null; }
 /** ISO week (labs alternate week by week) */
@@ -31,7 +36,8 @@ function lab2Week(ms = Date.now()){
   const y = u.getUTCFullYear(), w = Math.ceil(((u - Date.UTC(y, 0, 1)) / 86400000 + 1) / 7);
   return {y, w, label: y + "-W" + String(w).padStart(2, "0")};
 }
-function lab2Lab(s = lab2Set(), ms = Date.now()){ const P = s ? lab2Prov(str(s.provider)) : null; return P ? P[2][lab2Week(ms).w % P[2].length] : ""; }
+/** who reviews in that week (as the workflow decides): even ISO week the provider's lab, odd week a fresh Claude reviewer */
+function lab2Lab(s = lab2Set(), ms = Date.now()){ const P = s ? lab2Prov(str(s.provider)) : null; return !P ? "" : lab2Week(ms).w % 2 === 0 ? P[1] : t("lab2.claude"); }
 /** the review runs for this tool: the key is marked and you applied the row */
 function lab2On(p){ return !!p && !!lab2Set() && chkActive(p) && (chkRowOf(p, "lab2") || {}).v === "apply"; }
 /** the tool was built through background runs (the runner has no key): no review there */
@@ -66,7 +72,8 @@ function lab2Hurts(S){ const w = []; if (S && S.shared) w.push(t("lab2.ev.shared
 /** the cost of one review: tokens of the diff and the acceptance lines, at frontier-model prices (an estimate; the provider's list decides) */
 function lab2Cost(p){
   const len = arr(p && p.pkg && p.pkg.sections).reduce((n, s) => n + str(s && s.content).length, 0) + arr(p && p.tests).length * 400 + 6000;
-  const inTok = Math.round(len / 4 * 2) + 2000, outTok = 4000, up = x => Math.max(0.05, Math.ceil(x * 20) / 20);
+  // the workflow cuts the diff at 60 000 characters and each answer at 2 000 tokens: one review plus at most one more opinion
+  const inTok = Math.min(Math.round(len / 4 * 2) + 2000, 34000), outTok = 4000, up = x => Math.max(0.05, Math.ceil(x * 20) / 20);
   return {k: Math.round(inTok / 1000), a: up((inTok * 2 + outTok * 8) / 1e6), b: up((inTok * 15 + outTok * 60) / 1e6 * 2), m: Math.max(2, Math.min(20, Math.round(inTok / 4000) + 2))};
 }
 function lab2CostLine(p){ const c = lab2Cost(p), s = lab2Set(); return t("lab2.cost", {a: c.a.toFixed(2), b: c.b.toFixed(2), k: c.k, p: s ? lab2Prov(s.provider)[1] : t("lab2.prov.any"), m: c.m}); }
@@ -110,21 +117,25 @@ function lab2OffRowHTML(p){
 /* ---------- 2. the brief (PART R), the GitHub build issue, the Build page ---------- */
 function lab2BriefPart(p){
   const s = lab2Set(), P = lab2Prov(s.provider), W = lab2Week(), lab = lab2Lab(s), next = lab2Lab(s, Date.now() + 7 * 86400000);
-  const alt = P[2].length > 1 ? `Labs alternate week by week: this is ISO week ${W.label}, so this week's reviewer is ${lab} (next week: ${next}).` : `Only one other lab is behind this key (${lab}): it reviews every week; the alternation starts when the key reaches a second lab.`;
   return `\nPART R · SECOND-LAB REVIEW (only in the GitHub build; Firnlab 1.9.1)
-Run this part only when you are the GitHub build workflow in ${buildRepo()} and the repository secret SECOND_LAB_API_KEY is available to this run (provider: ${P[1]}). Never print, log, echo, commit or write the key anywhere; use it only in the request to the provider. In any other build (Prompt Translator's background runner, a chat, a laptop): skip this part, write "reviews": [] and "reviewSkipped": "only in GitHub builds" into the build report, and go on.
-${alt}
-1. After every check in PART A passed and before you open the pull request, send the reviewer the diff of this build and PART C (the acceptance lines), nothing else (no key, no personal data). Ask for findings only: what is wrong, unsafe or missing, each with where and why.
-2. Judge every finding yourself: "must-fix" (it breaks an acceptance line, a security or accessibility floor, or loses data), "unsure", or "overthinking" (style, taste, or a risk the requirements already accept).
-3. Fix only the must-fix findings you agree with, then run the affected checks again. Never send the fixes back for another review: there is no review loop.
-4. For each "unsure" finding ask one more opinion, once (the other lab behind the key if it has one, otherwise a fresh Claude session without your notes). Still unsure: do not fix it; write it under "residual" with why.
-5. Record it in the build report: "reviews": [{"lab": "${lab}", "week": "${W.label}", "findings": [{"text": "…", "judged": "must-fix|unsure|overthinking", "fixed": true|false}], "residual": ["…"]}]. The provider bills each call to the owner's key (its spending limit is set at the provider): one review of the diff, plus at most one more opinion per unsure finding.`;
+The GitHub build workflow in ${buildRepo()} runs this review itself, after you open the pull request: the key (repository secret SECOND_LAB_API_KEY, provider: ${P[1]}) reaches only its review script, never you. Never call another lab, never look for, print, log or write the key. ISO week ${W.label}: the reviewer is ${lab} (next week: ${next}); even weeks ${P[1]}, odd weeks a fresh Claude reviewer.
+1. In <tool folder>/tool.json add {"id": "lab2", "v": "apply"} to "decisions": that is how the workflow knows this tool gets the review.
+2. Nothing else for it in your build. The workflow then asks the reviewer about the diff and the acceptance lines (no key, no personal data), and a separate step judges every finding "must-fix" (it breaks an acceptance line, a security or accessibility floor, or loses data), "unsure" or "overthinking"; it fixes only agreed must-fix findings, asks one more opinion, once, on the unsure ones, and leaves the rest as residual risk. There is no review loop.
+3. The result lands in the pull request: .checks/<tool folder>/review.json ({"lab", "week", "findings": [{"text", "judged", "fixed"}], "residual"}) and a comment.
+In any other build (Prompt Translator's background runner, a chat, a laptop) there is no review: write "reviews": [] and "reviewSkipped": "only in GitHub builds" into the build report. The provider bills each call to the owner's key (its spending limit is set at the provider): one review of the diff, plus at most one more opinion.`;
 }
 { const orig = buildBriefText; buildBriefText = function(p){ const s = orig.apply(this, arguments); return lab2On(p) ? s + lab2BriefPart(p) : s; }; }
+/** the GitHub build issue: tool.json carries what the build room's later steps read (the acceptance lines for the independent judge and
+    the sealed twins; the lab2 row for the second-lab review), so the issue says how to fill it */
+function lab2ToolJsonLine(p){
+  const L = typeof jdgLines === "function" ? jdgLines(p) : [];
+  return ` In ${typeof kitSlug === "function" ? kitSlug(p) : "<slug>"}/tool.json (from _template/tool.json) write "acceptance" as every acceptance line of PART C: {"id": "<its id>", "line": "<what must hold>"}${L.length ? " (" + L.length + " lines: " + L.slice(0, 12).map(l => l.id).join(", ") + (L.length > 12 ? ", …" : "") + ")" : ""}; the build room's independent judge checks the pull request against them.` +
+    (lab2On(p) ? ` Add {"id": "lab2", "v": "apply"} to "decisions": the workflow then runs the second-lab review of PART R after the pull request opens (the key reaches only its script, never you).` : "");
+}
 { const orig = buildIssue; buildIssue = function(p){
     const r = orig.apply(this, arguments);
-    if (!r || !lab2On(p)) return r;
-    const s = lab2Set(), line = ` This build runs the second-lab review of PART R with the repository secret SECOND_LAB_API_KEY (provider: ${lab2Prov(s.provider)[1]}): never print or log the key, record the review in the report.`;
+    if (!r) return r;
+    const line = lab2ToolJsonLine(p);
     const ins = b => { const i = str(b).indexOf("\n\n"); return i < 0 ? str(b) + line : b.slice(0, i) + line + b.slice(i); };
     r.body = ins(r.body);
     try{ const u = new URL(r.url); u.searchParams.set("body", ins(u.searchParams.get("body") || "")); r.url = u.toString(); }catch(e){ onAppError(e && e.message, "lab2:issue"); }
@@ -151,7 +162,8 @@ function lab2ReviewsHTML(p){
       ${c.open ? `<span class="small warn-t">${esc(t("lab2.rev.unfixed", {n: c.open}))}</span>` : ""}
       ${r.findings.length ? `<details class="small"><summary>${esc(t("lab2.rev.findings", {n: r.findings.length}))}</summary><ul class="lab2-f">${r.findings.map(f => `<li data-judged="${esc(f.judged)}" data-fixed="${f.fixed ? 1 : 0}"><b>${esc(t("lab2.j." + f.judged.replace("-", "")))}</b> · ${esc(t(f.fixed ? "lab2.fixed" : "lab2.notfixed"))} — ${esc(f.text)}</li>`).join("")}</ul></details>` : ""}
       ${r.residual.length ? `<div class="small"><b>${esc(t("lab2.rev.res"))}</b><ul class="lab2-res">${r.residual.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}</div>`; };
-  const body = R.length ? R.map(one).join("") : `<span class="small ${skipped ? "muted" : "warn-t"}">${esc(skipped ? t("lab2.rev.skipped", {x: skipped}) : rep ? t("lab2.rev.none") : t("lab2.rev.later"))}</span>`;
+  const slug = typeof kitSlug === "function" ? kitSlug(p) : "<slug>";
+  const body = R.length ? R.map(one).join("") : `<span class="small muted">${esc(skipped ? t("lab2.rev.skipped", {x: skipped}) : t("lab2.rev.inpr", {x: slug}))}</span>`;
   return `<div class="panel flat lab2-rev" data-anchor="lab2-reviews"><b>${esc(t("lab2.rev.title"))}</b>${rep && rep.draft ? `<span class="small muted">${esc(t("draft.n", {n: rep.draft}))}</span>` : ""}${body}</div>`;
 }
 { const orig = phRelease; phRelease = function(p){
@@ -165,7 +177,7 @@ function lab2SettingsHTML(){
   const s = lab2Set(), raw = (WS && WS.settings && WS.settings.lab2) || {}, prov = str(UI.lab2Prov || raw.provider), P = lab2Prov(prov);
   const opts = [["", t("lab2.set.pick")], ...LAB2_PROVIDERS.map(x => [x[0], lab2ProvName(x[0])])];
   const sel = `<select data-a-change="lab2-prov" aria-label="${esc(t("lab2.set.prov"))}">${opts.map(o => `<option value="${esc(o[0])}" ${o[0] === prov ? "selected" : ""}>${esc(o[1])}</option>`).join("")}</select>`;
-  const labs = P ? (P[2].length > 1 ? t("lab2.set.alt", {x: P[2].join(" · "), w: lab2Week().label, y: lab2Lab({provider: prov})}) : t("lab2.set.one", {x: P[2][0]})) : "";
+  const labs = P ? t("lab2.set.alt", {x: P[1], w: lab2Week().label, y: lab2Lab({provider: prov})}) : "";
   return `<div class="stack lab2-set" data-lab2="settings" style="gap:6px"><h4>${esc(t("lab2.set.title"))}</h4>
     <p class="small"><b class="lab2-state">${esc(s ? t("lab2.set.on", {p: lab2ProvName(s.provider)}) : t("lab2.set.none"))}</b></p>
     <div class="row" style="gap:8px;flex-wrap:wrap;align-items:flex-end"><label class="fld" style="flex:1 1 14em"><span>${esc(t("lab2.set.prov"))}</span>${sel}</label>

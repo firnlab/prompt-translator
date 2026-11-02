@@ -243,13 +243,18 @@ with sync_playwright() as pw:
     ev(pg, "UI.modal = null; UI.view = 'settings'; UI.setTab = 'general'; render()"); pg.wait_for_timeout(300)
     s0 = ev(pg, "(() => { const e = document.querySelector('[data-lab2=settings]'); return e ? {text: e.innerText, inputs: [...e.querySelectorAll('input, textarea')].length, sel: !!e.querySelector('select[data-a-change=lab2-prov]')} : null; })()")
     check("Settings › General (kit defaults): 'Second-lab key: not added', how to add it in GitHub, and no field for a key", s0 and "Second-lab key: not added" in s0["text"] and "SECOND_LAB_API_KEY" in s0["text"] and "spending limit" in s0["text"] and s0["inputs"] == 0 and s0["sel"], s0)
-    ev(pg, "(() => { const e = document.querySelector('[data-lab2=settings] select'); e.value = 'openrouter'; e.dispatchEvent(new Event('change', {bubbles: true})); })()"); pg.wait_for_timeout(200)
+    ev(pg, "(() => { const e = document.querySelector('[data-lab2=settings] select'); e.value = 'google'; e.dispatchEvent(new Event('change', {bubbles: true})); })()"); pg.wait_for_timeout(200)
     check("…choosing the provider alone records nothing", not ev(pg, "lab2Set()"))
     pg.locator("[data-lab2=settings] [data-a=lab2-set][data-v=github]").click(); pg.wait_for_timeout(300)
     s1 = ev(pg, "(() => { const e = document.querySelector('[data-lab2=settings]'); return {text: e ? e.innerText : '', set: WS.settings.lab2}; })()")
-    check("'I added it in GitHub' records 'added in GitHub as SECOND_LAB_API_KEY (provider: …)' — never a key", "added in GitHub as SECOND_LAB_API_KEY (provider: OpenRouter" in s1["text"] and s1["set"]["key"] == "github" and s1["set"]["provider"] == "openrouter"
+    check("'I added it in GitHub' records 'added in GitHub as SECOND_LAB_API_KEY (provider: …)' — never a key", "added in GitHub as SECOND_LAB_API_KEY (provider: Google)" in s1["text"] and s1["set"]["key"] == "github" and s1["set"]["provider"] == "google"
           and set(s1["set"].keys()) <= {"key", "provider", "at", "by"}, s1)
-    check("…labs alternate week by week behind this key (OpenAI · Google)", "alternate week by week (OpenAI · Google)" in s1["text"], s1["text"])
+    check("…as the GitHub workflow alternates: even ISO weeks the provider's lab, odd weeks a fresh Claude reviewer; the two repository variables named",
+          "Even ISO weeks Google reviews, odd weeks a fresh Claude reviewer" in s1["text"] and "SECOND_LAB_PROVIDER" in s1["text"] and "SECOND_LAB_MODEL" in s1["text"], s1["text"])
+    opts = ev(pg, "[...document.querySelectorAll('[data-lab2=settings] select option')].map(o => o.value).filter(Boolean)")
+    check("…only the providers the workflow's review script speaks (openai, google)", opts == ["openai", "google"], opts)
+    lw = ev(pg, "[lab2Lab(lab2Set(), Date.UTC(2026, 10, 9)), lab2Lab(lab2Set(), Date.UTC(2026, 10, 2))]")
+    check("…week 46 (even) is Google, week 45 (odd) a fresh Claude reviewer", lw == ["Google", "a fresh Claude reviewer"], lw)
     M = ev(pg, "JD.mk('Judge M mail', {raw: 'Reads my inbox and sends short replies to customers', goal: 'Answer routine e-mails', comps: [{id: 'c1', name: 'Reply writer', kind: 'ai', role: 'writes and sends the replies', inputs: 'a list of mails', outputs: 'sends email replies to customers', reason: '', reqIds: []}]})")
     lm = ev(pg, f"""(() => {{ const p = JD.P('{M}'), q = JD.P('{A}'); const x = chkList(p).rows.find(y => y.id === 'lab2'), y = chkList(q).rows.find(z => z.id === 'lab2');
       return {{x: x && x.state, sx: chkStar(p, x), sy: y && chkStar(q, y), q: queueOf(p).some(z => z.ref === 'chk:lab2')}}; }})()""")
@@ -257,22 +262,24 @@ with sync_playwright() as pw:
     check("…★ apply where a mistake reaches others or costs money (it sends), ★ skip on a quiet private tool", lm["sx"]["v"] == "apply" and "acts outward" in lm["sx"]["why"] and lm["sy"]["v"] == "skip", lm)
     ev(pg, f"pgOpen(JD.P('{M}'), 'review')"); pg.wait_for_timeout(300)
     r2 = ev(pg, "(() => { const r = document.querySelector('.pg-checks [data-anchor=\"chk:lab2\"]'); return r ? r.innerText : ''; })()")
-    check("…the row: cost in CHF per review as an estimate, runs only in GitHub builds, this week's reviewer", re.search(r"about CHF \d+\.\d\d–\d+\.\d\d per review \(estimate", r2) is not None and "OpenRouter bills it to your key" in r2 and "Runs only in GitHub builds" in r2 and "This week (" in r2, r2[:900])
+    check("…the row: cost in CHF per review as an estimate, runs only in GitHub builds, this week's reviewer", re.search(r"about CHF \d+\.\d\d–\d+\.\d\d per review \(estimate", r2) is not None and "Google bills it to your key" in r2 and "Runs only in GitHub builds" in r2 and "This week (" in r2, r2[:900])
     br0 = ev(pg, f"buildBriefText(JD.P('{M}'))")
     check("not applied: the brief has no second-lab part", "PART R" not in br0)
     ev(pg, f"chkSet(JD.P('{M}'), 'lab2', 'apply')")
     br = ev(pg, f"buildBriefText(JD.P('{M}'))")
     wk = ev(pg, "lab2Week().label")
-    check("applied: the brief (PART R) tells the GitHub build to run the review with SECOND_LAB_API_KEY, never logging it, and skips it elsewhere",
-          all(s in br for s in ["PART R · SECOND-LAB REVIEW (only in the GitHub build", "SECOND_LAB_API_KEY", "Never print, log, echo", '"reviewSkipped": "only in GitHub builds"', "background runner"]), br[br.find("PART R"):][:600])
-    check("…the builder judges each finding must-fix / unsure / overthinking, fixes only agreed must-fix, one more opinion when unsure, no review loop",
-          all(s in br for s in ['"must-fix"', '"unsure"', '"overthinking"', "Fix only the must-fix findings you agree with", "no review loop", "one more opinion, once", '"residual"']), br[br.find("PART R"):][:1200])
-    check("…the report shape reviews: [{lab, week, findings: [{text, judged, fixed}], residual}], and this week's lab", '"reviews": [{"lab": "' in br and f'"week": "{wk}"' in br and '"findings": [{"text"' in br and "Labs alternate week by week: this is ISO week " + wk in br, br[br.find("5. Record"):][:400])
+    pr = br[br.find("PART R"):]
+    check("applied: the brief (PART R) says the GitHub workflow runs the review after the pull request, the key reaches only its script, the builder never calls another lab",
+          all(s in pr for s in ["PART R · SECOND-LAB REVIEW (only in the GitHub build", "runs this review itself, after you open the pull request", "reaches only its review script, never you", "Never call another lab, never look for, print, log or write the key", '"reviewSkipped": "only in GitHub builds"', "background runner"]), pr[:700])
+    check("…the builder marks the row in tool.json; must-fix / unsure / overthinking, only agreed must-fix fixed, one more opinion, no review loop, result in the pull request",
+          all(s in pr for s in ['{"id": "lab2", "v": "apply"} to "decisions"', '"must-fix"', '"unsure"', '"overthinking"', "fixes only agreed must-fix findings", "no review loop", "one more opinion, once", ".checks/<tool folder>/review.json"]), pr[:1400])
+    check("…this week's reviewer by ISO week", "ISO week " + wk + ": the reviewer is " in pr and "even weeks Google, odd weeks a fresh Claude reviewer" in pr, pr[:500])
     iss = ev(pg, f"(() => {{ const i = buildIssue(JD.P('{M}')), b = i.body; return {{head: b.slice(0, b.indexOf(String.fromCharCode(10, 10))), url: new URL(i.url).searchParams.get('body') || ''}}; }})()")
-    check("…the GitHub build issue says so too (its opening lines and its link)", "second-lab review of PART R with the repository secret SECOND_LAB_API_KEY" in iss["head"] and "second-lab review of PART R" in iss["url"], iss["head"][-400:])
+    check("…the GitHub build issue: tool.json gets the acceptance lines (for the judge) and the lab2 row (for the review), its link too",
+          '"acceptance" as every acceptance line of PART C' in iss["head"] and '{"id": "lab2", "v": "apply"} to "decisions"' in iss["head"] and '{"id": "lab2", "v": "apply"}' in iss["url"] and "SECOND_LAB_API_KEY" not in iss["head"], iss["head"][-500:])
     ev(pg, f"pgOpen(JD.P('{M}'), 'build')"); pg.wait_for_timeout(300)
     bc = ev(pg, "(() => { const e = document.querySelector('.lab2-bld'); return e ? e.innerText : ''; })()")
-    check("…the Build page: second opinion in the GitHub build; the cloud build skips it (only in GitHub builds)", "second opinion from another lab" in bc and "only in GitHub builds" in bc, bc)
+    check("…the Build page: second opinion in the GitHub build after the pull request; the cloud build skips it (only in GitHub builds)", "second opinion from another lab in the GitHub build, after the pull request opens" in bc and "only in GitHub builds" in bc, bc)
     ev(pg, f"""(() => {{ const p = JD.P('{M}'); p.report = {{at: now(), via: 'runner', draft: p.versionNo, check: checkReport(p, {{parts: [], checks: [], tests: []}}), raw: {{reviews: [], reviewSkipped: 'only in GitHub builds'}}}}; touch(p); pgOpen(p, 'review'); render(); }})()""")
     r3 = ev(pg, "(() => { const r = document.querySelector('.pg-checks [data-anchor=\"chk:lab2\"]'); return r ? r.innerText : ''; })()")
     check("the runner path: the row says 'only in GitHub builds' (built through background runs, no review)", "Only in GitHub builds: this draft was built through background runs" in r3, r3[-400:])
