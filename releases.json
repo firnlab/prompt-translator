@@ -62,5 +62,21 @@
       "previous": "1793568176-3b15"
     },
     "notes": "1.9.0: self-scan with one-tap shortcuts (propose only), the 4×4 interview before big changes to live tools, update my tools to the current kit (one card, one tool at a time, stops at the first problem), the owner's reminders (quarterly export + read-only viewer outside claude.ai, AI ceiling from Feb 2027, push switch off by default, key renewal from Oct 2027, server-backed AI as a choice with a required limit), a generated public changelog."
+  },
+  {
+    "version": "1.9.1",
+    "date": "2026-11-02",
+    "commit": "0343edc47a9d0c4c6f5a0d94e17bd60f6b413fa6",
+    "main": {
+      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+      "live": "1793612057-67af",
+      "previous": "1793588961-aa84"
+    },
+    "preview": {
+      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+      "live": "1793611842-c79f",
+      "previous": "1793588849-f17a"
+    },
+    "notes": "1.9.1: the independent check (a judge after every build, verified update and pasted build report; green only when every acceptance line holds, the floors pass and the commit came first; a kit run is green only with a judge pass), the second opinion from another lab (off until SECOND_LAB_API_KEY is added in GitHub), the GitHub build room in firnlab/tools (independent judge in the pull request, hidden test twins off until the pt-private key is added)."
   }
 ]

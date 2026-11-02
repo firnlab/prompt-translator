@@ -218,6 +218,7 @@
     build: {report:{brief:"x", parts:[{id:"c1",built:true},{id:"c2",built:true},{id:"c3",built:true}], checks:[{step:1,ok:true}], tests:[{id:"T1",pass:true},{id:"T2",pass:true}], artifacts:["https://claude.ai/artifact/MOCK"], triggers:[{id:"trig_mock1",name:"Weekly scout"}], personSteps:[], couldNotDo:[]}}
   };
   JOBRES.update.smoke = {runs: [{ok: true, at: "2026-11-01T10:00:00Z", note: "opens; the main path works"}, {ok: true, at: "2026-11-01T10:01:00Z", note: "opens; the main path works"}]};   // 1.9 fleet: the live check, twice in a row (two greens)
+  JOBRES.judge = {verdict: "pass", lines: [], disagreements: [], floors: [{floor: "security", state: "pass", evidence: "outside text stays data; no key in the page"}, {floor: "accessibility", state: "pass", evidence: "every control reachable by keyboard, inputs labelled"}], summary: "Every line holds on the built tool."};   // 1.9.1 the independent judge (lines filled per job by window.__mockJudgeOf below)
   const mcp = {
     async callTool(server, tool, input){
       const rec = {tool, input}; window.__mcp.push(rec);
@@ -227,6 +228,7 @@
         if (m){ setTimeout(() => { const d = load(); const p = m[1] + "/" + m[2]; const j = d[p]; if (!j) return; let res = JSON.parse(JSON.stringify(JOBRES[j.kind] || {}));
           if (j.kind === "update" && window.__mockHold) return;   // 1.9 fleet: window.__mockHold keeps an update running (the test finishes it by writing the job)
           if (j.kind === "update" && window.__mockUpdate) res = window.__mockUpdate(j, res) || res;   // 1.9 fleet: window.__mockUpdate(job, result) → a red result, a single green, versions
+          if (j.kind === "judge"){ if (window.__mockJudge === "pending") return; const J = window.__mockJudgeOf(j, res); d[p] = Object.assign(j, J); save(d); return; }   // 1.9.1 the judge: window.__mockJudge = "fail" | "disagree" | "floor" | "noplan" | "failed" | "pending" | (job, result) => result
           if (j.kind === "pilot"){ const ts = (j.inputs && j.inputs.candidate && Array.isArray(j.inputs.candidate.tests)) ? j.inputs.candidate.tests : []; if (ts.length) res.tests = ts.map(x => ({id: x.id, pass: true, reason: "ok"})); }   // a result for every test sent (1.4.2: projects have more tests)
           if (j.kind === "pickres" && j.inputs && j.inputs.mode === "price") res = window.__mockPrice || {product: j.inputs.product, price: "USD 15", period: "month", plan: "Pro", url: "https://example.org/pricing", date: "2026-10-30", free: "2,000 words a week", note: "Cheaper when paid yearly"};   // 1.8: a product's price on the maker's page (window.__mockPrice: another answer, e.g. no price)
           if (j.kind === "collect") res.items = res.items.map(x => Object.assign(x, {tool: (j.inputs.tools[0] || {}).tool}));
@@ -315,3 +317,24 @@ window.__pickFixture = function(p){
   const wrap = u => { const f = (task, prompt) => (u ? u(task, prompt) : null) || (task === "iv19" ? (window.__iv19 || iv19()) : null); f.__inner = u; f.__iv19 = true; return f; };
   Object.defineProperty(window, "__mockOverride", {configurable: true, get(){ return wrap(user); }, set(f){ user = f && f.__iv19 ? f.__inner : f; }});
 })();
+/* 1.9.1 the independent judge (test/e2e191_judge.py): a judge job's answer — a plan with an expectation per line written first (commit
+   first), one passing line with evidence per acceptance line, both floors holding. window.__mockJudge switches it: "fail" (the first line
+   fails), "disagree" (a disagreement with the build report), "floor" (accessibility fails), "noplan" (no plan before the report),
+   "missing" (a line not reported, verdict "pass"), "nofloor" (no floor reported, verdict "pass"),
+   "failed" (the run itself fails), "pending" (the job stays running; the test writes it), or a function (job, result) → result. */
+window.__mockJudgeOf = function(j, res){
+  const ids = (j.inputs && Array.isArray(j.inputs.lines) ? j.inputs.lines : []).map(l => String(l.id));
+  const sw = window.__mockJudge, at = new Date().toISOString();
+  let r = Object.assign({}, res, {lines: ids.map(id => ({id, pass: true, evidence: "opened the page and ran " + id + ": it did what the line says"})), disagreements: [], floors: JSON.parse(JSON.stringify(res.floors || []))});
+  const plan = {name: "plan", status: "done", note: "Open each page, run every line, then read the report.", expect: ids.map(id => ({id, expect: id + " shows its result", fail: id + " shows an error"}))};
+  let steps = [plan, {name: "check", status: "done", note: ids.length + " of " + ids.length + " passed"}, {name: "report", status: "done", note: "0 disagreements"}, {name: "floors", status: "done", note: "both hold"}];
+  if (sw === "fail" && r.lines.length){ r.lines[0] = {id: r.lines[0].id, pass: false, evidence: "the page showed an error for " + r.lines[0].id}; r.verdict = "fail"; }
+  if (sw === "disagree") r.disagreements = ["The build report says every line passed; " + (ids[0] || "the first line") + " needed a reload before it worked."];
+  if (sw === "floor"){ r.floors = r.floors.map(f => f.floor === "accessibility" ? {floor: "accessibility", state: "fail", evidence: "the Save button cannot be reached with the keyboard"} : f); r.verdict = "fail"; }
+  if (sw === "noplan") steps = steps.slice(1).concat([{name: "notes", status: "done", note: "wrote the plan last"}]);
+  if (sw === "missing") r.lines = r.lines.slice(0, 1);   // a line the judge never reported (it could not verify it); the verdict still says "pass"
+  if (sw === "nofloor") r.floors = [];                   // no floor reported (not checked); the verdict still says "pass"
+  if (typeof sw === "function") r = sw(j, r) || r;
+  if (sw === "failed") return {status: "failed", error: "mock: the run stopped before the check", startedAt: at, finishedAt: at, steps: [plan], result: null};
+  return {status: "done", startedAt: at, finishedAt: at, steps, result: r};
+};

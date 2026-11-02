@@ -5,6 +5,20 @@ notes PT shows in "What's new" (`CHANGELOG` in `src/views_run.js`, the `cl.<vers
 (published date and release notes). Do not edit it by hand: `python3 tools/changelog.py` writes it, `--check` says when it is stale.
 Versions before 1.8 were published from the private archive repository (see RELEASES-ARCHIVE.md).
 
+## 1.9.1 — 2026-11-02
+
+Release notes: 1.9.1: the independent check (a judge after every build, verified update and pasted build report; green only when every acceptance line holds, the floors pass and the commit came first; a kit run is green only with a judge pass), the second opinion from another lab (off until SECOND_LAB_API_KEY is added in GitHub), the GitHub build room in firnlab/tools (independent judge in the pull request, hidden test twins off until the pt-private key is added).
+
+### Added
+
+- An independent check after every build and every update: a fresh Claude that never saw the builder's notes writes its plan first, then checks every acceptance line with evidence and the security and accessibility floors; anything not green blocks the release, and one tap turns it into fixes. Tools other people use always get it; a private tool when you apply its row
+- A second opinion from another lab for tools built in GitHub: a check row that stays off until you add a second-lab key in GitHub (with a spending limit at the provider) and note it in Settings; PT never sees the key. Even weeks the other lab reviews, odd weeks a fresh Claude
+- The GitHub build room (firnlab/tools) runs the independent check on every pull request and keeps hidden test twins in the private repository, never shown to the builder; the twins stay off until the private-repository key is added there
+
+### Changed
+
+- Updating your tools to the current kit counts a tool as green only when the independent check passes too, where it is on
+
 ## 1.9.0 — 2026-11-02
 
 Release notes: 1.9.0: self-scan with one-tap shortcuts (propose only), the 4×4 interview before big changes to live tools, update my tools to the current kit (one card, one tool at a time, stops at the first problem), the owner's reminders (quarterly export + read-only viewer outside claude.ai, AI ceiling from Feb 2027, push switch off by default, key renewal from Oct 2027, server-backed AI as a choice with a required limit), a generated public changelog.
