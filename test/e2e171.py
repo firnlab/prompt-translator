@@ -69,10 +69,11 @@ with sync_playwright() as pw:
     raw = json.dumps(doc, ensure_ascii=False)
     check("…and never the text you typed", "Zebra" not in raw and "Quartz" not in raw, raw[:300])
     def only_numbers_and_names(d):
-        allowed = {"v", "day", "ws", "pt", "taps", "min", "acts", "proj", "first", "last", "_rev", "id"}
+        allowed = {"v", "day", "ws", "pt", "taps", "min", "acts", "proj", "first", "last", "_rev", "id", "seq"}   # 1.9: seq = the action names in order (self-scan)
         if set(d) - allowed: return False
         if not all(isinstance(v, int) for v in d.get("acts", {}).values()): return False
         if not all(re.fullmatch(r"[\w:.\-?]{1,40}", k) for k in d.get("acts", {})): return False
+        if not isinstance(d.get("seq", []), list) or not all(isinstance(k, str) and re.fullmatch(r"[\w:.\-?]{1,40}", k) for k in d.get("seq", [])): return False
         return all(set(r) <= {"t", "m"} and all(isinstance(x, int) for x in r.values()) for r in d.get("proj", {}).values())
     check("…holding only numbers, dates and PT's own action names", only_numbers_and_names(doc), raw[:400])
     check("a page load never writes another page load's document", ev(pg, "MET.path.endsWith('/' + TAB_ID)"))

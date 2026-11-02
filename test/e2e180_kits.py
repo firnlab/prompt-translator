@@ -3,7 +3,7 @@ Run: python3 test/e2e180_kits.py [work/backup-141 | test/fixtures/synthetic.json
 Covers, for a private tool and a customer tool: the build brief (PART P, the kit steps, the model line) carries the owner's seven rules
 as they apply — 1 "tell PT what's wrong" with the report record and its delivery path, 2 export + weekly snapshot for timer tools,
 3 one "uses AI" line per feature (code / AI once at build / AI at run time, switchable, on-device bonus), 4 customer tools code-only
-and stateless with the priced "where it runs" row (name and domain asked there only, server key shown as later), private tools keep
+and stateless with the priced "where it runs" row (name and domain asked there only; 1.9: the server key is a choice of "How customers get AI"), private tools keep
 the working name, 5 the second owner's AI steps need no approval, 6 the model routing rule in every brief and no cheap model for the
 build, 7 the Art. 50 flags for customer tools — and nothing that contradicts them; the two decisions (AI at run time, where a customer
 tool runs) in the queue, the decision rows and Undo; the design, compile and legal-lens prompts; the report helpers the inbox reads
@@ -107,15 +107,15 @@ with sync_playwright() as pw:
     ev(pg, "(() => { newProject('Recipe helper', {raw: 'A page where my customers get recipe ideas from what is in their fridge'}); UI.home = false; render(); })()")
     ev(pg, ARCH, ["artifact page", CUSTOMER, {"audience": {"customers": True, "eu": True}}])
     cq = ev(pg, "(() => { const p = curP(), x = queueOf(p).find(x => x.kind === 'kit-customer'); return x && {cls: x.cls, hard: !!x.hard, why: x.why, opts: qOptions(p, x).map(o => [o.label, !!o.star, o.why])}; })()")
-    check("4: a customer tool asks where it runs (your call, one row) and shows the server key only as 'later'", cq and cq["hard"] and cq["cls"] == "should" and ev(pg, "t('kit18.serverlater')") in cq["why"], cq)
+    check("4: a customer tool asks where it runs (your call, one row) and names the server key line (1.9: a choice under How customers get AI)", cq and cq["hard"] and cq["cls"] == "should" and ev(pg, "t('kit18.serverlater')") in cq["why"], cq)
     check("4: three options — stateless page ★ (nothing needs accounts), hosted with accounts (priced), hosted + own domain with its yearly cost", cq and [o[0] for o in cq["opts"]] == ev(pg, "KIT18_SERVE.map(k => t('kit18.s.' + k))") and cq["opts"][0][1] and "CHF 0" in cq["opts"][0][2] and "CHF 30–60 a month" in cq["opts"][1][2] and "CHF 10–40 a year" in cq["opts"][2][2] and "Recipe helper" in cq["opts"][2][2] and all("checked" in o[2] for o in cq["opts"]), cq)
     aq = ev(pg, "(() => { const p = curP(), x = queueOf(p).find(x => x.kind === 'kit-ai'); return x && qOptions(p, x).map(o => [o.label, !!o.star]); })()")
-    check("3/4: the AI decision for a customer tool offers only the viewer's own session (★) or none", aq == [[ev(pg, "t('kit18.ai.viewer')"), True], [ev(pg, "t('kit18.ai.none')"), False]], aq)
+    check("3/4: the AI decision for a customer tool (1.9: How customers get AI): code only · the customer's own login (★: the part writes text) · a server-backed key", aq == [[ev(pg, "t('care.ai.none')"), False], [ev(pg, "t('care.ai.viewer')"), True], [ev(pg, "t('care.ai.server')"), False]], aq)
     check("4: a customer page is stateless: storage ★ is this browser only", ev(pg, "kitStorageRec(curP()).kind") == "local")
     check("4: wanting accounts makes the hosted row the ★", ev(pg, "(() => { const p = curP(), r0 = p.intake.raw; p.intake.raw += ' with a login and their saved recipes'; const k = kit18ServeRec(p).kind; p.intake.raw = r0; return k; })()") == "hosted")
     ev(pg, PKG)
     bc = ev(pg, "buildBriefText(curP())")
-    check("4: code only in 1.8 — AI only through the viewer's own claude.ai session, no key, server key a LATER row", "A CUSTOMER TOOL, CODE ONLY IN 1.8" in bc and "No API key" in bc and "a server-backed key is a LATER row (1.9) — do not build it, do not offer it" in bc and "through the viewer's own claude.ai session only" in bc)
+    check("4: code only — AI only through the viewer's own claude.ai session, no key; the server key was not chosen (1.9)", "A CUSTOMER TOOL, CODE ONLY IN 1.8" in bc and "No API key" in bc and "a server-backed key is the owner's choice in Prompt Translator and was not chosen for this tool — do not build it, do not offer it" in bc and "through the viewer's own claude.ai session only" in bc)
     check("4: not decided yet → build the stateless page and list the decision with its costs", "not decided yet: build the stateless page" in bc)
     check("1: a stateless page hands the reporter a PT-REPORT block to paste (and an e-mail link)", ev(pg, "kit18ReportPath(curP())") == "copy" and "PT-REPORT v1" in bc and "e-mail link" in bc and '"copied"' in bc)
     check("7: Art. 50 disclosure and marking are ON with the dated fact", "Disclosure: ON" in bc and "Marking: ON" in bc and "2 Dec 2026" in bc and "re-check before you rely on it" in bc)
@@ -145,7 +145,7 @@ with sync_playwright() as pw:
     keys = ev(pg, "[...document.querySelectorAll('.pg[data-page=design] .pg-kit18 [data-k18]')].map(e => e.dataset.k18)")
     check("customer tool: one line each for report, backups, uses AI, who it is for, routing, Art. 50", keys == ["report", "backup", "ai", "who", "route", "art50"], keys)
     check("…the AI line lists every part with how it runs, and the decisions are one tap away", ev(pg, "document.querySelectorAll('.pg-kit18 .kit18-feats li').length") == 2 and ev(pg, "!!document.querySelector('.pg-kit18 [data-a=q-goto][data-ref=\"kit:ai\"]') && !!document.querySelector('.pg-kit18 [data-a=q-goto][data-ref=\"kit:customer\"]')"))
-    check("…the server key shows as 'later', Art. 50 with its check date", ev(pg, "document.querySelector('.pg-kit18 [data-k18=who]').textContent.includes(t('kit18.serverlater')) && document.querySelector('.pg-kit18 [data-k18=art50]').textContent.includes(t('kit18.l.art50.on'))"))
+    check("…the server key line (1.9: a choice, built only if picked), Art. 50 with its check date", ev(pg, "document.querySelector('.pg-kit18 [data-k18=who]').textContent.includes(t('kit18.serverlater')) && document.querySelector('.pg-kit18 [data-k18=art50]').textContent.includes(t('kit18.l.art50.on'))"))
     check("…and the decided kit rows list the two decisions with Change", ev(pg, "(() => { const t0 = document.querySelector('.pg[data-page=design] .pg-kits'); return !!t0 && t0.textContent.includes(t('kit18.q.ai')) && t0.textContent.includes(t('kit18.q.customer')); })()"))
     pg.locator(".pg-kit18 [data-a=q-goto][data-ref='kit:ai']").first.click(); pg.wait_for_timeout(300); close_modals(pg)
     check("the Change button opens the decision without an error", not errors, errors[:2])

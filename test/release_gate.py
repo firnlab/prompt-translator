@@ -36,10 +36,15 @@ CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("flows 1.8 health","python3 test/e2e180_health.py", True, 15),   # health rows, second owner day one, the 1.7 move + Undo, export, restore check
     ("PT checks itself","python3 test/self18.py", False, 15),   # accessibility and performance budgets of PT's own screens
     ("flows 1.8 (the cone)","python3 test/e2e180_cone.py", True, 10),   # kinds of tool from one sentence, biggest cut, the gallery shrinks, ★ after the scan, D pick-then-verify, E say the ending, check rows, decision rows, 1.7 re-run
+    ("flows 1.9 care",  "python3 test/e2e190_care.py", True, 15),   # R1a export line, R2 how customers get AI, R3 AI ceiling, R5 push switch, R7 key renewal (fake clock)
+    ("PT outside claude.ai", "python3 test/plain_browser.py", True, 5),
+    ("flows 1.9 fleet", "python3 test/e2e190_fleet.py", True, 15),
+    ("flows 1.9 scan", "python3 test/e2e190_scan.py", True, 15),   # self-scan (names only, propose only), the 4×4 interview, "What changed" per version
+    ("changelog", "python3 test/changelog_test.py && python3 tools/changelog.py --check", True, 2),   # CHANGELOG.md is generated and up to date   # update all of your tools to a kit: card = GO, one at a time, two greens, stop on red, others prepared   # R1b: the built file in plain Chromium reads an export, read-only, writes nothing
     ("hunt",           "python3 test/hunt.py", True, 25),
     ("hunt 2",         "python3 test/hunt2.py", True, 20),
     ("check the hunt", "python3 test/check_the_hunts.py", False, 70),   # each hunt-2 check turns red when its bug is put back
-    ("check the Pick tests","python3 test/check_the_pick.py", False, 60),   # each planted Pick bug turns its test red
+    ("check the Pick tests","python3 test/check_the_pick.py", False, 110),   # each planted Pick bug turns its test red (1.9: +12 care bugs, about 3–4 min each)
     ("layout",         "python3 test/layout141.py", False, 15),
     ("migration 1.4.1","python3 test/migrate141.py", False, 10),
     ("migration 1.4",  "python3 test/migrate14.py", False, 10),

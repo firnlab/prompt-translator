@@ -217,6 +217,7 @@
       decisions: [{q: "Which product first?", answer: "NIR-absorbing privacy eyewear"}], founderQs: ["What is the launch country?"], contradictions: ["SR-12 says daily, SR-40 says weekly for the same report"], notes: ["GenSpark had no public API", "exports were unreliable"]},
     build: {report:{brief:"x", parts:[{id:"c1",built:true},{id:"c2",built:true},{id:"c3",built:true}], checks:[{step:1,ok:true}], tests:[{id:"T1",pass:true},{id:"T2",pass:true}], artifacts:["https://claude.ai/artifact/MOCK"], triggers:[{id:"trig_mock1",name:"Weekly scout"}], personSteps:[], couldNotDo:[]}}
   };
+  JOBRES.update.smoke = {runs: [{ok: true, at: "2026-11-01T10:00:00Z", note: "opens; the main path works"}, {ok: true, at: "2026-11-01T10:01:00Z", note: "opens; the main path works"}]};   // 1.9 fleet: the live check, twice in a row (two greens)
   const mcp = {
     async callTool(server, tool, input){
       const rec = {tool, input}; window.__mcp.push(rec);
@@ -224,6 +225,8 @@
       if (tool === "fire_trigger"){
         const m = /PT job (\S+) (\S+)/.exec(input.text || "");
         if (m){ setTimeout(() => { const d = load(); const p = m[1] + "/" + m[2]; const j = d[p]; if (!j) return; let res = JSON.parse(JSON.stringify(JOBRES[j.kind] || {}));
+          if (j.kind === "update" && window.__mockHold) return;   // 1.9 fleet: window.__mockHold keeps an update running (the test finishes it by writing the job)
+          if (j.kind === "update" && window.__mockUpdate) res = window.__mockUpdate(j, res) || res;   // 1.9 fleet: window.__mockUpdate(job, result) → a red result, a single green, versions
           if (j.kind === "pilot"){ const ts = (j.inputs && j.inputs.candidate && Array.isArray(j.inputs.candidate.tests)) ? j.inputs.candidate.tests : []; if (ts.length) res.tests = ts.map(x => ({id: x.id, pass: true, reason: "ok"})); }   // a result for every test sent (1.4.2: projects have more tests)
           if (j.kind === "pickres" && j.inputs && j.inputs.mode === "price") res = window.__mockPrice || {product: j.inputs.product, price: "USD 15", period: "month", plan: "Pro", url: "https://example.org/pricing", date: "2026-10-30", free: "2,000 words a week", note: "Cheaper when paid yearly"};   // 1.8: a product's price on the maker's page (window.__mockPrice: another answer, e.g. no price)
           if (j.kind === "collect") res.items = res.items.map(x => Object.assign(x, {tool: (j.inputs.tools[0] || {}).tool}));
@@ -284,3 +287,31 @@ window.__pickFixture = function(p){
     second: {at, n: 1, verdict: "One gap found.", logN: 1, tier: "complex"}, sim: {at, users: [{who: "A parent", request: "One idea for this month"}], n: 1},
     quality: {rounds: 3, got: 9, kept: 7}, enough: false, enoughWhy: ""};
 };
+/* 1.9 care (test/e2e190_care.py, test/plain_browser.py): a test can read what a download handed over (window.__downloadData[filename]),
+   make the download fail (window.__mockDownloadFail), and, with window.__mockTrigSeq, give each new scheduled task its own id
+   (trig_new_1, trig_new_2 …). Without these flags everything answers exactly as above. */
+(function(){ if (window !== window.top || !window.claude || typeof window.claude.use !== "function") return;
+  const use0 = window.claude.use, done = new Set();
+  window.claude.use = async name => {
+    const c = await use0(name);
+    if (!c || done.has(name)) return c;
+    done.add(name);
+    if (name === "downloads"){ const s0 = c.save; c.save = async o => { window.__downloadData = window.__downloadData || {}; window.__downloadData[o.filename] = o.data; if (window.__mockDownloadFail) throw {code: "upstream_error"}; return s0(o); }; }
+    if (name === "mcp"){ const call0 = c.callTool; c.callTool = async (server, tool, input) => { const r = await call0(server, tool, input); if (tool === "create_trigger" && window.__mockTrigSeq && r && r.payload && r.payload.trigger){ window.__trigN = (window.__trigN || 0) + 1; r.payload.trigger.id = "trig_new_" + window.__trigN; } return r; }; }
+    return c;
+  };
+})();
+/* 1.9 the 4×4 interview: one AI call makes up to four questions in each of four areas. Added as a default answer behind
+   window.__mockOverride, so a test that sets its own override (and passes other tasks on) keeps working unchanged.
+   window.__iv19: another answer for a test (for example {} = no questions). */
+(function(){ if (window !== window.top) return;
+  const iv19 = () => ({areas: {
+    product: [{q: "What must the change do for the people who use the tool?", why: "It decides what counts as done", options: ["Save time", "Fewer mistakes"]}, {q: "What must stay exactly as it is?", why: "It decides what is not touched", options: []}, {q: "Who notices the change first?", why: "It decides who to tell", options: ["Me", "My users"]}, {q: "How will you know it worked?", why: "It becomes the check", options: []}],
+    design: [{q: "Where should the new part show?", why: "It decides the layout", options: ["On top", "In a menu"]}, {q: "What should the label say?", why: "It decides the wording", options: []}],
+    practical: [{q: "Where is the new data kept?", why: "It decides the storage", options: ["With the tool", "In a sheet"]}, {q: "How is the change undone if it goes wrong?", why: "It decides the restore plan", options: []}],
+    edge: [{q: "What happens with an empty entry?", why: "It decides the empty state", options: ["Skip it", "Ask again"]}, {q: "What if two people change the same entry?", why: "It decides the conflict rule", options: []}]}});
+  let user = null;
+  // the function read is bound to the override set at that moment; setting it back unwraps it again (no chain points at itself)
+  const wrap = u => { const f = (task, prompt) => (u ? u(task, prompt) : null) || (task === "iv19" ? (window.__iv19 || iv19()) : null); f.__inner = u; f.__iv19 = true; return f; };
+  Object.defineProperty(window, "__mockOverride", {configurable: true, get(){ return wrap(user); }, set(f){ user = f && f.__iv19 ? f.__inner : f; }});
+})();
