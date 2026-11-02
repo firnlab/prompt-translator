@@ -7,6 +7,8 @@ Versions before 1.8 were published from the private archive repository (see RELE
 
 ## 1.9.2 — 2026-11-02
 
+Release notes: 1.9.2: a release check with stretched stand-in text (every text PT shows comes from its three languages, no label cut off, no page scrolling sideways, at desktop and phone width); the Firnlab vault's tool lines in German and Chinese; rows of buttons and the notes page no longer push a phone screen sideways.
+
 ### Added
 
 - A release check with stretched stand-in text: every text PT shows must come from its three languages, no label may be cut off and no page may scroll sideways, at desktop and at phone width

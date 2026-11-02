@@ -78,5 +78,21 @@
       "previous": "1793588849-f17a"
     },
     "notes": "1.9.1: the independent check (a judge after every build, verified update and pasted build report; green only when every acceptance line holds, the floors pass and the commit came first; a kit run is green only with a judge pass), the second opinion from another lab (off until SECOND_LAB_API_KEY is added in GitHub), the GitHub build room in firnlab/tools (independent judge in the pull request, hidden test twins off until the pt-private key is added)."
+  },
+  {
+    "version": "1.9.2",
+    "date": "2026-11-02",
+    "commit": "fb25ede71803efedaba252b90b9cb335f6542feb",
+    "main": {
+      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+      "live": "1793629097-1653",
+      "previous": "1793612057-67af"
+    },
+    "preview": {
+      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+      "live": "1793628914-30d1",
+      "previous": "1793611842-c79f"
+    },
+    "notes": "1.9.2: a release check with stretched stand-in text (every text PT shows comes from its three languages, no label cut off, no page scrolling sideways, at desktop and phone width); the Firnlab vault's tool lines in German and Chinese; rows of buttons and the notes page no longer push a phone screen sideways."
   }
 ]
