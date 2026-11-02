@@ -7,6 +7,8 @@ Versions before 1.8 were published from the private archive repository (see RELE
 
 ## 1.9.3 — 2026-11-02
 
+Release notes: 1.9.3: the Build page says correctly how a build in the tools repository is locked: only a comment from your own login starts it, and on a private repository GitHub adds no second approval step (the old text promised an approval in the build environment that does not exist); a release check now catches any text that promises such a step.
+
 ### Fixed
 
 - The Build page now says correctly how a build in the tools repository is locked: only a comment from your own login starts it, and on a private repository GitHub adds no second approval step
