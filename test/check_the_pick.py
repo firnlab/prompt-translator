@@ -108,6 +108,8 @@ M = [
     ("PT reads GitHub once, before its list is there", [("v1100_hands.js", "const HANDS_READS = 4,", "const HANDS_READS = 1,")], "python3 test/e2e1100_hands.py test/fixtures/synthetic.json"),
     ("outside the desktop app PT shows only a generic error", [("v1100_hands.js", 'if (["server_not_connected", "capability_disabled", "not_granted", "capability_removed", "server_not_found"].includes(c)) return t("hands.e.app");', "")], "python3 test/e2e1100_hands.py test/fixtures/synthetic.json"),
     ("a closed tab ends the check instead of opening a new one", [("v1100_hands.js", "throw e; HANDS.tab = null; }", "throw e; throw e; }")], "python3 test/e2e1100_hands.py test/fixtures/synthetic.json"),
+    ("a label is taken for the pull request's title", [("v1100_hands.js", "if (/\\s/.test(x)){ title = x; break; } if (!word) word = x;", "title = x; break;")], "python3 test/e2e1100_hands.py test/fixtures/synthetic.json"),
+    ("a key date after 'Never used •' is not read", [("v1100_hands.js", "const m = /(?:^|[•·]\\s*)(Expires|Expired)", "const m = /^(Expires|Expired)")], "python3 test/e2e1100_hands.py test/fixtures/synthetic.json"),
     ("another login may use the owner's browser", [("v1100_hands.js", '  if (!handsOk()) throw {code: "hands_owner"};\n', "")], "python3 test/e2e1100_hands.py test/fixtures/synthetic.json"),
     ("the server-backed key is recorded without a monthly limit", [("v190_care.js", 'if (!(v >= 1)){ m.err = true; m.limit = ""; render(); focusSoon("care19-limit"); return; }', ""),
         ("v190_care.js", "const v = Math.floor(num(limit, 0)); if (!p || !(v >= 1)) return false;", "const v = Math.floor(num(limit, 0)); if (!p) return false;")], "python3 test/e2e190_care.py test/fixtures/synthetic.json"),

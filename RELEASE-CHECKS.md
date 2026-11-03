@@ -326,3 +326,7 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   browser".
 - Not testable here: the real app's browser. The mock answers in the shapes the probe recorded; the live preview is tried by the
   owner in the desktop app before main is published.
+- Cause (owner's first live try, 3 Nov 2026): GitHub's real pages differ from the made-up ones. The pull request list puts one-word
+  labels ("dependencies", "pt") between the title and "#N" (PT showed "#21 pt"); the key page writes "Never used •Expires on …" on one
+  line (PT found no key dates). Both parsers now take these shapes; `e2e1100_hands.py` has the real shapes; two planted bugs in
+  `check_the_pick.py`.

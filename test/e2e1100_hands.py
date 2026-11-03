@@ -103,6 +103,18 @@ with sync_playwright() as pw:
     check("…within 30 days: renew it now, marked", len(lis) > 1 and "tools-runner: runs out on 21 Nov 2026 · days left: 18" in lis[1][0] and "renew it now" in lis[1][0] and lis[1][1], lis[1:2])
     check("…ran out: says so, marked", len(lis) > 2 and "old-test: ran out on 05 Jan 2026" in lis[2][0] and lis[2][1], lis[2:3])
     check("…no end date", len(lis) > 3 and "lab: no end date" in lis[3][0], lis[3:])
+    # GitHub's real pull request list (3 Nov 2026): the labels sit as single words between the title and "#N"
+    ev(pg, "window.__browser.pages['https://github.com/firnlab/prompt-translator/pulls'] = 'Pull requests\\nBump actions/upload-artifact from 4.6.2 to 7.0.2\\ndependencies\\npt\\n#21·dependabot[bot] opened yesterday\\nFix the guard\\n#30·by firnsmith was opened 1 hour ago'"); reset(pg); health(pg)
+    click(pg, ".hands [data-a=hands-check][data-k=prs]")
+    t6 = box(pg)
+    check("…real list shape: the title, not a label, next to #21", "#21 Bump actions/upload-artifact from 4.6.2 to 7.0.2" in t6 and "#21 pt" not in t6 and "#30 Fix the guard" in t6, t6[:400])
+    # GitHub's real shape (3 Nov 2026): "Never used •Expires on Wed, Nov 3 2027" on one line, the name on the line above
+    ev(pg, "window.__browser.pages['https://github.com/settings/personal-access-tokens'] = 'Fine-grained personal access tokens\\nGenerate new token\\nkey-one\\nNever used •Expires on Wed, Nov 3 2027\\nkey-two\\nLast used within the last week • Expires on Tue, Dec 1 2026\\nkey-three\\nNever used •No expiration'"); reset(pg); health(pg)
+    click(pg, ".hands [data-a=hands-check][data-k=keys]")
+    lis = ev(pg, "[...document.querySelectorAll('.hands-res[data-k=keys] li')].map(l => [l.textContent, l.classList.contains('warn-t')])")
+    check("…real page shape: a date after 'Never used •' is read", len(lis) == 3 and "key-one: runs out on 03 Nov 2027 · days left: 365" in lis[0][0] and not lis[0][1], lis)
+    check("…real page shape: within 30 days after 'Last used … •', marked", len(lis) > 1 and "key-two: runs out on 01 Dec 2026 · days left: 28" in lis[1][0] and lis[1][1], lis[1:2])
+    check("…real page shape: no end date after a •", len(lis) > 2 and "key-three: no end date" in lis[2][0], lis[2:])
     ev(pg, "window.__browser.pages['https://github.com/settings/personal-access-tokens'] = 'Fine-grained personal access tokens\\nGenerate new token\\nNo tokens yet'"); reset(pg); health(pg)
     click(pg, ".hands [data-a=hands-check][data-k=keys]")
     check("…no dates on the page: says so and that the page is open", "found no key dates on the page" in box(pg), box(pg)[:200])

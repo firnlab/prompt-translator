@@ -26227,7 +26227,14 @@ function handsParsePrs(txt){
   const L = str(txt).split("\n").map(s => s.trim()), out = [];
   for (let i = 0; i < L.length; i++){
     const m = /^#(\d+)\b/.exec(L[i]); if (!m || out.some(x => x.n === +m[1])) continue;
-    let title = ""; for (let j = i - 1; j >= Math.max(0, i - 3); j--){ if (L[j] && !/^[·•|]+$/.test(L[j]) && !/^\d+$/.test(L[j])){ title = L[j]; break; } }
+    /* the real list puts the labels (one word each, "dependencies", "pt") between the title and "#N": the title is the nearest line
+       above with a space in it, before the previous "#N" line; a lone word only when nothing else is there (seen 3 Nov 2026) */
+    let title = "", word = "";
+    for (let j = i - 1; j >= Math.max(0, i - 6); j--){
+      const x = L[j]; if (!x || /^[·•|]+$/.test(x) || /^\d+$/.test(x)) continue; if (/^#\d+\b/.test(x)) break;
+      if (/\s/.test(x)){ title = x; break; } if (!word) word = x;
+    }
+    title = title || word;
     out.push({n: +m[1], title: title.slice(0, 160)});
   }
   return out;
@@ -26237,7 +26244,8 @@ const HANDS_KEY_SKIP = /^(Last used|Never used|Expire|No expiration|Owner|Resour
 function handsParseKeys(txt){
   const L = str(txt).split("\n").map(s => s.trim()).filter(Boolean), out = [];
   for (let i = 0; i < L.length; i++){
-    const m = /^(Expires|Expired)\s+(?:on\s+)?(.+)$/i.exec(L[i]), none = /^No expiration/i.test(L[i]);
+    /* the real page writes "Never used •Expires on Wed, Nov 3 2027" on one line (seen 3 Nov 2026): the date may follow a • or · */
+    const m = /(?:^|[•·]\s*)(Expires|Expired)\s+(?:on\s+)?(.+)$/i.exec(L[i]), none = /(?:^|[•·]\s*)No expiration/i.test(L[i]);
     if (!m && !none) continue;
     let name = ""; for (let j = i - 1; j >= Math.max(0, i - 4); j--){ if (!HANDS_KEY_SKIP.test(L[j])){ name = L[j]; break; } }
     if (!name) continue;
