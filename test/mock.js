@@ -222,6 +222,7 @@
   const mcp = {
     async callTool(server, tool, input){
       const rec = {tool, input}; window.__mcp.push(rec);
+      if (server === "host:claude_browser") return window.__browserCall(rec, tool, input || {});   // 1.10 PT's hands: the desktop app's browser (below)
       if (window.__mcpFail) throw {code: window.__mcpFail};
       if (tool === "fire_trigger"){
         const m = /PT job (\S+) (\S+)/.exec(input.text || "");
@@ -338,3 +339,34 @@ window.__mockJudgeOf = function(j, res){
   if (sw === "failed") return {status: "failed", error: "mock: the run stopped before the check", startedAt: at, finishedAt: at, steps: [plan], result: null};
   return {status: "done", startedAt: at, finishedAt: at, steps, result: r};
 };
+/* 1.10 PT's hands: a made-up desktop-app browser, shaped like the answers seen in the owner's app on 3 Nov 2026 (the "PT Hands Probe"):
+   preview_start → "Opened the site in Claude's browser (tabId seed). …", navigate → "navigated to <url>", get_page_text → "Title: …\nURL: …
+   \n---\n<text>", find → "Found N match(es) …\n- <role> \"<name>\" [ref_N]", computer → a short line. window.__browser.pages: {url: text};
+   window.__browser.fail: a code every call throws (e.g. "server_not_connected"); window.__browser.loadReads: reads before a page's list
+   appears (GitHub fills lists after opening). Every call is recorded in window.__mcp with server "host:claude_browser". */
+(function(){ if (window !== window.top) return;
+  const PAGES = {
+    "https://github.com/firnlab/prompt-translator/pulls": "Pull requests\nOpen\n2\nClosed\n22\nRelease 1.10.0: PT's hands\n#26·by firnsmith was opened 5 minutes ago\nBump actions/checkout\n#27·by dependabot was opened 1 day ago",
+    "https://github.com/firnlab/prompt-translator/pull/26": "Release 1.10.0: PT's hands #26\nThis branch has no conflicts with the base branch\nMerge pull request\nYou can also merge this with the command line",
+    "https://github.com/firnlab/prompt-translator/releases/tag/v1.10.0": "Releases\nPrompt Translator 1.10.0\nv1.10.0\nAssets",
+    "https://github.com/settings/personal-access-tokens": "Fine-grained personal access tokens\nGenerate new token\npt-private-writer\nExpires on Thu, Nov 4 2027.\nLast used within the last week\ntools-runner\nExpires on Sat, Nov 21 2026.\nNever used\nold-test\nExpired on Mon, Jan 5 2026.\nlab\nNo expiration",
+    "https://github.com/firnlab/prompt-translator/settings/environments": "Environments\nbuild\n1 secret",
+    "https://github.com/firnlab/prompt-translator/settings/secrets/actions": "Actions secrets and variables\nRepository secrets\nPT_PRIVATE_TOKEN\nUpdated 2 days ago",
+    "https://github.com/firnlab/tools/settings/secrets/actions": "Actions secrets and variables\nRepository secrets\nCLAUDE_CODE_OAUTH_TOKEN\nPT_PRIVATE_TOKEN"
+  };
+  window.__browser = {pages: Object.assign({}, PAGES), fail: "", loadReads: 0, url: "", reads: 0, tabs: 0};
+  window.__browserCall = async function(rec, tool, input){
+    const B = window.__browser; rec.server = "host:claude_browser";
+    await new Promise(r => setTimeout(r, 20));
+    if (B.fail) throw {code: B.fail, server: "host:claude_browser", message: B.fail};
+    const text = () => B.pages[B.url] != null ? B.pages[B.url] : "Page not found\nThis is not the web page you are looking for.";
+    if (tool === "preview_start"){ B.tabs++; B.url = input.url; B.reads = 0; return {payload: "Opened the site in Claude's browser (tabId seed). Use read_page to see the page."}; }
+    if (tool === "navigate"){ if (B.closed){ B.closed = false; throw {code: "tool_error", message: "No tab with id seed"}; } B.url = input.url; B.reads = 0; return {payload: "navigated to " + input.url}; }
+    if (tool === "get_page_text"){ B.reads++; const t = B.reads <= B.loadReads ? "Loading…" : text(); return {payload: "Title: GitHub\nURL: " + B.url + "\nSource element: <main>\n---\n" + t}; }
+    if (tool === "find"){ const q = String(input.query || "").toLowerCase(); const L = text().split("\n").filter(l => l.toLowerCase().includes(q));
+      if (!L.length) return {payload: "No matches for \"" + input.query + "\""};
+      return {payload: "Found " + L.length + " match(es) for \"" + input.query + "\":\n" + L.map((l, i) => "- " + (/^Merge pull request$/.test(l) ? "button" : "generic") + " \"" + l + "\" [ref_" + (100 + i) + "]").join("\n")}; }
+    if (tool === "computer"){ return {payload: input.action === "wait" ? "waited" : input.action + " " + (input.ref || "")}; }
+    return {payload: ""};
+  };
+})();
