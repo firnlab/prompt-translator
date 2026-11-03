@@ -140,7 +140,8 @@ with sync_playwright() as pw:
                        ("cancelled", "choose Allow when the app asks"), ("not_in_manifest", "choose Allow when the app asks"), ("server_unavailable", "did not answer (server_unavailable)")):
         reset(pg); ev(pg, f"window.__browser.fail = '{code}'"); health(pg)
         click(pg, ".hands [data-a=hands-check][data-k=prs]")
-        check(f"{code}: its own line", want in box(pg), box(pg)[:200])
+        res = ev(pg, "(document.querySelector('.hands-res[data-k=prs]') || {}).innerText || ''")
+        check(f"{code}: its own line (in the result, not only the section's note)", want in res, res[:200])
     reset(pg); ev(pg, "window.__browser.pages['https://github.com/firnlab/prompt-translator/pulls'] = 'Sign in to GitHub\\nUsername or email address\\nPassword'"); health(pg)
     click(pg, ".hands [data-a=hands-check][data-k=prs]")
     check("a sign-in page: sign in in the app's browser, then again", "GitHub asks you to sign in" in box(pg), box(pg)[:200])
