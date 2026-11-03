@@ -22,4 +22,13 @@ One-GO release: build, full gate, preview publish, live re-test, main publish, r
 - Tests: `e2e1100_hands.py` 49 ok on both data sets; seven planted bugs in `check_the_pick.py`; the made-up browser in `mock.js`.
 
 ## Gate and publish
-(filled in after the gate)
+- Gate 1 (commit c0ad485): green in four parts: 40/40, check the Pick tests 120/120 caught, check the hunt 10/10, click everything
+  0 problems. Preview 1793685160-08aa (capabilities: the existing set plus host:claude_browser with 5 tools); live re-test green.
+- Owner's first live try (3 Nov 14:10): checks open, release and "Take me there" (pull request #21, pointer on "Merge pull
+  request") worked; two readings were wrong on GitHub's real pages: the pull request title showed a label ("pt"), and the key
+  page gave no dates. Fixed (f68814c), gate 2 green: 40/40, 122/122, 10/10, 0. Preview 1793722502-a0f3, live re-test green.
+- Owner's second try (19:20): title right; key dates still none. Read the real page once (read-only, the owner's built-in
+  browser): the header with "Generate new token" comes before the list, and the check stopped there. Fixed (583a610), gate 3
+  green: 40/40, 123/123, 10/10, 0. Preview 1793741106-aca6, live re-test green.
+- Owner's third try (22:29): "tools-sealed-twins: runs out on 03 Nov 2027 · days left: 365", "pt-private-writer: runs out on
+  01 Dec 2026 · days left: 28 · renew it now". Main published 1793741450-54e1 (previous 1793669544-2baa), live body = dist.

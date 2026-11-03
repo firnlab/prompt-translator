@@ -7,6 +7,8 @@ Versions before 1.8 were published from the private archive repository (see RELE
 
 ## 1.10.0 — 2026-11-03
 
+Release notes: 1.10.0: PT's hands (Settings › PT health, in the Claude desktop app). PT opens GitHub in the app's built-in browser with the owner's own login, reads it and takes the owner to the right spot: open pull requests with their titles, this version's release, the end date of each fine-grained key (marked within 30 days), and “Take me there” to a pull request's merge button and to each line of the key renewal card. It never clicks, types or handles keys; github.com only; owner only. Tried live by the owner twice: GitHub's real pages fixed two readings (labels before #N; the key list loads after the header).
+
 ### Added
 
 - PT's hands (Settings › PT health, in the Claude desktop app): PT checks your open pull requests, this version's GitHub release and the end dates of your GitHub keys for you, and “Take me there” opens the right GitHub page and puts the pointer on the spot the next step names; PT never presses a final button, never types and never looks at a key
