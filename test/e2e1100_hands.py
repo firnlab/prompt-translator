@@ -108,6 +108,13 @@ with sync_playwright() as pw:
     click(pg, ".hands [data-a=hands-check][data-k=prs]")
     t6 = box(pg)
     check("…real list shape: the title, not a label, next to #21", "#21 Bump actions/upload-artifact from 4.6.2 to 7.0.2" in t6 and "#21 pt" not in t6 and "#30 Fix the guard" in t6, t6[:400])
+    # GitHub's real key page as get_page_text gives it (3 Nov 2026): the header first, the list a moment later
+    ev(pg, "window.__browser.pages['https://github.com/settings/personal-access-tokens'] = 'Fine-grained personal access tokens\\nGenerate new token\\n\\nThese are fine-grained tokens.\\n\\nkey-one\\nNever used •\\nExpires on Wed, Nov 3 2027\\nDelete\\nkey-two\\nNever used •\\nExpires on Tue, Dec 1 2026\\nDelete'"); reset(pg)
+    ev(pg, "window.__browser.loadReads = 2; window.__browser.early = 'Fine-grained personal access tokens\\nGenerate new token'"); health(pg)
+    click(pg, ".hands [data-a=hands-check][data-k=keys]")
+    lis = ev(pg, "[...document.querySelectorAll('.hands-res[data-k=keys] li')].map(l => l.textContent)")
+    check("…waits past the header for the list, then reads both keys", len(lis) == 2 and "key-one: runs out on 03 Nov 2027" in lis[0] and "key-two: runs out on 01 Dec 2026 · days left: 28" in lis[1], [lis, box(pg)[:200]])
+    ev(pg, "window.__browser.early = ''")
     # GitHub's real shape (3 Nov 2026): "Never used •Expires on Wed, Nov 3 2027" on one line, the name on the line above
     ev(pg, "window.__browser.pages['https://github.com/settings/personal-access-tokens'] = 'Fine-grained personal access tokens\\nGenerate new token\\nkey-one\\nNever used •Expires on Wed, Nov 3 2027\\nkey-two\\nLast used within the last week • Expires on Tue, Dec 1 2026\\nkey-three\\nNever used •No expiration'"); reset(pg); health(pg)
     click(pg, ".hands [data-a=hands-check][data-k=keys]")

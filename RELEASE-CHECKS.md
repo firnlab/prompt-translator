@@ -330,3 +330,7 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   labels ("dependencies", "pt") between the title and "#N" (PT showed "#21 pt"); the key page writes "Never used •Expires on …" on one
   line (PT found no key dates). Both parsers now take these shapes; `e2e1100_hands.py` has the real shapes; two planted bugs in
   `check_the_pick.py`.
+- Cause (owner's second try, 3 Nov 2026): the key check stopped reading at "Generate new token", which the page shows before its
+  list, so PT read the header only and found no dates. It now waits for "Expires"/"No expiration" (four reads at most). The real
+  `get_page_text` shape (name, "Never used •", "Expires on …", "Delete" on separate lines) is in `e2e1100_hands.py`; the mock's
+  `early` text plays the header-first page; planted bug "the key check stops at the header, before the list".

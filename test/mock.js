@@ -362,7 +362,7 @@ window.__mockJudgeOf = function(j, res){
     const text = () => B.pages[B.url] != null ? B.pages[B.url] : "Page not found\nThis is not the web page you are looking for.";
     if (tool === "preview_start"){ B.tabs++; B.url = input.url; B.reads = 0; return {payload: "Opened the site in Claude's browser (tabId seed). Use read_page to see the page."}; }
     if (tool === "navigate"){ if (B.closed){ B.closed = false; throw {code: "tool_error", message: "No tab with id seed"}; } B.url = input.url; B.reads = 0; return {payload: "navigated to " + input.url}; }
-    if (tool === "get_page_text"){ B.reads++; const t = B.reads <= B.loadReads ? "Loading…" : text(); return {payload: "Title: GitHub\nURL: " + B.url + "\nSource element: <main>\n---\n" + t}; }
+    if (tool === "get_page_text"){ B.reads++; const t = B.reads <= B.loadReads ? (B.early || "Loading…") : text(); /* B.early: what a page shows before its list (the header only) */ return {payload: "Title: GitHub\nURL: " + B.url + "\nSource element: <main>\n---\n" + t}; }
     if (tool === "find"){ const q = String(input.query || "").toLowerCase(); const L = text().split("\n").filter(l => l.toLowerCase().includes(q));
       if (!L.length) return {payload: "No matches for \"" + input.query + "\""};
       return {payload: "Found " + L.length + " match(es) for \"" + input.query + "\":\n" + L.map((l, i) => "- " + (/^Merge pull request$/.test(l) ? "button" : "generic") + " \"" + l + "\" [ref_" + (100 + i) + "]").join("\n")}; }

@@ -144,7 +144,8 @@ const HANDS_CHECKS = {
   },
   async keys(){
     await handsOpen("https://github.com/settings/personal-access-tokens");
-    const txt = await handsRead(/Expire|No expiration|Generate new token/i);
+    /* wait for the dates themselves: the header ("Generate new token") comes first and the list after it (owner's try, 3 Nov 2026) */
+    const txt = await handsRead(/Expire|No expiration/i);
     if (handsSignin(txt)) throw {code: "hands_signin"};
     return {list: handsParseKeys(txt)};
   }
