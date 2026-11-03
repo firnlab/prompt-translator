@@ -1,4 +1,4 @@
-<title>Prompt Translator 1.9.3</title>
+<title>Prompt Translator 1.9.4</title>
 <style>
 /* Layout concept: mission-control workspace — slim navigation rail, one focused work surface with a persistent North Star band, and a notes drawer on the right. Dark-first instrument panel; light mode mirrors it. */
 :root{
@@ -6814,22 +6814,22 @@ Object.assign(STR, {
 
 /* R7 · renew the two keys */
 "care.keys.t":["Renew 2 keys","Erneuere 2 Schlüssel","更新 2 个密钥"],
-"care.keys.sub":["Both keys expire about a year after they were made. Renew them now, one after the other; it takes about 10 minutes. Never paste a key into a chat, an issue or PT: it goes only into GitHub's secret store.","Beide Schlüssel laufen etwa ein Jahr nach dem Erstellen ab. Erneuere sie jetzt, einen nach dem anderen; das dauert etwa 10 Minuten. Füge einen Schlüssel nie in einen Chat, ein Issue oder PT ein: Er kommt nur in den Geheimnisspeicher von GitHub.","两个密钥都会在创建后约一年过期。请现在逐个更新，约需 10 分钟。切勿把密钥粘贴到聊天、issue 或 PT 中：它只能放进 GitHub 的机密存储。"],
+"care.keys.sub":["Both keys expire about a year after they were made, and each one is kept in two repositories: prompt-translator and {r}. Renew them now, one after the other, and put each new key into both places before you copy the next one; it takes about 15 minutes. Never paste a key into a chat, an issue or PT: it goes only into GitHub's secret store.","Beide Schlüssel laufen etwa ein Jahr nach dem Erstellen ab, und jeder liegt in zwei Repositorys: prompt-translator und {r}. Erneuere sie jetzt, einen nach dem anderen, und lege jeden neuen Schlüssel an beiden Orten ab, bevor du den nächsten kopierst; das dauert etwa 15 Minuten. Füge einen Schlüssel nie in einen Chat, ein Issue oder PT ein: Er kommt nur in den Geheimnisspeicher von GitHub.","两个密钥都会在创建后约一年过期，而且每个密钥都存放在两个仓库中：prompt-translator 和 {r}。请现在逐个更新，并在复制下一个密钥之前，把每个新密钥放进这两个地方；约需 15 分钟。切勿把密钥粘贴到聊天、issue 或 PT 中：它只能放进 GitHub 的机密存储。"],
 "care.keys.a":["1 · The Claude build key","1 · Der Claude-Build-Schlüssel","1 · Claude 构建密钥"],
 "care.keys.a1":["On your laptop, open a terminal and run: claude setup-token","Öffne auf deinem Laptop ein Terminal und führe aus: claude setup-token","在你的笔记本电脑上打开终端并运行：claude setup-token"],
 "care.keys.a2":["Sign in when the browser opens; the terminal shows the new token once. Copy it.","Melde dich an, wenn sich der Browser öffnet; das Terminal zeigt den neuen Token einmal. Kopiere ihn.","浏览器打开时登录；终端只显示一次新令牌。复制它。"],
-"care.keys.a3":["Open the repository's Settings › Environments › build (link below); under Environment secrets click CLAUDE_CODE_OAUTH_TOKEN › pencil (Update).","Öffne in den Settings des Repositorys › Environments › build (Link unten); klicke unter Environment secrets auf CLAUDE_CODE_OAUTH_TOKEN › Stift (Update).","打开仓库的 Settings › Environments › build（见下方链接）；在 Environment secrets 中点 CLAUDE_CODE_OAUTH_TOKEN › 铅笔图标（Update）。"],
-"care.keys.a4":["Paste the token, then Update secret. Close the terminal.","Füge den Token ein, dann Update secret. Schliesse das Terminal.","粘贴令牌，然后点 Update secret。关闭终端。"],
+"care.keys.a3":["Open prompt-translator's Settings › Environments › build (link below); under Environment secrets click CLAUDE_CODE_OAUTH_TOKEN › pencil (Update).","Öffne die Settings von prompt-translator › Environments › build (Link unten); klicke unter Environment secrets auf CLAUDE_CODE_OAUTH_TOKEN › Stift (Update).","打开 prompt-translator 的 Settings › Environments › build（见下方链接）；在 Environment secrets 中点 CLAUDE_CODE_OAUTH_TOKEN › 铅笔图标（Update）。"],
+"care.keys.a4":["Paste the token, then Update secret. Keep the terminal open: the same token goes into {r} next.","Füge den Token ein, dann Update secret. Lass das Terminal offen: Derselbe Token kommt gleich auch in {r}.","粘贴令牌，然后点 Update secret。先别关闭终端：接下来同一个令牌还要放进 {r}。"],
 "care.keys.b":["2 · The pt-private GitHub key","2 · Der GitHub-Schlüssel für pt-private","2 · pt-private 的 GitHub 密钥"],
 "care.keys.b1":["Open github.com › your picture › Settings › Developer settings › Personal access tokens › Fine-grained tokens (link below).","Öffne github.com › dein Bild › Settings › Developer settings › Personal access tokens › Fine-grained tokens (Link unten).","打开 github.com › 你的头像 › Settings › Developer settings › Personal access tokens › Fine-grained tokens（见下方链接）。"],
-"care.keys.b2":["Click the pt-private writer token › Regenerate token › expiration 1 year (366 days) › Regenerate token. Copy the new token; it is shown once.","Klicke auf den pt-private-Schreib-Token › Regenerate token › Ablauf 1 Jahr (366 Tage) › Regenerate token. Kopiere den neuen Token; er wird einmal gezeigt.","点击 pt-private 写入令牌 › Regenerate token › 有效期 1 年（366 天）› Regenerate token。复制新令牌；它只显示一次。"],
-"care.keys.b3":["Open the repository's Settings › Secrets and variables › Actions (link below) › Repository secrets › PT_PRIVATE_TOKEN › pencil (Update).","Öffne in den Settings des Repositorys › Secrets and variables › Actions (Link unten) › Repository secrets › PT_PRIVATE_TOKEN › Stift (Update).","打开仓库的 Settings › Secrets and variables › Actions（见下方链接）› Repository secrets › PT_PRIVATE_TOKEN › 铅笔图标（Update）。"],
+"care.keys.b2":["Click the pt-private writer token › Regenerate token › expiration 1 year (366 days) › Regenerate token. Copy the new token; it is shown once. (A second pt-private token in the list? Leave it; it runs out by itself.)","Klicke auf den pt-private-Schreib-Token › Regenerate token › Ablauf 1 Jahr (366 Tage) › Regenerate token. Kopiere den neuen Token; er wird einmal gezeigt. (Ein zweiter pt-private-Token in der Liste? Lass ihn; er läuft von selbst ab.)","点击 pt-private 写入令牌 › Regenerate token › 有效期 1 年（366 天）› Regenerate token。复制新令牌；它只显示一次。（列表里还有第二个 pt-private 令牌？不用管它，它会自行过期。）"],
+"care.keys.b3":["Open prompt-translator's Settings › Secrets and variables › Actions (link below) › Repository secrets › PT_PRIVATE_TOKEN › pencil (Update).","Öffne die Settings von prompt-translator › Secrets and variables › Actions (Link unten) › Repository secrets › PT_PRIVATE_TOKEN › Stift (Update).","打开 prompt-translator 的 Settings › Secrets and variables › Actions（见下方链接）› Repository secrets › PT_PRIVATE_TOKEN › 铅笔图标（Update）。"],
 "care.keys.b4":["Paste the token, then Update secret.","Füge den Token ein, dann Update secret.","粘贴令牌，然后点 Update secret。"],
-"care.keys.l.env":["Environments › build","Environments › build","Environments › build（环境）"],
+"care.keys.l.env":["prompt-translator › Environments › build","prompt-translator › Environments › build","prompt-translator › Environments › build（环境）"],
 "care.keys.l.pat":["Fine-grained tokens","Fine-grained tokens","Fine-grained tokens（细粒度令牌）"],
-"care.keys.l.act":["Actions secrets","Actions-Secrets","Actions 机密"],
+"care.keys.l.act":["prompt-translator › Actions secrets","prompt-translator › Actions-Secrets","prompt-translator › Actions 机密"],
 "care.keys.never":["PT never sees, asks for or stores a key.","PT sieht, verlangt oder speichert nie einen Schlüssel.","PT 从不查看、索要或保存任何密钥。"],
-"care.keys.done":["Both renewed","Beide erneuert","两个都已更新"],
+"care.keys.done":["Both renewed in both places","Beide an beiden Orten erneuert","两个都已在两处更新"],
 "care.keys.saved":["Noted. PT reminds you again in 11 months.","Notiert. PT erinnert dich in 11 Monaten wieder.","已记录。PT 会在 11 个月后再次提醒你。"],
 });
 
@@ -7242,6 +7242,18 @@ Object.assign(STR, {
    offers required reviewers only on public repositories (Free, Pro, Team); the lock is the login check on the comment (cause 75). */
 Object.assign(STR, {
 "cl.193.fixed":["The Build page now says correctly how a build in the tools repository is locked: only a comment from your own login starts it, and on a private repository GitHub adds no second approval step", "Die Bau-Seite sagt jetzt richtig, wie ein Bau im Tools-Repository gesichert ist: Nur ein Kommentar von deinem eigenen Login startet ihn, und bei einem privaten Repository fügt GitHub keinen zweiten Freigabeschritt hinzu", "构建页面现在正确说明了工具仓库中的构建如何受保护：只有你本人账号的评论才能启动构建，而对于私有仓库，GitHub 不会再增加一道批准步骤"],
+});
+
+/* 1.9.4 · the key renewal also covers the build repository (cause 76)
+   The Sunday note's "Renew 2 keys" named only prompt-translator's secrets. The build repository (firnlab/tools by default)
+   keeps its own CLAUDE_CODE_OAUTH_TOKEN and PT_PRIVATE_TOKEN; after a renewal its builds would stop at the first step that
+   uses an expired key. GitHub shows a new key once, so each part puts its key into both repositories before the next is copied. */
+Object.assign(STR, {
+"care.keys.a5":["Open {r}'s Settings › Secrets and variables › Actions (link below) › Repository secrets › CLAUDE_CODE_OAUTH_TOKEN › pencil (Update). Not listed? Click New repository secret and name it CLAUDE_CODE_OAUTH_TOKEN.","Öffne die Settings von {r} › Secrets and variables › Actions (Link unten) › Repository secrets › CLAUDE_CODE_OAUTH_TOKEN › Stift (Update). Nicht da? Klicke auf New repository secret und nenne ihn CLAUDE_CODE_OAUTH_TOKEN.","打开 {r} 的 Settings › Secrets and variables › Actions（见下方链接）› Repository secrets › CLAUDE_CODE_OAUTH_TOKEN › 铅笔图标（Update）。没有这一项？点 New repository secret，名称填 CLAUDE_CODE_OAUTH_TOKEN。"],
+"care.keys.a6":["Paste the same token, then Update secret (or Add secret). Now close the terminal.","Füge denselben Token ein, dann Update secret (oder Add secret). Schliesse jetzt das Terminal.","粘贴同一个令牌，然后点 Update secret（或 Add secret）。现在关闭终端。"],
+"care.keys.b5":["Open {r}'s Settings › Secrets and variables › Actions (link below) › Repository secrets › PT_PRIVATE_TOKEN › pencil (Update). Paste the same token, then Update secret.","Öffne die Settings von {r} › Secrets and variables › Actions (Link unten) › Repository secrets › PT_PRIVATE_TOKEN › Stift (Update). Füge denselben Token ein, dann Update secret.","打开 {r} 的 Settings › Secrets and variables › Actions（见下方链接）› Repository secrets › PT_PRIVATE_TOKEN › 铅笔图标（Update）。粘贴同一个令牌，然后点 Update secret。"],
+"care.keys.l.tact":["{r} › Actions secrets","{r} › Actions-Secrets","{r} › Actions 机密"],
+"cl.194.fixed":["The yearly “Renew 2 keys” reminder in the Sunday note now covers the tools repository too: each new key goes into prompt-translator and into the tools repository, with a link to each settings page, so builds there keep working after a renewal","Die jährliche Erinnerung «Erneuere 2 Schlüssel» in der Sonntagsnotiz deckt jetzt auch das Tools-Repository ab: Jeder neue Schlüssel kommt in prompt-translator und ins Tools-Repository, mit einem Link zu jeder Einstellungsseite, damit Bauten dort nach dem Erneuern weiterlaufen","周日笔记中每年一次的“更新 2 个密钥”提醒现在也涵盖工具仓库：每个新密钥都放进 prompt-translator 和工具仓库，并附有每个设置页面的链接，这样更新密钥后那里的构建也能继续运行"],
 });
 
 /* ===================== CORE ===================== */
@@ -10336,7 +10348,7 @@ function fixCost(p, ids){ const n = arr(p.findings).filter(f => ids.includes(f.i
 /* ===================== APP STATE ===================== */
 let META = {workspaces: [], last: null};
 let WS = {id:null, name:"", settings:{}, profile:{entries:[]}, projects:[], notes:[], patterns:[], research:[], jobs:[], insights:null, profileSuggestions:[]};
-const PT_VERSION = "1.9.3";
+const PT_VERSION = "1.9.4";
 /* ---------- version next to the name: "newest" check (shared doc app/version: read by everyone, written by the owner's page) ---------- */
 const APPV = {latest: PT_VERSION, newer: false, checked: false};
 function verCmp(a, b){ const x = String(a || "0").split(".").map(n => parseInt(n, 10) || 0), y = String(b || "0").split(".").map(n => parseInt(n, 10) || 0); for (let i = 0; i < 3; i++){ if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) - (y[i] || 0); } return 0; }
@@ -12325,6 +12337,7 @@ function rpPreview(p, pv){
     ${row(t("rev.problems"), arr(s.findings).length, p.findings.length)}${row(t("test.title"), arr(s.tests).length, p.tests.length)}</tbody></table></div>`;
 }
 const CHANGELOG = [
+  {v: "1.9.4", d: "2026-11-02", fixed: "cl.194.fixed"},
   {v: "1.9.3", d: "2026-11-02", fixed: "cl.193.fixed"},
   {v: "1.9.2", d: "2026-11-02", added: "cl.192.added", fixed: "cl.192.fixed"},
   {v: "1.9.1", d: "2026-11-02", added: "cl.191.added", changed: "cl.191.changed"},
@@ -23949,7 +23962,8 @@ function kitReportShape18(){ return TOOL_REPORT_SHAPE; }
         the noteworthy-only rule), the old one paused, both ids kept; "off" = the reverse. PT never deletes a scheduled task; Health lists
         the paused ones the owner may delete in claude.ai. With the Sunday run off the switch is only stored and applied when it is turned on.
    R7   From 4 Oct 2027 the Sunday note shows "Renew 2 keys" every week until ticked done (then again 11 months later), with the steps
-        click by click. The owner's login only. PT never shows, asks for or stores a key. */
+        click by click. The owner's login only. PT never shows, asks for or stores a key. From 1.9.4 each key goes into
+        prompt-translator and into the build repository (buildRepo(), firnlab/tools by default) before the next is copied. */
 const CARE19 = {full: false, gesture: 0, chain: 0, chainEnd: 0, stopped: 0, ask: null, month: null, mLoading: null, mTried: 0, sent: null, pushBusy: false};
 const CARE19_EXP_DAYS = 90, CARE19_CEIL_FROM = "2027-02-01", CARE19_CEIL_MIN_DAYS = 60, CARE19_CEIL_MARGIN = 1.25, CARE19_KEYS_FROM = "2027-10-04", CARE19_KEYS_MONTHS = 11;
 const CARE19_GESTURE_MS = 6000, CARE19_CHAIN_MS = 4000;   // a call that starts this soon after your click (or inside a chain of calls you started) is yours
@@ -23984,7 +23998,7 @@ function care19ExpHTML(cls){
 /* one line in the Inbox (next to the Sunday-run switch) while the export is due */
 { const orig = wk18SwitchHTML; wk18SwitchHTML = function(){ const h = orig.apply(this, arguments); let mine = ""; try{ if (care19On() && care19ExpDue()) mine = care19ExpHTML("care19-ib"); }catch(e){ onAppError(e && e.message, "care19:inbox"); } return h + mine; }; }
 
-/* ===================== R7 · renew the two keys ===================== */
+/* ===================== R7 · renew the two keys (in prompt-translator and the build repository, 1.9.4) ===================== */
 function care19KeysDue(ms = Date.now()){
   if (!Store.isOwner || typeof META === "undefined" || !META) return false;
   const day = care19Day(ms); if (day < CARE19_KEYS_FROM) return false;
@@ -23992,11 +24006,15 @@ function care19KeysDue(ms = Date.now()){
   return day >= care19AddMonths(done, CARE19_KEYS_MONTHS);
 }
 const CARE19_LINKS = {env: "https://github.com/firnlab/prompt-translator/settings/environments", pat: "https://github.com/settings/personal-access-tokens", act: "https://github.com/firnlab/prompt-translator/settings/secrets/actions"};
+/* cause 76: the build repository keeps its own copy of both keys; its settings page follows Settings › General (kit defaults) */
+function care19Link(k){ return k === "tact" ? `https://github.com/${encodeURI(buildRepo())}/settings/secrets/actions` : CARE19_LINKS[k]; }
+const CARE19_KEY_STEPS = {a: ["a1", "a2", "a3", "a4", "a5", "a6"], b: ["b1", "b2", "b3", "b4", "b5"]};
+function care19KeysText(){ const r = {r: buildRepo()}; return t("care.keys.sub", r) + " " + CARE19_KEY_STEPS.a.concat(CARE19_KEY_STEPS.b).map(k => t("care.keys." + k, r)).join(" "); }
 function care19KeysHTML(){
-  const li = k => `<li>${esc(t("care.keys." + k))}</li>`, a = (k, l) => `<a class="chip tap" href="${esc(CARE19_LINKS[k])}" target="_blank" rel="noopener">${ic("link")}${esc(t("care.keys.l." + l))}</a>`;
-  return `<div class="item care19-keys">${stSlot("attn")}<div class="body"><b class="small">${ic("shield")} ${esc(t("care.keys.t"))}</b><span class="small">${esc(t("care.keys.sub"))}</span>
-    <b class="small">${esc(t("care.keys.a"))}</b><ol class="small care19-steps">${li("a1")}${li("a2")}${li("a3")}${li("a4")}</ol><div class="row">${a("env", "env")}</div>
-    <b class="small">${esc(t("care.keys.b"))}</b><ol class="small care19-steps">${li("b1")}${li("b2")}${li("b3")}${li("b4")}</ol><div class="row">${a("pat", "pat")}${a("act", "act")}</div>
+  const r = {r: buildRepo()}, li = k => `<li>${esc(t("care.keys." + k, r))}</li>`, a = (k, l) => `<a class="chip tap" href="${esc(care19Link(k))}" target="_blank" rel="noopener">${ic("link")}${esc(t("care.keys.l." + l, r))}</a>`;
+  return `<div class="item care19-keys">${stSlot("attn")}<div class="body"><b class="small">${ic("shield")} ${esc(t("care.keys.t"))}</b><span class="small">${esc(t("care.keys.sub", r))}</span>
+    <b class="small">${esc(t("care.keys.a"))}</b><ol class="small care19-steps">${CARE19_KEY_STEPS.a.map(li).join("")}</ol><div class="row">${a("env", "env")}${a("tact", "tact")}</div>
+    <b class="small">${esc(t("care.keys.b"))}</b><ol class="small care19-steps">${CARE19_KEY_STEPS.b.map(li).join("")}</ol><div class="row">${a("pat", "pat")}${a("act", "act")}${a("tact", "tact")}</div>
     <span class="small muted">${esc(t("care.keys.never"))}</span></div><div class="qacts"><button class="btn xs primary" data-a="care19-keys-done">${ic("check")}${esc(t("care.keys.done"))}</button></div></div>`;
 }
 
@@ -24257,7 +24275,7 @@ function care19Entries(n){
   const E = [], add = (html, text) => { if (html) E.push({sec: "care", secs: wk18Secs(text, true), html}); };
   add(care19OverHTML(), t("care.ceil.over"));
   add(care19CeilHTML(n), t("care.ceil.prop") + t("care.ceil.fig") + t("care.ceil.what"));
-  if (care19KeysDue()) add(care19KeysHTML(), t("care.keys.sub") + ["a1", "a2", "a3", "a4", "b1", "b2", "b3", "b4"].map(k => t("care.keys." + k)).join(" "));
+  if (care19KeysDue()) add(care19KeysHTML(), care19KeysText());
   if (care19ExpDue()) add(care19ExpHTML("care19-wk"), t("care.exp.never") + t("care.exp.how"));
   return E;
 }

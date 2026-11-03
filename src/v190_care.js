@@ -18,7 +18,8 @@
         the noteworthy-only rule), the old one paused, both ids kept; "off" = the reverse. PT never deletes a scheduled task; Health lists
         the paused ones the owner may delete in claude.ai. With the Sunday run off the switch is only stored and applied when it is turned on.
    R7   From 4 Oct 2027 the Sunday note shows "Renew 2 keys" every week until ticked done (then again 11 months later), with the steps
-        click by click. The owner's login only. PT never shows, asks for or stores a key. */
+        click by click. The owner's login only. PT never shows, asks for or stores a key. From 1.9.4 each key goes into
+        prompt-translator and into the build repository (buildRepo(), firnlab/tools by default) before the next is copied. */
 const CARE19 = {full: false, gesture: 0, chain: 0, chainEnd: 0, stopped: 0, ask: null, month: null, mLoading: null, mTried: 0, sent: null, pushBusy: false};
 const CARE19_EXP_DAYS = 90, CARE19_CEIL_FROM = "2027-02-01", CARE19_CEIL_MIN_DAYS = 60, CARE19_CEIL_MARGIN = 1.25, CARE19_KEYS_FROM = "2027-10-04", CARE19_KEYS_MONTHS = 11;
 const CARE19_GESTURE_MS = 6000, CARE19_CHAIN_MS = 4000;   // a call that starts this soon after your click (or inside a chain of calls you started) is yours
@@ -53,7 +54,7 @@ function care19ExpHTML(cls){
 /* one line in the Inbox (next to the Sunday-run switch) while the export is due */
 { const orig = wk18SwitchHTML; wk18SwitchHTML = function(){ const h = orig.apply(this, arguments); let mine = ""; try{ if (care19On() && care19ExpDue()) mine = care19ExpHTML("care19-ib"); }catch(e){ onAppError(e && e.message, "care19:inbox"); } return h + mine; }; }
 
-/* ===================== R7 · renew the two keys ===================== */
+/* ===================== R7 · renew the two keys (in prompt-translator and the build repository, 1.9.4) ===================== */
 function care19KeysDue(ms = Date.now()){
   if (!Store.isOwner || typeof META === "undefined" || !META) return false;
   const day = care19Day(ms); if (day < CARE19_KEYS_FROM) return false;
@@ -61,11 +62,15 @@ function care19KeysDue(ms = Date.now()){
   return day >= care19AddMonths(done, CARE19_KEYS_MONTHS);
 }
 const CARE19_LINKS = {env: "https://github.com/firnlab/prompt-translator/settings/environments", pat: "https://github.com/settings/personal-access-tokens", act: "https://github.com/firnlab/prompt-translator/settings/secrets/actions"};
+/* cause 76: the build repository keeps its own copy of both keys; its settings page follows Settings › General (kit defaults) */
+function care19Link(k){ return k === "tact" ? `https://github.com/${encodeURI(buildRepo())}/settings/secrets/actions` : CARE19_LINKS[k]; }
+const CARE19_KEY_STEPS = {a: ["a1", "a2", "a3", "a4", "a5", "a6"], b: ["b1", "b2", "b3", "b4", "b5"]};
+function care19KeysText(){ const r = {r: buildRepo()}; return t("care.keys.sub", r) + " " + CARE19_KEY_STEPS.a.concat(CARE19_KEY_STEPS.b).map(k => t("care.keys." + k, r)).join(" "); }
 function care19KeysHTML(){
-  const li = k => `<li>${esc(t("care.keys." + k))}</li>`, a = (k, l) => `<a class="chip tap" href="${esc(CARE19_LINKS[k])}" target="_blank" rel="noopener">${ic("link")}${esc(t("care.keys.l." + l))}</a>`;
-  return `<div class="item care19-keys">${stSlot("attn")}<div class="body"><b class="small">${ic("shield")} ${esc(t("care.keys.t"))}</b><span class="small">${esc(t("care.keys.sub"))}</span>
-    <b class="small">${esc(t("care.keys.a"))}</b><ol class="small care19-steps">${li("a1")}${li("a2")}${li("a3")}${li("a4")}</ol><div class="row">${a("env", "env")}</div>
-    <b class="small">${esc(t("care.keys.b"))}</b><ol class="small care19-steps">${li("b1")}${li("b2")}${li("b3")}${li("b4")}</ol><div class="row">${a("pat", "pat")}${a("act", "act")}</div>
+  const r = {r: buildRepo()}, li = k => `<li>${esc(t("care.keys." + k, r))}</li>`, a = (k, l) => `<a class="chip tap" href="${esc(care19Link(k))}" target="_blank" rel="noopener">${ic("link")}${esc(t("care.keys.l." + l, r))}</a>`;
+  return `<div class="item care19-keys">${stSlot("attn")}<div class="body"><b class="small">${ic("shield")} ${esc(t("care.keys.t"))}</b><span class="small">${esc(t("care.keys.sub", r))}</span>
+    <b class="small">${esc(t("care.keys.a"))}</b><ol class="small care19-steps">${CARE19_KEY_STEPS.a.map(li).join("")}</ol><div class="row">${a("env", "env")}${a("tact", "tact")}</div>
+    <b class="small">${esc(t("care.keys.b"))}</b><ol class="small care19-steps">${CARE19_KEY_STEPS.b.map(li).join("")}</ol><div class="row">${a("pat", "pat")}${a("act", "act")}${a("tact", "tact")}</div>
     <span class="small muted">${esc(t("care.keys.never"))}</span></div><div class="qacts"><button class="btn xs primary" data-a="care19-keys-done">${ic("check")}${esc(t("care.keys.done"))}</button></div></div>`;
 }
 
@@ -326,7 +331,7 @@ function care19Entries(n){
   const E = [], add = (html, text) => { if (html) E.push({sec: "care", secs: wk18Secs(text, true), html}); };
   add(care19OverHTML(), t("care.ceil.over"));
   add(care19CeilHTML(n), t("care.ceil.prop") + t("care.ceil.fig") + t("care.ceil.what"));
-  if (care19KeysDue()) add(care19KeysHTML(), t("care.keys.sub") + ["a1", "a2", "a3", "a4", "b1", "b2", "b3", "b4"].map(k => t("care.keys." + k)).join(" "));
+  if (care19KeysDue()) add(care19KeysHTML(), care19KeysText());
   if (care19ExpDue()) add(care19ExpHTML("care19-wk"), t("care.exp.never") + t("care.exp.how"));
   return E;
 }
