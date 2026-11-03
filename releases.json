@@ -94,5 +94,21 @@
       "previous": "1793611842-c79f"
     },
     "notes": "1.9.2: a release check with stretched stand-in text (every text PT shows comes from its three languages, no label cut off, no page scrolling sideways, at desktop and phone width); the Firnlab vault's tool lines in German and Chinese; rows of buttons and the notes page no longer push a phone screen sideways."
+  },
+  {
+    "version": "1.9.3",
+    "date": "2026-11-02",
+    "commit": "d05ca4b987718ff9980a3696268885b051764718",
+    "main": {
+      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+      "live": "1793648891-af98",
+      "previous": "1793629097-1653"
+    },
+    "preview": {
+      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+      "live": "1793648709-a256",
+      "previous": "1793628914-30d1"
+    },
+    "notes": "1.9.3: the Build page says correctly how a build in the tools repository is locked: only a comment from your own login starts it, and on a private repository GitHub adds no second approval step (the old text promised an approval in the build environment that does not exist); a release check now catches any text that promises such a step."
   }
 ]

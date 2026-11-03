@@ -5,6 +5,14 @@ notes PT shows in "What's new" (`CHANGELOG` in `src/views_run.js`, the `cl.<vers
 (published date and release notes). Do not edit it by hand: `python3 tools/changelog.py` writes it, `--check` says when it is stale.
 Versions before 1.8 were published from the private archive repository (see RELEASES-ARCHIVE.md).
 
+## 1.9.3 — 2026-11-02
+
+Release notes: 1.9.3: the Build page says correctly how a build in the tools repository is locked: only a comment from your own login starts it, and on a private repository GitHub adds no second approval step (the old text promised an approval in the build environment that does not exist); a release check now catches any text that promises such a step.
+
+### Fixed
+
+- The Build page now says correctly how a build in the tools repository is locked: only a comment from your own login starts it, and on a private repository GitHub adds no second approval step
+
 ## 1.9.2 — 2026-11-02
 
 Release notes: 1.9.2: a release check with stretched stand-in text (every text PT shows comes from its three languages, no label cut off, no page scrolling sideways, at desktop and phone width); the Firnlab vault's tool lines in German and Chinese; rows of buttons and the notes page no longer push a phone screen sideways.
