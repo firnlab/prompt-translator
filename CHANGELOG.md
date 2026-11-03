@@ -5,7 +5,9 @@ notes PT shows in "What's new" (`CHANGELOG` in `src/views_run.js`, the `cl.<vers
 (published date and release notes). Do not edit it by hand: `python3 tools/changelog.py` writes it, `--check` says when it is stale.
 Versions before 1.8 were published from the private archive repository (see RELEASES-ARCHIVE.md).
 
-## 1.9.4 — 2026-11-02
+## 1.9.4 — 2026-11-03
+
+Release notes: 1.9.4: the yearly “Renew 2 keys” reminder in the Sunday note now covers the tools repository too: each new key goes into prompt-translator and then into the tools repository (named from Settings › General), with a link to each settings page, so builds there keep working after a renewal; the terminal stays open until the Claude key is in both places.
 
 ### Fixed
 

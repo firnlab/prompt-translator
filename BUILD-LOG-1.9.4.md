@@ -15,4 +15,12 @@ merges.
   `cl.194.fixed` new (`strings24.js`). `e2e190_care.py` 108 ok, 0 failed; two planted bugs in `check_the_pick.py`, both caught.
 
 ## Gate and publish
-(filled in after the gate)
+- Full gate in four parts (the session's background limit is 2 hours): part A 39 of 39 green; part B1 check the Pick tests 113
+  of 113 caught (the two cause-76 bugs included); part B2 check the hunt 10 of 10; part C click everything alone, 0 problems
+  (started a second time after a container restart cut the first run; no result from the cut run). No flaky test.
+- Both files rebuilt after the gate, byte for byte the tested builds.
+- Published (3 Nov 2026, about 02:35 Zürich): preview `1793669381-0b78` (before `1793648709-a256`); main `1793669544-2baa`
+  (before `1793648891-af98`). Capabilities carried forward.
+- Live re-test: preview and main byte for byte the tested builds; smoke (0 errors), PT outside claude.ai (21 ok, 0 failed) and
+  the pseudo-localisation check (179 ok, 0 failed) green on the live preview.
+- Code commit: `e571ca0`.
