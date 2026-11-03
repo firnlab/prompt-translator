@@ -126,5 +126,21 @@
       "previous": "1793648709-a256"
     },
     "notes": "1.9.4: the yearly “Renew 2 keys” reminder in the Sunday note now covers the tools repository too: each new key goes into prompt-translator and then into the tools repository (named from Settings › General), with a link to each settings page, so builds there keep working after a renewal; the terminal stays open until the Claude key is in both places."
+  },
+  {
+    "version": "1.10.0",
+    "date": "2026-11-03",
+    "commit": "583a6103fda173bce7d8175d85779cd55c57817c",
+    "main": {
+      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+      "live": "1793741450-54e1",
+      "previous": "1793669544-2baa"
+    },
+    "preview": {
+      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+      "live": "1793741106-aca6",
+      "previous": "1793669381-0b78"
+    },
+    "notes": "1.10.0: PT's hands (Settings › PT health, in the Claude desktop app). PT opens GitHub in the app's built-in browser with the owner's own login, reads it and takes the owner to the right spot: open pull requests with their titles, this version's release, the end date of each fine-grained key (marked within 30 days), and “Take me there” to a pull request's merge button and to each line of the key renewal card. It never clicks, types or handles keys; github.com only; owner only. Tried live by the owner twice: GitHub's real pages fixed two readings (labels before #N; the key list loads after the header)."
   }
 ]

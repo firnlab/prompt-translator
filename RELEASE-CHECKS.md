@@ -309,3 +309,28 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   part 7 (each key ends in the build repository, the link follows the setting, no placeholder left); planted bugs "the key
   renewal leaves the build repository out of the pt-private key (cause 76)" and "the build repository's key page ignores
   Settings › General (cause 76)" in `check_the_pick.py`.
+
+## 1.10.0 PT's hands (src/v1100_hands.js, src/strings25.js `hands.*`, test/e2e1100_hands.py, test/mock.js browser)
+- New ability, not a bug fix: the owner's GO (3 Nov 2026) to let PT act in the Claude desktop app's built-in browser "to the highest
+  ceiling". Checked on the platform first with a separate page ("PT Hands Probe", 7 of 7 steps in the owner's app): open, read,
+  find, scroll to, go to another page. GitHub there runs with the owner's own login, so the risks are those of the owner's hands.
+- Rules built in (and tested): one way to the browser (`handsCall`) with a guard: github.com over https only; only the tools
+  preview_start, navigate, get_page_text, find and computer; computer only scroll_to, hover and wait (no click, no typing, no key,
+  no drag; `form_input` is not even declared), so a final button (merge, delete, save) and every form stay the owner's; an answer
+  that holds something shaped like a key is dropped at once and the step stops (nothing kept, shown or stored); the owner's login
+  only; each browser failure has its own line (not the desktop app, not allowed yet, sign-in page, no answer); a closed tab gets a
+  new one; GitHub fills lists after opening, so PT reads again (at most 4 times, 2 s apart) and never forever.
+- Checks: `e2e1100_hands.py` (49, on both data sets); planted bugs in `check_the_pick.py`: "PT's hands may click", "PT's hands go
+  to any site", "a key on the page is kept and shown", "PT reads GitHub once, before its list is there", "outside the desktop app
+  PT shows only a generic error", "a closed tab ends the check instead of opening a new one", "another login may use the owner's
+  browser".
+- Not testable here: the real app's browser. The mock answers in the shapes the probe recorded; the live preview is tried by the
+  owner in the desktop app before main is published.
+- Cause (owner's first live try, 3 Nov 2026): GitHub's real pages differ from the made-up ones. The pull request list puts one-word
+  labels ("dependencies", "pt") between the title and "#N" (PT showed "#21 pt"); the key page writes "Never used •Expires on …" on one
+  line (PT found no key dates). Both parsers now take these shapes; `e2e1100_hands.py` has the real shapes; two planted bugs in
+  `check_the_pick.py`.
+- Cause (owner's second try, 3 Nov 2026): the key check stopped reading at "Generate new token", which the page shows before its
+  list, so PT read the header only and found no dates. It now waits for "Expires"/"No expiration" (four reads at most). The real
+  `get_page_text` shape (name, "Never used •", "Expires on …", "Delete" on separate lines) is in `e2e1100_hands.py`; the mock's
+  `early` text plays the header-first page; planted bug "the key check stops at the header, before the list".
