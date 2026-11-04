@@ -7954,6 +7954,261 @@ Object.assign(STR, {
 "c20.mig.msg.on":["Moved to PT 2.0: restore point “Before 2.0” first. Your rules in the facts book: {r}. Nothing was removed.","Zu PT 2.0 umgezogen: zuerst der Wiederherstellungspunkt «Vor 2.0». {r} deiner Regeln stehen im Faktenbuch. Nichts wurde entfernt.","已迁移到 PT 2.0：先建立了还原点“2.0 之前”。你的 {r} 条规则已记入事实簿。没有删除任何内容。"]
 });
 
+/* 2.0.0 Parts D and E · PT's hands per project, the morning check, prompt tests, Improve PT, metrics, setup guides and helpers (v200_hands.js, v200_loop.js, v200_setup.js) */
+Object.assign(STR, {
+"h20.title":["PT's hands","PTs Hände","PT 的双手"],
+"h20.sub":["In this project PT's hands can open pages of your sites, read them, type into form fields and click buttons that are not final. Before anything runs, PT shows what it will do, where, why and whether it can be undone. Final buttons (merge, send, delete, pay, publish, submit, confirm, save) and keys and passwords always stay yours: PT stops one step before and takes you there.","In diesem Projekt können PTs Hände Seiten deiner Websites öffnen, lesen, in Formularfelder tippen und Knöpfe klicken, die nicht endgültig sind. Bevor etwas läuft, zeigt PT, was es tut, wo, warum und ob es sich rückgängig machen lässt. Endgültige Knöpfe (zusammenführen, senden, löschen, bezahlen, veröffentlichen, absenden, bestätigen, speichern) sowie Schlüssel und Passwörter bleiben immer deine: PT hält einen Schritt davor an und bringt dich hin.","在这个项目中，PT 的双手可以打开你的网站页面、阅读、在表单字段中输入，并点击非最终按钮。任何操作开始前，PT 都会说明要做什么、在哪里、为什么，以及能否撤销。最终按钮（合并、发送、删除、支付、发布、提交、确认、保存）以及密钥和密码始终由你处理：PT 会在前一步停下，并带你过去。"],
+"h20.sites.t":["Sites for this project","Websites für dieses Projekt","此项目的网站"],
+"h20.sites.sub":["PT's hands open only these sites in this project (and the GitHub pages PT already reads). Clicks and typing only on sites of this list.","PTs Hände öffnen in diesem Projekt nur diese Websites (und die GitHub-Seiten, die PT schon liest). Klicken und Tippen nur auf Websites dieser Liste.","在此项目中，PT 的双手只打开这些网站（以及 PT 已经读取的 GitHub 页面）。只在此列表中的网站上点击和输入。"],
+"h20.sites.none":["No sites yet.","Noch keine Websites.","还没有网站。"],
+"h20.sites.gh":["read only","nur lesen","只读"],
+"h20.site.add":["Add a site (for example anydesk.com)","Website hinzufügen (zum Beispiel anydesk.com)","添加网站（例如 anydesk.com）"],
+"h20.site.del":["Remove {x} from the sites","{x} aus den Websites entfernen","从网站中移除 {x}"],
+"h20.site.bad":["That is not a site name. Write it like anydesk.com.","Das ist kein Website-Name. Schreib ihn wie anydesk.com.","这不是网站名称。请写成 anydesk.com 这样。"],
+"h20.site.have":["{x} is already on the list.","{x} ist schon auf der Liste.","{x} 已在列表中。"],
+"h20.site.max":["Sites per project: at most {n}.","Websites pro Projekt: höchstens {n}.","每个项目最多 {n} 个网站。"],
+"h20.site.addthis":["Add {x} to the sites","{x} zu den Websites hinzufügen","把 {x} 加入网站"],
+"h20.rc.add":["Site added: {x}","Website hinzugefügt: {x}","已添加网站：{x}"],
+"h20.rc.del":["Site removed: {x}","Website entfernt: {x}","已移除网站：{x}"],
+"h20.ask.t":["Ask PT's hands","PTs Hände fragen","请 PT 的双手帮忙"],
+"h20.ask.sub":["Say in your words what to do on which page. PT writes the steps first and shows them to you; nothing runs before you say Run.","Sag in deinen Worten, was auf welcher Seite zu tun ist. PT schreibt zuerst die Schritte und zeigt sie dir; nichts läuft, bevor du «Ausführen» sagst.","用你自己的话说明要在哪个页面做什么。PT 先写出步骤给你看；在你点“运行”之前什么都不会执行。"],
+"h20.ask.ph":["e.g. On anydesk.com, fill the download form with my first name and pick macOS","z. B. Auf anydesk.com das Download-Formular mit meinem Vornamen ausfüllen und macOS wählen","例如：在 anydesk.com 上用我的名字填写下载表单并选择 macOS"],
+"h20.ask.go":["Make a plan","Plan machen","制定计划"],
+"h20.ask.cost":["One message to write the plan; the steps themselves use no Claude messages.","Eine Nachricht für den Plan; die Schritte selbst brauchen keine Claude-Nachrichten.","写计划需要一条消息；执行步骤本身不使用 Claude 消息。"],
+"h20.ask.need":["Write what PT's hands should do.","Schreib, was PTs Hände tun sollen.","请写下 PT 的双手要做什么。"],
+"h20.busy.plan":["PT writes the steps …","PT schreibt die Schritte …","PT 正在写步骤……"],
+"h20.c.t":["Before it runs: what PT's hands will do","Bevor es läuft: was PTs Hände tun","运行前：PT 的双手将要做什么"],
+"h20.c.what":["What","Was","做什么"],
+"h20.c.where":["Where","Wo","在哪里"],
+"h20.c.why":["Why","Warum","为什么"],
+"h20.c.undo":["Can it be undone?","Rückgängig machen?","能否撤销？"],
+"h20.c.steps":["Steps","Schritte","步骤"],
+"h20.c.never":["PT never presses a final button, never types a key, password, code or card number, and adds no step because of what a page says.","PT drückt nie einen endgültigen Knopf, tippt nie einen Schlüssel, ein Passwort, einen Code oder eine Kartennummer und fügt keinen Schritt hinzu, weil eine Seite etwas sagt.","PT 从不按最终按钮，从不输入密钥、密码、验证码或卡号，也不会因为页面上的内容而增加步骤。"],
+"h20.undo.yes":["Yes","Ja","可以"],
+"h20.undo.no":["No","Nein","不能"],
+"h20.undo.partly":["Partly","Teilweise","部分可以"],
+"h20.do.open":["PT opens {x}","PT öffnet {x}","PT 打开 {x}"],
+"h20.do.type":["PT types “{v}” into “{x}”","PT tippt «{v}» in «{x}»","PT 在“{x}”中输入“{v}”"],
+"h20.do.choose":["PT chooses “{v}” in “{x}”","PT wählt «{v}» in «{x}»","PT 在“{x}”中选择“{v}”"],
+"h20.do.click":["PT clicks “{x}”","PT klickt «{x}»","PT 点击“{x}”"],
+"h20.yours.type":["Your typing: “{x}” (keys, passwords and codes stay yours)","Dein Tippen: «{x}» (Schlüssel, Passwörter und Codes bleiben deine)","由你输入：“{x}”（密钥、密码和验证码始终由你处理）"],
+"h20.yours.click":["Your click: {x}","Dein Klick: {x}","由你点击：{x}"],
+"h20.block.url":["The plan names no page to open, so nothing can run. Say which page.","Der Plan nennt keine Seite, also kann nichts laufen. Sag, welche Seite.","计划中没有要打开的页面，因此无法运行。请说明是哪个页面。"],
+"h20.block.site":["{x} is not on this project's sites. Add it first if PT's hands may work there.","{x} ist nicht auf den Websites dieses Projekts. Füge sie zuerst hinzu, wenn PTs Hände dort arbeiten dürfen.","{x} 不在此项目的网站列表中。如果允许 PT 的双手在那里操作，请先添加。"],
+"h20.run":["Run these steps","Diese Schritte ausführen","运行这些步骤"],
+"h20.close":["Close","Schliessen","关闭"],
+"h20.why.nofind":["“{x}” is not on the page","«{x}» ist nicht auf der Seite","页面上没有“{x}”"],
+"h20.why.left":["the click led to {x}, which is not on the list: PT stopped","der Klick führte zu {x}, das nicht auf der Liste ist: PT hat angehalten","点击后到了 {x}，它不在列表中：PT 已停止"],
+"h20.why.secret":["this field takes a key, password or code: yours to fill","dieses Feld will einen Schlüssel, ein Passwort oder einen Code: das füllst du aus","这个字段需要密钥、密码或验证码：由你填写"],
+"h20.sum.click":["Clicks “{x}”","Klickt «{x}»","点击“{x}”"],
+"h20.sum.type":["Fills “{x}”","Füllt «{x}» aus","填写“{x}”"],
+"h20.end.done":["Done: every step ran.","Fertig: alle Schritte sind gelaufen.","完成：所有步骤都已执行。"],
+"h20.end.final":["PT stopped one step before the end. Your click: {x}","PT hat einen Schritt vor dem Ende angehalten. Dein Klick: {x}","PT 在最后一步之前停下了。由你点击：{x}"],
+"h20.end.stopped":["PT stopped before the end; nothing after this step ran.","PT hat vor dem Ende angehalten; nach diesem Schritt lief nichts mehr.","PT 在结束前停下了；此步骤之后没有执行任何操作。"],
+"h20.go":["Take me there","Bring mich hin","带我过去"],
+"h20.go.sub":["PT opens the page and puts the pointer on the button; the click is yours.","PT öffnet die Seite und setzt den Zeiger auf den Knopf; der Klick ist deiner.","PT 打开页面并把指针放在按钮上；由你来点击。"],
+"h20.log.t":["What PT's hands did here · {n}","Was PTs Hände hier getan haben · {n}","PT 的双手在这里做过的事 · {n}"],
+"h20.log.end.done":["done · steps: {n}","fertig · Schritte: {n}","完成，{n} 步"],
+"h20.log.end.final":["steps: {n}, then your click: {x}","Schritte: {n}, dann dein Klick: {x}","{n} 步，然后由你点击：{x}"],
+"h20.log.end.stopped":["stopped · steps done: {n}","angehalten · erledigte Schritte: {n}","执行 {n} 步后停止"],
+"h20.route.sites":["PT's hands in this route work only on this project's sites: {x}","PTs Hände arbeiten in diesem Weg nur auf den Websites dieses Projekts: {x}","在这条路线中，PT 的双手只在此项目的网站上操作：{x}"],
+"h20.route.nosites":["PT's hands in this route need a site on this project's list first.","PTs Hände brauchen für diesen Weg zuerst eine Website auf der Liste dieses Projekts.","这条路线中 PT 的双手需要先在此项目列表中添加网站。"],
+"h20.route.manage":["Sites and steps","Websites und Schritte","网站和步骤"],
+"mc20.t":["Morning check","Morgen-Check","早间检查"],
+"mc20.busy":["PT checks what changed since yesterday …","PT prüft, was sich seit gestern geändert hat …","PT 正在检查自昨天以来的变化……"],
+"mc20.sub":["Once a day, on your first open. Things that may break a chosen route go to that project's Route alert.","Einmal am Tag, wenn du PT zum ersten Mal öffnest. Was einen gewählten Weg brechen kann, geht in den Weg-Alarm dieses Projekts.","每天一次，在你第一次打开时进行。可能破坏已选路线的变化会进入该项目的路线警报。"],
+"mc20.seen":["Seen","Gesehen","已看"],
+"mc20.again":["Check again","Nochmals prüfen","再查一次"],
+"mc20.cloud":["Every morning in the cloud too: guide","Jeden Morgen auch in der Cloud: Anleitung","也每天早上在云端运行：指南"],
+"mc20.open":["Open","Öffnen","打开"],
+"mc20.prs":["Open pull requests: {n}","Offene Pull Requests: {n}","未合并的拉取请求：{n}"],
+"mc20.prs.new":["new: {x}","neu: {x}","新的：{x}"],
+"mc20.keys.ok":["Key dates: none runs out within 30 days (keys read: {n})","Schlüssel-Daten: keiner läuft in 30 Tagen ab (gelesene Schlüssel: {n})","密钥日期：{n} 个密钥，30 天内都不会过期"],
+"mc20.keys.soon":["Renew soon: {x}","Bald erneuern: {x}","请尽快续期：{x}"],
+"mc20.app":["GitHub checks skipped: {x}","GitHub-Prüfungen übersprungen: {x}","已跳过 GitHub 检查：{x}"],
+"mc20.proj":["{x}: tripwires checked against {n} new items","{x}: Stolperdrähte gegen {n} neue Einträge geprüft","{x}：已对照 {n} 个新条目检查触发条件"],
+"mc20.watch.n":["watched pages: {n}, changed: {c}","beobachtete Seiten: {n}, geändert: {c}","监视的页面：{n}，有变化：{c}"],
+"mc20.watch.nofetch":["{n} “Not possible yet” lines (PT reads their pages once the Fetch helper is installed)","{n} Zeilen «Noch nicht möglich» (PT liest ihre Seiten, sobald das Fetch-Hilfsprogramm installiert ist)","{n} 条“暂不可行”条目（安装 Fetch 辅助程序后 PT 会读取其页面）"],
+"mc20.watch.changed":["changed: {x}","geändert: {x}","有变化：{x}"],
+"mc20.watch.item":["The page PT watches for “{x}” changed: {u}","Die Seite, die PT für «{x}» beobachtet, hat sich geändert: {u}","PT 为“{x}”监视的页面有变化：{u}"],
+"mc20.watch.ev":["Morning check: the page watched for “{x}” changed","Morgen-Check: die für «{x}» beobachtete Seite hat sich geändert","早间检查：为“{x}”监视的页面有变化"],
+"mc20.watch.fail":["Could not read the page for “{x}”: {e}","Konnte die Seite für «{x}» nicht lesen: {e}","无法读取“{x}”的页面：{e}"],
+"mc20.kp":["PT's platform knowledge changed ({a} → {b}): the “Not possible yet” lines were checked again","PTs Plattformwissen hat sich geändert ({a} → {b}): die Zeilen «Noch nicht möglich» wurden neu geprüft","PT 的平台知识已更新（{a} → {b}）：已重新检查“暂不可行”条目"],
+"mc20.kp.item":["PT's platform knowledge changed; “{x}” was not possible yet (watch: {w}) and may be possible now","PTs Plattformwissen hat sich geändert; «{x}» war noch nicht möglich (beobachten: {w}) und ist jetzt vielleicht möglich","PT 的平台知识已更新；“{x}”此前暂不可行（关注：{w}），现在可能可行了"],
+"mc20.err":["Part of the morning check failed; see Events.","Ein Teil des Morgen-Checks ist fehlgeschlagen; siehe Ereignisse.","早间检查的一部分失败了；请查看事件。"],
+"pt20.t":["Prompt tests","Prompt-Tests","提示词测试"],
+"pt20.sub":["PT runs up to five inputs through your tool's prompt and checks each answer against your never and must rules.","PT schickt bis zu fünf Eingaben durch den Prompt deines Tools und prüft jede Antwort gegen deine Nie- und Muss-Regeln.","PT 把最多五个输入送入你的工具提示词，并对照你的“绝不”和“必须”规则检查每个回答。"],
+"pt20.add":["Your own test input","Deine eigene Test-Eingabe","你自己的测试输入"],
+"pt20.add.ph":["What a person would send to the tool","Was eine Person dem Tool schicken würde","别人会发给这个工具的内容"],
+"pt20.add.need":["Write a test input first.","Schreib zuerst eine Test-Eingabe.","请先写一个测试输入。"],
+"pt20.max":["At most {n} own inputs.","Höchstens {n} eigene Eingaben.","最多 {n} 个自己的输入。"],
+"pt20.del":["Remove this input","Diese Eingabe entfernen","移除这个输入"],
+"pt20.src.you":["yours","deine","你的"],
+"pt20.src.test":["test","Test","测试"],
+"pt20.src.ex":["example","Beispiel","示例"],
+"pt20.run":["Run {n} prompt tests","{n} Prompt-Tests ausführen","运行 {n} 个提示词测试"],
+"pt20.cost":["Costs one quick message (all inputs in one call).","Kostet eine schnelle Nachricht (alle Eingaben in einem Aufruf).","花费一条快速消息（所有输入在一次调用中）。"],
+"pt20.busy":["PT runs the test inputs through the prompt ({n}) …","PT schickt die Test-Eingaben durch den Prompt ({n}) …","PT 正在把 {n} 个输入送入提示词……"],
+"pt20.need.pkg":["Build the prompt first (Build page); then PT can test it.","Baue zuerst den Prompt (Seite Bauen); dann kann PT ihn testen.","请先构建提示词（构建页面），然后 PT 才能测试。"],
+"pt20.need.rules":["Your facts book has no never or must yet. Add one, then test against it.","Dein Faktenbuch hat noch kein Nie oder Muss. Füge eins hinzu und teste dann dagegen.","你的事实簿里还没有“绝不”或“必须”。先添加一条，再进行测试。"],
+"pt20.need.in":["No test inputs yet: add one above, or add tests or examples to the project.","Noch keine Test-Eingaben: füge oben eine hinzu oder ergänze Tests oder Beispiele im Projekt.","还没有测试输入：请在上面添加，或为项目添加测试或示例。"],
+"pt20.sum":["{a} of {b} passed","{a} von {b} bestanden","{b} 个中通过 {a} 个"],
+"pt20.ver":["version {v}","Version {v}","版本 {v}"],
+"pt20.pass":["passed","bestanden","通过"],
+"pt20.fail":["failed","nicht bestanden","未通过"],
+"pt20.answer":["The tool's answer","Die Antwort des Tools","工具的回答"],
+"pt20.empty":["No answer came back for this input.","Für diese Eingabe kam keine Antwort zurück.","这个输入没有返回回答。"],
+"pt20.broke.never":["Breaks your never: {x}","Bricht dein Nie: {x}","违反你的“绝不”：{x}"],
+"pt20.broke.must":["Misses your must: {x}","Verfehlt dein Muss: {x}","未满足你的“必须”：{x}"],
+"pt20.bycode":["PT's word check found it","PTs Wortprüfung hat es gefunden","PT 的关键词检查发现了它"],
+"pt20.noverdict":["no verdict came back","kein Urteil zurückgekommen","没有返回判断"],
+"pt20.done":["Prompt tests: {a} of {b} passed","Prompt-Tests: {a} von {b} bestanden","提示词测试：{b} 个中通过 {a} 个"],
+"ipt20.t":["Your Improve PT reports","Deine Meldungen an «PT verbessern»","你提交给“改进 PT”的报告"],
+"ipt20.sub":["Reports: {n}, open: {o}. When an update fixes one, it shows “fixed in” here.","Meldungen: {n}, offen: {o}. Wenn ein Update eine behebt, steht hier «behoben in».","共 {n} 条报告，{o} 条未解决。更新修复后，这里会显示“已在……修复”。"],
+"ipt20.none":["No reports yet.","Noch keine Meldungen.","还没有报告。"],
+"ipt20.open":["open","offen","未解决"],
+"ipt20.fixed":["fixed in {v}","behoben in {v}","已在 {v} 修复"],
+"ipt20.news":["This update ({v}) fixes {n} of your Improve PT reports.","Dieses Update ({v}) behebt {n} deiner Meldungen an «PT verbessern».","此次更新（{v}）修复了你提交给“改进 PT”的 {n} 条报告。"],
+"ipt20.see":["Show them","Zeigen","查看"],
+"ipt20.ok":["Got it","Verstanden","知道了"],
+"set.tab.metrics":["Metrics","Kennzahlen","指标"],
+"set.tab.setup20":["Setup","Einrichtung","设置向导"],
+"met20.t":["How PT works for you","Wie PT für dich arbeitet","PT 为你工作的情况"],
+"met20.sub":["Counted on this device's workspace only and never sent anywhere: no prompt, report or export reads these numbers.","Nur im Arbeitsbereich gezählt und nie irgendwohin geschickt: kein Prompt, keine Meldung und kein Export liest diese Zahlen.","只在工作区中统计，从不发送到任何地方：任何提示词、报告或导出都不会读取这些数字。"],
+"met20.none":["No projects yet.","Noch keine Projekte.","还没有项目。"],
+"met20.c.p":["Project","Projekt","项目"],
+"met20.c.asked":["Questions asked","Gestellte Fragen","提出的问题"],
+"met20.c.twice":["Asked twice, held back","Doppelt, zurückgehalten","重复问题，已拦下"],
+"met20.c.rep":["Rule breaks repaired","Regelbrüche repariert","已修复的规则违反"],
+"met20.c.routes":["Routes on the map","Wege auf der Karte","地图上的路线"],
+"met20.c.time":["Goal → decision","Ziel → Entscheidung","目标 → 决定"],
+"met20.min":["{n} min","{n} Min.","{n} 分钟"],
+"met20.h":["{n} h","{n} Std.","{n} 小时"],
+"met20.d":["{n} d","{n} Tage","{n} 天"],
+"met20.nodec":["not decided yet","noch nicht entschieden","尚未决定"],
+"met20.how":["Questions: what PT showed you in Pick, the interview and the chat. Held back: questions PT did not show because you had answered them. Repaired: answers PT checked against your rules and fixed before showing them. Goal → decision: from your first confirmed goal (or the project's start) to the route you took.","Fragen: was PT dir in Pick, im Interview und im Chat gezeigt hat. Zurückgehalten: Fragen, die PT nicht gezeigt hat, weil du sie schon beantwortet hattest. Repariert: Antworten, die PT gegen deine Regeln geprüft und vor dem Zeigen korrigiert hat. Ziel → Entscheidung: von deinem ersten bestätigten Ziel (oder dem Projektstart) bis zum gewählten Weg.","问题：PT 在 Pick、访谈和对话中展示给你的问题。已拦下：因为你已回答过而未展示的问题。已修复：PT 对照你的规则检查并在展示前修正的回答。目标 → 决定：从你第一次确认目标（或项目开始）到你选定路线的时间。"],
+"su20.t":["Setup and helpers","Einrichtung und Hilfsprogramme","设置与辅助程序"],
+"su20.sub":["Nothing here is needed for PT 2.0 to work. You do each step yourself; PT never installs anything.","Nichts hier ist nötig, damit PT 2.0 funktioniert. Jeden Schritt machst du selbst; PT installiert nie etwas.","PT 2.0 不需要这里的任何东西也能运行。每一步都由你自己完成；PT 从不安装任何东西。"],
+"su20.where":["Helpers run on your Mac and answer only when PT is open in the Claude desktop app, for you as the owner.","Hilfsprogramme laufen auf deinem Mac und antworten nur, wenn PT in der Claude-Desktop-App offen ist, für dich als Besitzer.","辅助程序运行在你的 Mac 上，只有在 Claude 桌面应用中打开 PT 时才会响应，且只对你（所有者）有效。"],
+"su20.helpers":["Helper programs (one per kind of job)","Hilfsprogramme (eines pro Aufgabenart)","辅助程序（每类工作一个）"],
+"su20.c.cat":["Kind of job","Aufgabenart","工作类型"],
+"su20.c.prog":["Program","Programm","程序"],
+"su20.c.st":["On your Mac","Auf deinem Mac","在你的 Mac 上"],
+"su20.c.does":["What PT does with it","Was PT damit macht","PT 用它做什么"],
+"su20.c.acts":["Actions","Aktionen","操作"],
+"su20.cat.files":["Files and folders","Dateien und Ordner","文件和文件夹"],
+"su20.cat.code":["Code history (Git)","Code-Verlauf (Git)","代码历史（Git）"],
+"su20.cat.web":["Reading web pages","Webseiten lesen","读取网页"],
+"su20.cat.3d":["3D models","3D-Modelle","三维模型"],
+"su20.does.files":["Saves your tool's prompt as a new file in the folder you allowed (never overwrites, never deletes).","Speichert den Prompt deines Tools als neue Datei im erlaubten Ordner (überschreibt nie, löscht nie).","把你的工具提示词作为新文件保存到你允许的文件夹（从不覆盖，从不删除）。"],
+"su20.does.git":["Morning check: shows changes not yet committed in the folder you name below.","Morgen-Check: zeigt noch nicht festgehaltene Änderungen im unten genannten Ordner.","早间检查：显示你在下方指定的文件夹中尚未提交的更改。"],
+"su20.does.fetch":["Morning check: reads the pages your “Not possible yet” lines watch and tells you when one changed.","Morgen-Check: liest die Seiten, die deine Zeilen «Noch nicht möglich» beobachten, und sagt dir, wenn sich eine geändert hat.","早间检查：读取你的“暂不可行”条目所监视的页面，有变化时告诉你。"],
+"su20.does.blender":["Ready for 3D routes: PT checks it is there; building in Blender comes with a later update (every run will show its code first).","Bereit für 3D-Wege: PT prüft, ob es da ist; Bauen in Blender kommt mit einem späteren Update (jeder Lauf zeigt zuerst seinen Code).","为三维路线做好准备：PT 检查它是否存在；在 Blender 中构建将在后续更新中提供（每次运行都会先显示代码）。"],
+"su20.st.ready":["Ready","Bereit","就绪"],
+"su20.st.unchecked":["Not checked yet","Noch nicht geprüft","尚未检查"],
+"su20.st.old":["Installed, but tools are missing","Installiert, aber Werkzeuge fehlen","已安装，但缺少工具"],
+"su20.st.missing":["Not installed","Nicht installiert","未安装"],
+"su20.st.app":["Only in the desktop app","Nur in der Desktop-App","仅限桌面应用"],
+"su20.st.busy":["Checking …","Prüfe …","检查中……"],
+"su20.check":["Check it's there","Prüfen, ob es da ist","检查是否存在"],
+"su20.e.missing":["The helper does not answer: it is not installed, not running, or PT is not open in the desktop app.","Das Hilfsprogramm antwortet nicht: es ist nicht installiert, läuft nicht, oder PT ist nicht in der Desktop-App offen.","辅助程序没有响应：它未安装、未运行，或者 PT 没有在桌面应用中打开。"],
+"su20.out":["Never helpers for: {x}.","Nie Hilfsprogramme für: {x}.","从不为以下内容使用辅助程序：{x}。"],
+"su20.out.calendar":["Calendar","Kalender","日历"],
+"su20.out.contacts":["Contacts","Kontakte","联系人"],
+"su20.out.music":["Music","Musik","音乐"],
+"su20.out.photos":["Photos","Fotos","照片"],
+"su20.out.mailsort":["sorting or drafting e-mail or Slack","E-Mail oder Slack sortieren oder entwerfen","整理或起草电子邮件或 Slack 消息"],
+"su20.left":["Not declared in 2.0 (no program whose tools could be checked on its own official page, or PT already does the job): terminal, databases, office documents, notes, other browsers, memory, time.","In 2.0 nicht vorgesehen (kein Programm, dessen Werkzeuge auf seiner eigenen offiziellen Seite geprüft werden konnten, oder PT macht die Aufgabe schon): Terminal, Datenbanken, Office-Dokumente, Notizen, andere Browser, Gedächtnis, Zeit.","2.0 中未声明（没有能在其官方页面核实工具的程序，或 PT 已经能完成这项工作）：终端、数据库、办公文档、笔记、其他浏览器、记忆、时间。"],
+"su20.repo":["Folder for the Git check (optional)","Ordner für die Git-Prüfung (freiwillig)","Git 检查的文件夹（可选）"],
+"su20.repo.saved":["Saved.","Gespeichert.","已保存。"],
+"su20.guides":["Guides, click by click","Anleitungen, Klick für Klick","分步指南"],
+"su20.guides.sub":["Each step is yours. PT shows the way and, where it can, takes you to the page.","Jeder Schritt ist deiner. PT zeigt den Weg und bringt dich, wo es kann, auf die Seite.","每一步都由你完成。PT 指明路径，能做到时还会带你到页面。"],
+"su20.open":["Open","Öffnen","打开"],
+"su20.h.config":["The entry to add under \"mcpServers\" (the name must stay as written):","Der Eintrag unter \"mcpServers\" (der Name muss so bleiben):","在 \"mcpServers\" 下添加的条目（名称必须保持不变）："],
+"su20.h.name":["PT looks for the helper named “{x}”","PT sucht das Hilfsprogramm mit dem Namen «{x}»","PT 查找名为“{x}”的辅助程序"],
+"su20.h.remove":["To remove it: delete the entry, save, restart the app.","Zum Entfernen: Eintrag löschen, speichern, App neu starten.","要移除：删除该条目，保存，然后重启应用。"],
+"su20.route.needs":["Needs {x} on your Mac","Braucht {x} auf deinem Mac","需要你的 Mac 上安装 {x}"],
+"su20.route.guide":["Install guide","Installationsanleitung","安装指南"],
+"su20.route.ready":["{x} is ready on your Mac","{x} ist auf deinem Mac bereit","{x} 已在你的 Mac 上就绪"],
+"su20.route.none":["This route names a helper PT has not declared yet (a small PT update adds one).","Dieser Weg nennt ein Hilfsprogramm, das PT noch nicht vorsieht (ein kleines PT-Update ergänzt es).","这条路线提到了 PT 尚未声明的辅助程序（一次小更新即可添加）。"],
+"su20.route.list":["Helpers","Hilfsprogramme","辅助程序"],
+"su20.route.out":["Excluded by your PT rule: no helper for {x}.","Durch deine PT-Regel ausgeschlossen: kein Hilfsprogramm für {x}.","被你的 PT 规则排除：不为{x}使用辅助程序。"],
+"su20.files.save":["Save the prompt in your folder","Prompt in deinem Ordner speichern","把提示词保存到你的文件夹"],
+"su20.files.sub":["through the Filesystem helper, as a new file","über das Filesystem-Hilfsprogramm, als neue Datei","通过 Filesystem 辅助程序，作为新文件"],
+"su20.files.t":["Save the prompt as a file","Prompt als Datei speichern","把提示词保存为文件"],
+"su20.files.contract":["What: PT writes your tool's prompt into a new file. Where: {x}. Why: so you have it on your Mac. Can it be undone: yes, delete the file in Finder. PT never overwrites or deletes a file.","Was: PT schreibt den Prompt deines Tools in eine neue Datei. Wo: {x}. Warum: damit du ihn auf deinem Mac hast. Rückgängig: ja, lösch die Datei im Finder. PT überschreibt oder löscht nie eine Datei.","做什么：PT 把你的工具提示词写入一个新文件。在哪里：{x}。为什么：让你在 Mac 上保存一份。能否撤销：可以，在访达中删除该文件。PT 从不覆盖或删除文件。"],
+"su20.files.yes":["Write the file","Datei schreiben","写入文件"],
+"su20.files.done":["Saved: {x}","Gespeichert: {x}","已保存：{x}"],
+"su20.files.nodir":["The Filesystem helper allows no folder. Add one in its entry (see the guide).","Das Filesystem-Hilfsprogramm erlaubt keinen Ordner. Ergänze einen in seinem Eintrag (siehe Anleitung).","Filesystem 辅助程序没有允许的文件夹。请在其条目中添加一个（见指南）。"],
+"su20.git.changes":["Git {x}: changes not committed yet: {n}","Git {x}: noch nicht festgehaltene Änderungen: {n}","Git {x}：{n} 处更改尚未提交"],
+"su20.git.clean":["Git {x}: nothing waiting","Git {x}: nichts offen","Git {x}：没有待提交的内容"],
+"su20.git.fail":["Git {x}: could not read ({e})","Git {x}: konnte nicht lesen ({e})","Git {x}：无法读取（{e}）"],
+"su20.g.app.t":["The Claude GitHub App for firnlab","Die Claude-GitHub-App für firnlab","为 firnlab 安装 Claude GitHub 应用"],
+"su20.g.app.why":["lets Claude Code sessions and scheduled tasks react to your repositories","lässt Claude-Code-Sitzungen und geplante Aufgaben auf deine Repositories reagieren","让 Claude Code 会话和计划任务能响应你的代码库"],
+"su20.g.app.1":["Open the Claude GitHub App page while you are signed in to GitHub as the owner of firnlab.","Öffne die Seite der Claude-GitHub-App, während du bei GitHub als Besitzer von firnlab angemeldet bist.","以 firnlab 所有者身份登录 GitHub，然后打开 Claude GitHub 应用页面。"],
+"su20.g.app.2":["Click “Install” (or “Configure” if it is already installed).","Klick auf «Install» (oder «Configure», wenn sie schon installiert ist).","点击“Install”（如果已安装则点击“Configure”）。"],
+"su20.g.app.3":["Pick the organization firnlab.","Wähle die Organisation firnlab.","选择组织 firnlab。"],
+"su20.g.app.4":["Choose “Only select repositories” and tick prompt-translator and tools (not pt-private).","Wähle «Only select repositories» und hake prompt-translator und tools an (nicht pt-private).","选择“Only select repositories”，勾选 prompt-translator 和 tools（不要选 pt-private）。"],
+"su20.g.app.5":["Click “Install” or “Save”. That click is yours; PT never does it.","Klick auf «Install» oder «Save». Dieser Klick ist deiner; PT macht ihn nie.","点击“Install”或“Save”。这一步由你点击；PT 从不代劳。"],
+"su20.g.connector.t":["The GitHub connector in claude.ai","Der GitHub-Connector in claude.ai","claude.ai 中的 GitHub 连接器"],
+"su20.g.connector.why":["lets Claude read your repositories in chats and tasks","lässt Claude deine Repositories in Chats und Aufgaben lesen","让 Claude 在对话和任务中读取你的代码库"],
+"su20.g.connector.1":["Open claude.ai › Settings › Connectors.","Öffne claude.ai › Einstellungen › Connectors.","打开 claude.ai › 设置 › 连接器。"],
+"su20.g.connector.2":["Find GitHub and click “Connect”.","Such GitHub und klick auf «Verbinden».","找到 GitHub，点击“连接”。"],
+"su20.g.connector.3":["GitHub opens: sign in if it asks, read what Claude may see, then click “Authorize” (your click).","GitHub öffnet sich: melde dich an, falls gefragt, lies, was Claude sehen darf, und klick dann auf «Authorize» (dein Klick).","GitHub 会打开：如有提示请登录，阅读 Claude 可以看到的内容，然后点击“Authorize”（由你点击）。"],
+"su20.g.connector.4":["If a private repository does not show up, give the Claude GitHub App access to it (guide above).","Wenn ein privates Repository nicht erscheint, gib der Claude-GitHub-App Zugriff darauf (Anleitung oben).","如果私有代码库没有显示，请为 Claude GitHub 应用授予访问权限（见上方指南）。"],
+"su20.g.connector.5":["Back in claude.ai, GitHub shows as connected.","Zurück in claude.ai steht GitHub als verbunden.","回到 claude.ai，GitHub 显示为已连接。"],
+"su20.g.automerge.t":["Auto-merge for Dependabot pull requests only","Automatisches Zusammenführen nur für Dependabot-Pull-Requests","仅对 Dependabot 拉取请求自动合并"],
+"su20.g.automerge.why":["small dependency updates go in by themselves once the checks are green; everything else still waits for you","kleine Abhängigkeits-Updates gehen von selbst rein, sobald die Prüfungen grün sind; alles andere wartet weiter auf dich","检查通过后，小型依赖更新会自动合并；其他所有内容仍等待你处理"],
+"su20.g.automerge.1":["On GitHub open firnlab/prompt-translator › Settings › General.","Öffne auf GitHub firnlab/prompt-translator › Settings › General.","在 GitHub 上打开 firnlab/prompt-translator › Settings › General。"],
+"su20.g.automerge.2":["Under “Pull Requests” tick “Allow auto-merge” (your click).","Unter «Pull Requests» «Allow auto-merge» anhaken (dein Klick).","在“Pull Requests”下勾选“Allow auto-merge”（由你点击）。"],
+"su20.g.automerge.3":["Ask Claude in a Claude Code session: “Add a workflow that turns on auto-merge only for pull requests opened by dependabot[bot], with the actions pinned to commit SHAs.” Claude opens a pull request.","Bitte Claude in einer Claude-Code-Sitzung: «Füge einen Workflow hinzu, der automatisches Zusammenführen nur für Pull Requests von dependabot[bot] einschaltet, mit auf Commit-SHAs festgelegten Actions.» Claude öffnet einen Pull Request.","在 Claude Code 会话中请 Claude：“添加一个工作流，只对 dependabot[bot] 打开的拉取请求启用自动合并，并把 actions 固定到提交 SHA。”Claude 会打开一个拉取请求。"],
+"su20.g.automerge.4":["Read that pull request: it may only run “gh pr merge --auto --merge” when the author is dependabot[bot]. Then merge it yourself.","Lies diesen Pull Request: er darf «gh pr merge --auto --merge» nur ausführen, wenn der Autor dependabot[bot] ist. Dann führ ihn selbst zusammen.","阅读这个拉取请求：只有作者是 dependabot[bot] 时才可以运行“gh pr merge --auto --merge”。然后由你自己合并。"],
+"su20.g.automerge.5":["From then on a Dependabot pull request merges by itself once data-guard and quick-gate are green; every other pull request still waits for your merge.","Ab dann wird ein Dependabot-Pull-Request von selbst zusammengeführt, sobald data-guard und quick-gate grün sind; jeder andere Pull Request wartet weiter auf dich.","此后，data-guard 和 quick-gate 通过后，Dependabot 拉取请求会自动合并；其他所有拉取请求仍等待你来合并。"],
+"su20.g.cloud.t":["The morning check as a cloud scheduled task","Der Morgen-Check als geplante Aufgabe in der Cloud","把早间检查设为云端计划任务"],
+"su20.g.cloud.why":["runs every morning even when PT is closed; PT creates no task itself","läuft jeden Morgen, auch wenn PT zu ist; PT legt selbst keine Aufgabe an","即使 PT 关闭也会每天早上运行；PT 自己不会创建任务"],
+"su20.g.cloud.1":["Open claude.ai › Code › Scheduled tasks and click “New task” (in some accounts “New routine”).","Öffne claude.ai › Code › Geplante Aufgaben und klick auf «Neue Aufgabe» (in manchen Konten «New routine»).","打开 claude.ai › Code › 计划任务，点击“新建任务”（某些账户显示为“New routine”）。"],
+"su20.g.cloud.2":["Name: “PT morning check”. Prompt: “Read the open pull requests and the latest workflow runs of firnlab/prompt-translator and say in five lines what changed since yesterday. Change nothing, open nothing, merge nothing.”","Name: «PT Morgen-Check». Prompt: «Lies die offenen Pull Requests und die letzten Workflow-Läufe von firnlab/prompt-translator und sag in fünf Zeilen, was sich seit gestern geändert hat. Ändere nichts, öffne nichts, führe nichts zusammen.»","名称：“PT 早间检查”。提示词：“读取 firnlab/prompt-translator 的未合并拉取请求和最近的工作流运行，用五行说明自昨天以来的变化。不要更改、不要打开、不要合并任何东西。”"],
+"su20.g.cloud.3":["Trigger: Schedule › Daily, a few minutes after the hour (for example 07:07).","Auslöser: Zeitplan › Täglich, ein paar Minuten nach der vollen Stunde (zum Beispiel 07:07).","触发器：计划 › 每天，整点后几分钟（例如 07:07）。"],
+"su20.g.cloud.4":["Advanced settings › Repository: firnlab/prompt-translator; environment: Default.","Erweiterte Einstellungen › Repository: firnlab/prompt-translator; Umgebung: Default.","高级设置 › 代码库：firnlab/prompt-translator；环境：Default。"],
+"su20.g.cloud.5":["Connectors tab: remove every connector the check does not need.","Reiter Connectors: entferne jeden Connector, den der Check nicht braucht.","连接器标签页：移除检查不需要的所有连接器。"],
+"su20.g.cloud.6":["Click “Create” (your click). Each run shows under History on the task's page.","Klick auf «Erstellen» (dein Klick). Jeder Lauf steht unter Verlauf auf der Seite der Aufgabe.","点击“创建”（由你点击）。每次运行都会显示在任务页面的“历史”中。"],
+"su20.g.computer.t":["Computer use in the Claude desktop app","Computer-Nutzung in der Claude-Desktop-App","在 Claude 桌面应用中启用电脑操作"],
+"su20.g.computer.why":["lets Claude work with apps on your Mac in a session; PT itself does not use it (its hands are the app's browser)","lässt Claude in einer Sitzung mit Apps auf deinem Mac arbeiten; PT selbst nutzt es nicht (seine Hände sind der Browser der App)","让 Claude 在会话中操作你 Mac 上的应用；PT 自己不使用它（它的双手是应用内的浏览器）"],
+"su20.g.computer.1":["Update the Claude desktop app to the latest version.","Bring die Claude-Desktop-App auf die neueste Version.","把 Claude 桌面应用更新到最新版本。"],
+"su20.g.computer.2":["Open Settings › Capabilities (if there is no Computer use section: Settings › System, under “This computer”).","Öffne Einstellungen › Fähigkeiten (wenn es dort keinen Bereich Computer-Nutzung gibt: Einstellungen › System, unter «Dieser Computer»).","打开 设置 › 功能（如果没有“电脑操作”部分：设置 › 系统，在“此电脑”下）。"],
+"su20.g.computer.3":["Turn on “Enable computer use” (your click).","Schalte «Computer-Nutzung aktivieren» ein (dein Klick).","打开“启用电脑操作”（由你点击）。"],
+"su20.g.computer.4":["In a session Claude asks you to approve each app before it uses it.","In einer Sitzung fragt Claude dich bei jeder App, bevor es sie nutzt.","在会话中，Claude 使用每个应用前都会请你批准。"],
+"su20.g.computer.5":["It is a beta on Pro and Max plans; your Mac must be awake with the app open.","Es ist eine Beta in den Plänen Pro und Max; dein Mac muss wach sein und die App offen.","这是 Pro 和 Max 套餐中的测试版功能；你的 Mac 需要保持唤醒并打开应用。"],
+"su20.g.h-files.t":["Install the Filesystem helper","Das Filesystem-Hilfsprogramm installieren","安装 Filesystem 辅助程序"],
+"su20.g.h-files.why":["about 5 minutes; needs Node.js","etwa 5 Minuten; braucht Node.js","约 5 分钟；需要 Node.js"],
+"su20.h.files.1":["If Terminal shows nothing for “node -v”, install Node.js (the LTS installer from nodejs.org).","Wenn das Terminal bei «node -v» nichts zeigt, installiere Node.js (den LTS-Installer von nodejs.org).","如果在终端中输入“node -v”没有显示，请安装 Node.js（nodejs.org 的 LTS 安装程序）。"],
+"su20.h.files.2":["Make a folder PT may use, for example Documents/PT.","Lege einen Ordner an, den PT nutzen darf, zum Beispiel Dokumente/PT.","创建一个允许 PT 使用的文件夹，例如 文稿/PT。"],
+"su20.h.files.3":["In the Claude desktop app open Settings › Developer › Edit Config.","Öffne in der Claude-Desktop-App Einstellungen › Entwickler › Konfiguration bearbeiten.","在 Claude 桌面应用中打开 设置 › 开发者 › 编辑配置。"],
+"su20.h.files.4":["Add the entry below under “mcpServers”, with your folder instead of /Users/<you>/Documents/PT, and save.","Füge den Eintrag unten unter «mcpServers» ein, mit deinem Ordner statt /Users/<you>/Documents/PT, und speichere.","把下面的条目添加到“mcpServers”下，用你的文件夹替换 /Users/<you>/Documents/PT，然后保存。"],
+"su20.h.files.5":["Quit and reopen the desktop app, then click “Check it's there” here.","Beende die Desktop-App und öffne sie neu, dann klick hier auf «Prüfen, ob es da ist».","退出并重新打开桌面应用，然后在这里点击“检查是否存在”。"],
+"su20.g.h-git.t":["Install the Git helper","Das Git-Hilfsprogramm installieren","安装 Git 辅助程序"],
+"su20.g.h-git.why":["about 5 minutes; needs uv","etwa 5 Minuten; braucht uv","约 5 分钟；需要 uv"],
+"su20.h.git.1":["If Terminal shows nothing for “uv --version”, install uv (Homebrew: brew install uv).","Wenn das Terminal bei «uv --version» nichts zeigt, installiere uv (Homebrew: brew install uv).","如果在终端中输入“uv --version”没有显示，请安装 uv（Homebrew：brew install uv）。"],
+"su20.h.git.2":["In the Claude desktop app open Settings › Developer › Edit Config.","Öffne in der Claude-Desktop-App Einstellungen › Entwickler › Konfiguration bearbeiten.","在 Claude 桌面应用中打开 设置 › 开发者 › 编辑配置。"],
+"su20.h.git.3":["Add the entry below under “mcpServers”, with the folder of your repository, and save.","Füge den Eintrag unten unter «mcpServers» ein, mit dem Ordner deines Repositorys, und speichere.","把下面的条目添加到“mcpServers”下，填入你的代码库文件夹，然后保存。"],
+"su20.h.git.4":["Quit and reopen the desktop app.","Beende die Desktop-App und öffne sie neu.","退出并重新打开桌面应用。"],
+"su20.h.git.5":["Write the same folder in “Folder for the Git check” above and click “Check it's there”.","Schreib denselben Ordner oben in «Ordner für die Git-Prüfung» und klick auf «Prüfen, ob es da ist».","在上方“Git 检查的文件夹”中填写同一个文件夹，然后点击“检查是否存在”。"],
+"su20.g.h-fetch.t":["Install the Fetch helper","Das Fetch-Hilfsprogramm installieren","安装 Fetch 辅助程序"],
+"su20.g.h-fetch.why":["about 5 minutes; needs uv","etwa 5 Minuten; braucht uv","约 5 分钟；需要 uv"],
+"su20.h.fetch.1":["If Terminal shows nothing for “uv --version”, install uv (Homebrew: brew install uv).","Wenn das Terminal bei «uv --version» nichts zeigt, installiere uv (Homebrew: brew install uv).","如果在终端中输入“uv --version”没有显示，请安装 uv（Homebrew：brew install uv）。"],
+"su20.h.fetch.2":["In the Claude desktop app open Settings › Developer › Edit Config.","Öffne in der Claude-Desktop-App Einstellungen › Entwickler › Konfiguration bearbeiten.","在 Claude 桌面应用中打开 设置 › 开发者 › 编辑配置。"],
+"su20.h.fetch.3":["Add the entry below under “mcpServers” and save.","Füge den Eintrag unten unter «mcpServers» ein und speichere.","把下面的条目添加到“mcpServers”下并保存。"],
+"su20.h.fetch.4":["Good to know: its makers say it can also reach addresses inside your home network; PT only reads the pages your watch lines name.","Gut zu wissen: laut seinen Machern erreicht es auch Adressen in deinem Heimnetz; PT liest nur die Seiten, die deine Beobachtungs-Zeilen nennen.","请注意：其开发者表示它也能访问你家庭网络内的地址；PT 只读取你的监视条目中列出的页面。"],
+"su20.h.fetch.5":["Quit and reopen the desktop app, then click “Check it's there” here.","Beende die Desktop-App und öffne sie neu, dann klick hier auf «Prüfen, ob es da ist».","退出并重新打开桌面应用，然后在这里点击“检查是否存在”。"],
+"su20.g.h-blender.t":["Install the Blender helper","Das Blender-Hilfsprogramm installieren","安装 Blender 辅助程序"],
+"su20.g.h-blender.why":["about 10 minutes; needs Blender and uv","etwa 10 Minuten; braucht Blender und uv","约 10 分钟；需要 Blender 和 uv"],
+"su20.h.blender.1":["Install uv (Homebrew: brew install uv) and Blender if you do not have them.","Installiere uv (Homebrew: brew install uv) und Blender, falls du sie nicht hast.","如果还没有，请安装 uv（Homebrew：brew install uv）和 Blender。"],
+"su20.h.blender.2":["In Terminal run “uvx blender-mcp install-addon”, then in Blender turn on the add-on “Interface: MCP for Blender” (Edit › Preferences › Add-ons).","Führe im Terminal «uvx blender-mcp install-addon» aus und schalte dann in Blender das Add-on «Interface: MCP for Blender» ein (Edit › Preferences › Add-ons).","在终端运行“uvx blender-mcp install-addon”，然后在 Blender 中启用插件“Interface: MCP for Blender”（Edit › Preferences › Add-ons）。"],
+"su20.h.blender.3":["In the Claude desktop app open Settings › Developer › Edit Config, add the entry below under “mcpServers” and save.","Öffne in der Claude-Desktop-App Einstellungen › Entwickler › Konfiguration bearbeiten, füge den Eintrag unten unter «mcpServers» ein und speichere.","在 Claude 桌面应用中打开 设置 › 开发者 › 编辑配置，把下面的条目添加到“mcpServers”下并保存。"],
+"su20.h.blender.4":["In Blender press N, open the “MCP for Blender” tab and start its server. Save your Blender work first: the helper can run code in Blender.","Drück in Blender N, öffne den Reiter «MCP for Blender» und starte seinen Server. Speichere zuerst deine Blender-Arbeit: das Hilfsprogramm kann Code in Blender ausführen.","在 Blender 中按 N，打开“MCP for Blender”标签页并启动其服务器。请先保存你的 Blender 工作：这个辅助程序可以在 Blender 中运行代码。"],
+"su20.h.blender.5":["Quit and reopen the desktop app, then click “Check it's there” here.","Beende die Desktop-App und öffne sie neu, dann klick hier auf «Prüfen, ob es da ist».","退出并重新打开桌面应用，然后在这里点击“检查是否存在”。"]
+});
+
 /* ===================== CORE ===================== */
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
@@ -28941,6 +29196,744 @@ const V200C_CSS = `
 `;
 function v200cCss(){ try{ if (document.getElementById("v200c-css")) return; const s = document.createElement("style"); s.id = "v200c-css"; s.textContent = V200C_CSS; (document.head || document.documentElement).appendChild(s); }catch(e){ console.warn("2.0 chat: style", e); } }   // ok:catch without the extra style the chat still works (plain layout)
 v200cCss();
+
+/* ===================== 2.0 Part D: PT's hands per project (forms and non-final clicks, the final-button stop) and the morning check =====================
+   The owner (agreed for 2.0): "real clicks and typing in forms are OK; final buttons — merge, send, delete, pay, publish — and keys/passwords
+   always stay mine". Independent design §6.2 and §4.9 (the action contract).
+   1. Sites per project (p.hands20.sites): PT's hands open only pages of the project's own list, plus the github.com pages PT already reads
+      (1.10). Clicks and typing need the site on the list (github.com included).
+   2. A plan first (CaMeL-like): the owner says what to do; one call writes the steps BEFORE any page is opened; code vets them (sites,
+      allowed kinds, no key or password typed, the final button turned into the owner's step). Page text never adds a step.
+   3. The action contract is shown before anything runs: what, where, why, can it be undone, every step and whose it is.
+   4. The final-button stop: a click whose label is a final word (merge, send, delete, pay, publish, submit, confirm, save … in en/de/zh),
+      at plan time or when the page shows it, is never clicked: PT stops one step before, shows "Your click: <button>" and "Take me there"
+      (opens the page, puts the pointer on the button). The guard (h20Call) refuses a click or a fill on any element PT did not clear the
+      moment before (h20Clear: a click only on a non-final label, a fill only into a field that is not a key, password, code or card field).
+   5. Logged per project (p.hands20log, a record: what, which site, how many steps, how it ended; no page text).
+   The morning check (§ 9 below): on the owner's first open of a day PT re-runs the 1.10 GitHub checks (pull requests, key dates, the
+   release), the tripwires of each chosen route against what came in since the last check, and the map's "Not possible yet" watch lines
+   (platform knowledge changed; a watched page changed — read through the Fetch helper when it is installed), shows one summary card on the
+   cockpit and raises a Route alert through m20WatchSoon for whatever changed for a project. PT creates no scheduled task itself (the guide
+   in Settings › Setup shows how). */
+const H20_TOOLS = ["preview_start", "navigate", "get_page_text", "find", "computer", "form_input"];
+const H20_MOVES = ["scroll_to", "hover", "wait", "left_click"];
+const H20_DO = ["type", "choose", "click"];
+const H20_MAX = {sites: 20, steps: 12, log: 30};
+/* a final button: what cannot be taken back or commits the owner (merge, send, delete, pay, publish, submit/confirm, save, install, agree …) */
+const H20_FINAL = /\b(merge|squash|rebase|send|submit|pay|payment|buy|order|purchase|check ?out|delete|remove|erase|publish|post|confirm|subscribe|sign ?up|register|transfer|deploy|release|save|install|accept|agree|authori[sz]e|approve|grant|revoke|close account|cancel (my )?(subscription|account)|unsubscribe|donate|book now|reserve)\b|senden|absenden|abschicken|einreichen|bezahlen|zahlen|kaufen|bestellen|löschen|entfernen|veröffentlichen|bestätigen|zusammenführen|speichern|abonnieren|registrieren|überweisen|installieren|akzeptieren|zustimmen|genehmigen|buchen|spenden|发送|提交|支付|付款|购买|下单|删除|移除|发布|确认|合并|保存|订阅|注册|转账|安装|接受|同意|授权|批准|预订|捐/i;
+/* a field PT never types into: keys, passwords, codes, card and account numbers, government ids */
+const H20_SECRET_FIELD = /pass(word|code|phrase)?\b|\bpin\b|token|secret|api[ _-]?key|\bkey\b|one[- ]?time|\botp\b|2fa|two[- ]factor|verification code|security code|\bcvc\b|\bcvv\b|card number|credit card|\biban\b|account number|routing|\bssn\b|social security|passport|kennwort|passwort|schlüssel|bestätigungscode|kartennummer|kontonummer|ausweis|密码|密钥|令牌|验证码|卡号|账号|身份证|护照/i;
+const H20 = {plan: null, busy: false, live: null, cleared: new Set(), url: ""};
+
+/* ---------- 0. the sites and the guard ---------- */
+function h20Read(p){ const H = p && p.hands20 && typeof p.hands20 === "object" ? p.hands20 : {}; return {sites: arr(H.sites).map(s => str(s)).filter(Boolean)}; }
+function h20Of(p){ if (!p.hands20 || typeof p.hands20 !== "object") p.hands20 = {sites: []}; p.hands20.sites = arr(p.hands20.sites); return p.hands20; }
+function h20Host(u){ try{ const x = new URL(str(u)); return x.protocol === "https:" ? x.hostname.toLowerCase() : ""; }catch(e){ return ""; } }   // ok:catch not an address → no host (refused)
+function h20Site(s){ let x = str(s).trim().toLowerCase().replace(/^https?:\/\//, "").replace(/[\/?#].*$/, "").replace(/^www\./, ""); return /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/.test(x) && x.length <= 120 ? x : ""; }
+function h20OnList(p, h){ return h20Read(p).sites.some(s => h === s || h.endsWith("." + s) || h === "www." + s); }
+/** may PT's hands open this address for this project: its own sites, plus the github.com pages PT already reads */
+function h20SiteOk(p, u){ const h = h20Host(u); return !!h && (h === "github.com" || h20OnList(p, h)); }
+/** may PT's hands click or type here: only on a site of the project's list (github.com too only when it is on the list) */
+function h20WriteOk(p, u){ const h = h20Host(u); return !!h && h20OnList(p, h); }
+function h20IsFinal(label){ return H20_FINAL.test(str(label)); }
+function h20SecretField(line){ return H20_SECRET_FIELD.test(str(line)) || /type=["']?password|autocomplete=["']?(one-time-code|current-password|new-password|cc-)/i.test(str(line)); }
+function h20SecretVal(v){ const s = str(v); return HANDS_SECRET.test(s) || (/^\S{28,}$/.test(s) && /\d/.test(s) && /[A-Za-z]/.test(s)); }
+/** clear one element for one action, the moment before it: a click only on a label that is not final, a fill only into a field that is not secret */
+function h20Clear(kind, ref, line){
+  if (!ref) return false;
+  if (kind === "c" && h20IsFinal(h20Label(line))) return false;
+  if (kind === "t" && h20SecretField(line)) return false;
+  H20.cleared.add(kind + ":" + ref); return true;
+}
+function h20Label(line){ const m = /"([^"]*)"/.exec(str(line)); return m ? m[1] : str(line).replace(/\[ref_\d+\]/, "").replace(/^\s*-\s*\w+\s*/, "").trim(); }
+/** the only way PT's hands act for a project: the 1.10 rules (owner, key-shaped answers dropped) plus the project's sites, cleared clicks and fills */
+async function h20Call(p, tool, input){
+  const a = Object.assign({}, input || {});
+  if (!handsOk()) throw {code: "hands_owner"};
+  if (!H20_TOOLS.includes(tool)) throw {code: "hands_guard", message: tool};
+  if (tool === "computer"){
+    if (!H20_MOVES.includes(str(a.action))) throw {code: "hands_guard", message: "computer " + str(a.action)};
+    if (a.action === "left_click"){ if (a.coordinate || !H20.cleared.has("c:" + str(a.ref))) throw {code: "hands_guard", message: "click not cleared"}; if (!h20WriteOk(p, H20.url)) throw {code: "hands_guard", message: "click off the list"}; H20.cleared.delete("c:" + a.ref); }
+  }
+  if (tool === "form_input"){
+    if (!H20.cleared.has("t:" + str(a.ref))) throw {code: "hands_guard", message: "field not cleared"};
+    if (h20SecretVal(a.value)) throw {code: "hands_secret"};
+    if (!h20WriteOk(p, H20.url)) throw {code: "hands_guard", message: "typing off the list"};
+    H20.cleared.delete("t:" + a.ref);
+  }
+  if ((tool === "preview_start" || tool === "navigate") && !h20SiteOk(p, a.url)) throw {code: "hands_guard", message: "address"};
+  const m = await handsApi(); if (!m) throw {code: "capability_disabled"};
+  const r = await m.callTool(HANDS_SERVER, tool, a);
+  const txt = handsText(r && r.payload !== undefined ? r.payload : r);
+  if (HANDS_SECRET.test(txt)) throw {code: "hands_secret"};
+  if (tool === "preview_start" || tool === "navigate") H20.url = str(a.url);
+  return txt;
+}
+async function h20Open(p, url){
+  if (HANDS.tab){
+    try{ await h20Call(p, "navigate", Object.assign({url}, handsTab())); return; }
+    catch(e){ if (e && ["hands_guard", "hands_secret", "hands_owner", "cancelled", "server_not_connected", "capability_disabled", "not_granted", "not_in_manifest", "approval_required"].includes(e.code)) throw e; HANDS.tab = null; }   // the tab was closed: a new one
+  }
+  const txt = await h20Call(p, "preview_start", {url});
+  const m = /tab[_ ]?id["'\s:=(]+([A-Za-z0-9_-]+)/i.exec(txt); HANDS.tab = m ? m[1] : null;
+}
+/** the page's address after a click (get_page_text starts with "URL: …"); a page off the list ends the steps */
+async function h20Where(p){
+  const txt = await h20Call(p, "get_page_text", Object.assign({max_chars: 4000}, handsTab()));
+  const m = /^URL:\s*(\S+)/m.exec(txt); if (m) H20.url = m[1];
+  return txt;
+}
+/** the element for a step: a field for type/choose, a button or link for click; answers {ref, line} or null */
+async function h20Find(p, q, kind){
+  const txt = await h20Call(p, "find", Object.assign({query: q}, handsTab()));
+  const L = str(txt).split("\n").filter(l => /\bref_\d+\b/.test(l));
+  const want = kind === "click" ? /^\s*-?\s*(button|link|menuitem|tab|checkbox|radio)\b/i : /^\s*-?\s*(textbox|searchbox|combobox|textarea|input|listbox|spinbutton|checkbox|radio)\b/i;
+  const best = L.find(l => want.test(l)) || L[0];
+  return best ? {ref: best.match(/\bref_\d+\b/)[0], line: best.trim()} : null;
+}
+
+/* ---------- 1. the plan, written before any page is opened ---------- */
+const H20_SCHEMA = `{"what":"one plain line: what PT's hands will do","url":"https://… the page to open first","why":"one line: why this helps the project","undo":"yes|no|partly","undoHow":"how the person takes it back (or why it cannot be)","steps":[{"do":"type|choose|click","target":"the visible label of the field, option or button","value":"for type/choose: the text or option"}],"final":"the label of the button the person presses at the end (send, pay, publish …), or empty","yours":["fields only the person fills: passwords, keys, codes, card numbers"]}`;
+function h20PlanPrompt(p, words){
+  return buildPrompt("hands-plan", {proj: p, rules: [], context: projectContext(p, {only: ["north_star"]}),
+    body: `The person asks PT's hands (the browser inside the Claude desktop app, acting for the person) to do something on a web page. Write the plan now, before any page is opened: page text will never add a step.
+Rules for the plan:
+- Only these sites: ${JSON.stringify(h20Read(p).sites.concat("github.com"))}. If the task needs another site, still give its address in "url" (PT will ask the person to add the site first).
+- Steps are only "type" (into a field), "choose" (an option) and "click" (a button or link that is not final). At most ${H20_MAX.steps} steps.
+- Never a final button (merge, send, delete, pay, buy, publish, submit, confirm, save, install, agree): stop one step before it and name it in "final". The person presses it.
+- Never type keys, passwords, codes, card or account numbers: list such fields in "yours".
+- Use only what the person said and what the project already knows; never invent personal data.
+<request>${JSON.stringify(str(words).slice(0, 2000))}</request>`, schema: H20_SCHEMA});   // ok:cut the request is the person's few lines
+}
+/** code vets the plan: sites, step kinds, a final word ends the steps (the person's click), secret fields and key-shaped values become the person's */
+function h20Vet(p, o, words){
+  const P = {pid: p.id, at: now(), words: str(words).trim(), what: str(o && o.what).slice(0, 200), url: str(o && o.url).trim(), why: str(o && o.why).slice(0, 240), undo: oneOf(str(o && o.undo), ["yes", "no", "partly"], "partly"), undoHow: str(o && o.undoHow).slice(0, 240), steps: [], final: str(o && o.final).slice(0, 80), yours: arr(o && o.yours).map(x => str(x).slice(0, 80)).filter(Boolean).slice(0, 6), host: ""};   // ok:cut field caps of an AI answer
+  P.host = h20Host(P.url); P.siteOk = !!P.host && h20WriteOk(p, P.url);
+  for (const s of arr(o && o.steps).slice(0, H20_MAX.steps)){
+    const d = oneOf(str(s && s.do), H20_DO, ""), target = str(s && s.target).trim().slice(0, 80), value = str(s && s.value).slice(0, 400);   // ok:cut field caps of an AI answer
+    if (!d || !target) continue;
+    if (d === "click" && h20IsFinal(target)){ P.final = target; break; }   // PT stops one step before a final button
+    if (d !== "click" && (h20SecretField(target) || h20SecretVal(value))){ if (!P.yours.includes(target)) P.yours.push(target); continue; }
+    P.steps.push({do: d, target, value: d === "click" ? "" : value});
+  }
+  if (P.final && !h20IsFinal(P.final) && P.steps.length < H20_MAX.steps){ P.steps.push({do: "click", target: P.final, value: ""}); P.final = ""; }   // a "final" that is not final is an ordinary step
+  return P;
+}
+async function h20MakePlan(p, words){
+  if (!str(words).trim() || H20.busy) return;
+  const ws0 = WS.id;
+  const out = await runAI("hands-plan", t("h20.busy.plan"), h20PlanPrompt(p, words), {pid: p.id, step: "build", validate: o => o && typeof o.url === "string" && Array.isArray(o.steps)});   // ok:undo the plan changes nothing in the project (it lives on this page until Run or Cancel)
+  const q = pickLive(p, ws0); if (!out || !q) return;
+  H20.plan = h20Vet(q, out, words); H20.live = null; m20Metric(q, "hands");
+  render(); setTimeout(() => { const e = document.querySelector(".h20-contract"); if (e) e.scrollIntoView({block: "nearest"}); }, 30);   // ok:move the plan the person asked for, shown where it appears
+}
+
+/* ---------- 2. running the steps (only after the contract was shown and the person said Run) ---------- */
+function h20LogAdd(p, x){ p.hands20log = arr(p.hands20log); p.hands20log.unshift(Object.assign({id: uid("hl"), at: now()}, x)); p.hands20log = p.hands20log.slice(0, H20_MAX.log); }
+async function h20Run(p){
+  const P = H20.plan; if (!P || P.pid !== p.id || H20.busy || !P.siteOk) return;
+  H20.busy = true; H20.cleared.clear();
+  const L = H20.live = {pid: p.id, steps: [{do: "open", target: P.host, st: "run"}].concat(P.steps.map(s => Object.assign({st: "wait"}, s))), end: "", final: P.final, url: P.url, why: ""};
+  render();
+  const set = (i, st, why = "") => { L.steps[i].st = st; if (why) L.steps[i].why = why; render(); };
+  try{
+    await h20Open(p, P.url); await handsRead(null); set(0, "ok");
+    for (let i = 1; i < L.steps.length; i++){
+      const s = L.steps[i]; set(i, "run");
+      const el = await h20Find(p, s.target, s.do);
+      if (!el){ set(i, "stop", t("h20.why.nofind", {x: s.target})); L.end = "stopped"; break; }
+      if (s.do === "click"){
+        if (!h20Clear("c", el.ref, el.line)){ set(i, "yours"); L.final = h20Label(el.line) || s.target; L.end = "final"; L.steps.length = i + 1; break; }   // the page shows a final button where the plan had an ordinary one
+        await h20Call(p, "computer", Object.assign({action: "left_click", ref: el.ref, action_summary: t("h20.sum.click", {x: s.target})}, handsTab()));
+        await h20Where(p);
+        if (!h20WriteOk(p, H20.url)){ set(i, "stop", t("h20.why.left", {x: h20Host(H20.url) || "?"})); L.end = "stopped"; break; }
+      } else {
+        if (!h20Clear("t", el.ref, el.line)){ set(i, "yours", t("h20.why.secret")); L.end = "stopped"; break; }
+        await h20Call(p, "form_input", Object.assign({ref: el.ref, value: s.value, action_summary: t("h20.sum.type", {x: s.target})}, handsTab()));
+      }
+      set(i, "ok");
+    }
+    if (!L.end) L.end = L.final ? "final" : "done";
+    if (L.end === "final"){ const f = await h20Find(p, L.final, "click"); if (f){ await h20Call(p, "computer", Object.assign({action: "scroll_to", ref: f.ref}, handsTab())); try{ await h20Call(p, "computer", Object.assign({action: "hover", ref: f.ref}, handsTab())); }catch(e){ if (e && e.code === "hands_secret") throw e; } } }   // ok:catch a hover the page refuses changes nothing
+  }catch(e){
+    const i = L.steps.findIndex(x => x.st === "run"); if (i >= 0) set(i, "stop", handsErr(e));
+    L.end = "stopped"; L.why = handsErr(e);
+    if (!e || !e.code) onAppError(str(e && e.message), "hands20:run");
+  }finally{
+    H20.cleared.clear(); H20.busy = false;
+    const q = liveP(p);
+    if (q){ h20LogAdd(q, {what: P.what || P.words.slice(0, 120), host: P.host, n: L.steps.filter(x => x.st === "ok").length, end: L.end, final: L.end === "final" ? L.final : ""}); touch(q); }   // ok:cut the log keeps a short line
+    render();
+  }
+}
+/** Take me there (the person's final click): open the page and point at the button */
+async function h20Go(p, url, label){
+  if (H20.busy || !h20SiteOk(p, url)) return;
+  H20.busy = true; render();
+  try{ await h20Open(p, url); await handsRead(null); const f = await h20Find(p, label, "click");
+    if (f){ await h20Call(p, "computer", Object.assign({action: "scroll_to", ref: f.ref}, handsTab())); try{ await h20Call(p, "computer", Object.assign({action: "hover", ref: f.ref}, handsTab())); }catch(e){ if (e && e.code === "hands_secret") throw e; } }   // ok:catch a hover the page refuses changes nothing
+    toast(t(f ? "hands.go.ok" : "hands.go.open", {q: label}), f ? "" : "err"); }
+  catch(e){ toast(handsErr(e), "err"); }
+  finally{ H20.busy = false; render(); }
+}
+
+/* ---------- 3. what the owner sees: the project's hands page ---------- */
+function h20Open20(p){ if (!p) return; pushNav(); UI.hands20View = p.id; UI.factsView = null; UI.rowsView = null; UI.home = false; UI.finish = null; render(); const m = document.querySelector(".main"); if (m) m.scrollTop = 0; }
+function h20StepLine(s){
+  const k = s.do === "open" ? t("h20.do.open", {x: s.target}) : s.do === "click" ? t("h20.do.click", {x: s.target}) : s.do === "choose" ? t("h20.do.choose", {x: s.target, v: s.value}) : t("h20.do.type", {x: s.target, v: s.value});
+  return k;
+}
+function h20ContractHTML(p){
+  const P = H20.plan; if (!P || P.pid !== p.id) return "";
+  const L = H20.live && H20.live.pid === p.id ? H20.live : null;
+  const ST = {wait: "·", run: "…", ok: "✓", stop: "✗", yours: "✋"};
+  const rows = (L ? L.steps : [{do: "open", target: P.host || P.url}].concat(P.steps)).map((s, i) => `<li class="h20-step st-${esc(s.st || "plan")}"><span aria-hidden="true">${ST[s.st] || (i + 1) + "."}</span> ${esc(h20StepLine(s))}${s.why ? ` <span class="small muted">· ${esc(s.why)}</span>` : ""}</li>`).join("");
+  const yours = P.yours.map(f => `<li class="h20-step yours"><span aria-hidden="true">✋</span> ${esc(t("h20.yours.type", {x: f}))}</li>`).join("");
+  const fin = (L ? L.final : P.final) ? `<li class="h20-step yours final"><span aria-hidden="true">✋</span> <b>${esc(t("h20.yours.click", {x: L ? L.final : P.final}))}</b></li>` : "";
+  const block = !P.host ? t("h20.block.url") : !P.siteOk ? t("h20.block.site", {x: P.host}) : "";
+  const end = L && !H20.busy ? `<div class="h20-end small ${L.end === "stopped" ? "warn-t" : ""}" role="status">${esc(t("h20.end." + (L.end || "done"), {x: L.final}))}${L.why ? " · " + esc(L.why) : ""}
+      ${L.end === "final" ? `<div class="row"><button class="btn sm primary" data-a="h20-go" data-url="${esc(H20.url || P.url)}" data-q="${esc(L.final)}">${ic("arrow")}${esc(t("h20.go"))}</button><span class="small muted">${esc(t("h20.go.sub"))}</span></div>` : ""}</div>` : "";
+  return `<section class="panel h20-contract" data-anchor="h20-contract" aria-labelledby="h20c-h"><h3 id="h20c-h">${ic("shield")} ${esc(t("h20.c.t"))}</h3>
+    <dl class="h20-kv"><dt>${esc(t("h20.c.what"))}</dt><dd>${esc(P.what || P.words)}</dd><dt>${esc(t("h20.c.where"))}</dt><dd>${esc(P.host || "—")} <span class="small muted">${esc(P.url)}</span></dd>
+    <dt>${esc(t("h20.c.why"))}</dt><dd>${esc(P.why || "—")}</dd><dt>${esc(t("h20.c.undo"))}</dt><dd>${esc(t("h20.undo." + P.undo))}${P.undoHow ? " · " + esc(P.undoHow) : ""}</dd></dl>
+    <h4>${esc(t("h20.c.steps"))}</h4><ol class="h20-steps">${rows}${yours}${fin}</ol>
+    <p class="small muted">${esc(t("h20.c.never"))}</p>
+    ${block ? `<p class="small warn-t">${esc(block)}</p>${P.host && !P.siteOk && h20Site(P.host) ? `<div class="row"><button class="btn sm" data-a="h20-site-plan">${ic("plus")}${esc(t("h20.site.addthis", {x: h20Site(P.host)}))}</button></div>` : ""}` : ""}
+    ${L ? end : `<div class="row"><button class="btn sm primary" data-a="h20-run" ${block || H20.busy ? "disabled" : ""}>${ic("play")}${esc(t("h20.run"))}</button><button class="btn sm ghost" data-a="h20-cancel">${esc(t("btn.cancel"))}</button></div>`}
+    ${L && !H20.busy ? `<div class="row"><button class="btn xs ghost" data-a="h20-cancel">${esc(t("h20.close"))}</button></div>` : ""}</section>`;
+}
+function h20LogHTML(p){
+  const L = arr(p.hands20log).slice(0, 10); if (!L.length) return "";
+  return `<details class="h20-log"><summary class="small">${esc(t("h20.log.t", {n: arr(p.hands20log).length}))}</summary><ul class="small">${L.map(x => `<li>${esc(fmtDate(x.at))} · ${esc(x.host)} · ${esc(x.what)} · ${esc(t("h20.log.end." + oneOf(x.end, ["done", "final", "stopped"], "stopped"), {n: x.n, x: x.final}))}</li>`).join("")}</ul></details>`;
+}
+function h20BodyHTML(p){
+  const S = h20Read(p).sites;
+  const sites = `<section class="panel h20-sites" data-anchor="h20-sites"><h3>${esc(t("h20.sites.t"))}</h3><p class="small muted">${esc(t("h20.sites.sub"))}</p>
+    <div class="row h20-chips">${S.length ? S.map(s => `<span class="chip h20-site">${esc(s)}<button class="iconbtn xs" data-a="h20-site-del" data-v="${esc(s)}" aria-label="${esc(t("h20.site.del", {x: s}))}" title="${esc(t("h20.site.del", {x: s}))}">${ic("x")}</button></span>`).join("") : `<span class="small muted">${esc(t("h20.sites.none"))}</span>`}<span class="chip muted">github.com · ${esc(t("h20.sites.gh"))}</span></div>
+    <form class="row" data-form="h20-site-add"><label class="fld" style="flex:1 1 14em"><span>${esc(t("h20.site.add"))}</span><input type="text" id="h20-site-in" placeholder="anydesk.com" autocomplete="off"></label><button class="btn sm" type="submit">${ic("plus")}${esc(t("btn.add"))}</button></form></section>`;
+  const ask = `<section class="panel h20-ask" data-anchor="h20-ask"><h3>${esc(t("h20.ask.t"))}</h3><p class="small muted">${esc(t("h20.ask.sub"))}</p>
+    <form class="stack" data-form="h20-plan"><textarea id="h20-in" rows="2" placeholder="${esc(t("h20.ask.ph"))}">${esc(UI.qDraft["h20-plan"] || "")}</textarea>
+    <div class="row"><button class="btn sm primary ai" type="submit" data-cost="${esc(t(COST.M))}" ${H20.busy || AI.running.size ? "disabled" : ""}>${ic("spark")}${esc(t("h20.ask.go"))}</button><span class="small muted">${esc(t("h20.ask.cost"))}</span></div></form>${busyHTML("hands-plan")}</section>`;
+  return `<section class="panel h20-intro"><p class="small">${esc(t("h20.sub"))}</p><p class="small muted">${esc(handsOk() ? t("hands.where") : t("hands.e.owner"))}</p></section>${sites}${ask}${h20ContractHTML(p)}${h20LogHTML(p)}`;
+}
+function h20ViewHTML(p){
+  return `<div class="pg h20-view" data-page="hands20" data-anchor="page-hands20">${pgBar(p)}<header class="pg-head"><h2>${ic("bolt")} ${esc(t("h20.title"))}</h2></header>${h20BodyHTML(p)}</div>`;
+}
+{ const orig = modeBody; modeBody = function(p){ return p && UI.hands20View === p.id && !UI.factsView ? h20ViewHTML(p) : orig(p); }; }
+{ const orig = pgOpen; pgOpen = function(){ UI.hands20View = null; return orig.apply(this, arguments); }; }
+{ const orig = goRef; goRef = function(){ UI.hands20View = null; return orig.apply(this, arguments); }; }
+{ const orig = popNav; popNav = function(){ UI.hands20View = null; return orig.apply(this, arguments); }; }
+{ const orig = factsOpen; factsOpen = function(){ UI.hands20View = null; return orig.apply(this, arguments); }; }
+{ const orig = openProject; openProject = function(){ UI.hands20View = null; H20.plan = null; H20.live = null; return orig.apply(this, arguments); }; }
+{ const orig = ACTIONS["home"]; ACTIONS["home"] = function(){ UI.hands20View = null; return orig.apply(this, arguments); }; }
+MORE_ITEMS.splice(2, 0, {a: "h20-open", icon: "bolt", l: "h20.title"});
+/* the route card: what PT's hands do in this route and which sites the project allows */
+{ const orig = m20CardHTML; m20CardHTML = function(p, id){
+    const h = orig.apply(this, arguments); const r = p && m20Route(p, id); if (!r || !str(r.actors && r.actors.hands).trim()) return h;
+    try{ const S = h20Read(p).sites;
+      const line = `<p class="small h20-route" data-h20-route="${esc(r.id)}">${ic("bolt")} ${esc(S.length ? t("h20.route.sites", {x: S.join(", ")}) : t("h20.route.nosites"))} <button class="btn xs ghost" data-a="h20-open">${esc(t("h20.route.manage"))}</button></p>`;
+      return h.replace(/<\/article>\s*$/, line + "</article>"); }
+    catch(e){ onAppError(e && e.message, "hands20:card"); return h; } }; }
+
+Object.assign(ACTIONS, {
+  "h20-open": () => h20Open20(curP()),
+  "h20-site-del": (el) => { const p = curP(); if (!p) return; const H = h20Of(p), s = str(el.dataset.v); H.sites = H.sites.filter(x => x !== s); rcpt20(p, t("h20.rc.del", {x: s}), t("h20.title")); touch(p); render(); },
+  "h20-site-plan": () => { const p = curP(), P = H20.plan; if (!p || !P || P.pid !== p.id) return; const s = h20Site(P.host); if (!s) return; const H = h20Of(p); if (!H.sites.includes(s)) H.sites.push(s); P.siteOk = h20WriteOk(p, P.url); rcpt20(p, t("h20.rc.add", {x: s}), t("h20.title")); touch(p); render(); },
+  "h20-run": () => { const p = curP(); if (p) h20Run(p); },
+  "h20-cancel": () => { H20.plan = null; H20.live = null; render(); },
+  "h20-go": (el) => { const p = curP(); if (p) h20Go(p, str(el.dataset.url), str(el.dataset.q)); }
+});
+Object.assign(FORMS, {
+  "h20-site-add": () => { const p = curP(); if (!p) return; const el = $("#h20-site-in"), s = h20Site(el && el.value); if (!s){ toast(t("h20.site.bad"), "err"); return; }
+    const H = h20Of(p); if (H.sites.includes(s)){ toast(t("h20.site.have", {x: s}), ""); return; } if (H.sites.length >= H20_MAX.sites){ toast(t("h20.site.max", {n: H20_MAX.sites}), "err"); return; }
+    H.sites.push(s); rcpt20(p, t("h20.rc.add", {x: s}), t("h20.title")); touch(p); render(); focusSoon("h20-site-in"); },
+  "h20-plan": () => { const p = curP(); if (!p) return; const v = str(($("#h20-in") || {}).value).trim(); if (!v){ toast(t("h20.ask.need"), "err"); return; } UI.qDraft["h20-plan"] = v; h20MakePlan(p, v); }
+});
+["h20-open", "h20-cancel", "h20-go"].forEach(a => ACT_NO.add(a));
+
+/* ---------- 9. the morning check ---------- */
+const MC20 = {busy: false};
+function mc20Day(d = new Date()){ return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+function mc20Read(){ const M = WS && WS.settings && WS.settings.morning20; return M && typeof M === "object" ? M : null; }
+function mc20Due(){ return handsOk() && !!WS && !!WS._set && !window.__ptNoMorning && str((mc20Read() || {}).day) !== mc20Day(); }
+const MC20_URL = /https:\/\/[^\s"'<>()]+/;
+/** what came in since the last check for a project with a chosen route: facts, failed tests, serious findings (the tripwires' inputs) */
+function mc20Since(p, at){
+  if (!at || !m20Chosen(p)) return [];
+  const T = Date.parse(at), after = x => Date.parse(str(x)) > T, out = [];
+  for (const e of factsActive(p)) if (after(e.at)) out.push({kind: FACT_RULES.includes(e.kind) ? "rule" : "fact", text: factText(e), ref: "fact:" + e.id});
+  for (const r of arr(p.runs).filter(r => after(r.at))) for (const x of arr(r.results).filter(x => x && x.pass === false).slice(0, 3)){ const tt = arr(p.tests).find(y => y.id === x.testId); if (tt) out.push({kind: "test", text: t("m20.al.test", {x: str(tt.title)}), ref: "test:" + x.testId + ":" + str(r.id || r.at)}); }
+  for (const f of arr(p.findings).filter(f => after(f.at) && ["critical", "high"].includes(f.severity))) out.push({kind: "finding", text: str(f.issue), ref: "finding:" + f.id});
+  return out.slice(0, 8);
+}
+async function mc20Run(){
+  if (MC20.busy || !handsOk() || !WS || !WS._set) return;
+  MC20.busy = true; const ws0 = WS.id; render();
+  const prev = mc20Read() || {}, day = mc20Day(), R = {day, at: now(), lines: [], prs: arr(prev.prs), kp: KP_VERSION, watch: Object.assign({}, prev.watch || {}), seen: false, calls: 0};
+  const line = (k, text, st = "ok", extra = {}) => R.lines.push(Object.assign({k, st, text: str(text).slice(0, 300)}, extra));   // ok:cut a summary line
+  try{
+    /* 1. GitHub through the app's browser (1.10 checks; their results also show in PT health) */
+    let app = true;
+    for (const k of ["prs", "keys", "rel"]){
+      if (!app) break;
+      try{ const x = await HANDS_CHECKS[k](); HANDS.res[k] = Object.assign({at: now(), ok: true}, x);
+        if (k === "prs"){ const ns = x.list.map(y => y.n), nu = x.list.filter(y => !arr(prev.prs).includes(y.n));
+          line("prs", x.list.length ? t("mc20.prs", {n: x.list.length}) + (prev.day && nu.length ? " · " + t("mc20.prs.new", {x: nu.map(y => "#" + y.n + " " + y.title).join(", ")}) : "") : t("hands.prs.none"), prev.day && nu.length ? "new" : "ok"); R.prs = ns; }
+        if (k === "keys"){ const soon = x.list.filter(y => y.kind === "past" || (y.kind === "date" && handsDays(y.at) <= HANDS_SOON_DAYS));
+          line("keys", soon.length ? t("mc20.keys.soon", {x: soon.map(y => y.name).join(", ")}) : t("mc20.keys.ok", {n: x.list.length}), soon.length ? "warn" : "ok"); }
+        if (k === "rel") line("rel", t(x.found ? "hands.rel.ok" : "hands.rel.no", {v: x.v}), x.found ? "ok" : "warn");
+      }catch(e){
+        const c = str(e && e.code); HANDS.res[k] = {at: now(), ok: false, err: handsErr(e), code: c};
+        if (["server_not_connected", "capability_disabled", "not_granted", "capability_removed", "server_not_found", "not_in_manifest", "approval_required", "cancelled", "consent_required", "hands_owner"].includes(c)){ app = false; line("app", t("mc20.app", {x: handsErr(e)}), "skip"); }
+        else line(k, handsErr(e), "warn");
+        if (!e || !e.code) onAppError(str(e && e.message), "morning:" + k);
+      }
+    }
+    /* 2. per project: the tripwires (what came in since the last check) and the "Not possible yet" watch lines */
+    const fetchOk = typeof helper20Ready === "function" && helper20Ready("fetch");
+    for (const p of WS.projects.filter(x => x.status !== "archived")){
+      if (WS.id !== ws0) break;
+      const M = m20Read(p); if (!M.routes.length && !M.notyet.length) continue;
+      const items = mc20Since(p, prev.at), seen = [];
+      if (prev.kp && prev.kp !== KP_VERSION) for (const n of M.notyet.filter(n => ["platform", "model", "vendor"].includes(n.blocker)).slice(0, 4)) items.push({kind: "watch", text: t("mc20.kp.item", {x: n.name, w: n.watch || n.change}), ref: "morning:kp:" + KP_VERSION + ":" + n.id});
+      let changed = 0, watched = 0;
+      if (fetchOk) for (const n of M.notyet.slice(0, 6)){
+        const u = (MC20_URL.exec(str(n.watch)) || MC20_URL.exec(str(n.evidence)) || [])[0]; if (!u) continue;
+        watched++;
+        try{ const txt = await helper20Call("fetch", "fetch", {url: u, max_length: 20000}); R.calls++;
+          const k = p.id + ":" + n.id, hsh = hashStr(str(txt).replace(/\s+/g, " "));
+          if (R.watch[k] && R.watch[k] !== hsh){ changed++; items.push({kind: "watch", text: t("mc20.watch.item", {x: n.name, u}), ref: "morning:" + day + ":" + n.id}); m20Event(p, "watch", t("mc20.watch.ev", {x: n.name})); touch(p); seen.push(n.name); }
+          R.watch[k] = hsh; }
+        catch(e){ line("watch", t("mc20.watch.fail", {x: n.name, e: helper20Err(e)}), "warn"); }
+      }
+      for (const it of items) m20WatchSoon(p, it);
+      const ny = M.notyet.length;
+      line("proj", t("mc20.proj", {x: p.name, n: items.length}) + (ny ? " · " + (fetchOk ? t("mc20.watch.n", {n: watched, c: changed}) : t("mc20.watch.nofetch", {n: ny})) : "") + (seen.length ? " · " + t("mc20.watch.changed", {x: seen.join(", ")}) : ""), items.length || changed ? "new" : "ok", {pid: p.id});
+    }
+    if (typeof mc20HelperLines === "function") await mc20HelperLines(line);
+    if (prev.kp && prev.kp !== KP_VERSION) line("kp", t("mc20.kp", {a: prev.kp, b: KP_VERSION}), "new");
+  }catch(e){ onAppError(e && e.message, "morning"); line("err", t("mc20.err"), "warn"); }
+  finally{
+    MC20.busy = false;
+    if (WS.id === ws0){ WS.settings.morning20 = R; saveWs(); }
+    render();
+  }
+}
+function mc20CardHTML(){
+  if (!handsOk()) return "";
+  if (MC20.busy) return `<section class="panel mc20" data-mc20="busy" aria-live="polite"><h3>${ic("clock")} ${esc(t("mc20.t"))}</h3><p class="small">${esc(t("mc20.busy"))}</p></section>`;
+  const M = mc20Read(); if (!M || M.seen || M.day !== mc20Day()) return "";
+  const IC20 = {ok: "✓", new: "●", warn: "!", skip: "–"};
+  return `<section class="panel mc20" data-mc20="card" aria-labelledby="mc20-h"><h3 id="mc20-h">${ic("clock")} ${esc(t("mc20.t"))} <span class="small muted">· ${esc(fmtDate(M.at))}</span></h3>
+    <ul class="mc20-lines">${arr(M.lines).map(l => `<li class="mc20-l st-${esc(l.st)}" data-k="${esc(l.k)}"><span aria-hidden="true">${IC20[l.st] || "·"}</span> ${esc(l.text)}${l.pid && l.st === "new" ? ` <button class="btn xs ghost" data-a="open-project" data-id="${esc(l.pid)}">${esc(t("mc20.open"))}</button>` : ""}</li>`).join("")}</ul>
+    <p class="small muted">${esc(t("mc20.sub"))}</p>
+    <div class="row"><button class="btn sm primary" data-a="mc20-seen">${ic("check")}${esc(t("mc20.seen"))}</button><button class="btn sm ghost" data-a="mc20-run">${esc(t("mc20.again"))}</button><button class="btn sm ghost" data-a="setup20-guide" data-g="cloud">${esc(t("mc20.cloud"))}</button></div></section>`;
+}
+{ const orig = viewCockpit; viewCockpit = function(){ const h = orig.apply(this, arguments); let c = ""; try{ c = mc20CardHTML(); }catch(e){ onAppError(e && e.message, "morning:card"); } return c ? c + h : h; }; }
+{ const orig = openWorkspace; openWorkspace = async function(id){
+    MC20.busy = false;
+    const r = await orig.apply(this, arguments);
+    try{ if (UI.wsReady && !UI.fatal && WS.id === id && mc20Due()) setTimeout(() => { if (mc20Due()) mc20Run(); }, 1200); }catch(e){ onAppError(e && e.message, "morning:open"); }
+    return r; }; }
+Object.assign(ACTIONS, {
+  "mc20-seen": () => { const M = mc20Read(); if (!M) return; M.seen = true; saveWs(); render(); },
+  "mc20-run": () => mc20Run()
+});
+["mc20-seen", "mc20-run"].forEach(a => ACT_NO.add(a));
+
+const V200D_CSS = `
+.h20-chips{gap:6px;align-items:center}
+.h20-site{display:inline-flex;align-items:center;gap:4px}
+.h20-kv{display:grid;grid-template-columns:minmax(6em,max-content) 1fr;gap:4px 12px;margin:0}
+.h20-kv dt{color:var(--muted);font-size:13px}
+.h20-kv dd{margin:0;min-width:0;overflow-wrap:break-word}
+.h20-steps{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:3px}
+.h20-step{display:flex;gap:6px;align-items:baseline;min-width:0;overflow-wrap:break-word}
+.h20-step.yours{font-weight:600}
+.h20-step.st-stop{color:var(--warn,inherit)}
+.h20-end{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:8px}
+.mc20-lines{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px}
+.mc20-l{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;min-width:0;overflow-wrap:break-word}
+.mc20-l.st-warn,.mc20-l.st-new{font-weight:600}
+@media (max-width:600px){.h20-kv{grid-template-columns:1fr}.h20-kv dt{margin-top:4px}}
+`;
+function v200dCss(){ try{ if (document.getElementById("v200d-css")) return; const s = document.createElement("style"); s.id = "v200d-css"; s.textContent = V200D_CSS; document.head.appendChild(s); }catch(e){ onAppError(e && e.message, "v200d:css"); } }
+v200dCss();
+
+/* ===================== 2.0 Part D: prompt tests, the Improve-PT loop, metrics =====================
+   1. Prompt tests (p.ptest20, a record): for a project's final prompt (its package), PT runs up to five test inputs in ONE quick-tier call
+      (the cost is on the button before the tap): the call answers each input as the tool would, following only the package, and says for
+      each of the project's never / must entries whether the answer keeps it; code reads every answer for a never's key words in a sentence
+      that is not a negation as well (a hit is a fail even when the call says it holds). No project rules go into the call as instructions
+      to the tool: the test must show what the prompt itself does.
+   2. Improve PT (WS.settings.ipt20): every report sent through "Improve PT" (header, rail, an error card, the chat's one tap) is kept in the
+      workspace settings with its status (open / fixed in <version>). On a version change PT marks the reports whose ids are listed for that
+      version in IMPROVE_FIXED as fixed and tells the owner once (a card in Settings › PT health and on the cockpit).
+   3. Metrics (WS.settings.met20, never sent anywhere — no prompt, report or export reads them): per project the questions PT showed, the
+      questions it held back because they were answered before, the rule breaks it caught and repaired, the routes on the map, the time
+      from the goal to the route decision; Settings › Metrics. */
+const PT20_MAX = 5, PT20_RUNS = 5, PT20_PKG = 60000;
+/* report ids fixed in a version (filled at release time from the Improve-PT inbox; ids only, never the words) */
+const IMPROVE_FIXED = {"2.0.0": []};
+
+/* ---------- 3. metrics (first: the other parts count into them) ---------- */
+function m20MetOf(pid){ if (!WS || !WS.settings || !pid) return null; const S = WS.settings; if (!S.met20 || typeof S.met20 !== "object") S.met20 = {}; const M = S.met20[pid] = S.met20[pid] && typeof S.met20[pid] === "object" ? S.met20[pid] : {}; return M; }
+function m20Metric(p, k, n = 1){ try{ const M = p && WS && WS._set ? m20MetOf(p.id) : null; if (!M || !n) return; M[k] = num(M[k], 0) + n; saveWs(); }catch(e){ onAppError(e && e.message, "metrics"); } }
+function met20Row(p){
+  const M = (WS.settings.met20 || {})[p.id] || {}, D = m20Decision(p);
+  const g0 = str(M.goalAt || p.createdAt), d0 = D ? str(D.at) : "";
+  const ms = g0 && d0 ? Date.parse(d0) - Date.parse(g0) : NaN;
+  return {asked: num(M.asked, 0), twice: num(M.twice, 0), repaired: num(M.repaired, 0), routes: m20Read(p).routes.length, hands: num(M.hands, 0), ptests: num(M.ptests, 0), goalDec: Number.isFinite(ms) && ms >= 0 ? ms : null};
+}
+function met20Dur(ms){ if (ms == null) return t("met20.nodec"); const m = Math.round(ms / 60000); return m < 120 ? t("met20.min", {n: m}) : m < 2880 ? t("met20.h", {n: Math.round(m / 60)}) : t("met20.d", {n: Math.round(m / 1440)}); }
+function met20HTML(){
+  const ps = WS.projects.filter(p => p.status !== "archived");
+  const rows = ps.map(p => { const R = met20Row(p); return `<tr data-pid="${esc(p.id)}"><th scope="row">${esc(p.name)}</th><td class="tnum">${R.asked}</td><td class="tnum">${R.twice}</td><td class="tnum">${R.repaired}</td><td class="tnum">${R.routes}</td><td>${esc(met20Dur(R.goalDec))}</td></tr>`; }).join("");
+  return `<section class="panel met20" data-anchor="met20"><h3>${esc(t("met20.t"))}</h3><p class="small muted">${esc(t("met20.sub"))}</p>
+    ${ps.length ? `<div class="met20-wrap"><table class="met20-t"><thead><tr><th scope="col">${esc(t("met20.c.p"))}</th><th scope="col">${esc(t("met20.c.asked"))}</th><th scope="col">${esc(t("met20.c.twice"))}</th><th scope="col">${esc(t("met20.c.rep"))}</th><th scope="col">${esc(t("met20.c.routes"))}</th><th scope="col">${esc(t("met20.c.time"))}</th></tr></thead><tbody>${rows}</tbody></table></div>` : `<p class="small muted">${esc(t("met20.none"))}</p>`}
+    <p class="small muted">${esc(t("met20.how"))}</p></section>`;
+}
+{ const orig = askOnceRun; askOnceRun = async function(p, items){
+    const n = await orig.apply(this, arguments);
+    try{ const L = arr(items).length; if (p && L){ m20Metric(p, "twice", num(n, 0)); m20Metric(p, "asked", Math.max(0, L - num(n, 0))); } }catch(e){ onAppError(e && e.message, "metrics:ask"); }
+    return n; }; }
+{ const orig = factsGuardHits; factsGuardHits = async function(p){
+    const hits = await orig.apply(this, arguments);
+    try{ if (p && arr(hits).length) m20Metric(p, "repaired", 1); }catch(e){ onAppError(e && e.message, "metrics:rules"); }
+    return hits; }; }
+{ const orig = goal20Confirm; goal20Confirm = function(p){
+    const r = orig.apply(this, arguments);
+    try{ const M = p && WS && WS._set ? m20MetOf(p.id) : null; if (M && !M.goalAt){ M.goalAt = now(); saveWs(); } }catch(e){ onAppError(e && e.message, "metrics:goal"); }
+    return r; }; }
+
+/* ---------- 1. prompt tests ---------- */
+function pt20Read(p){ const X = p && p.ptest20 && typeof p.ptest20 === "object" ? p.ptest20 : {}; return {inputs: arr(X.inputs).map(str).filter(Boolean), runs: arr(X.runs)}; }
+function pt20Of(p){ if (!p.ptest20 || typeof p.ptest20 !== "object") p.ptest20 = {}; const X = p.ptest20; X.inputs = arr(X.inputs); X.runs = arr(X.runs); return X; }
+function pt20Pkg(p){ return arr(p && p.pkg && p.pkg.sections).filter(s => str(s.content).trim()).map(s => `--- ${str(s.id)} · ${str(s.title)} ---\n${str(s.content)}`).join("\n\n"); }
+/** the inputs: your own first, then the project's tests (never / adversarial first), then examples */
+function pt20Inputs(p){
+  const own = pt20Read(p).inputs.map(text => ({text, src: "you"}));
+  const ts = arr(p.tests).filter(x => str(x.input).trim()).sort((a, b) => (b.never || b.category === "adversarial" ? 1 : 0) - (a.never || a.category === "adversarial" ? 1 : 0)).map(x => ({text: str(x.input), src: "test", ref: x.id}));
+  const ex = arr(p.goal && p.goal.examples).filter(e => str(e.input).trim()).map(e => ({text: str(e.input), src: "ex", ref: e.id}));
+  const seen = new Set(), out = [];
+  for (const x of [...own, ...ts, ...ex]){ const k = x.text.trim().toLowerCase(); if (seen.has(k)) continue; seen.add(k); out.push(x); if (out.length >= PT20_MAX) break; }
+  return out;
+}
+function pt20InJSON(ins){ return ins.map((x, i) => ({i, text: x.text.slice(0, 2000)})); }   // ok:cut one test input stays short
+function pt20Prompt(pkg, ins, rules){
+  return `[[task:ptest-run]]
+You test a finished prompt: the instructions of a person's Claude tool. For each input, first answer it exactly as the tool would, following ONLY <tool_prompt> (it is the tool's whole setup). Then check that answer against each of the person's rules in <rules> (NEVER: the answer must not do, propose or assume it; MUST: the answer must do it, where the input calls for it) and say for each whether the answer keeps it. Be strict; a rule the input does not touch is kept.
+<tool_prompt>
+${pkg}
+</tool_prompt>
+<inputs>${JSON.stringify(pt20InJSON(ins))}</inputs>
+<rules>${JSON.stringify(rules.map(e => ({id: e.id, kind: e.kind.toUpperCase(), rule: factText(e)})))}</rules>
+Reply with only JSON: {"results":[{"i":0,"answer":"the tool's answer, at most 1200 characters","rules":[{"id":"F1","holds":true,"why":"one short sentence"}]}]}`;   // ok:cut one test input stays short
+}
+async function pt20Run(p){
+  const pkg = pt20Pkg(p), ins = pt20Inputs(p), rules = factsActive(p, FACT_RULES);
+  if (!pkg || !ins.length || !rules.length) return null;
+  const ws0 = WS.id;
+  const out = await runAI("ptest-run", t("pt20.busy", {n: ins.length}), pt20Prompt(pkg.slice(0, PT20_PKG), ins, rules), {pid: p.id, quick: true, fresh: true, validate: o => o && Array.isArray(o.results)});   // ok:cut the package is capped for one quick call
+  const q = pickLive(p, ws0); if (!out || !q) return null;
+  const nevers = rules.filter(e => e.kind === "never");
+  const items = ins.map((x, i) => {
+    const r = arr(out.results).find(y => y && num(y.i, -1) === i) || {}, ans = str(r.answer).slice(0, 1200);   // ok:cut the answer as the call gave it
+    const code = new Set(factCodeHits(nevers, ans).map(h => h.e.id));
+    const rs = rules.map(e => { const v = arr(r.rules).find(y => y && str(y.id) === e.id); const said = v ? v.holds !== false : null;
+      return {id: e.id, kind: e.kind, rule: factText(e).slice(0, 200), ok: said !== false && !code.has(e.id), code: code.has(e.id), why: v ? str(v.why).slice(0, 240) : t("pt20.noverdict"), judged: said !== null}; });   // ok:cut short fields of the record
+    return {i, input: x.text.slice(0, 400), src: x.src, ref: str(x.ref), answer: ans, rules: rs, pass: !!str(r.answer).trim() && rs.every(y => y.ok), empty: !str(r.answer).trim()};   // ok:cut the record keeps the start of the input
+  });
+  const run = {id: uid("pt"), at: now(), v: num(q.versionNo, 0), n: items.length, pass: items.filter(x => x.pass).length, items};
+  const X = pt20Of(q); X.runs = [run, ...X.runs].slice(0, PT20_RUNS);
+  m20Metric(q, "ptests", 1);
+  rcpt20(q, t("pt20.done", {a: run.pass, b: run.n}), t("pt20.t")); touch(q); render();
+  return run;
+}
+function pt20HTML(p){
+  const pkg = pt20Pkg(p), ins = pt20Inputs(p), rules = factsActive(p, FACT_RULES), R = pt20Read(p), last = R.runs[0];
+  const why = !pkg ? t("pt20.need.pkg") : !rules.length ? t("pt20.need.rules") : !ins.length ? t("pt20.need.in") : "";
+  const srcW = {you: t("pt20.src.you"), test: t("pt20.src.test"), ex: t("pt20.src.ex")};
+  const list = ins.length ? `<ol class="pt20-in small">${ins.map(x => `<li><span class="muted">${esc(srcW[x.src] || "")}${x.ref ? " " + esc(x.ref) : ""}</span> ${clampHTML(x.text, "pti:" + p.id + ":" + hashStr(x.text), {lines: 2})}${x.src === "you" ? ` <button class="iconbtn xs" data-a="pt20-del" data-v="${esc(x.text)}" aria-label="${esc(t("pt20.del"))}" title="${esc(t("pt20.del"))}">${ic("x")}</button>` : ""}</li>`).join("")}</ol>` : "";
+  const res = last ? `<div class="pt20-res" data-run="${esc(last.id)}"><p class="small"><b>${esc(t("pt20.sum", {a: last.pass, b: last.n}))}</b> <span class="muted">· ${esc(fmtDate(last.at))} · ${esc(t("pt20.ver", {v: last.v}))}</span></p>
+      <ul class="pt20-list">${arr(last.items).map(x => `<li class="pt20-it ${x.pass ? "ok" : "bad"}"><span aria-hidden="true">${x.pass ? "✓" : "✗"}</span> <span class="sr20">${esc(t(x.pass ? "pt20.pass" : "pt20.fail"))}</span><div class="body"><div class="small">${clampHTML(x.input, "ptr:" + last.id + ":" + x.i, {lines: 2})}</div>
+        ${x.empty ? `<div class="small warn-t">${esc(t("pt20.empty"))}</div>` : `<details class="small"><summary>${esc(t("pt20.answer"))}</summary><div class="pt20-ans">${esc(x.answer)}</div></details>`}
+        ${arr(x.rules).filter(r => !r.ok).map(r => `<div class="small warn-t">${esc(t(r.kind === "never" ? "pt20.broke.never" : "pt20.broke.must", {x: r.rule}))}${r.code ? " · " + esc(t("pt20.bycode")) : ""}${r.why ? " · " + esc(r.why) : ""}</div>`).join("")}</div></li>`).join("")}</ul></div>` : "";
+  return `<section class="panel pt20" data-anchor="pt20"><h3>${ic("check")} ${esc(t("pt20.t"))}</h3><p class="small muted">${esc(t("pt20.sub"))}</p>
+    ${list}<form class="row" data-form="pt20-add"><label class="fld" style="flex:1 1 16em"><span>${esc(t("pt20.add"))}</span><input type="text" id="pt20-in" autocomplete="off" placeholder="${esc(t("pt20.add.ph"))}"></label><button class="btn sm" type="submit" ${R.inputs.length >= PT20_MAX ? "disabled" : ""}>${ic("plus")}${esc(t("btn.add"))}</button></form>
+    ${why ? `<p class="small muted pt20-why">${esc(why)}</p>` : `<div class="row">${aiBtn("pt20-run", t("pt20.run", {n: ins.length}), "L", {primary: true, key: "ptest-run"})}<span class="small muted">${esc(t("pt20.cost"))}</span></div>`}${busyHTML("ptest-run")}${res}</section>`;
+}
+{ const orig = factsViewHTML; factsViewHTML = function(p){ const h = orig.apply(this, arguments); let x = ""; try{ x = pt20HTML(p); }catch(e){ onAppError(e && e.message, "ptest:facts"); } return x ? h.replace(/<\/div>\s*$/, x + "</div>") : h; }; }
+{ const orig = examplesTestPanel; examplesTestPanel = function(p){ const h = orig.apply(this, arguments); let x = ""; try{ x = pt20HTML(p); }catch(e){ onAppError(e && e.message, "ptest:test"); } return h + x; }; }
+COST_EST["pt20-run"] = 1;
+
+/* ---------- 2. the Improve-PT loop ---------- */
+function ipt20List(){ return arr(WS && WS.settings && WS.settings.ipt20); }
+function ipt20Add(x){
+  if (!x || !x.id || !WS || !WS._set) return;
+  const L = ipt20List(); if (L.some(y => y.id === x.id)) return;
+  WS.settings.ipt20 = [{id: str(x.id), at: str(x.at) || now(), v: str(x.version) || PT_VERSION, where: str(x.where).slice(0, 160), text: str(x.text).slice(0, 400), status: str(x.status) === "fixed" ? "fixed" : "open"}, ...L].slice(0, 80);   // ok:cut the list keeps the start of a report
+  saveWs();
+}
+/** on a version change: the reports listed as fixed up to this version are marked, and the owner is told once */
+function ipt20Version(){
+  if (!WS || !WS._set || str(WS.settings.ipt20v) === PT_VERSION) return 0;
+  let n = 0; const ids = [];
+  for (const [v, list] of Object.entries(IMPROVE_FIXED)){ if (verCmp(v, PT_VERSION) > 0) continue;
+    for (const x of ipt20List()) if (arr(list).includes(x.id) && x.status !== "fixed"){ x.status = "fixed"; x.fixed = v; n++; ids.push(x.id); } }
+  WS.settings.ipt20v = PT_VERSION;
+  if (n) WS.settings.ipt20news = {v: PT_VERSION, n, ids, at: now()};
+  saveWs();
+  return n;
+}
+function ipt20NewsHTML(){
+  const N = WS && WS.settings && WS.settings.ipt20news; if (!N || !N.n) return "";
+  return `<section class="panel ipt20-news" data-ipt20="news" role="status"><p><b>${esc(t("ipt20.news", {n: N.n, v: N.v}))}</b></p><div class="row"><button class="btn sm" data-a="ipt20-see">${esc(t("ipt20.see"))}</button><button class="btn sm ghost" data-a="ipt20-ok">${ic("check")}${esc(t("ipt20.ok"))}</button></div></section>`;
+}
+function ipt20HTML(){
+  const L = ipt20List(), open = L.filter(x => x.status !== "fixed").length;
+  return `<section class="panel ipt20" data-anchor="ipt20"><h3>${ic("flag")} ${esc(t("ipt20.t"))}</h3><p class="small muted">${esc(t("ipt20.sub", {n: L.length, o: open}))}</p>${ipt20NewsHTML()}
+    ${L.length ? `<ul class="ipt20-list">${L.slice(0, 40).map(x => `<li class="ipt20-it" data-id="${esc(x.id)}" data-st="${esc(x.status)}">${chip(x.status === "fixed" ? t("ipt20.fixed", {v: x.fixed || ""}) : t("ipt20.open"), x.status === "fixed" ? "ok" : "warn")} <span class="small">${clampHTML(x.text, "ipt:" + x.id, {lines: 2})}</span> <span class="small muted">· ${esc(fmtDate(x.at))} · ${esc(x.v)}${x.where ? " · " + esc(x.where) : ""}</span></li>`).join("")}</ul>` : `<p class="small muted">${esc(t("ipt20.none"))}</p>`}
+    <div class="row"><button class="btn sm ghost" data-a="tool-report" data-k="ipt20">${ic("flag")}${esc(t("tr.improve"))}</button></div></section>`;
+}
+{ const orig = FORMS["tool-report"]; FORMS["tool-report"] = function(){
+    const before = new Set(arr(WS.toolfb).map(x => x && x.id));
+    const r = orig.apply(this, arguments);
+    try{ for (const x of arr(WS.toolfb)) if (x && !before.has(x.id)) ipt20Add(x); }catch(e){ onAppError(e && e.message, "ipt20:add"); }
+    return r; }; }
+{ const orig = loadToolFeedback; loadToolFeedback = async function(){
+    const r = await orig.apply(this, arguments);
+    try{ const ws = WS && WS.name; for (const x of arr(WS.toolfb).slice().reverse()) if (x && (!x.ws || x.ws === ws)) ipt20Add(x); }catch(e){ onAppError(e && e.message, "ipt20:load"); }
+    return r; }; }
+{ const orig = openWorkspace; openWorkspace = async function(id){
+    const r = await orig.apply(this, arguments);
+    try{ if (UI.wsReady && !UI.fatal && WS.id === id && ipt20Version()) render(); }catch(e){ onAppError(e && e.message, "ipt20:version"); }
+    return r; }; }
+{ const orig = viewCockpit; viewCockpit = function(){ const h = orig.apply(this, arguments); let c = ""; try{ c = ipt20NewsHTML(); }catch(e){ onAppError(e && e.message, "ipt20:card"); } return c ? c + h : h; }; }
+
+/* ---------- Settings: Metrics tab; the Improve list in PT health ---------- */
+{ const orig = viewSettings; viewSettings = function(){
+    let h = orig.apply(this, arguments);
+    try{
+      h = h.replace(/(<button class="tab[^"]*" data-a="tab" data-t="setTab" data-v="health">[\s\S]*?<\/button>)/, `$1<button class="tab ${UI.setTab === "setup20" ? "on" : ""}" data-a="tab" data-t="setTab" data-v="setup20">${esc(t("set.tab.setup20"))}</button><button class="tab ${UI.setTab === "metrics" ? "on" : ""}" data-a="tab" data-t="setTab" data-v="metrics">${esc(t("set.tab.metrics"))}</button>`);
+      if (UI.setTab === "metrics") h = h.replace(/<section class="panel">([\s\S]*?)<\/section>/, met20HTML());
+      if (UI.setTab === "setup20") h = h.replace(/<section class="panel">([\s\S]*?)<\/section>/, setup20HTML());
+      if (UI.setTab === "health") h = h.replace(/(<\/section>)(?![\s\S]*<\/section>)/, "$1" + ipt20HTML());
+    }catch(e){ onAppError(e && e.message, "settings20"); }
+    return h; }; }
+
+Object.assign(ACTIONS, {
+  "pt20-run": () => { const p = curP(); if (p) costGuard(p, "pt20-run", () => pt20Run(p), 1); },
+  "pt20-del": (el) => { const p = curP(); if (!p) return; const X = pt20Of(p), v = str(el.dataset.v); X.inputs = X.inputs.filter(x => x !== v); touch(p); render(); },
+  "ipt20-ok": () => { if (!WS.settings.ipt20news) return; WS.settings.ipt20news = null; saveWs(); render(); },
+  "ipt20-see": () => { WS.settings.ipt20news = null; saveWs(); UI.modal = null; UI.view = "settings"; UI.setTab = "health"; render(); setTimeout(() => { const e = document.querySelector(".ipt20"); if (e) e.scrollIntoView({block: "start"}); }, 0); }
+});
+Object.assign(FORMS, {
+  "pt20-add": () => { const p = curP(); if (!p) return; const el = $("#pt20-in"), v = str(el && el.value).trim(); if (!v){ toast(t("pt20.add.need"), "err"); return; }
+    const X = pt20Of(p); if (X.inputs.includes(v)) return; if (X.inputs.length >= PT20_MAX){ toast(t("pt20.max", {n: PT20_MAX}), "err"); return; }
+    X.inputs.push(v.slice(0, 2000)); rcpt20(p, v, t("pt20.t")); touch(p); render(); focusSoon("pt20-in"); }   // ok:cut one test input
+});
+["ipt20-ok", "ipt20-see"].forEach(a => ACT_NO.add(a));
+for (const k of ["ptest20", "hands20log"]) DIFF_SKIP.add(k);   // records, never part of an Undo
+
+const V200L_CSS = `
+.met20-wrap{overflow-x:auto;max-width:100%}
+.met20-t{border-collapse:collapse;width:100%;font-size:14px}
+.met20-t th,.met20-t td{padding:4px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.met20-t td.tnum{text-align:right}
+.pt20-in{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:2px}
+.pt20-list,.ipt20-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.pt20-it{display:flex;gap:8px;align-items:flex-start;min-width:0}
+.pt20-it .body{min-width:0;flex:1 1 auto;overflow-wrap:break-word}
+.pt20-ans{white-space:pre-wrap;overflow-wrap:break-word;max-height:16em;overflow:auto}
+.ipt20-it{display:flex;gap:6px;flex-wrap:wrap;align-items:baseline;min-width:0;overflow-wrap:break-word}
+`;
+function v200lCss(){ try{ if (document.getElementById("v200l-css")) return; const s = document.createElement("style"); s.id = "v200l-css"; s.textContent = V200L_CSS; document.head.appendChild(s); }catch(e){ onAppError(e && e.message, "v200l:css"); } }
+v200lCss();
+
+/* ===================== 2.0 Part E: setup guides and the helper programs, declared in advance =====================
+   The owner: "local helper programs on the Mac that the owner installs himself when a project needs one, and PT takes over and runs it
+   (all categories except Calendar, Contacts, Music, Photos; no e-mail/Slack sorting)"; "never auto-install packages or connectors on the
+   owner's devices". So PT installs nothing: it declares one program per category (HELPERS20, from official or well-known sources, tool
+   names as their own pages give them), shows click-by-click install guides in three languages, checks whether each helper answers
+   (host:<name> in the Claude desktop app, owner only — listTools never asks; "Check it's there" makes one read-only call where the helper
+   has one), and a route that needs a helper says "Needs <program> — install guide" on its card.
+   Categories left without a helper in 2.0 (no program whose tool names could be checked on its own official page, or the job is already
+   PT's own): terminal / shell, databases, office documents, notes, browser automation outside the app's browser (PT's hands are the
+   only browser), memory (the facts book is PT's memory), time. A different program per category needs a small update of this table.
+   The guides (GUIDES20): the Claude GitHub App for firnlab, the GitHub connector in claude.ai, auto-merge for Dependabot pull requests
+   only, a cloud scheduled task for the morning check, computer use in the desktop app, and one per helper. PT creates no scheduled task. */
+const HELPERS20 = [
+  {id: "files", cat: "files", prog: "Filesystem", by: "Model Context Protocol (reference server)", src: "https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem", server: "host:filesystem",
+    tools: ["list_allowed_directories", "list_directory", "write_file"], probe: "list_allowed_directories", needs: "Node.js",
+    config: `"filesystem": {\n  "command": "npx",\n  "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/<you>/Documents/PT"]\n}`},
+  {id: "git", cat: "code", prog: "Git", by: "Model Context Protocol (reference server)", src: "https://github.com/modelcontextprotocol/servers/tree/main/src/git", server: "host:git",
+    tools: ["git_status", "git_log"], probe: "", needs: "uv",
+    config: `"git": {\n  "command": "uvx",\n  "args": ["mcp-server-git", "--repository", "/Users/<you>/path/to/repo"]\n}`},
+  {id: "fetch", cat: "web", prog: "Fetch", by: "Model Context Protocol (reference server)", src: "https://github.com/modelcontextprotocol/servers/tree/main/src/fetch", server: "host:fetch",
+    tools: ["fetch"], probe: "", needs: "uv",
+    config: `"fetch": {\n  "command": "uvx",\n  "args": ["mcp-server-fetch"]\n}`},
+  {id: "blender", cat: "3d", prog: "Blender MCP", by: "community add-on (ahujasid/blender-mcp, not by the Blender Foundation)", src: "https://github.com/ahujasid/blender-mcp", server: "host:blender",
+    tools: ["execute_blender_code"], probe: "", needs: "Blender, uv",
+    config: `"blender": {\n  "command": "uvx",\n  "args": ["blender-mcp"]\n}`}
+];
+const HELPERS20_OUT = ["calendar", "contacts", "music", "photos", "mailsort"];
+const HELP20_KW = {files: /\b(files?|folders?|filesystem|finder|documents? folder|disk)\b|datei|ordner|文件/i, git: /\b(git|repositor(y|ies)|commits?)\b/i, fetch: /\b(fetch|web ?pages?|websites?|urls?|download pages?)\b|webseite|网页/i, blender: /\b(blender|3d|cad|mesh|render(ing)?)\b|三维/i};
+const HELP20_OUT_KW = {calendar: /calendar|kalender|日历/i, contacts: /contacts|kontakte|adressbuch|联系人/i, music: /\bmusic\b|musik|音乐/i, photos: /\bphotos?\b|fotos?\b|照片|相册/i, mailsort: /(sort|triage|draft|reply|label)\w*\s+(e-?mails?|mails?|slack)|(e-?mail|mail|slack)\s+(sort|triage|draft|repl)\w*|邮件(分类|整理|草拟)/i};
+const HELP20 = {st: {}, at: null, busy: "", note: {}, tried: false};
+
+/* ---------- 0. is a helper there (owner, desktop app) ---------- */
+function helper20(id){ return HELPERS20.find(h => h.id === id) || null; }
+function helper20Ready(id){ return HELP20.st[id] === "ready"; }
+/** listTools never asks the person: a helper the app runs lists with its tools; one declared only in the page lists with empty descriptions */
+async function helper20Detect(){
+  if (HELP20.busy) return;
+  HELP20.busy = "detect"; HELP20.tried = true;
+  try{
+    const m = handsOk() ? await handsApi() : null;
+    if (!m || typeof m.listTools !== "function"){ for (const h of HELPERS20) HELP20.st[h.id] = "app"; return; }
+    let S = [];
+    try{ const r = await m.listTools(); S = arr(r && r.servers); }catch(e){ for (const h of HELPERS20) HELP20.st[h.id] = "app"; return; }   // ok:catch no list in this view → "open PT in the desktop app"
+    for (const h of HELPERS20){
+      const s = S.find(x => x && x.server === h.server), T = arr(s && s.tools);
+      if (!s || !T.length || s.authStatus === "needs_reauth"){ HELP20.st[h.id] = "missing"; continue; }
+      const live = s.authStatus === "connected" || T.some(x => str(x && x.description).trim());
+      const miss = h.tools.filter(n => !T.some(x => x && x.name === n));
+      HELP20.st[h.id] = !live ? "unchecked" : miss.length ? "old" : "ready";
+      if (miss.length) HELP20.note[h.id] = miss.join(", ");
+    }
+  }finally{ HELP20.at = now(); HELP20.busy = ""; render(); }
+}
+/** one call to a helper: the owner's, only the tools declared for it, a key-shaped answer is dropped */
+async function helper20Call(id, tool, input){
+  const h = helper20(id);
+  if (!handsOk()) throw {code: "hands_owner"};
+  if (!h || !h.tools.includes(tool)) throw {code: "hands_guard", message: id + " " + tool};
+  const m = await handsApi(); if (!m) throw {code: "capability_disabled"};
+  const r = await m.callTool(h.server, tool, Object.assign({}, input || {}));
+  const txt = handsText(r && r.payload !== undefined ? r.payload : r);
+  if (HANDS_SECRET.test(txt)) throw {code: "hands_secret"};
+  return txt;
+}
+function helper20Err(e){ const c = str(e && e.code); if (["server_not_connected", "server_not_found", "not_granted"].includes(c)) return t("su20.e.missing"); return handsErr(e); }
+async function helper20Check(id){
+  const h = helper20(id); if (!h || HELP20.busy) return;
+  await helper20Detect();
+  if (h.probe && ["ready", "unchecked"].includes(HELP20.st[id])){
+    HELP20.busy = id; render();
+    try{ const txt = await helper20Call(id, h.probe, {}); HELP20.st[id] = "ready"; HELP20.note[id] = str(txt).split("\n").map(s => s.trim()).filter(s => s.startsWith("/")).slice(0, 3).join(", "); }
+    catch(e){ HELP20.st[id] = "missing"; HELP20.note[id] = helper20Err(e); }
+    finally{ HELP20.busy = ""; render(); }
+  }
+  toast(t("su20.st." + (HELP20.st[id] || "missing"), {x: h.prog}), HELP20.st[id] === "ready" ? "ok" : "");
+}
+
+/* ---------- 1. what PT does with each helper ---------- */
+/** Filesystem: save the project's prompt package as a NEW file in the folder you allowed (never overwrites, never deletes) */
+async function helper20SavePrompt(p){
+  if (!p || !helper20Ready("files") || HELP20.busy) return;
+  const pkg = pt20Pkg(p); if (!pkg){ toast(t("pt20.need.pkg"), "err"); return; }
+  HELP20.busy = "files"; render();
+  try{
+    const dirs = str(await helper20Call("files", "list_allowed_directories", {})).split("\n").map(s => s.trim()).filter(s => s.startsWith("/"));
+    if (!dirs.length){ toast(t("su20.files.nodir"), "err"); return; }
+    const dir = dirs[0].replace(/\/+$/, ""), base = (str(p.name).replace(/[^\p{L}\p{N} _-]+/gu, "").trim().replace(/\s+/g, "-") || "prompt").slice(0, 60) + "-v" + num(p.versionNo, 0);   // ok:cut a file name
+    const have = str(await helper20Call("files", "list_directory", {path: dir}));
+    let name = base + ".md", n = 2; while (have.includes(name) && n < 50) name = base + "-" + (n++) + ".md";
+    const path = dir + "/" + name;
+    confirmBox(t("su20.files.t"), t("su20.files.contract", {x: path}), t("su20.files.yes"), async () => {
+      try{ await helper20Call("files", "write_file", {path, content: pkg}); toast(t("su20.files.done", {x: path}), "ok"); }
+      catch(e){ toast(helper20Err(e), "err"); }
+    });
+  }catch(e){ toast(helper20Err(e), "err"); }
+  finally{ HELP20.busy = ""; render(); }
+}
+/** Git (morning check): changes not yet committed in the folder you named */
+async function mc20HelperLines(line){
+  const repo = str(WS.settings.helpers20 && WS.settings.helpers20.repo).trim();
+  if (!repo || !helper20Ready("git")) return;
+  try{ const txt = str(await helper20Call("git", "git_status", {repo_path: repo}));
+    const n = txt.split("\n").filter(l => /^\s*(modified:|new file:|deleted:|renamed:|both modified:)/.test(l)).length + (/Untracked files/.test(txt) ? 1 : 0);
+    line("git", n ? t("su20.git.changes", {x: repo, n}) : t("su20.git.clean", {x: repo}), n ? "new" : "ok"); }
+  catch(e){ line("git", t("su20.git.fail", {x: repo, e: helper20Err(e)}), "warn"); }
+}
+/** which helper a route names (its helper field and actors): one of HELPERS20, an excluded category, or none */
+function helper20OfRoute(r){
+  const txt = [r && r.helper ? r.helper.name + " " + r.helper.does : "", r && r.actors ? r.actors.helper : ""].join(" ");
+  if (!txt.trim()) return null;
+  for (const k of HELPERS20_OUT) if (HELP20_OUT_KW[k].test(txt)) return {out: k};
+  for (const h of HELPERS20) if (HELP20_KW[h.id].test(txt)) return {h};
+  return {none: true};
+}
+{ const orig = m20CardHTML; m20CardHTML = function(p, id){
+    const h = orig.apply(this, arguments); const r = p && m20Route(p, id); const H = r && helper20OfRoute(r); if (!H) return h;
+    try{
+      if (!HELP20.tried && handsOk()) setTimeout(() => helper20Detect(), 0);
+      const line = H.out ? `<p class="small warn-t su20-route" data-su20="out">${esc(t("su20.route.out", {x: t("su20.out." + H.out)}))}</p>`
+        : H.none ? `<p class="small muted su20-route" data-su20="none">${esc(t("su20.route.none"))} <button class="btn xs ghost" data-a="setup20-guide" data-g="helpers">${esc(t("su20.route.list"))}</button></p>`
+        : helper20Ready(H.h.id) ? `<p class="small su20-route" data-su20="ready">${ic("check")} ${esc(t("su20.route.ready", {x: H.h.prog}))}</p>`
+        : `<p class="small su20-route" data-su20="needs">${ic("gear")} ${esc(t("su20.route.needs", {x: H.h.prog}))} <button class="btn xs" data-a="setup20-guide" data-g="h-${esc(H.h.id)}">${esc(t("su20.route.guide"))}</button></p>`;
+      return h.replace(/<\/article>\s*$/, line + "</article>"); }
+    catch(e){ onAppError(e && e.message, "setup20:card"); return h; } }; }
+{ const orig = pt20HTML; pt20HTML = function(p){ const h = orig.apply(this, arguments);
+    return helper20Ready("files") && pt20Pkg(p) ? h.replace(/<\/section>\s*$/, `<div class="row"><button class="btn sm ghost" data-a="su20-save" ${HELP20.busy ? "disabled" : ""}>${ic("dl")}${esc(t("su20.files.save"))}</button><span class="small muted">${esc(t("su20.files.sub"))}</span></div></section>`) : h; }; }
+
+/* ---------- 2. the guides (click by click; the owner does each step) ---------- */
+const GUIDES20 = [
+  {id: "app", n: 5, links: {1: "https://github.com/apps/claude"}},
+  {id: "connector", n: 5, links: {1: "https://claude.ai/customize/connectors"}},
+  {id: "automerge", n: 5, links: {1: "https://github.com/firnlab/prompt-translator/settings"}},
+  {id: "cloud", n: 6, links: {1: "https://claude.ai/code/routines"}},
+  {id: "computer", n: 5, links: {1: "https://claude.com/download"}}
+];
+function setup20GuideHTML(id, steps, links, extra = ""){
+  const open = UI.su20Open === id;
+  return `<details class="su20-g" id="su20-g-${esc(id)}" data-g="${esc(id)}"${open ? " open" : ""}><summary><b>${esc(t("su20.g." + id + ".t"))}</b> <span class="small muted">· ${esc(t("su20.g." + id + ".why"))}</span></summary>
+    <ol class="su20-steps">${steps.map((s, i) => `<li>${esc(s)}${links && links[i + 1] ? ` <a class="chip tap" href="${esc(links[i + 1])}" target="_blank" rel="noopener">${ic("link")}${esc(t("su20.open"))}</a>${handsGoBtn(links[i + 1], "", t("hands.go"))}` : ""}</li>`).join("")}</ol>${extra}</details>`;
+}
+function setup20HelperGuide(h){
+  const k = "su20.h." + h.id + ".";
+  const steps = [1, 2, 3, 4, 5].map(i => t(k + i)).filter(s => s && !s.startsWith("su20."));
+  const extra = `<p class="small">${esc(t("su20.h.config"))}</p><pre class="su20-pre"><code>${esc(h.config)}</code></pre><p class="small muted">${esc(t("su20.h.name", {x: h.server.slice(5)}))} · ${esc(t("su20.h.remove"))}</p>`;
+  return setup20GuideHTML("h-" + h.id, steps, {}, extra);
+}
+function setup20HTML(){
+  if (!HELP20.tried && handsOk()) setTimeout(() => helper20Detect(), 0);
+  const ST = {ready: "ok", unchecked: "warn", old: "warn", missing: "", app: ""};
+  const rows = HELPERS20.map(h => { const st = HELP20.st[h.id] || (HELP20.busy === "detect" ? "busy" : "missing");
+    return `<tr data-helper="${esc(h.id)}" data-st="${esc(st)}"><th scope="row">${esc(t("su20.cat." + h.cat))}</th><td><b>${esc(h.prog)}</b><br><span class="small muted">${esc(h.by)}</span></td>
+      <td>${chip(t("su20.st." + st, {x: h.prog}), ST[st] || "")}${HELP20.note[h.id] ? `<br><span class="small muted">${esc(HELP20.note[h.id])}</span>` : ""}</td><td class="small">${esc(t("su20.does." + h.id))}</td>
+      <td><div class="row"><button class="btn xs" data-a="su20-check" data-id="${esc(h.id)}" ${HELP20.busy ? "disabled" : ""}>${esc(t("su20.check"))}</button><button class="btn xs ghost" data-a="setup20-guide" data-g="h-${esc(h.id)}">${esc(t("su20.route.guide"))}</button></div></td></tr>`; }).join("");
+  const repo = str(WS.settings.helpers20 && WS.settings.helpers20.repo);
+  return `<section class="panel su20" data-anchor="su20"><h3>${esc(t("su20.t"))}</h3><p class="small muted">${esc(t("su20.sub"))}</p>
+    <p class="small muted">${esc(handsOk() ? t("su20.where") : t("hands.e.owner"))}</p>
+    <h4 id="su20-g-helpers">${esc(t("su20.helpers"))}</h4><div class="met20-wrap"><table class="met20-t su20-t"><thead><tr><th scope="col">${esc(t("su20.c.cat"))}</th><th scope="col">${esc(t("su20.c.prog"))}</th><th scope="col">${esc(t("su20.c.st"))}</th><th scope="col">${esc(t("su20.c.does"))}</th><th scope="col"><span class="sr20">${esc(t("su20.c.acts"))}</span></th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="small muted">${esc(t("su20.out", {x: HELPERS20_OUT.map(k => t("su20.out." + k)).join(", ")}))} ${esc(t("su20.left"))}</p>
+    <form class="row" data-form="su20-repo"><label class="fld" style="flex:1 1 18em"><span>${esc(t("su20.repo"))}</span><input type="text" id="su20-repo" value="${esc(repo)}" placeholder="/Users/you/code/prompt-translator" autocomplete="off"></label><button class="btn sm" type="submit">${esc(t("btn.save"))}</button></form>
+    <h4>${esc(t("su20.guides"))}</h4><p class="small muted">${esc(t("su20.guides.sub"))}</p>
+    ${GUIDES20.map(g => setup20GuideHTML(g.id, Array.from({length: g.n}, (_, i) => t("su20.g." + g.id + "." + (i + 1))), g.links)).join("")}
+    ${HELPERS20.map(setup20HelperGuide).join("")}</section>`;
+}
+Object.assign(ACTIONS, {
+  "setup20-guide": (el) => { const g = str(el && el.dataset && el.dataset.g); UI.su20Open = g; UI.modal = null; UI.view = "settings"; UI.setTab = "setup20"; render(); setTimeout(() => { const e = document.getElementById("su20-g-" + g); if (e){ if (e.tagName === "DETAILS") e.open = true; e.scrollIntoView({block: "start"}); } }, 0); },
+  "su20-check": (el) => helper20Check(str(el.dataset.id)),
+  "su20-save": () => helper20SavePrompt(curP())
+});
+Object.assign(FORMS, {
+  "su20-repo": () => { const v = str(($("#su20-repo") || {}).value).trim(); WS.settings.helpers20 = Object.assign({}, WS.settings.helpers20, {repo: v.slice(0, 300)}); saveWs(); toast(t("su20.repo.saved"), "ok"); render(); }   // ok:cut a folder path
+});
+["setup20-guide", "su20-check"].forEach(a => ACT_NO.add(a));
+
+const V200E_CSS = `
+.su20-t td,.su20-t th{font-size:13px}
+.su20-g{border-top:1px solid var(--line);padding:6px 0}
+.su20-g summary{cursor:pointer;overflow-wrap:break-word}
+.su20-steps{margin:6px 0;padding-left:22px;display:flex;flex-direction:column;gap:4px}
+.su20-steps li{overflow-wrap:break-word;min-width:0}
+.su20-pre{max-width:100%;overflow-x:auto;font-size:12px;padding:8px;border:1px solid var(--line);border-radius:8px;white-space:pre}
+`;
+function v200eCss(){ try{ if (document.getElementById("v200e-css")) return; const s = document.createElement("style"); s.id = "v200e-css"; s.textContent = V200E_CSS; document.head.appendChild(s); }catch(e){ onAppError(e && e.message, "v200e:css"); } }
+v200eCss();
 
 boot();
 
