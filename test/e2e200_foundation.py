@@ -118,7 +118,7 @@ with sync_playwright() as pw:
     ev(pg, "(() => { WS.notes = WS.notes.filter(n => !/^x{5000}/.test(n.text)); })()")
     ev(pg, "window.__allPrompts = []; window.__calls = []; window.__guardN = 0")
     ev(pg, "(() => { const p = curP(); p.pick = p.pick || pickOf(p); pickOf(p).cards = []; touch(p); })()")
-    ev(pg, f"window.__mockOverride = (task, prompt) => task === 'pick-next' ? {{cards: [{json.dumps(CARD)}], candidates: [{{name: 'Google route', summary: 'Log in to the Google account and read the contacts there.'}}, {{name: 'File route', summary: 'A weekly file export.'}}], enough: false, likelyWrong: 'x'}} : null")
+    ev(pg, f"window.__mockOverride = (task, prompt) => task === 'pick-next' ? {{cards: [{json.dumps(CARD)}], candidates: [{{name: 'Google route', summary: 'Log in to the Google account and read the contacts there.'}}, {{name: 'File route', summary: 'A weekly file export.'}}], enough: false, likelyWrong: 'You may want to log in to Google after all to read the contacts.'}} : null")
     ev(pg, "aiPickNext(curP(), {n: 1})"); pg.wait_for_timeout(300); wait_ai(pg)
     pn = prompts(pg, "pick-next")
     check("a real project prompt (pick-next) starts with your rules", pn and pn[0].find("<your_rules") < pn[0].find("<best_practices") and NEVER in pn[0], len(pn))
@@ -131,6 +131,7 @@ with sync_playwright() as pw:
     k0 = ev(pg, "(() => { const c = pickRead(curP()).cards.find(x => x.q === 'Where does the tool get the contacts?'); return c ? pickAnswer(curP(), c.id, {keys: ['A']}) : 'none'; })()")
     check("…and it cannot be taken", k0 is None and ev(pg, "pickRead(curP()).cards.some(x => x.q === 'Where does the tool get the contacts?')"), k0)
     nb = ev(pg, "(document.querySelector('.nx20') || {}).innerText || ''")
+    check("…a single sentence that cannot be left out is kept, flagged in the Next bar and in the book (“still in the answer”)", "Still in PT's answer although it breaks your rule: 1" in nb and any(x.get("kept") for x in ev(pg, "factsRead(curP()).blocked")), nb[:300])
     check("…a part that breaks the rule outside an option (a candidate design) is left out, recorded and said in the Next bar", "Left out because of your rule: 1" in nb and not any(c["name"] == "Google route" for c in ev(pg, "(pickRead(curP()).cands || {}).list || []")) and any("Google account" in x["text"] for x in ev(pg, "factsRead(curP()).blocked")), [nb[:200], ev(pg, "factsRead(curP()).blocked")])
     # repaired: the second answer keeps the rule → nothing blocked
     ev(pg, "(() => { pickOf(curP()).cards = []; window.__allPrompts = []; })()")

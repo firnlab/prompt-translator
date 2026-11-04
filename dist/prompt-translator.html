@@ -7345,12 +7345,14 @@ Object.assign(STR, {
 "facts.conf.a":["Keep A","A behalten","保留 A"],
 "facts.conf.b":["Keep B","B behalten","保留 B"],
 "facts.conf.both":["Keep both","Beide behalten","两条都保留"],
-"facts.conf.whykept":["you kept {x} instead","du hast stattdessen {x} behalten","你改为保留了 {x}"],
+"facts.conf.whykept":["you kept “{x}” instead","du hast stattdessen «{x}» behalten","你改为保留了“{x}”"],
 "facts.guard.busy":["Checking the proposals against your rules…","Die Vorschläge werden mit deinen Regeln verglichen …","正在用你的规则检查这些建议……"],
 "facts.blocked.opt":["Blocked by your rule: “{x}”","Durch deine Regel gesperrt: «{x}»","被你的规则阻止：“{x}”"],
 "facts.blocked.take":["This option breaks one of your rules, so it cannot be chosen. Change the rule in the facts book if it no longer holds.","Diese Option bricht eine deiner Regeln und kann darum nicht gewählt werden. Ändere die Regel im Faktenbuch, wenn sie nicht mehr gilt.","这个选项违反了你的一条规则，所以不能选择。如果规则不再适用，请在事实簿中修改。"],
 "facts.blocked.n":["Left out because of your rule: {n}","Wegen deiner Regel weggelassen: {n}","因你的规则而省略：{n}"],
-"facts.blocked.t":["Left out because of your rules ({n})","Wegen deiner Regeln weggelassen ({n})","因你的规则而省略（{n}）"],
+"facts.blocked.k":["Still in PT's answer although it breaks your rule: {n} (look at it before you use it)","Noch in der Antwort von PT, obwohl es deine Regel bricht: {n} (schau es an, bevor du es verwendest)","虽然违反你的规则但仍在 PT 的回答中：{n}（使用前请先查看）"],
+"facts.blocked.still":["still in the answer","noch in der Antwort","仍在回答中"],
+"facts.blocked.t":["Against your rules ({n})","Gegen deine Regeln ({n})","违反你的规则（{n}）"],
 "facts.blocked.by":["breaks “{x}”:","bricht «{x}»:","违反“{x}”："],
 "facts.known.t":["Not asked again, because you already answered ({n})","Nicht nochmals gefragt, weil du schon geantwortet hast ({n})","因为你已经回答过而不再询问（{n}）"],
 "facts.old.t":["Withdrawn or replaced ({n})","Zurückgezogen oder ersetzt ({n})","已撤回或已替换（{n}）"],
@@ -26570,6 +26572,8 @@ function factsPromptProject(prompt){
 function promptTask(prompt){ const txt = typeof prompt === "string" ? prompt : Array.isArray(prompt) && prompt[0] ? str(prompt[0].content) : ""; const m = /\[\[task:([a-z0-9-]+)\]\]/.exec(txt.slice(0, 4000)); return m ? m[1] : ""; }   // ok:cut only the head of the prompt is searched for the task line
 
 /* ---------- 3. the output check: code first, one quick-tier confirm on a hit, repaired once, then left out or greyed ---------- */
+/* lists of proposals an item may be left out of; anything else (a package section, a component) is kept and the break recorded */
+const FACT_DROP_KEYS = new Set(["cards", "candidates", "questions", "examples", "checks", "requirements", "assumptions", "risks", "parts", "entries", "reframes", "stories", "routes", "outOfScope", "constitution", "tests", "cases", "items", "newItems", "fixes", "ideas", "foresight"]);
 const FACT_GUARD = {cache: new Map()};   // rule id + sentence → does it break the rule (the quick check's verdict)
 const FACT_SKIP_KEYS = new Set(["id", "ids", "ref", "refs", "k", "key", "target", "kind", "url", "src", "status", "verdict", "dim", "category", "priority", "lang", "rec", "recBasis", "fromExamples", "critIds", "reqIds", "touches", "toolAsks"]);
 function factStrings(node, out = [], key = "", depth = 0){
@@ -26607,7 +26611,8 @@ function factsGuardApply(p, rules, out, task){
     if (Array.isArray(node)){
       for (let i = node.length - 1; i >= 0; i--){ const x = node[i], h = walk(x, key); if (!h) continue;
         if (key === "options" && x && typeof x === "object"){ x._blocked = {id: h.e.id, rule: factText(h.e), s: h.s}; continue; }
-        gone.push({h, text: typeof x === "string" ? x : factStrings(x).slice(0, 3).join(" · ")}); node.splice(i, 1); }
+        const text = typeof x === "string" ? x : factStrings(x).slice(0, 3).join(" · ");
+        if (FACT_DROP_KEYS.has(key)){ gone.push({h, text}); node.splice(i, 1); } else gone.push({h, text: h.s, kept: true}); }
       return null;
     }
     if (node && typeof node === "object"){ let first = null; for (const k of Object.keys(node)){ if (k === "_blocked" || FACT_SKIP_KEYS.has(k)) continue; const h = walk(node[k], k); if (h && !first) first = h; } return first; }
@@ -26619,7 +26624,7 @@ function factsGuardApply(p, rules, out, task){
   const L = factsOf(p);
   for (const g of gone) L.blocked.unshift({at: now(), task, rule: g.h.e.id, short: factText(g.h.e), text: g.text, kept: !!g.kept});
   L.blocked = L.blocked.slice(0, FACT_BLOCKED_MAX);
-  UI.blocked20 = {pid: p.id, n: gone.length, rule: factText(gone[0].h.e), at: Date.now()};
+  UI.blocked20 = {pid: p.id, n: gone.filter(g => !g.kept).length, k: gone.filter(g => g.kept).length, rule: factText(gone[0].h.e), at: Date.now()};
   touch(p);
   return gone.length;
 }
@@ -26779,8 +26784,8 @@ async function factsConflict(p, ids){
 function factsResolve(p, cid, how){
   const L = factsOf(p), c = L.conflicts.find(x => x.id === cid); if (!c || c.status !== "open") return;
   const A = factById(p, c.a), B = factById(p, c.b);
-  if (how === "a" && B){ B.status = "replaced"; B.replacedBy = c.a; B.why = t("facts.conf.whykept", {x: c.a}); }
-  if (how === "b" && A){ A.status = "replaced"; A.replacedBy = c.b; A.why = t("facts.conf.whykept", {x: c.b}); }
+  if (how === "a" && B){ B.status = "replaced"; B.replacedBy = c.a; B.why = t("facts.conf.whykept", {x: factText(A)}); }
+  if (how === "b" && A){ A.status = "replaced"; A.replacedBy = c.b; A.why = t("facts.conf.whykept", {x: factText(B)}); }
   c.status = how === "both" ? "both" : "kept-" + how; c.done = now();
   rcpt20(p, how === "both" ? t("facts.conf.both") : factText(how === "a" ? A : B), t("rc.w.facts"));
   touch(p); render();
@@ -26882,7 +26887,7 @@ function factsViewHTML(p){
 }
 function factRowHTML(p, e){
   const ed = UI.factsEdit === e.id, off = e.status !== "active";
-  const meta = `${esc(factSrcLabel(e))} · ${esc(fmtDate(e.at))}${e.by === "pt" ? " · " + esc(t("facts.by.pt")) : ""}${off ? " · " + esc(t("facts.st." + (e.status === "replaced" ? "replaced" : "withdrawn"))) + (e.replacedBy ? " → " + esc(e.replacedBy) : "") : ""}`;
+  const meta = `${esc(factSrcLabel(e))} · ${esc(fmtDate(e.at))}${e.by === "pt" ? " · " + esc(t("facts.by.pt")) : ""}${off ? " · " + esc(t("facts.st." + (e.status === "replaced" ? "replaced" : "withdrawn"))) + (e.replacedBy && factById(p, e.replacedBy) ? " → “" + esc(factText(factById(p, e.replacedBy))) + "”" : "") : ""}`;
   const body = ed ? `<form class="stack" data-form="facts-edit" data-id="${esc(e.id)}"><label class="fld"><span>${esc(t("facts.words"))}</span><textarea id="fe-${esc(e.id)}" rows="2">${esc(e.words)}</textarea></label>
       <div class="row"><button class="btn sm primary" type="submit">${ic("check")}${esc(t("btn.save"))}</button><button class="btn sm ghost" type="button" data-a="facts-edit" data-id="${esc(e.id)}">${esc(t("btn.cancel"))}</button></div></form>`
     : `<div class="fact20-text">“${clampHTML(e.words, "fw:" + e.id, {lines: 3})}”</div>${factNorm(e.words) !== factText(e) ? `<div class="small">${esc(t("facts.short"))} ${clampHTML(factText(e), "fs:" + e.id, {lines: 2})}</div>` : ""}<div class="small muted">${meta}</div>`;
@@ -26910,7 +26915,7 @@ function factsBodyHTML(p){
   const profH = prof.length ? `<details class="facts-prof"><summary class="small">${esc(t("facts.prof.t", {n: prof.length}))}</summary><p class="small muted">${esc(t("facts.prof.sub"))}</p><div class="list">${prof.map(e =>
       `<div class="item"><div class="body small">${esc(e.text)}</div><div class="qacts">${copied.has(e.id) ? `<span class="chip ok">${ic("check")}${esc(t("facts.prof.done"))}</span>` : `<button class="btn xs" data-a="facts-copyprof" data-id="${esc(e.id)}">${ic("copy")}${esc(t("facts.prof.copy"))}</button>`}</div></div>`).join("")}</div></details>` : "";
   const known = R.known.length ? `<details class="facts-known"><summary class="small">${esc(t("facts.known.t", {n: R.known.length}))}</summary><ul class="small">${R.known.map(k => `<li>${esc(k.q)} → ${esc(k.a)} <span class="muted">· ${esc(fmtDate(k.at))}</span></li>`).join("")}</ul></details>` : "";
-  const blocked = R.blocked.length ? `<details class="facts-blocked"><summary class="small">${esc(t("facts.blocked.t", {n: R.blocked.length}))}</summary><ul class="small">${R.blocked.map(b => `<li><span class="muted">${esc(t("facts.blocked.by", {x: b.short}))}</span> ${esc(b.text)}</li>`).join("")}</ul></details>` : "";
+  const blocked = R.blocked.length ? `<details class="facts-blocked"><summary class="small">${esc(t("facts.blocked.t", {n: R.blocked.length}))}</summary><ul class="small">${R.blocked.map(b => `<li><span class="muted">${esc(t("facts.blocked.by", {x: b.short}))}</span> ${esc(b.text)}${b.kept ? ` <span class="chip warn">${esc(t("facts.blocked.still"))}</span>` : ""}</li>`).join("")}</ul></details>` : "";
   const olds = old.length ? `<details class="facts-old"><summary class="small">${esc(t("facts.old.t", {n: old.length}))}</summary><div class="list">${old.map(e => factRowHTML(p, e)).join("")}</div></details>` : "";
   return `<section class="panel facts20" data-anchor="facts"><p class="small muted">${esc(t("facts.sub"))}</p>${add}</section>${props}${conf}${groups || `<p class="small muted">${esc(t("facts.empty"))}</p>`}${olds}${known}${blocked}${profH}`;
 }
@@ -26964,7 +26969,7 @@ function nx20HTML(p){
   const R = UI.rcpt20 && UI.rcpt20.pid === p.id ? UI.rcpt20 : null, K = UI.known20 && UI.known20.pid === p.id && arr(UI.known20.list).length ? UI.known20 : null, B = UI.blocked20 && UI.blocked20.pid === p.id ? UI.blocked20 : null;
   const rc = R ? `<div class="rc20" role="status" aria-live="polite"><span class="rc20-ok">${ic("check")}${esc(t("rc.saved"))}</span><span class="rc20-what">${clampHTML(R.what, "rc20", {lines: 2})}</span><span class="rc20-where">→ ${esc(R.where)}</span><button class="iconbtn sm" data-a="rc20-close" title="${esc(t("btn.close"))}" aria-label="${esc(t("btn.close"))}">${ic("x")}</button></div>` : "";
   const kn = K ? `<div class="rc20 known20" role="status"><span class="rc20-ok">${ic("check")}${esc(t("ask.known"))}</span><span class="rc20-what">${K.list.map(k => `${esc(k.q)} → <b>${esc(k.a)}</b> <button class="btn xs ghost" data-a="ask-change" data-ref="${esc(k.ref)}">${esc(t("ask.change"))}</button>`).join(" · ")}</span><button class="iconbtn sm" data-a="known-close" title="${esc(t("btn.close"))}" aria-label="${esc(t("btn.close"))}">${ic("x")}</button></div>` : "";
-  const bl = B ? `<div class="rc20 blocked20-n" role="status"><span class="rc20-ok">${ic("shield")}${esc(t("facts.blocked.n", {n: B.n}))}</span><span class="rc20-what">“${esc(B.rule)}”</span><button class="btn xs ghost" data-a="facts-open">${esc(t("facts.title"))}</button><button class="iconbtn sm" data-a="blocked-close" title="${esc(t("btn.close"))}" aria-label="${esc(t("btn.close"))}">${ic("x")}</button></div>` : "";
+  const bl = B ? `<div class="rc20 blocked20-n" role="status"><span class="rc20-ok">${ic("shield")}${esc([B.n ? t("facts.blocked.n", {n: B.n}) : "", B.k ? t("facts.blocked.k", {n: B.k}) : ""].filter(Boolean).join(" · "))}</span><span class="rc20-what">“${esc(B.rule)}”</span><button class="btn xs ghost" data-a="facts-open">${esc(t("facts.title"))}</button><button class="iconbtn sm" data-a="blocked-close" title="${esc(t("btn.close"))}" aria-label="${esc(t("btn.close"))}">${ic("x")}</button></div>` : "";
   let nx = ""; try{ nx = pgNextBtn(p); }catch(e){ onAppError(e && e.message, "next:button"); }
   return `<div class="nx20" data-anchor="next">${rc}${kn}${bl}<div class="row nx20-next"><span class="small muted">${esc(t("sp.next.label"))}</span>${nx}</div></div>`;
 }

@@ -103,6 +103,8 @@ function factsPromptProject(prompt){
 function promptTask(prompt){ const txt = typeof prompt === "string" ? prompt : Array.isArray(prompt) && prompt[0] ? str(prompt[0].content) : ""; const m = /\[\[task:([a-z0-9-]+)\]\]/.exec(txt.slice(0, 4000)); return m ? m[1] : ""; }   // ok:cut only the head of the prompt is searched for the task line
 
 /* ---------- 3. the output check: code first, one quick-tier confirm on a hit, repaired once, then left out or greyed ---------- */
+/* lists of proposals an item may be left out of; anything else (a package section, a component) is kept and the break recorded */
+const FACT_DROP_KEYS = new Set(["cards", "candidates", "questions", "examples", "checks", "requirements", "assumptions", "risks", "parts", "entries", "reframes", "stories", "routes", "outOfScope", "constitution", "tests", "cases", "items", "newItems", "fixes", "ideas", "foresight"]);
 const FACT_GUARD = {cache: new Map()};   // rule id + sentence → does it break the rule (the quick check's verdict)
 const FACT_SKIP_KEYS = new Set(["id", "ids", "ref", "refs", "k", "key", "target", "kind", "url", "src", "status", "verdict", "dim", "category", "priority", "lang", "rec", "recBasis", "fromExamples", "critIds", "reqIds", "touches", "toolAsks"]);
 function factStrings(node, out = [], key = "", depth = 0){
@@ -140,7 +142,8 @@ function factsGuardApply(p, rules, out, task){
     if (Array.isArray(node)){
       for (let i = node.length - 1; i >= 0; i--){ const x = node[i], h = walk(x, key); if (!h) continue;
         if (key === "options" && x && typeof x === "object"){ x._blocked = {id: h.e.id, rule: factText(h.e), s: h.s}; continue; }
-        gone.push({h, text: typeof x === "string" ? x : factStrings(x).slice(0, 3).join(" · ")}); node.splice(i, 1); }
+        const text = typeof x === "string" ? x : factStrings(x).slice(0, 3).join(" · ");
+        if (FACT_DROP_KEYS.has(key)){ gone.push({h, text}); node.splice(i, 1); } else gone.push({h, text: h.s, kept: true}); }
       return null;
     }
     if (node && typeof node === "object"){ let first = null; for (const k of Object.keys(node)){ if (k === "_blocked" || FACT_SKIP_KEYS.has(k)) continue; const h = walk(node[k], k); if (h && !first) first = h; } return first; }
@@ -152,7 +155,7 @@ function factsGuardApply(p, rules, out, task){
   const L = factsOf(p);
   for (const g of gone) L.blocked.unshift({at: now(), task, rule: g.h.e.id, short: factText(g.h.e), text: g.text, kept: !!g.kept});
   L.blocked = L.blocked.slice(0, FACT_BLOCKED_MAX);
-  UI.blocked20 = {pid: p.id, n: gone.length, rule: factText(gone[0].h.e), at: Date.now()};
+  UI.blocked20 = {pid: p.id, n: gone.filter(g => !g.kept).length, k: gone.filter(g => g.kept).length, rule: factText(gone[0].h.e), at: Date.now()};
   touch(p);
   return gone.length;
 }
@@ -312,8 +315,8 @@ async function factsConflict(p, ids){
 function factsResolve(p, cid, how){
   const L = factsOf(p), c = L.conflicts.find(x => x.id === cid); if (!c || c.status !== "open") return;
   const A = factById(p, c.a), B = factById(p, c.b);
-  if (how === "a" && B){ B.status = "replaced"; B.replacedBy = c.a; B.why = t("facts.conf.whykept", {x: c.a}); }
-  if (how === "b" && A){ A.status = "replaced"; A.replacedBy = c.b; A.why = t("facts.conf.whykept", {x: c.b}); }
+  if (how === "a" && B){ B.status = "replaced"; B.replacedBy = c.a; B.why = t("facts.conf.whykept", {x: factText(A)}); }
+  if (how === "b" && A){ A.status = "replaced"; A.replacedBy = c.b; A.why = t("facts.conf.whykept", {x: factText(B)}); }
   c.status = how === "both" ? "both" : "kept-" + how; c.done = now();
   rcpt20(p, how === "both" ? t("facts.conf.both") : factText(how === "a" ? A : B), t("rc.w.facts"));
   touch(p); render();
@@ -415,7 +418,7 @@ function factsViewHTML(p){
 }
 function factRowHTML(p, e){
   const ed = UI.factsEdit === e.id, off = e.status !== "active";
-  const meta = `${esc(factSrcLabel(e))} · ${esc(fmtDate(e.at))}${e.by === "pt" ? " · " + esc(t("facts.by.pt")) : ""}${off ? " · " + esc(t("facts.st." + (e.status === "replaced" ? "replaced" : "withdrawn"))) + (e.replacedBy ? " → " + esc(e.replacedBy) : "") : ""}`;
+  const meta = `${esc(factSrcLabel(e))} · ${esc(fmtDate(e.at))}${e.by === "pt" ? " · " + esc(t("facts.by.pt")) : ""}${off ? " · " + esc(t("facts.st." + (e.status === "replaced" ? "replaced" : "withdrawn"))) + (e.replacedBy && factById(p, e.replacedBy) ? " → “" + esc(factText(factById(p, e.replacedBy))) + "”" : "") : ""}`;
   const body = ed ? `<form class="stack" data-form="facts-edit" data-id="${esc(e.id)}"><label class="fld"><span>${esc(t("facts.words"))}</span><textarea id="fe-${esc(e.id)}" rows="2">${esc(e.words)}</textarea></label>
       <div class="row"><button class="btn sm primary" type="submit">${ic("check")}${esc(t("btn.save"))}</button><button class="btn sm ghost" type="button" data-a="facts-edit" data-id="${esc(e.id)}">${esc(t("btn.cancel"))}</button></div></form>`
     : `<div class="fact20-text">“${clampHTML(e.words, "fw:" + e.id, {lines: 3})}”</div>${factNorm(e.words) !== factText(e) ? `<div class="small">${esc(t("facts.short"))} ${clampHTML(factText(e), "fs:" + e.id, {lines: 2})}</div>` : ""}<div class="small muted">${meta}</div>`;
@@ -443,7 +446,7 @@ function factsBodyHTML(p){
   const profH = prof.length ? `<details class="facts-prof"><summary class="small">${esc(t("facts.prof.t", {n: prof.length}))}</summary><p class="small muted">${esc(t("facts.prof.sub"))}</p><div class="list">${prof.map(e =>
       `<div class="item"><div class="body small">${esc(e.text)}</div><div class="qacts">${copied.has(e.id) ? `<span class="chip ok">${ic("check")}${esc(t("facts.prof.done"))}</span>` : `<button class="btn xs" data-a="facts-copyprof" data-id="${esc(e.id)}">${ic("copy")}${esc(t("facts.prof.copy"))}</button>`}</div></div>`).join("")}</div></details>` : "";
   const known = R.known.length ? `<details class="facts-known"><summary class="small">${esc(t("facts.known.t", {n: R.known.length}))}</summary><ul class="small">${R.known.map(k => `<li>${esc(k.q)} → ${esc(k.a)} <span class="muted">· ${esc(fmtDate(k.at))}</span></li>`).join("")}</ul></details>` : "";
-  const blocked = R.blocked.length ? `<details class="facts-blocked"><summary class="small">${esc(t("facts.blocked.t", {n: R.blocked.length}))}</summary><ul class="small">${R.blocked.map(b => `<li><span class="muted">${esc(t("facts.blocked.by", {x: b.short}))}</span> ${esc(b.text)}</li>`).join("")}</ul></details>` : "";
+  const blocked = R.blocked.length ? `<details class="facts-blocked"><summary class="small">${esc(t("facts.blocked.t", {n: R.blocked.length}))}</summary><ul class="small">${R.blocked.map(b => `<li><span class="muted">${esc(t("facts.blocked.by", {x: b.short}))}</span> ${esc(b.text)}${b.kept ? ` <span class="chip warn">${esc(t("facts.blocked.still"))}</span>` : ""}</li>`).join("")}</ul></details>` : "";
   const olds = old.length ? `<details class="facts-old"><summary class="small">${esc(t("facts.old.t", {n: old.length}))}</summary><div class="list">${old.map(e => factRowHTML(p, e)).join("")}</div></details>` : "";
   return `<section class="panel facts20" data-anchor="facts"><p class="small muted">${esc(t("facts.sub"))}</p>${add}</section>${props}${conf}${groups || `<p class="small muted">${esc(t("facts.empty"))}</p>`}${olds}${known}${blocked}${profH}`;
 }
