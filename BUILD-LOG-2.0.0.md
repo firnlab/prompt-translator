@@ -21,4 +21,19 @@ preview publish, Claude's own live re-test, main publish only on a green full ga
 - Strings `strings26.js`–`strings29.js`, `cl.200.*`; PT_VERSION 2.0.0.
 
 ## Gate and publish
-(filled in as the release runs)
+- Gate, part by part, one at a time (2 CPUs: side-by-side runs timed out; leftover browsers were killed between runs):
+  - A: 38/45 → 4 app bugs, a mock and old tests fixed → 45/45; on the final commit 44/45 (e2e200_loop L4 still asserted the old,
+    untrue metrics line; fixed) → after the typing switch 45/45 (flows 1.5 review flaky once, green on its retry, in the ledger).
+  - Pick tests: split into two halves after the whole run passed its 110-minute limit; 104/104 and 103/103 caught (no Pick code
+    changed after this run).
+  - Hunt check: 9/10 — check 28 (await race) had gone quietly empty (it looked for the step pages 2.0 removed); rewritten for Chat
+    and Pick, fails when no answer starts → 10/10, and 10/10 again on the final commit.
+  - Click everything: 0 problems, twice (before and after the typing switch).
+- Preview publish refused form_input under host:claude_browser from a cloud session. Typing into forms is off (H20_TYPE = false;
+  the card and the changelog say so; CAPABILITIES-2.0.json without form_input); A, the hunt check and click everything ran again.
+- Preview published: version id 1793825785-5fb3 (previous 1793741106-aca6), contract 0.2.88 unchanged. Live body equals the built
+  file; on the live file: smoke (0 errors), PT outside claude.ai (21 ok), pseudo-localisation (179 ok), 1.10 hands (54 ok),
+  2.0 hands (52 ok), 2.0 modes (170 ok).
+- Main published: version id 1793826109-ac8d (previous 1793741450-54e1), contract 0.2.85 unchanged; live body equals the built file.
+- To switch typing on later: publish once from a local session in the Claude desktop app on the owner's Mac with form_input in the
+  manifest, and set H20_TYPE = true (its tests already run with the switch on).
