@@ -608,3 +608,8 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   Design page's parts map uses it). What the Design page and the stage strip still use (`.bpmap .bp-node .mapwrap .station …`) stays.
 - Not testable here: the real helpers and the real desktop app (the mock answers in the shapes the programs' pages give); the live
   preview is tried in the desktop app before main.
+- Found by the Part D regression on all three data sets (both also red on 2cb4f16): (3) e2e200_foundation A9 on work/backup-140 — a
+  queue row 564 px wide kept its buttons beside the text with the text at 46 % (the 18em floor fits, the 60 % rule does not); the text
+  now takes `max(18em, 60%)` before the buttons move under it. (4) e2e200_map B1 "an older project keeps its order" still read the
+  Part B rule; Part C's move puts an older project on the 2.0 order when it is decided or has no detail work (`p.m200.order`), so the
+  check now reads the move record (kept → old order; otherwise on).

@@ -240,7 +240,7 @@ label.fld{color:var(--fg-2);font-weight:500}
 .sslot.pill18 svg{width:16px;height:16px;flex:none}
 /* the status is a word now, so a narrow queue row (1024 with the inspector) puts the actions on the next line instead of squeezing the text (hunt 13, cause 68) */
 .qrow{flex-wrap:wrap}
-.qrow>.qbody{flex:1 1 18em;min-width:min(18em,100%)}   /* 2.0 (A9): the text keeps at least 18em; the buttons move under it before it is squeezed */
+.qrow>.qbody{flex:1 1 max(18em,60%);min-width:min(18em,100%)}   /* 2.0 (A9): the text keeps at least 18em and 60 % of the row; the buttons move under it before it is squeezed (Part D: a 564 px row gave the text 46 %) */
 .qrow>.qacts{margin-left:auto}
 @media (min-width:821px){.tsgrid{grid-template-columns:repeat(auto-fit,minmax(11em,1fr))}}   /* the three tool states: two per line when the step column is narrow (same hunt) */
 .sslot.pill18 .ssw{white-space:nowrap}

@@ -73,8 +73,9 @@ with sync_playwright() as pw:
     ev(pg, """(() => { const p = curP(); p.assumptions.push({id: 'A1', text: 'Everyone has a smartphone', category: 'feasibility', impact: 5, risk: 5}); p.requirements.push({id: 'R1', title: 'Shared', given: 'x', when: 'y', then: 'z', priority: 'must', st: 'assumed'}); touch(p); render(); })()""")
     Q = ev(pg, "queueOf(curP()).map(x => x.ph)")
     check("…the detail items (assumptions, requirements) wait for the route; they are kept, only not asked", "assume" not in Q and "require" not in Q and ev(pg, "curP().assumptions.length === 1 && stage20Waiting(curP()) >= 2"), Q)
-    Qo = ev(pg, f"(() => {{ const q = WS.projects.find(x => x.id === '{old}'); return {{on: stage20On(q), next: stage20Next(q)}}; }})()")
-    check("an older project keeps its order (Part C moves it over)", not Qo["on"] and Qo["next"] is None, Qo)
+    Qo = ev(pg, f"(() => {{ const q = WS.projects.find(x => x.id === '{old}'); return {{on: stage20On(q), next: stage20Next(q), order: q.m200 && q.m200.order, kept: !!(q.m200 && q.m200.order === 'kept')}}; }})()")
+    # Part C's move (m200Run) puts an older project on the 2.0 order when it is decided or has no detail work yet; one mid-way keeps its order
+    check("an older project keeps its order unless Part C's move put it on the 2.0 order (its move record says which)", (not Qo["on"] and Qo["next"] is None) if Qo["kept"] or not Qo["order"] else Qo["on"], Qo)
     nx = ev(pg, "[...document.querySelectorAll('.nx20-next [data-a]')].map(b => b.dataset.a + ':' + (b.dataset.v || '') + ':' + b.textContent.trim())")
     check("…the picks in the deck come first (here none); then one Next: check the goal card", not ev(pg, "pickDeck(curP()).length") and len(nx) == 1 and nx[0].startswith("m20-open:goal:") and "goal card" in nx[0], nx)
 
