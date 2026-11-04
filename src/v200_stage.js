@@ -94,7 +94,7 @@ function stage20Next(p){
   const M = typeof m20Read === "function" ? m20Read(p) : null;
   if (M){ const al = M.alerts.find(a => a.status === "open"); if (al) return {a: "m20-open", v: "alert", label: t("st20.next.alert")}; }
   if (stage20Decided(p)) return null;
-  if (pickDeck(p).filter(c => !c.qkey).length) return null;   // the route-splitting picks come first
+  if (pickDeck(p).length) return null;   // the picks in the deck come first (before the decision only route-splitting ones; the detail items wait)
   const G = goal20Read(p);
   if (!goal20Clear(p) && !G.skip) return {a: "m20-open", v: "goal", label: t("st20.next.goal", {n: goal20Open(p).length})};
   if (!M || !M.routes.length) return {a: "m20-open", v: "map", label: t("st20.next.map")};

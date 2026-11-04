@@ -57,7 +57,7 @@ with sync_playwright() as pw:
     pg = open_page(ctx); pg.wait_for_timeout(600)
     ev(pg, "(() => { Store.isOwner = true; })()")
     old = ev(pg, "(() => { const p = WS.projects.find(x => x.id) ; return p.id; })()")
-    pid = ev(pg, "(() => { const p = blankProject('Family list'); p.northStar.goal = 'One shopping list the four of us share on our phones'; p.autoInterview = false; WS.projects.push(p); touch(p); openProject(p.id); return p.id; })()")
+    pid = ev(pg, "(() => { const p = blankProject('Family list'); p.northStar.goal = 'One shopping list the four of us share on our phones'; p.northStar.problem = 'Items get forgotten'; p.northStar.success = 'Nobody forgets milk'; p.autoInterview = false; WS.projects.push(p); touch(p); openProject(p.id); return p.id; })()")
     pg.wait_for_timeout(500)
 
     # ---------- B1 the new order ----------
@@ -76,7 +76,7 @@ with sync_playwright() as pw:
     Qo = ev(pg, f"(() => {{ const q = WS.projects.find(x => x.id === '{old}'); return {{on: stage20On(q), next: stage20Next(q)}}; }})()")
     check("an older project keeps its order (Part C moves it over)", not Qo["on"] and Qo["next"] is None, Qo)
     nx = ev(pg, "[...document.querySelectorAll('.nx20-next [data-a]')].map(b => b.dataset.a + ':' + (b.dataset.v || '') + ':' + b.textContent.trim())")
-    check("one Next: check the goal card", len(nx) == 1 and nx[0].startswith("m20-open:goal:") and "goal card" in nx[0], nx)
+    check("…the picks in the deck come first (here none); then one Next: check the goal card", not ev(pg, "pickDeck(curP()).length") and len(nx) == 1 and nx[0].startswith("m20-open:goal:") and "goal card" in nx[0], nx)
 
     # ---------- B2 the goal card ----------
     print("B2 the goal card")
@@ -185,7 +185,8 @@ with sync_playwright() as pw:
     click(pg, ".m20-shortbar [data-a=m20-open][data-v=compare]")
     tb = ev(pg, "document.querySelector('.m20-tbl').innerText")
     check("Compare: the shortlist side by side", all(ev(pg, f"m20Route(curP(), '{r}').name") in tb for r in (r1, r2_, r3)), tb[:300])
-    check("…rows that are the same for all are folded, with how many", "are folded away" in main(pg))
+    fold = ev(pg, "(() => { const m = /folded away: (\\d+)/.exec(document.querySelector('.main').innerText); return {same: m ? +m[1] : -1, rows: document.querySelectorAll('.m20-tbl tbody tr').length - 1}; })()")
+    check("…rows that are the same for all are folded, with how many", fold["same"] > 0 and fold["rows"] + fold["same"] == 12, fold)
     check("…the best value is marked in words, not only by colour", "(best)" in tb or "(lowest)" in tb, tb[:600])
     check("★ after looking: PT's pick, never a blocked route, naming what it loses", ev(pg, "m20Star(curP()) && m20Status(curP(), m20Star(curP())) !== 'blocked'") and "What it loses" in main(pg))
     click(pg, f".m20-tbl [data-a=m20-open][data-v=take][data-id={r1}]")
