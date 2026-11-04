@@ -810,7 +810,7 @@ Object.assign(ACTIONS, {
   "m20-ask": (el) => { const p = curP(), U = p && m20UI(p); if (!U) return; U.confirm = str(el.dataset.v); render(); focusSoon("m20-cf-go"); },
   "m20-cancel": () => { const p = curP(), U = p && m20UI(p); if (!U) return; U.confirm = null; render(); },
   "m20-go": (el) => { const p = curP(); if (!p) return; const k = str(el.dataset.v), U = m20UI(p); if (U) U.confirm = null;
-    if (k === "full" || k === "dig") m20Round(p, {kind: k === "full" && !m20Read(p).rounds.length ? "full" : "dig", lenses: k === "full" ? M20_LENSES : null});
+    if (k === "full" || k === "dig") m20Round(p, {kind: k === "full" && !m20Read(p).rounds.length ? "full" : "dig"});   // the first round: all six angles; later ones: a new pair
     else if (/^chip:/.test(k)) m20Chip(p, k.slice(5));
     else if (/^prove:/.test(k)) m20Prove(p, k.slice(6));
     render(); },
