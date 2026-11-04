@@ -503,6 +503,14 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   still wrote the file — only `node test/static_checks.js` (check 0) says so: run it after every build, as the rules say.
   (4) The layout audit read screen-reader-only text (`.sr20`) as clipped and a button half under the main area's lower edge as covered
   by the status bar; both are now skipped (layout141).
+- Tests moved with the views: tests that set `p.mode = "steps"` (or another 1.x view) to reach a step now open that step in its page's
+  details (`pgShowPhase` before `setPhase`; the page's render sets the cursor to its own steps); hunt 15 ("the Journey marker") is now
+  "the stage strip marks the one stage the project is at"; e2e141's learning-moment, guide-strip and stage-gate checks are gone (those
+  lived only in the 1.x step views; Pick and Chat with structure are their own guide); layout141 shows the chat and its workspace.
+- Found by the hunt once it visited the page details (both also on ab8ef98 with the same hunt): (5) the Design page drew the open kit
+  questions twice, in "What you decide" and in its kits block (two boxes with one id) — fixed, the kits block leaves out what is above;
+  (6) hunt 5: "Make about 30 variants" on the Review page's test details, followed by PT's automatic trial, cannot be undone back to the
+  exact engine state (the trial's engine climb is not part of the click's actions) — NOT fixed in Part C, fails identically on ab8ef98.
 - Left out (not built, say so if asked): the workspace-level "reading hint" when the owner corrects "about the tool / about PT" (one tap
   "No, it's about my tool" files it as a tool rule instead); sending feedback about PT to Improve PT by itself (one tap opens the report
   with the words filled in); a resizable split between conversation and workspace (fixed 58/42, one column under 1000 px); the CSS of
