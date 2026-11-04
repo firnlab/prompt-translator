@@ -13,10 +13,10 @@ TEST_HTML = ROOT / "test" / f"index12b-{__import__('os').getpid()}.html"; TEST_H
 MOCK = (ROOT / "test/mock.js").read_text()
 ONLY = sys.argv[1] if len(sys.argv) > 1 else "all"
 
-errors, fails = [], []
+errors, fails, oks = [], [], []
 def check(cond, msg):
     if not cond: fails.append(msg); print("  FAIL:", msg)
-    else: print("  ok:", msg)
+    else: oks.append(msg); print("  ok:", msg)
 def wait_idle(pg, ms=15000):
     pg.wait_for_timeout(150)
     if pg.evaluate("!!(typeof UI !== 'undefined' && UI.modal && UI.modal.kind === 'cost')"): pg.locator("[data-a=cost-go][data-v=noask]").click(); pg.wait_for_timeout(200)
@@ -411,3 +411,4 @@ with sync_playwright() as p:
 
 print("\nERRORS:", len(errors)); [print(" ", e) for e in errors[:30]]
 print("FAILS:", len(fails)); [print(" ", f) for f in fails]
+print("ok:", len(oks), "failed:", len(fails), "page errors:", len(errors))   # 2.0 gate: the standard summary line (check_the_pick.py reads it)

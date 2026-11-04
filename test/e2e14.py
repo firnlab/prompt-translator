@@ -103,6 +103,10 @@ with sync_playwright() as pw:
 
     # ---------- 2. Update affected, layer by layer; click-made actions undo as one ----------
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
+    # 2.0 Part A: every AI answer is checked against the project's never / must rules; on the real data the updated items repeat their own
+    # wording, which names a rule's key words, and the mock's quick check confirms every hit — this section is about the update flow,
+    # so the quick check answers "does not break the rule" here (the rule check itself: e2e200_foundation A2)
+    pg.evaluate("window.__guardSays = false")
     r = pg.evaluate("""async () => {
       const p = curP();
       const cand = p.requirements.filter(r => r.status !== "removed").map(r => "req:" + r.id).find(ref => depCount(p, ref) >= 2);
@@ -154,7 +158,7 @@ with sync_playwright() as pw:
     check("goal: requirements linked to criteria", r["linked"] >= 1, r)
     check("goal: examples drafted (examples loop)", r["ex"] >= 2, r)
     check("goal: criterion from failure", r["fromFail"] and r["n2"] == r["n"] + 1, r)
-    pg.evaluate("UI.home=false; setPhase('capture')"); pg.wait_for_timeout(300)
+    pg.evaluate("UI.home=false; pgShowPhase(curP(), 'capture'), setPhase('capture')"); pg.wait_for_timeout(300)
     check("goal panel shows criteria", pg.locator("#goal, [data-anchor=goal]").count() >= 1 or "C1" in pg.locator(".main").inner_text())
     pg.screenshot(path=str(SHOTS / "goal-panel.png"))
     pg.evaluate("ACTIONS['goal-reuse']()"); pg.wait_for_timeout(200)
@@ -165,7 +169,7 @@ with sync_playwright() as pw:
     # ---------- 4. Interview: questions, one-click answer, keys ----------
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
     r = pg.evaluate("""async () => { const p = curP(); await aiInterview(p); const open = arr(p.interview && p.interview.questions || p.questions).length; return {open}; }""")
-    pg.evaluate("UI.home=false; setPhase('interview')"); pg.wait_for_timeout(400)
+    pg.evaluate("UI.home=false; pgShowPhase(curP(), 'interview'), setPhase('interview')"); pg.wait_for_timeout(400)
     pg.screenshot(path=str(SHOTS / "interview.png"))
     cards = pg.locator("[data-a=q-pick]")
     check("interview: one-click answer buttons", cards.count() >= 2, cards.count())
@@ -196,7 +200,7 @@ with sync_playwright() as pw:
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
     r = pg.evaluate("""(() => { const p = curP(); const g = releaseGate(p); ensureCheckpoint(p); const ts = toolStates(p); return {gate: g.map ? g.map(x => x.k || x.key || x.id || String(x)).slice(0, 8) : g, ts: Object.keys(ts || {}), rps: arr(p.restorePoints || []).filter(x => x.kind === 'checkpoint').length}; })()""")
     check("publish gate lists what is missing", isinstance(r["gate"], list) and len(r["gate"]) >= 1, r)
-    pg.evaluate("UI.home=false; setPhase('release')"); pg.wait_for_timeout(400)
+    pg.evaluate("UI.home=false; pgShowPhase(curP(), 'release'), setPhase('release')"); pg.wait_for_timeout(400)
     pg.screenshot(path=str(SHOTS / "release.png"))
     check("release step renders tool states", pg.locator(".toolstates, [data-anchor=toolstates]").count() >= 1, pg.locator(".main").inner_text()[:300])
     ctx.close()
@@ -271,7 +275,7 @@ with sync_playwright() as pw:
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
     r = pg.evaluate("""(() => { const p = curP(); const r = p.requirements[2];
       const f = {id: uid("fd"), lens: "clarity", severity: "critical", cls: "block", section: "", item: "req:" + r.id, where: "", issue: "REJECT problem in " + r.id, fix: "be clearer", status: "open", version: p.versionNo, at: now(), stage: "review", targets: ["req:" + r.id], audit: [], reopened: 0};
-      p.findings.push(f); UI.home = true; UI.qTab = 'you'; UI.qMore = true; render(); return {fid: f.id, ref: "req:" + r.id, before: itemSnapshotText(p, "req:" + r.id)}; })()""")   # 1.6.0: the kit decisions sit in the same queue; "show all" so the new finding is on screen
+      p.findings.push(f); UI.home = true; UI.qTab = 'you'; UI.qMore = true; UI.pgDetails = UI.pgDetails || {}; UI.pgDetails['home:' + p.id] = true; render(); return {fid: f.id, ref: "req:" + r.id, before: itemSnapshotText(p, "req:" + r.id)}; })()""")   # 2.0: the overview's queue is in the cover's "everything" (opened, as a person does); 1.6.0: the kit decisions sit in the same queue; "show all" so the new finding is on screen
     key = pg.evaluate(f"queueOf(curP()).find(x => x.ref === 'finding:{r['fid']}').key")
     pg.locator(f"[data-a=q-do][data-key='{key}']").first.click(); pg.wait_for_timeout(400); idle(pg, 30000); pg.wait_for_timeout(300)
     r2 = pg.evaluate(f"""(() => {{ const p = curP(); const f = p.findings.find(x => x.id === '{r['fid']}'); return {{needs: !!f.needsYou, prop: !!f.proposal, after: itemSnapshotText(p, '{r['ref']}'), fixActs: p.acts.filter(a => a.label.startsWith('Fix')).length}}; }})()""")
@@ -306,7 +310,7 @@ with sync_playwright() as pw:
             for pid in pg.evaluate("WS.projects.map(p => p.id)"):
                 pg.evaluate(f"openProject('{pid}')"); pg.wait_for_timeout(150)
                 views = [("home", "UI.home=true; render()"), ("finish", "ACTIONS['finish-open']()"), ("decide", "ACTIONS['finish-decide']()"),
-                         ("capture", "UI.finish=null; UI.home=false; setPhase('capture')"), ("interview", "setPhase('interview')"), ("assume", "setPhase('assume')"), ("arch", "setPhase('arch')"), ("launch", "setPhase('launch')"), ("release", "setPhase('release')")]
+                         ("capture", "UI.finish=null; UI.home=false; pgShowPhase(curP(), 'capture'), setPhase('capture')"), ("interview", "pgShowPhase(curP(), 'interview'), setPhase('interview')"), ("assume", "pgShowPhase(curP(), 'assume'), setPhase('assume')"), ("arch", "pgShowPhase(curP(), 'arch'), setPhase('arch')"), ("launch", "pgShowPhase(curP(), 'launch'), setPhase('launch')"), ("release", "pgShowPhase(curP(), 'release'), setPhase('release')")]
                 for nm, js in views:
                     pg.evaluate(js); pg.wait_for_timeout(70)
                     raw = pg.evaluate(r"""(() => { const txt = document.querySelector('.app, body').innerText; const m = txt.match(/\b(u14|stg|home|sl|tray|nav14|gate|g14|batch|q\.o|q\.why|fin|fin\.g|fx|ch|rv|goal|crit|why|act|int14|lens|map|as|rd14|tr14|ts|pub|rel\.g|ist|lk|mk\.pt)\.[a-z0-9_.]+\b/g); return m ? [...new Set(m)].slice(0, 6) : []; })()""")

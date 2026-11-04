@@ -55,7 +55,9 @@ function pgShowPhase(p, ph){ const id = PG_OF_PHASE[ph]; if (!id) return false; 
 { const orig = goRef; goRef = function(ref, o = {}){
     const p = curP();
     if (p && pgOn(p) && !UI.finish && PG_OF_REF[ref]){ const id = PG_OF_REF[ref]; pgOpen(p, id); const ph = ref.startsWith("#") ? "" : refPhase(p, ref); if (ph && PG_PHASES[id].includes(ph)){ p.focus = {ph, id: null}; UI.phase = ph; pgShowPhase(p, ph); }   // ok:field  focus is the existing cursor field
-      UI.flashRef = ref; UI.navRef = ref; UI.navTry = 0; render(); return; }
+      UI.flashRef = ref; UI.navRef = ref; UI.navTry = 0;
+      if (o && Array.isArray(o.list) && o.list.length){ const i = o.list.indexOf(ref); UI.nav = {list: o.list, i: Math.max(0, i), pid: p.id}; }   // 2.0 gate (cause 101): the walk through a list ("1 of N", next, Back) on the pages too; pgOpen had cleared it
+      render(); return; }
     const was = p && pgOn(p);
     const r = orig(ref, o);
     if (p && was && pgOn(p) && UI.view === "project" && !UI.home && ref && /:/.test(ref)){ const ph = refPhase(p, ref); if (pgShowPhase(p, ph)){ UI.flashRef = UI.flashRef || ref; UI.navRef = UI.flashRef; render(); } }

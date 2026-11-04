@@ -613,3 +613,45 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   now takes `max(18em, 60%)` before the buttons move under it. (4) e2e200_map B1 "an older project keeps its order" still read the
   Part B rule; Part C's move puts an older project on the 2.0 order when it is decided or has no detail work (`p.m200.order`), so the
   check now reads the move record (kept → old order; otherwise on).
+
+## 2.0.0 release gate (4 Nov 2026, part A: 7 red on bb3383f)
+- Cause 98 (flows 1.2): with the Steps view gone, a page's details are the only way into a step, and they never visited it: the pages'
+  `goto` override (since 1.7) and the details' render moved the cursor (`p.focus`, `UI.phase`) without `setPhase`, so no automatic step
+  ran (the frontier scan on reaching the interview, the engine suggestion and the trial on reaching the architecture), no "step done"
+  restore point was saved and the project's phase did not move on. Hidden in 1.7–1.9 because the 1.x views still called `setPhase`.
+  Now a step's tab is a visit (`setPhase`, as the Steps view's was), and a person's click that opens a page with its details open, or
+  the details themselves, visits that page's step (`pgVisit`). Check: e2e12_on14 part 3 ("frontier scan ran by itself"); planted bug
+  "a step's tab on a page is not a visit" in check_the_pick.py.
+- Cause 99 (flows 1.2, a page error): Part C removed `aiImpactParts` with the 1.x change map (and Part C's string clean-up `cm.thinking`),
+  but the Run page's change request ("Tell PT what to change", Operate) still calls it: the request was filed and then the page threw.
+  Restored (one quick call that lists the parts and items a change touches, as in 1.x). `static_checks.js` now flags a function the
+  release before had (`src_v180_backup`) that is gone while a caller is left (`[calls]`); planted in check_the_checks.py.
+- Cause 100 (flows 1.2): `pickDefaultsOnce` recorded the workspace's earlier default view only when it was in `MODES`; 2.0's `MODES`
+  holds Pick and Chat, so a workspace's 1.x default (Blueprint, Journey …) was recorded as "steps" (the record of what he had was
+  lost). The stored value is kept now. Check: e2e12_on14 part 1; planted bug in check_the_pick.py.
+- Cause 101 (flows 1.4): the walk through a list ("1 of N", next, Back — the queue's titles, "Walk through", Finish's list) never
+  showed on the pages: the pages' `goRef` opened the item's page through `pgOpen`, which clears `UI.nav`, and dropped the list. Now
+  the list is kept. Check: e2e14 part 7.
+- The release page of the version under test (flows 1.10 hands, flows 2.0 loop): the mock's GitHub had a fixed page for v1.10.0, so
+  from 2.0.0 on "Check this version's release" read "no release yet". The mock now adds the page of `PT_VERSION` once the page's
+  script has run (tests that need "not there yet" still delete it). No app change.
+- Tests that still drove what Parts B and C changed on purpose (ported, nothing weakened):
+  - flows 1.7 (e2e17): the mock question ("is this what you meant?") is a detail item (phase require); a 2.0 project asks details only
+    after its route is taken (cause 85), so part 12 now takes a route on the map first (a full round with the mock, then Take this)
+    and checks it. Part 5 counts each open kit decision once on the whole Design page (Part C, hunt 12: a kit question already in
+    "What you decide" is drawn there only); planted bug "the Design page draws a kit question twice" in check_the_pick.py.
+  - check the rows (e2e180_rows): since Part C's move touches every project at boot, the rows of the loaded projects are worked out
+    before the test takes its "before" picture, so the planted bug "working out the rows fills in the project" changed them unseen.
+    The fresh 1.7 copy the test makes now lacks `goal`, as two of the made-up 1.7 projects do; the planted bug is caught again.
+  - flows 1.2 / 1.3 / 1.4 (e2e12_on14, e2e13, e2e14): steps are reached the 2.0 way — the page in the page bar, "all details", the
+    step's tab (e2e12_on14 `goto_step`; e2e13 `step()`; e2e14 `pgShowPhase` before `setPhase`); the new project starts in Pick; the
+    Bauplan is checked on the Design page (opened, as it is folded since 1.8, and as a diagram at 420 px) and the check now fails when
+    there is no map to audit (before, `auditMaps()` on a page without a map passed); the cover's "everything" is opened before its
+    queue is used; Requirements rows are typed in directly (Express's Edit button is gone). e2e12_on14 now ends with the standard
+    summary line (check_the_pick.py can read it).
+  - e2e14 part 2 (update affected, on work/backup-140): Part A's rule check confirms every code hit through the mock, and the updated
+    items repeat their own wording, which names a never rule's key words, so every update was left out. The section is about the
+    update flow; the quick check answers "does not break" there (the rule check itself is e2e200_foundation A2).
+- Dropped with their feature (Part C removed it): e2e12_on14 "mode … renders" (×5), "switch to … keeps the place" (×5), "Guided shows
+  the guide strip", "no sideways scroll at 420 px in <view>" (now per page); e2e13 part 6 "quick mode" (Express: the short list, J/K,
+  Enter, "Accept all recommended").
