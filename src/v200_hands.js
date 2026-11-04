@@ -19,6 +19,10 @@
 const H20_TOOLS = ["preview_start", "navigate", "get_page_text", "find", "computer", "form_input"];
 const H20_MOVES = ["scroll_to", "hover", "wait", "left_click"];
 const H20_DO = ["type", "choose", "click"];
+/* typing in forms (form_input) stays off in 2.0.0: the platform refuses to grant it to PT from a cloud publish ("publish that change
+   from a local session"). Until it is granted, every type/choose step is the owner's, and PT's hands stop before it (no click runs
+   after a field nobody filled yet). The typing code stays and is tested with this switched on. */
+let H20_TYPE = false;
 const H20_MAX = {sites: 20, steps: 12, log: 30};
 /* a final button: what cannot be taken back or commits the owner (merge, send, delete, pay, publish, submit/confirm, save, install, agree …) */
 const H20_FINAL = /\b(merge|squash|rebase|send|submit|pay|payment|buy|order|purchase|check ?out|delete|remove|erase|publish|post|confirm|subscribe|sign ?up|register|transfer|deploy|release|save|install|accept|agree|authori[sz]e|approve|grant|revoke|close account|cancel (my )?(subscription|account)|unsubscribe|donate|book now|reserve)\b|senden|absenden|abschicken|einreichen|bezahlen|zahlen|kaufen|bestellen|löschen|entfernen|veröffentlichen|bestätigen|zusammenführen|speichern|abonnieren|registrieren|überweisen|installieren|akzeptieren|zustimmen|genehmigen|buchen|spenden|发送|提交|支付|付款|购买|下单|删除|移除|发布|确认|合并|保存|订阅|注册|转账|安装|接受|同意|授权|批准|预订|捐/i;
@@ -57,6 +61,7 @@ async function h20Call(p, tool, input){
     if (a.action === "left_click"){ if (a.coordinate || !H20.cleared.has("c:" + str(a.ref))) throw {code: "hands_guard", message: "click not cleared"}; if (!h20WriteOk(p, H20.url)) throw {code: "hands_guard", message: "click off the list"}; H20.cleared.delete("c:" + a.ref); }
   }
   if (tool === "form_input"){
+    if (!H20_TYPE) throw {code: "hands_guard", message: "typing is off"};
     if (!H20.cleared.has("t:" + str(a.ref))) throw {code: "hands_guard", message: "field not cleared"};
     if (h20SecretVal(a.value)) throw {code: "hands_secret"};
     if (!h20WriteOk(p, H20.url)) throw {code: "hands_guard", message: "typing off the list"};
@@ -115,9 +120,12 @@ function h20Vet(p, o, words){
     if (!d || !target) continue;
     if (d === "click" && h20IsFinal(target)){ P.final = target; break; }   // PT stops one step before a final button
     if (d !== "click" && (h20SecretField(target) || h20SecretVal(value))){ if (!P.yours.includes(target)) P.yours.push(target); continue; }
+    if (d !== "click" && !H20_TYPE){ if (!P.yours.includes(target)) P.yours.push(target); P.held = true; continue; }
+    if (P.held) continue;   // typing is off: after the first field the rest is the owner's
     P.steps.push({do: d, target, value: d === "click" ? "" : value});
   }
-  if (P.final && !h20IsFinal(P.final) && P.steps.length < H20_MAX.steps){ P.steps.push({do: "click", target: P.final, value: ""}); P.final = ""; }   // a "final" that is not final is an ordinary step
+  if (P.held) P.yours = P.yours.slice(0, H20_MAX.steps);
+  if (P.final && !P.held && !h20IsFinal(P.final) && P.steps.length < H20_MAX.steps){ P.steps.push({do: "click", target: P.final, value: ""}); P.final = ""; }   // a "final" that is not final is an ordinary step
   return P;
 }
 async function h20MakePlan(p, words){
@@ -198,7 +206,7 @@ function h20ContractHTML(p){
     <dl class="h20-kv"><dt>${esc(t("h20.c.what"))}</dt><dd>${esc(P.what || P.words)}</dd><dt>${esc(t("h20.c.where"))}</dt><dd>${esc(P.host || "—")} <span class="small muted">${esc(P.url)}</span></dd>
     <dt>${esc(t("h20.c.why"))}</dt><dd>${esc(P.why || "—")}</dd><dt>${esc(t("h20.c.undo"))}</dt><dd>${esc(t("h20.undo." + P.undo))}${P.undoHow ? " · " + esc(P.undoHow) : ""}</dd></dl>
     <h4>${esc(t("h20.c.steps"))}</h4><ol class="h20-steps">${rows}${yours}${fin}</ol>
-    <p class="small muted">${esc(t("h20.c.never"))}</p>
+    <p class="small muted">${esc(t("h20.c.never"))}</p>${P.held ? `<p class="small muted h20-notype">${esc(t("h20.notype"))}</p>` : ""}
     ${block ? `<p class="small warn-t">${esc(block)}</p>${P.host && !P.siteOk && h20Site(P.host) ? `<div class="row"><button class="btn sm" data-a="h20-site-plan">${ic("plus")}${esc(t("h20.site.addthis", {x: h20Site(P.host)}))}</button></div>` : ""}` : ""}
     ${L ? end : `<div class="row"><button class="btn sm primary" data-a="h20-run" ${block || H20.busy ? "disabled" : ""}>${ic("play")}${esc(t("h20.run"))}</button><button class="btn sm ghost" data-a="h20-cancel">${esc(t("btn.cancel"))}</button></div>`}
     ${L && !H20.busy ? `<div class="row"><button class="btn xs ghost" data-a="h20-cancel">${esc(t("h20.close"))}</button></div>` : ""}</section>`;

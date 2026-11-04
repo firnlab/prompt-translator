@@ -234,7 +234,7 @@ with sync_playwright() as pw:
     S = {s["server"]: s["tools"] for s in CAP["mcp"]["servers"]}
     H = ev(pg, "HELPERS20.map(h => [h.server, h.tools])")
     check("L5 CAPABILITIES-2.0.json lists every helper with exactly the tools PT calls", all(S.get(sv) == tl for sv, tl in H), [S, H])
-    check("L5 …and the app's browser with the hands' tools (form_input added)", S.get("host:claude_browser") == ev(pg, "H20_TOOLS.slice()") and set(ev(pg, "HANDS_TOOLS.slice()")) <= set(S.get("host:claude_browser", [])), S.get("host:claude_browser"))
+    check("L5 …and the app's browser with the hands' tools (form_input only while typing is on: off in 2.0.0, the platform does not grant it from a cloud publish)", S.get("host:claude_browser") == ev(pg, "H20_TOOLS.filter(x => H20_TYPE || x !== 'form_input')") and set(ev(pg, "HANDS_TOOLS.slice()")) <= set(S.get("host:claude_browser", [])), S.get("host:claude_browser"))
     check("L5 …and keeps the existing entries", S.get("Claude Code Remote") == ["fire_trigger", "list_triggers", "update_trigger", "create_trigger"] and CAP.get("sample") == {"images": True} and len(CAP["db"]["rules"]) == 3)
 
     # ---------- L6 guides ----------

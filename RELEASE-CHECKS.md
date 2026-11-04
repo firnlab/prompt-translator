@@ -661,3 +661,7 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   the first Pick-cover button that starts one) and fails when no answer starts at all, so it can never pass by doing nothing.
 - 2.0.0 e2e200_loop L4 still asserted the old metrics line ("never sent anywhere"), which the fact check had found untrue (the
   data export carries the numbers). The test now asserts the corrected claim: never sent to Claude, part of the data export.
+- 2.0.0 preview publish refused form_input under host:claude_browser ("a cloud session or chat can't add the local tool …; publish
+  that change from a local session"). Typing into forms is therefore off (H20_TYPE = false): the plan clicks up to the first field,
+  that field and the rest are the owner's, the guard refuses form_input, the card and the changelog say so. CAPABILITIES-2.0.json
+  no longer lists form_input. e2e200_hands D0 checks the off state; the typing tests run with the switch on.

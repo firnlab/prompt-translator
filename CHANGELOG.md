@@ -16,7 +16,7 @@ Versions before 1.8 were published from the private archive repository (see RELE
 - Route alert: when a new fact, a failed test or a morning-check finding breaks a chosen route, PT tells you once
 - A facts book per project: your nevers, musts, facts and decisions in your own words; your rules go into every prompt, are never shortened, and every answer is checked against them
 - Ask once: PT never asks a question you already answered or that your facts book already answers
-- PT's hands per project: a list of sites per project, real clicks and typing in forms, a card that says what, where, why and whether it can be undone; PT stops before every final button (merge, send, delete, pay, publish) and never types or reads a key or password
+- PT's hands per project: a list of sites per project, real clicks (typing into forms stays off for now: the platform does not yet grant it to PT, so you fill in the fields), a card that says what, where, why and whether it can be undone; PT stops before every final button (merge, send, delete, pay, publish) and never types or reads a key or password
 - Morning check (first open of the day): pull requests, key dates, the release, and the routes' tripwires and “not possible yet” lines
 - Prompt tests: up to five test inputs in one call, checked against your musts and nevers, cost shown first
 - Improve PT keeps your reports and tells you once when one is fixed

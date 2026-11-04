@@ -52,6 +52,15 @@ with sync_playwright() as pw:
     ev(pg, f"window.__browser.pages['https://example.org/download'] = {json.dumps(DL)}")
     db0 = ev(pg, "JSON.stringify(curP().hands20 || null)")
 
+    # ---------- D0 typing is off in 2.0.0 (form_input is not granted from a cloud publish): the fields are the owner's ----------
+    P0 = ev(pg, """(() => h20Vet(curP(), {what: 'x', url: 'https://example.org/download', steps: [{do: 'click', target: 'Start'}, {do: 'type', target: 'First name', value: 'Alex'}, {do: 'click', target: 'Next'}, {do: 'choose', target: 'System', value: 'macOS'}], final: 'Send'}, 'w'))()""")
+    check("D0 typing off: PT clicks up to the first field; that field and every later one are yours, no click after a field nobody filled", [s["target"] for s in P0["steps"]] == ["Start"] and P0["yours"] == ["First name", "System"] and P0.get("held") is True and P0["final"] == "Send", P0)
+    g0 = ev(pg, "(async () => { try{ await h20Call(curP(), 'form_input', {ref: 'r', value: 'x'}); return 'ran'; }catch(e){ return e.code + ':' + (e.message || ''); } })()")
+    check("D0 …and the guard refuses form_input while typing is off", g0 == "hands_guard:typing is off", g0)
+    ev(pg, "(() => { H20.plan = Object.assign(h20Vet(curP(), {what: 'x', url: 'https://example.org/download', steps: [{do: 'type', target: 'First name', value: 'Alex'}], final: 'Send'}, 'w'), {pid: curP().id}); UI.pg = null; ACTIONS['h20-open'](); })()"); pg.wait_for_timeout(200)
+    check("D0 …and the card says so", "Typing into forms is off in this version" in view(pg), view(pg)[-500:])
+    ev(pg, "(() => { H20.plan = null; H20_TYPE = true; render(); })()")   # the typing code stays: everything below tests it switched on
+
     # ---------- D1 the page and the sites ----------
     more = ev(pg, "MORE_ITEMS.some(x => x.a === 'h20-open')")
     ev(pg, "ACTIONS['h20-open']()"); pg.wait_for_timeout(200)
