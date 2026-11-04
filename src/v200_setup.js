@@ -22,7 +22,7 @@ const HELPERS20 = [
     config: `"fetch": {\n  "command": "uvx",\n  "args": ["mcp-server-fetch"]\n}`},
   {id: "blender", cat: "3d", prog: "Blender MCP", by: "community add-on (ahujasid/blender-mcp, not by the Blender Foundation)", src: "https://github.com/ahujasid/blender-mcp", server: "host:blender",
     tools: ["execute_blender_code"], probe: "execute_blender_code", probeIn: {code: "import bpy\nprint(len(bpy.data.objects))"}, probeAsk: true, needs: "Blender, uv",
-    config: `"blender": {\n  "command": "uvx",\n  "args": ["blender-mcp"]\n}`}
+    config: `"blender": {\n  "command": "uvx",\n  "args": ["mcp-for-blender"],\n  "env": {"DISABLE_TELEMETRY": "true"}\n}`}
 ];
 const HELPERS20_OUT = ["calendar", "contacts", "music", "photos", "mailsort"];
 const HELP20_KW = {files: /\b(files?|folders?|filesystem|finder|documents? folder|disk)\b|datei|ordner|文件/i, git: /\b(git|repositor(y|ies)|commits?)\b/i, fetch: /\b(fetch|web ?pages?|websites?|urls?|download pages?)\b|webseite|网页/i, blender: /\b(blender|3d|cad|mesh|render(ing)?)\b|三维/i};

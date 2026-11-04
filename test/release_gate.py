@@ -52,7 +52,8 @@ CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("hunt",           "python3 test/hunt.py", True, 25),
     ("hunt 2",         "python3 test/hunt2.py", True, 20),
     ("check the hunt", "python3 test/check_the_hunts.py", False, 70),   # each hunt-2 check turns red when its bug is put back
-    ("check the Pick tests","python3 test/check_the_pick.py", False, 110),   # each planted Pick bug turns its test red (1.9: +12 care bugs, about 3–4 min each)
+    ("check the Pick tests","python3 test/check_the_pick.py --part=1/2", False, 110),   # 2.0: in halves, the whole run took longer than 110 min
+    ("check the Pick tests 2","python3 test/check_the_pick.py --part=2/2", False, 110),   # each planted Pick bug turns its test red (1.9: +12 care bugs, about 3–4 min each)
     ("layout",         "python3 test/layout141.py", False, 15),
     ("migration 1.4.1","python3 test/migrate141.py", False, 10),
     ("migration 1.4",  "python3 test/migrate14.py", False, 10),

@@ -246,6 +246,10 @@ M = [
 
 ONLY = next((x.split("=", 1)[1] for x in sys.argv if x.startswith("--only=")), None)   # 1.8: run the planted bugs whose name or test contains this text
 if ONLY: M = [m for m in M if ONLY in m[0] or ONLY in m[2]]
+PART = next((x.split("=", 1)[1] for x in sys.argv if x.startswith("--part=")), None)   # 2.0: "1/2" or "2/2" — the planted bugs in halves (the whole run passed the gate's time limit)
+if PART:
+    _k, _n = (int(v) for v in PART.split("/"))
+    M = [m for i, m in enumerate(M) if i * _n // len(M) == _k - 1]
 import re as _re
 def run(tmp, cmd):
     r = subprocess.run(cmd, shell=True, cwd=tmp, capture_output=True, text=True, timeout=1800)
