@@ -445,9 +445,11 @@ function autoOK(){ return WS.settings.autoJobs !== false && usagePct() < (WS.set
 function autoEngine(p, ph){
   if (!autoOK()) return;
   const e = eng(p), at = PHASE_IDS.indexOf(ph);
-  if (at >= PHASE_IDS.indexOf("interview") && e.scan.state === "none" && str(p.intake.raw).trim() && e.autoScan !== false) setTimeout(() => frontierJob(p), 300);
-  if (at >= PHASE_IDS.indexOf("arch") && !e.suggestAt && arr(p.requirements).length) setTimeout(() => aiEngineSuggest(p), 600);
-  if (ph === "arch" && trialOn(p) && !arr(e.trial.runs).length && arr(p.requirements).length) setTimeout(() => aiTrialRun(p), 900);
+  /* 2.0 Part D (hunt 5): an automatic step closes its own action when it ends; left open, the next click closed it and its Undo took the step back too */
+  const own = fn => Promise.resolve().then(fn).catch(x => onAppError(x && x.message, "auto:" + ph)).finally(() => actClose(p.id));
+  if (at >= PHASE_IDS.indexOf("interview") && e.scan.state === "none" && str(p.intake.raw).trim() && e.autoScan !== false) setTimeout(() => own(() => frontierJob(p)), 300);
+  if (at >= PHASE_IDS.indexOf("arch") && !e.suggestAt && arr(p.requirements).length) setTimeout(() => own(() => aiEngineSuggest(p)), 600);
+  if (ph === "arch" && trialOn(p) && !arr(e.trial.runs).length && arr(p.requirements).length) setTimeout(() => own(() => aiTrialRun(p)), 900);
 }
 /* automatic online research at key steps (runs in the background, proposes, never applies) */
 const AUTO_RES = {understand: "res.auto.understand", arch: "res.auto.arch", build: "res.auto.build"};
