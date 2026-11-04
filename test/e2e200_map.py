@@ -76,6 +76,8 @@ with sync_playwright() as pw:
     Qo = ev(pg, f"(() => {{ const q = WS.projects.find(x => x.id === '{old}'); return {{on: stage20On(q), next: stage20Next(q), order: q.m200 && q.m200.order, kept: !!(q.m200 && q.m200.order === 'kept')}}; }})()")
     # Part C's move (m200Run) puts an older project on the 2.0 order when it is decided or has no detail work yet; one mid-way keeps its order
     check("an older project keeps its order unless Part C's move put it on the 2.0 order (its move record says which)", (not Qo["on"] and Qo["next"] is None) if Qo["kept"] or not Qo["order"] else Qo["on"], Qo)
+    raw0 = ev(pg, f"(() => {{ const raw = JSON.parse(JSON.stringify(WS.projects.find(x => x.id === '{old}'))); delete raw.order20; delete raw.m200; const n = normalizeProject(raw); return n.order20; }})()")
+    check("…a stored project without the flag reads as the old order until the move (normalizeProject gives order20 = false)", raw0 is False, raw0)
     nx = ev(pg, "[...document.querySelectorAll('.nx20-next [data-a]')].map(b => b.dataset.a + ':' + (b.dataset.v || '') + ':' + b.textContent.trim())")
     check("…the picks in the deck come first (here none); then one Next: check the goal card", not ev(pg, "pickDeck(curP()).length") and len(nx) == 1 and nx[0].startswith("m20-open:goal:") and "goal card" in nx[0], nx)
 
