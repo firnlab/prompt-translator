@@ -29,6 +29,7 @@ M = [
     ("missing translation key",                        "views13.js", "append", APP.format(n=4, body='return t("zz.never.defined");'), "strings", True),
     ("a button with no action",                        "views13.js", "append", APP.format(n=5, body="return '<button data-a=\"zz-nothing\">x</button>';"), "handlers", True),
     ("wrapper of a missing function",                  "actions4.js", "append", "\n{ const orig = zzGone; zzGone = function(){ return orig(); }; }\n", "wrappers", True),
+    ("a function removed while a caller is left (2.0 gate, cause 99)", "tasks3.js", "sub", ("async function aiImpactParts(p, text){", "async function aiImpactPartsGone(p, text){"), "calls", True),
     # review items: the person must look at them, so they must show up
     ("silent failure: empty catch",                    "views13.js", "append", APP.format(n=6, body="try{ x(); }catch(e){}"), "catch", False),
     ("AI answer without a shape check",                "views13.js", "append", APP.format(n=7, body='return runAI("k", "l", "prompt", {json: true});'), "validate", False),

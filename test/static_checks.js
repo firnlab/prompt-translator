@@ -42,6 +42,14 @@ for (const [attr, label] of [['data-a', 'action'], ['data-a-change', 'change han
 /* 3. build-level: no duplicate function names (build.py also refuses), wrappers of functions that exist */
 for (const m of code.matchAll(/const orig = ([A-Za-z0-9_]+); \1 = function/g)) if (!new RegExp('function ' + m[1] + '\\s*\\(').test(code)) H('wrappers', 'wraps a function that does not exist: ' + m[1]);
 for (const m of code.matchAll(/const orig = ACTIONS\[["']([a-z0-9-]+)["']\]/g)) if (!defined.has(m[1])) H('wrappers', 'wraps an action that does not exist: ' + m[1]);
+// 2.0 gate (cause 99): a function the release before had, removed now while a caller is left (Part C removed aiImpactParts with the
+// 1.x change map; the Run page's change request still called it, a page error the moment it was sent)
+if (base && fs.existsSync(base)){
+  const baseCode = fs.readdirSync(base).filter(f => f.endsWith('.js')).map(f => fs.readFileSync(path.join(base, f), 'utf8')).join('\n');
+  const defs = c => new Set([...c.matchAll(/(?:^|[^A-Za-z0-9_$.])(?:async\s+)?function\s*\*?\s*([A-Za-z_$][A-Za-z0-9_$]*)\s*\(|(?:^|[^A-Za-z0-9_$.])(?:const|let|var)\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*=/g)].map(m => m[1] || m[2]));
+  const now = defs(code);
+  for (const n of defs(baseCode)) if (n.length > 3 && !now.has(n) && new RegExp('(?:^|[^A-Za-z0-9_$.\'"])' + n.replace(/\$/g, '\\$') + '\\s*\\(').test(code)) H('calls', 'calls a function that is gone since ' + base + ': ' + n);
+}
 
 /* 3a. one definition per name (1.0–1.3: a later duplicate silently replaced the earlier one: job kinds, aiImpact, string keys → leftover "Sie") */
 { const seen = {};

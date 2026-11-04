@@ -1058,7 +1058,8 @@ KEY_HOOKS.push((e, p) => {
 function pickDefaultsOnce(){
   if (!WS || !WS.settings || WS.settings.m150) return;
   // projects are not touched (and not re-saved): one without a view of its own keeps the default it was made with
-  WS.settings.modeBefore150 = MODES.includes(WS.settings.defaultMode) ? WS.settings.defaultMode : "steps";
+  // the stored value is kept as it was (2.0: MODES holds only Pick and Chat, so testing it against MODES turned every 1.x default into "steps")
+  WS.settings.modeBefore150 = /^[a-z]{2,16}$/.test(str(WS.settings.defaultMode)) ? WS.settings.defaultMode : "steps";
   WS.settings.defaultMode = "pick"; WS.settings.m150 = now(); saveWs();
 }
 /* in both faces (Pick, Chat with structure) the deck and the chat are the guide: the 1.x step tips and the guide strip stay out of the way */

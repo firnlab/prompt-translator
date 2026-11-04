@@ -8182,6 +8182,7 @@ Object.assign(STR, {
 "cl.200.changed":["Only two modes now, Chat with structure and Pick, as two faces of one project: switching never loses or doubles anything|Every project moves to 2.0 on first open: first a “Before 2.0” restore point, then its rules, out-of-scope items and earlier design choices go into its facts book and map; nothing is deleted, and each project gets only its own content|Pick waits with detail questions until a route is decided|Your workspace profile no longer goes into project prompts; “Copy into this project” does it when you want|Wider text column, plainer words", "Nur noch zwei Modi, Chat mit Struktur und Pick, als zwei Seiten desselben Projekts: Beim Wechseln geht nichts verloren und nichts wird doppelt|Jedes Projekt zieht beim ersten Öffnen auf 2.0 um: zuerst ein Wiederherstellungspunkt «Vor 2.0», dann kommen seine Regeln, was ausserhalb des Umfangs liegt und frühere Design-Entscheide in sein Faktenbuch und seine Karte; nichts wird gelöscht, und jedes Projekt bekommt nur seinen eigenen Inhalt|Pick wartet mit Detailfragen, bis ein Weg entschieden ist|Dein Arbeitsbereich-Profil kommt nicht mehr in Projekt-Prompts; «In dieses Projekt kopieren» macht das, wenn du willst|Breitere Textspalte, einfachere Wörter", "现在只有两种模式：结构化对话和 Pick，是同一项目的两个界面：切换时不会丢失或重复任何内容|每个项目首次打开时迁移到 2.0：先创建“2.0 之前”还原点，再把它的规则、范围外事项和以前的设计选择放入它的事实簿和地图；不删除任何内容，每个项目只获得自己的内容|Pick 会等路线决定后再提细节问题|你的工作区资料不再进入项目提示词；需要时用“复制到此项目”|更宽的文字栏，更简单的用词"],
 "cl.200.fixed":["Your rules could be cut from a long project prompt, so PT could suggest something you had ruled out; they are now never cut|“You chose this last time” carried another tool's choice into this one; removed|Undo after PT's automatic trial could undo your own next click too|The Design page showed the open kit questions twice|Examples no longer ask you questions", "Deine Regeln konnten aus einem langen Projekt-Prompt wegfallen, sodass PT etwas vorschlagen konnte, das du ausgeschlossen hattest; jetzt werden sie nie gekürzt|«Das hast du letztes Mal gewählt» trug die Wahl eines anderen Tools in dieses; entfernt|Rückgängig nach PTs automatischem Versuch konnte auch deinen nächsten eigenen Klick rückgängig machen|Die Seite Design zeigte die offenen Kit-Fragen doppelt|Beispiele stellen dir keine Fragen mehr", "你的规则可能会从较长的项目提示词中被删掉，导致 PT 建议你已排除的方案；现在规则绝不删减|“你上次选了这个”会把另一个工具的选择带入当前工具；已移除|PT 自动试运行后撤销，可能会连你下一次自己的点击也一起撤销|设计页面会重复显示未解决的工具包问题|示例不再向你提问"],
 "cl.200.removed":["The modes Steps, Blueprint, Journey, Swimlanes and Express; their content stays in your projects and is now read by Chat and Pick", "Die Modi Schritte, Bauplan, Reise, Schwimmbahnen und Express; ihr Inhalt bleibt in deinen Projekten und wird jetzt von Chat und Pick gelesen", "步骤、蓝图、旅程、泳道和快速模式；它们的内容保留在你的项目中，现在由结构化对话和 Pick 读取"],
+"cm.thinking":["Finding what this change touches…","Es wird ermittelt, was diese Änderung betrifft …","正在查找这项改动会影响哪些部分…"],   // 2.0 gate (cause 99): the Run page's change request still asks which parts a change touches
 });
 
 /* ===================== CORE ===================== */
@@ -10490,7 +10491,18 @@ Write "result" as: {"verified":true|false,"lost":["…"],"gaps":["…"],"fossils
 }
 
 /* ===================== 1.0: release, rollback, restore, updates, impact ===================== */
-/** which parts and items a described change would touch (change map) */
+/** which parts and items a described change would touch (the Run page's change request, "Tell PT what to change"; 2.0 gate, cause 99:
+    Part C removed it with the 1.x change map although the change request still calls it) */
+async function aiImpactParts(p, text){
+  const prompt = buildPrompt("impact", {proj: p, rules: ["spec"], userLang: true, context: projectContext(p),
+    body: `The person is considering this change: ${text}\nList exactly which items it would touch: component ids (component:c1), requirement ids (req:R2), test ids (test:T3) and package sections (section:<id>). Only list what really changes.\n<ids>components: ${arr(p.arch.components).map(c => c.id + "=" + c.name).join(", ")}; requirements: ${p.requirements.map(r => r.id).join(", ")}; tests: ${p.tests.map(x => x.id).join(", ")}; sections: ${arr(p.pkg.sections).map(s => s.id).join(", ")}</ids>`,
+    schema: `{"refs":["component:c1","req:R2"],"summary":"one or two sentences"}`});
+  const r = await runAI("impact", t("cm.thinking"), prompt, {pid: p && p.id, step: "ask"});
+  if (!r) return null;
+  const refs = arr(r.refs).map(str).filter(x => /^(component|req|test|section):/.test(x));
+  const parts = [...new Set(refs.flatMap(x => x.startsWith("component:") ? [x.slice(10)] : (itemByRef(p, x) || {parts: []}).parts))];
+  return {refs, parts, summary: str(r.summary)};
+}
 async function aiJudgePilot(p){
   const pl = p.pilot; if (!pl || !pl.result) return;
   const prompt = `[[task:judge-pilot]]\nYou are a second, independent judge. Another judge ran a pilot of an AI tool and graded it. Read the grading and decide whether you agree that it is ready for release. Be strict: any failed security test or broken output format means not ready.\n<pilot>${jsonFit(pl.result, 60000)}</pilot>\nWrite the note in ${langName(LANG)}.\nReply with only JSON: {"agree":true,"ready":true,"note":"one sentence"}`;
@@ -18876,7 +18888,8 @@ KEY_HOOKS.push((e, p) => {
 function pickDefaultsOnce(){
   if (!WS || !WS.settings || WS.settings.m150) return;
   // projects are not touched (and not re-saved): one without a view of its own keeps the default it was made with
-  WS.settings.modeBefore150 = MODES.includes(WS.settings.defaultMode) ? WS.settings.defaultMode : "steps";
+  // the stored value is kept as it was (2.0: MODES holds only Pick and Chat, so testing it against MODES turned every 1.x default into "steps")
+  WS.settings.modeBefore150 = /^[a-z]{2,16}$/.test(str(WS.settings.defaultMode)) ? WS.settings.defaultMode : "steps";
   WS.settings.defaultMode = "pick"; WS.settings.m150 = now(); saveWs();
 }
 /* in both faces (Pick, Chat with structure) the deck and the chat are the guide: the 1.x step tips and the guide strip stay out of the way */
@@ -19839,9 +19852,23 @@ function pgOpen(p, id, {flash = null} = {}){
   if (flash){ UI.flashRef = flash; UI.navRef = flash; UI.navTry = 0; }
   render(); const m = document.querySelector(".main"); if (m) m.scrollTop = 0;
 }
-ACTIONS["pg-open"] = el => { const p = curP(); if (p) pgOpen(p, str(el.dataset.v), {flash: el.dataset.ref || null}); };
-ACTIONS["pg-step"] = el => { const p = curP(); if (!p) return; const i = PG_PAGES.indexOf(pgCur(p)) + num(el.dataset.d); if (PG_PAGES[i]) pgOpen(p, PG_PAGES[i]); };
-ACTIONS["pg-details"] = el => { UI.pgDetails = UI.pgDetails || {}; const k = str(el.dataset.v); UI.pgDetails[k] = !UI.pgDetails[k]; render(); };
+/* 2.0 gate (cause 98): with the Steps view gone, a page's open details are the only way into a step. Their render moved the cursor
+   to the page's step without setPhase, so reaching a step that way was not a visit: no automatic step (the frontier scan at the
+   interview, the engine suggestion and the trial at the architecture), no "step done" restore point, the project's phase not moved on.
+   A person's click that opens a page with its details, or the details themselves, now visits that step like its tab does. */
+function pgVisit(p, id){
+  const phs = PG_PHASES[id] || [], key = "pg:" + p.id + ":" + id;
+  if (!phs.length || !(UI.pgDetails && UI.pgDetails[key]) || pgCur(p) !== id) return false;
+  const ph = phs.includes(p.focus.ph) ? p.focus.ph : phs[0];
+  if (ph === UI.phase) return false;
+  setPhase(ph, {keepScroll: true}); return true;
+}
+ACTIONS["pg-open"] = el => { const p = curP(); if (!p) return; pgOpen(p, str(el.dataset.v), {flash: el.dataset.ref || null}); pgVisit(p, str(el.dataset.v)); };
+ACTIONS["pg-step"] = el => { const p = curP(); if (!p) return; const i = PG_PAGES.indexOf(pgCur(p)) + num(el.dataset.d); if (PG_PAGES[i]){ pgOpen(p, PG_PAGES[i]); pgVisit(p, PG_PAGES[i]); } };
+ACTIONS["pg-details"] = el => { UI.pgDetails = UI.pgDetails || {}; const k = str(el.dataset.v); UI.pgDetails[k] = !UI.pgDetails[k];
+  const p = curP(), m = /^pg:([^:]+):(\w+)$/.exec(k);
+  if (UI.pgDetails[k] && p && m && m[1] === p.id && pgVisit(p, m[2])) return;
+  render(); };
 for (const a of ["pg-open", "pg-step", "pg-details"]) ACT_NO.add(a);
 /* a step ref from a page opens the page it lives on; an item ref opens its page with the details open and the item in view */
 function pgShowPhase(p, ph){ const id = PG_OF_PHASE[ph]; if (!id) return false; UI.pg = {pid: p.id, id}; UI.pgDetails = UI.pgDetails || {}; UI.pgDetails["pg:" + p.id + ":" + id] = true; return true; }
@@ -19854,7 +19881,8 @@ function pgShowPhase(p, ph){ const id = PG_OF_PHASE[ph]; if (!id) return false; 
     if (p && was && pgOn(p) && UI.view === "project" && !UI.home && ref && /:/.test(ref)){ const ph = refPhase(p, ref); if (pgShowPhase(p, ph)){ UI.flashRef = UI.flashRef || ref; UI.navRef = UI.flashRef; render(); } }
     return r; }; }
 /* a step button inside a page stays on the page: the details open on that step */
-{ const orig = ACTIONS["goto"]; ACTIONS["goto"] = function(el){ const p = curP(); const ph = el && el.dataset ? el.dataset.ph : ""; if (p && pgOn(p) && !UI.home && PG_OF_PHASE[ph] && PHASE_IDS.includes(ph)){ p.focus = {ph, id: null}; UI.phase = ph; pgShowPhase(p, ph); if (typeof resetBase === "function") resetBase(p); render(); return; } return orig.apply(this, arguments); }; }   // ok:field  focus is the existing cursor field (DIFF_SKIP)
+/* 2.0 gate (cause 98): a step's tab is a visit (automatic steps, step done), as the Steps view's was */
+{ const orig = ACTIONS["goto"]; ACTIONS["goto"] = function(el){ const p = curP(); const ph = el && el.dataset ? el.dataset.ph : ""; if (p && pgOn(p) && !UI.home && PG_OF_PHASE[ph] && PHASE_IDS.includes(ph)){ pgShowPhase(p, ph); if (UI.phase === ph){ p.focus = {ph, id: null}; render(); return; } setPhase(ph, {keepScroll: true}); return; } return orig.apply(this, arguments); }; }   // ok:field  focus is the existing cursor field (DIFF_SKIP)
 { const orig = openProject; openProject = function(id, phase){ if (UI.pg && UI.pg.pid !== id) UI.pg = null; const r = orig(id, phase); const p = curP(); if (p && p.id === id && phase && pgOn(p) && PG_OF_PHASE[phase] && !window.__ptNoHome){ UI.pg = {pid: id, id: PG_OF_PHASE[phase]}; } return r; }; }
 
 /* ---------- the queue, per page ---------- */

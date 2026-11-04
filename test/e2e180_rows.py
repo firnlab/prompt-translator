@@ -63,6 +63,7 @@ with sync_playwright() as pw:
     check("…and points at a restore point in the project's list", all(x["rpThere"] for x in r), [(x["name"], x["rp"]) for x in r if not x["rpThere"]])
     # a 1.7 project seen for the first time: a copy with a new id, never opened by 1.8
     m = ev(pg, """async () => { const src = WS.projects.find(p => rowsOf(p).length) || WS.projects[0]; const q = JSON.parse(JSON.stringify(src)); q.id = uid('p'); q.createdAt = '2026-10-20T10:00:00.000Z'; q.restore = []; delete ROWS.L[q.id];
+      delete q.goal;   // as stored by 1.7 (two of the made-up projects have none): since 2.0 the move touches every project at boot, so the rows of the loaded projects are worked out before this test looks — only this copy shows whether working them out fills in what a 1.7 project lacks
       WS.projects.push(q); const before = T18.strip(q); const L = await rowsEnsure(q); await L.chain; await storeIdle(3000);
       const db = window.__mockdb(), rp = L.list[0] && L.list[0].rp, rows = rowsOf(q);
       const res = {same: T18.strip(q) === before, n: L.list.length, first: L.list[0] && L.list[0].type, rows: rows.length, inEvent: arr(L.list[0] && L.list[0].data.rows).length,

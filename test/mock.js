@@ -425,13 +425,15 @@ window.__mockJudgeOf = function(j, res){
   const PAGES = {
     "https://github.com/firnlab/prompt-translator/pulls": "Pull requests\nOpen\n2\nClosed\n22\nRelease 1.10.0: PT's hands\n#26·by firnsmith was opened 5 minutes ago\nBump actions/checkout\n#27·by dependabot was opened 1 day ago",
     "https://github.com/firnlab/prompt-translator/pull/26": "Release 1.10.0: PT's hands #26\nThis branch has no conflicts with the base branch\nMerge pull request\nYou can also merge this with the command line",
-    "https://github.com/firnlab/prompt-translator/releases/tag/v1.10.0": "Releases\nPrompt Translator 1.10.0\nv1.10.0\nAssets",
     "https://github.com/settings/personal-access-tokens": "Fine-grained personal access tokens\nGenerate new token\npt-private-writer\nExpires on Thu, Nov 4 2027.\nLast used within the last week\ntools-runner\nExpires on Sat, Nov 21 2026.\nNever used\nold-test\nExpired on Mon, Jan 5 2026.\nlab\nNo expiration",
     "https://github.com/firnlab/prompt-translator/settings/environments": "Environments\nbuild\n1 secret",
     "https://github.com/firnlab/prompt-translator/settings/secrets/actions": "Actions secrets and variables\nRepository secrets\nPT_PRIVATE_TOKEN\nUpdated 2 days ago",
     "https://github.com/firnlab/tools/settings/secrets/actions": "Actions secrets and variables\nRepository secrets\nCLAUDE_CODE_OAUTH_TOKEN\nPT_PRIVATE_TOKEN"
   };
   window.__browser = {pages: Object.assign({}, PAGES), fail: "", loadReads: 0, url: "", reads: 0, tabs: 0};
+  /* the release page of the version under test (2.0.0 gate: a fixed "v1.10.0" page made every later version read "no release yet");
+     PT_VERSION exists once the page's own script ran, so the page is added on DOMContentLoaded (tests may delete it afterwards) */
+  document.addEventListener("DOMContentLoaded", () => { try { const v = PT_VERSION; window.__browser.pages["https://github.com/firnlab/prompt-translator/releases/tag/v" + v] = "Releases\nPrompt Translator " + v + "\nv" + v + "\nAssets"; } catch(e){} });
   if (!window.__morningOn && localStorage.getItem("mockmorning") !== "1") window.__ptNoMorning = true;   // 2.0 Part D: the morning check runs on the owner's first open of a day; only tests that set window.__morningOn see it
   window.__browserCall = async function(rec, tool, input){
     const B = window.__browser; rec.server = "host:claude_browser";

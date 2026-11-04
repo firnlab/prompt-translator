@@ -32,9 +32,23 @@ function pgOpen(p, id, {flash = null} = {}){
   if (flash){ UI.flashRef = flash; UI.navRef = flash; UI.navTry = 0; }
   render(); const m = document.querySelector(".main"); if (m) m.scrollTop = 0;
 }
-ACTIONS["pg-open"] = el => { const p = curP(); if (p) pgOpen(p, str(el.dataset.v), {flash: el.dataset.ref || null}); };
-ACTIONS["pg-step"] = el => { const p = curP(); if (!p) return; const i = PG_PAGES.indexOf(pgCur(p)) + num(el.dataset.d); if (PG_PAGES[i]) pgOpen(p, PG_PAGES[i]); };
-ACTIONS["pg-details"] = el => { UI.pgDetails = UI.pgDetails || {}; const k = str(el.dataset.v); UI.pgDetails[k] = !UI.pgDetails[k]; render(); };
+/* 2.0 gate (cause 98): with the Steps view gone, a page's open details are the only way into a step. Their render moved the cursor
+   to the page's step without setPhase, so reaching a step that way was not a visit: no automatic step (the frontier scan at the
+   interview, the engine suggestion and the trial at the architecture), no "step done" restore point, the project's phase not moved on.
+   A person's click that opens a page with its details, or the details themselves, now visits that step like its tab does. */
+function pgVisit(p, id){
+  const phs = PG_PHASES[id] || [], key = "pg:" + p.id + ":" + id;
+  if (!phs.length || !(UI.pgDetails && UI.pgDetails[key]) || pgCur(p) !== id) return false;
+  const ph = phs.includes(p.focus.ph) ? p.focus.ph : phs[0];
+  if (ph === UI.phase) return false;
+  setPhase(ph, {keepScroll: true}); return true;
+}
+ACTIONS["pg-open"] = el => { const p = curP(); if (!p) return; pgOpen(p, str(el.dataset.v), {flash: el.dataset.ref || null}); pgVisit(p, str(el.dataset.v)); };
+ACTIONS["pg-step"] = el => { const p = curP(); if (!p) return; const i = PG_PAGES.indexOf(pgCur(p)) + num(el.dataset.d); if (PG_PAGES[i]){ pgOpen(p, PG_PAGES[i]); pgVisit(p, PG_PAGES[i]); } };
+ACTIONS["pg-details"] = el => { UI.pgDetails = UI.pgDetails || {}; const k = str(el.dataset.v); UI.pgDetails[k] = !UI.pgDetails[k];
+  const p = curP(), m = /^pg:([^:]+):(\w+)$/.exec(k);
+  if (UI.pgDetails[k] && p && m && m[1] === p.id && pgVisit(p, m[2])) return;
+  render(); };
 for (const a of ["pg-open", "pg-step", "pg-details"]) ACT_NO.add(a);
 /* a step ref from a page opens the page it lives on; an item ref opens its page with the details open and the item in view */
 function pgShowPhase(p, ph){ const id = PG_OF_PHASE[ph]; if (!id) return false; UI.pg = {pid: p.id, id}; UI.pgDetails = UI.pgDetails || {}; UI.pgDetails["pg:" + p.id + ":" + id] = true; return true; }
@@ -47,7 +61,8 @@ function pgShowPhase(p, ph){ const id = PG_OF_PHASE[ph]; if (!id) return false; 
     if (p && was && pgOn(p) && UI.view === "project" && !UI.home && ref && /:/.test(ref)){ const ph = refPhase(p, ref); if (pgShowPhase(p, ph)){ UI.flashRef = UI.flashRef || ref; UI.navRef = UI.flashRef; render(); } }
     return r; }; }
 /* a step button inside a page stays on the page: the details open on that step */
-{ const orig = ACTIONS["goto"]; ACTIONS["goto"] = function(el){ const p = curP(); const ph = el && el.dataset ? el.dataset.ph : ""; if (p && pgOn(p) && !UI.home && PG_OF_PHASE[ph] && PHASE_IDS.includes(ph)){ p.focus = {ph, id: null}; UI.phase = ph; pgShowPhase(p, ph); if (typeof resetBase === "function") resetBase(p); render(); return; } return orig.apply(this, arguments); }; }   // ok:field  focus is the existing cursor field (DIFF_SKIP)
+/* 2.0 gate (cause 98): a step's tab is a visit (automatic steps, step done), as the Steps view's was */
+{ const orig = ACTIONS["goto"]; ACTIONS["goto"] = function(el){ const p = curP(); const ph = el && el.dataset ? el.dataset.ph : ""; if (p && pgOn(p) && !UI.home && PG_OF_PHASE[ph] && PHASE_IDS.includes(ph)){ pgShowPhase(p, ph); if (UI.phase === ph){ p.focus = {ph, id: null}; render(); return; } setPhase(ph, {keepScroll: true}); return; } return orig.apply(this, arguments); }; }   // ok:field  focus is the existing cursor field (DIFF_SKIP)
 { const orig = openProject; openProject = function(id, phase){ if (UI.pg && UI.pg.pid !== id) UI.pg = null; const r = orig(id, phase); const p = curP(); if (p && p.id === id && phase && pgOn(p) && PG_OF_PHASE[phase] && !window.__ptNoHome){ UI.pg = {pid: id, id: PG_OF_PHASE[phase]}; } return r; }; }
 
 /* ---------- the queue, per page ---------- */
