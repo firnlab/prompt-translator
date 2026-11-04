@@ -16,7 +16,7 @@ Run: python3 test/hunt.py [backup dir]          (about 10-20 minutes; the click-
 12 one box       no element id appears twice on a screen (a box shown twice is read from the wrong copy) (1.4.2)
 13 squeeze       no text squeezed to one word or letter per line, at 1440 / 1024 with the inspector / 390 (1.4.2)
 14 go-to         every kind of open item, in every mode, lands visibly on screen or in the inspector (1.4.2)
-15 you are here  the Journey marker is on the step you are viewing (1.4.2)
+15 you are here  the stage strip marks the one stage the project is at (1.4.2; 2.0: the Journey view is gone)
 16 typing       text typed into any box survives a background render, cursor kept (lost text since 1.0)
 17 done          a step shown as done has no blocker; copying never unlocks with blockers (one truth for "done")
 18 broken AI     empty / non-JSON / wrongly shaped AI answers: no crash, no hang, no damaged data
@@ -38,8 +38,8 @@ PIDS = None
 PHASES = ["capture", "understand", "interview", "assume", "require", "arch", "build", "review", "test", "launch", "release", "operate"]
 RAWKEY = r"""(() => { const txt = (document.querySelector('.app') || document.body).innerText; const keys = Object.keys(STR); const hit = keys.filter(k => k.includes('.') && txt.includes(k) && !/^(q|ex|pt|sb)\.[a-z]$/.test(k)).slice(0, 5); return hit; })()"""
 SCREENS = lambda pid: [f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{pid}'); UI.home=true; render(); }})()"] + \
-    [f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{pid}'); UI.home=false; setPhase('{ph}'); pgShowPhase(curP(), '{ph}'); render(); }})()" for ph in PHASES] + \
-    [f"(() => {{ UI.modal=null; UI.review=null; openProject('{pid}'); UI.home=false; setPhase('require'); curP().mode='{m}'; render(); }})()" for m in ["blueprint", "journey", "swimlanes", "express", "pick"]] + \
+    [f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{pid}'); UI.home=false; pgShowPhase(curP(), '{ph}'); setPhase('{ph}'); render(); }})()" for ph in PHASES] + \
+    [f"(() => {{ UI.modal=null; UI.review=null; openProject('{pid}'); UI.home=false; setPhase('require'); face20Set(curP(), '{m}'); UI.home=false; render(); }})()" for m in ["pick", "chat"]] + \
     [f"(() => {{ UI.modal=null; UI.review=null; openProject('{pid}'); UI.home=false; curP().mode='pick'; window.__pickFixture(curP()); UI.pkCands = {str(c).lower()}; UI.pkDump = {str(c).lower()}; render(); }})()" for c in [False, True]]   # 1.5.0: every Pick screen, filled
 VOLATILE = ["updatedAt", "_rev", "seenAt", "lastWhere", "focus", "usageMonth"]
 with sync_playwright() as pw:
@@ -219,7 +219,7 @@ with sync_playwright() as pw:
                     m = pg.evaluate(MENUS)
                     if m: menu_bad.append([where, m])
         # an item box opened from the inspector is on the screen once
-        pg.evaluate(f"(() => {{ openProject('{PIDS[0]}'); UI.home = false; setPhase('assume'); pgShowPhase(curP(), 'assume'); render(); }})()")
+        pg.evaluate(f"(() => {{ openProject('{PIDS[0]}'); UI.home = false; pgShowPhase(curP(), 'assume'); setPhase('assume'); render(); }})()")
         ref = pg.evaluate("(() => { const a = curP().assumptions[0]; return a ? 'assumption:' + a.id : null; })()")
         if ref:
             pg.evaluate(f"(() => {{ UI.open.add('{ref}'); render(); const b = document.querySelector('[data-a=insp-open][data-ref=\"{ref}\"]'); b && b.click(); }})()"); pg.wait_for_timeout(80)
@@ -233,7 +233,7 @@ with sync_playwright() as pw:
     LAND = r"""(ref) => new Promise(res => setTimeout(() => { const el = refEl(ref); const r = el && el.getBoundingClientRect();
       res(!!(el && r.bottom > 0 && r.top < innerHeight) || (UI.drawer && UI.inspRef === ref && !!document.querySelector('.insp .insp-title')) || /top of this step|oben in diesem|顶部/.test([...document.querySelectorAll('#toasts .toast')].map(t => t.textContent).join(' '))); }, 1600))"""
     go_bad = []
-    for mode in ["steps", "journey", "express", "blueprint", "swimlanes", "pick"]:
+    for mode in ["pick", "chat"]:   # 2.0: the two faces (the 1.x views are gone)
         for pid in PIDS:
             seen = set()
             for ref, kind in pg.evaluate(f"(() => {{ openProject('{pid}'); return queueOf(curP()).map(x => [x.ref, x.kind]); }})()"):
@@ -243,11 +243,12 @@ with sync_playwright() as pw:
                 if not pg.evaluate(LAND, ref): go_bad.append([mode, kind, ref])
     check("14 go-to: every kind of open item lands visibly in every mode", not go_bad, go_bad[:6])
     here_bad = []
-    for ph in PHASES:
-        pg.evaluate(f"(() => {{ openProject('{PIDS[0]}'); UI.home = false; setPhase('{ph}'); pgShowPhase(curP(), '{ph}'); render(); }})()")
-        h = pg.evaluate("(() => { const s = [...document.querySelectorAll('.station')].find(x => x.querySelector('.here') && x.querySelector('.here').textContent.trim()); return s ? s.dataset.ph : null; })()")
-        if h != ph: here_bad.append([ph, h])
-    check("15 you are here: the Journey marker is on the step you are viewing", not here_bad, here_bad[:4])
+    for ph in PHASES:   # 2.0: the stage strip (both faces) marks exactly the stage the project is at
+        pg.evaluate(f"(() => {{ openProject('{PIDS[0]}'); face20Set(curP(), 'chat'); pgShowPhase(curP(), '{ph}'); setPhase('{ph}'); ACTIONS['home'](); render(); }})()")
+        h = pg.evaluate("(() => { const s = [...document.querySelectorAll('.c20 .st20-s.now')]; return s.length === 1 && s[0].textContent.includes(t('st20.s.' + stage20Of(curP()))) ? 'ok' : s.length; })()")
+        if h != "ok": here_bad.append([ph, h])
+    pg.evaluate("face20Set(curP(), 'pick')")
+    check("15 you are here: the stage strip marks the one stage the project is at", not here_bad, here_bad[:4])
     ctx.close()
     # 16-21 (1.4.2, from the bug history since 1.0): typed text, honest "done", broken AI answers, failed loads, document size, removed items
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
@@ -313,7 +314,7 @@ with sync_playwright() as pw:
     rm_bad = pg.evaluate("""(() => { const out = []; for (const p of WS.projects){ openProject(p.id);
         for (const [k, list] of Object.entries(ITEM_LIST)){ const it = arr(p[list])[0]; if (!it) continue; const ref = k + ':' + it.id;
           ACTIONS['item-remove']({dataset: {ref}});
-          const o = JSON.parse(JSON.stringify(curP())); for (const h of REF_HISTORY) delete o[h]; delete o.marks; delete o.m14; delete o.m141;
+          const o = JSON.parse(JSON.stringify(curP())); for (const h of REF_HISTORY) delete o[h]; delete o.marks; delete o.m14; delete o.m141; const M2 = o.map20; delete o.map20; delete o.m200; if (M2) o.map20refs = [arr(M2.neutral), Object.keys(M2.tags || {})];   /* 2.0: a route's id R1 is not requirement R1; the map names items only in neutral and tags (the move's record holds field hashes) */
           const NOTREF = new Set(['rung', 'tier', 'level', 'effort', 'model']); let hits = 0;   // "R1" as a rung is a level, not requirement R1
           const walk = (x, k) => { if (NOTREF.has(k)) return; if (Array.isArray(x)) x.forEach(y => walk(y, k)); else if (x && typeof x === 'object') for (const [kk, v] of Object.entries(x)) walk(v, kk); else if (x === it.id || x === ref) hits++; }; walk(o, '');
           if (hits) out.push(p.name.slice(0, 14) + ' ' + ref + ' ×' + hits);

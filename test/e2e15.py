@@ -145,7 +145,7 @@ with sync_playwright() as pw:
     check("names, never raw ids, in the Done list and labels", ev(pg, "(() => { const r = 'pick:' + pickRead(curP()).log[0].cid; return !/pk-/.test(refLabel(curP(), r)); })()"))
 
     print("7 try it")
-    ev(pg, "(() => { curP().mode = 'pick'; UI.home = false; UI.drawer = false; render(); })()")
+    ev(pg, "(() => { curP().mode = 'pick'; UI.home = false; UI.drawer = false; UI.pg = null; render(); })()")   # 2.0: the go-to above opened the Review page; the page of the next step again
     rd = ev(pg, "pickReady(curP())")
     check("ready-to-try shows what is missing", len(rd) >= 4, rd)
     # make it ready: idea, result, measure, no hard picks open

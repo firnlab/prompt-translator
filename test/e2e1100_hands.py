@@ -201,6 +201,7 @@ with sync_playwright() as pw:
     sx = ev(pg, "(() => { const m = document.querySelector('.main'); return Math.max(document.documentElement.scrollWidth - innerWidth, m ? m.scrollWidth - m.clientWidth : 0); })()")
     check("390 px: PT's hands has no sideways scroll", sx <= 2, sx)
     db = ev(pg, "JSON.stringify(window.__mockdb())")
+    db = db.replace('\\"hands\\":\\"', '').replace('"hands":"', '')   # 2.0 Part B: a route on the map names what PT's hands do in it (actors.hands, a text): that is not a finding
     check("nothing of the findings is stored", "pt-private-writer" not in db and "tools-runner" not in db and '"hands' not in db)
     check("no page errors", not errors, errors[:5])
     ctx.close(); b.close()

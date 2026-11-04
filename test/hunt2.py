@@ -22,8 +22,8 @@ def check(name, cond, info=""):
     _check0(name, cond, info); print(("ok    " if cond else "FAIL  ") + name + ("" if cond else "  → " + str(info)[:600]), flush=True)
 PHASES = ["capture", "understand", "interview", "assume", "require", "arch", "build", "review", "test", "launch", "release", "operate"]
 SCREENS = lambda pid: [f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{pid}'); UI.home=true; render(); }})()"] + \
-    [f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{pid}'); UI.home=false; setPhase('{ph}'); pgShowPhase(curP(), '{ph}'); render(); }})()" for ph in PHASES] + \
-    [f"(() => {{ UI.modal=null; UI.review=null; openProject('{pid}'); UI.home=false; setPhase('require'); curP().mode='{m}'; render(); }})()" for m in ["blueprint", "journey", "swimlanes", "express", "pick"]] + \
+    [f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{pid}'); UI.home=false; pgShowPhase(curP(), '{ph}'); setPhase('{ph}'); render(); }})()" for ph in PHASES] + \
+    [f"(() => {{ UI.modal=null; UI.review=null; openProject('{pid}'); UI.home=false; setPhase('require'); face20Set(curP(), '{m}'); UI.home=false; render(); }})()" for m in ["pick", "chat"]] + \
     [f"(() => {{ UI.modal=null; UI.review=null; openProject('{pid}'); UI.home=false; curP().mode='pick'; window.__pickFixture(curP()); UI.pkCands = {str(c).lower()}; UI.pkDump = {str(c).lower()}; render(); }})()" for c in [False, True]]   # 1.5.0: every Pick screen, filled
 WHERE = "(() => (curP() ? curP().name.slice(0, 14) : '') + ' ' + (UI.home ? 'home' : curP().focus.ph + '/' + curP().mode))()"
 
@@ -135,7 +135,7 @@ with sync_playwright() as pw:
         pg.evaluate(f"(() => {{ LANG = '{scr}'; if (WS.settings) WS.settings.lang = '{scr}'; const p = WS.projects.find(x => x.id === '{PIDS[0]}'); p.lang = '{plang}'; window.__allPrompts = []; }})()")
         for js in SCREENS(PIDS[0])[1:9]:
             pg.evaluate(js); pg.wait_for_timeout(30)
-            pg.evaluate("""() => { const ai = Object.keys(ACTIONS).filter(k => /runAI|await ai[A-Z]/.test(String(ACTIONS[k])) && !/publish|release|runner|pilot|live|launch|delete|reset|import|export|engine|kp-|research|translate/.test(k));
+            pg.evaluate("""() => { const ai = Object.keys(ACTIONS).filter(k => /runAI|await ai[A-Z]|=> ai[A-Z]\\w*\\(curP\\(\\)/.test(String(ACTIONS[k])) && !/publish|release|runner|pilot|live|launch|delete|reset|import|export|engine|kp-|research|translate/.test(k));
                 const e = [...document.querySelectorAll('.app [data-a]')].find(e => e.offsetParent && !e.disabled && ai.includes(e.dataset.a)); if (e) e.click(); }""")
             pg.wait_for_timeout(200)
             if pg.evaluate("!!(UI.modal && UI.modal.kind === 'cost')"): pg.evaluate("ACTIONS['cost-go'] && ACTIONS['cost-go']({dataset: {v: 'once'}})")
@@ -177,7 +177,7 @@ with sync_playwright() as pw:
     if len(PIDS) >= 2:
         A, B = PIDS[0], PIDS[1]
         for ph in ["require", "assume", "test", "review"]:
-            pg.evaluate(f"(() => {{ UI.modal=null; openProject('{A}'); UI.home=false; setPhase('{ph}'); pgShowPhase(curP(), '{ph}'); render(); }})()"); pg.wait_for_timeout(40)
+            pg.evaluate(f"(() => {{ UI.modal=null; openProject('{A}'); UI.home=false; pgShowPhase(curP(), '{ph}'); setPhase('{ph}'); render(); }})()"); pg.wait_for_timeout(40)
             snapB = pg.evaluate(f"JSON.stringify(Object.assign({{}}, WS.projects.find(x => x.id === '{B}'), {{updatedAt: 0, _rev: 0, focus: 0, seenAt: 0, lastWhere: 0}}))")
             started = pg.evaluate("""() => { const ai = Object.keys(ACTIONS).filter(k => /runAI|await ai[A-Z]/.test(String(ACTIONS[k])) && !/publish|release|runner|pilot|live|launch|delete|reset|import|export|engine|kp-|research/.test(k));
                 const e = [...document.querySelectorAll('.app [data-a]')].find(e => e.offsetParent && !e.disabled && ai.includes(e.dataset.a)); if (!e) return null; e.click(); return e.dataset.a; }""")
@@ -194,7 +194,7 @@ with sync_playwright() as pw:
     pg.evaluate("window.__mockDelayMs = 0")
     check("28 await race: an AI answer after a project switch lands in its own project", not race, race[:6])
     # 31 save failure is visible and retried; typed text stays
-    pg.evaluate(f"(() => {{ openProject('{PIDS[0]}'); UI.home = false; setPhase('capture'); pgShowPhase(curP(), 'capture'); render(); window.__mockFailSet = true; const p = curP(); p.zzSaveProbe = 'x'; touch(p); saveProject(p); }})()")
+    pg.evaluate(f"(() => {{ openProject('{PIDS[0]}'); UI.home = false; pgShowPhase(curP(), 'capture'); setPhase('capture'); render(); window.__mockFailSet = true; const p = curP(); p.zzSaveProbe = 'x'; touch(p); saveProject(p); }})()")
     pg.wait_for_timeout(4000)
     shown = pg.evaluate("(() => { const s = document.getElementById('savestate'); return {text: s ? s.innerText : '', retry: !!document.querySelector('[data-a=save-retry]'), toast: [...document.querySelectorAll('#toasts .toast')].map(t => t.textContent).join('|')}; })()")
     pg.evaluate("(() => { window.__mockFailSet = false; ACTIONS['save-retry'] && ACTIONS['save-retry'](); })()"); pg.wait_for_timeout(2500)

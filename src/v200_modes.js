@@ -310,6 +310,11 @@ function c20PickDecideHTML(p){
     try{ if (e && p && m20Chosen(p) && str(e.answer).trim() && !o.assumed) m20WatchSoon(p, {kind: "fact", text: str(e.q) + " → " + str(e.answer), ref: "pick:" + e.id}); }catch(x){ onAppError(x && x.message, "pick:watch"); }
     return e; }; }
 
+/* a removed item leaves no reference on the map either (the route-neutral list and the tags name items by ref) */
+{ const orig = removeItem; removeItem = function(p, ref){ const r = orig.apply(this, arguments);
+    try{ const M = p && p.map20; if (M && typeof M === "object"){ if (Array.isArray(M.neutral)) M.neutral = M.neutral.filter(x => x !== ref); if (M.tags && typeof M.tags === "object") delete M.tags[ref]; } }catch(e){ onAppError(e && e.message, "map:remove"); }
+    return r; }; }
+
 /* ---------- 6. the move to 2.0 (once per project; restore point first; additive; never across projects) ---------- */
 function m200Lvl(kind){ return {none: 1, prompt: 1, workflow: 2, agent: 3, multi: 4}[str(kind)] || 2; }
 function m200Has(p, ref){ return factsRead(p).entries.some(e => e.src && e.src.ref === ref) || factsRead(p).props.some(x => x.src && x.src.ref === ref); }
