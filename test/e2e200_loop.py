@@ -249,6 +249,14 @@ with sync_playwright() as pw:
     pg.locator(".mc20 [data-a=setup20-guide][data-g=cloud]").click(); pg.wait_for_timeout(300)
     check("L6 the morning card's cloud link opens that guide in Settings › Setup", ev(pg, "UI.setTab") == "setup20" and ev(pg, "document.getElementById('su20-g-cloud').open"))
 
+    # ---------- L7 (hunt 5, cause 93) an automatic step closes its own action ----------
+    r7 = ev(pg, f"""(async () => {{ openProject('{pid}'); const p = curP(); const e = eng(p); e.trial.runs = []; e.trial.cases = [{{id: 'C1', input: 'Add milk', expect: 'milk is on the list'}}];
+        actClose(p.id); const n0 = arr(p.acts).length; await aiTrialRun(liveP(p)); const q = liveP(p);
+        return {{open: ACT.open.has(q.id), last: (arr(q.acts).slice(-1)[0] || {{}}).label, grew: arr(q.acts).length > n0 || arr(q.acts).length === 25}}; }})()"""); wait_idle(pg)
+    check("L7 the trial (an automatic step) closes its own action when it ends, so the next click's Undo never takes it back", r7["open"] is False and r7["last"] == ev(pg, "t('eng.trial.run')") and r7["grew"], r7)
+    src7 = (ROOTP / "src" / "app.js").read_text()
+    check("L7 …and every automatic step autoEngine starts is closed when it ends (frontier scan, engine suggestion, trial)", src7.count("own(() => frontierJob(p))") == 1 and src7.count("own(() => aiEngineSuggest(p))") == 1 and src7.count("own(() => aiTrialRun(p))") == 1 and ".finally(() => actClose(p.id))" in src7)
+
     # ---------- languages, phone width ----------
     for lang in ("de", "zh"):
         ev(pg, f"(() => {{ LANG = '{lang}'; applyLangAttr(); render(); }})()")

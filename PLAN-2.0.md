@@ -16,8 +16,8 @@ All waves below ship together as 2.0.0: no owner preview try; Claude tests the p
 | A Foundation | facts book per project; rules channel never cut + output check; ask once; contradiction check; cross-project leaks closed; one Next + "✓ done"; error cards kept; no questions in examples; layout width; plain words; "Add requirement" bug | built (RELEASE-CHECKS § 2.0.0 Part A) |
 | B Solution map | order goal → map → decide → details; live map (28 fields, not-yet lane); coverage engine (6 angles, rounds, red-team, saturation note); shortlist/compare/Prove it/Take this; tripwires + route alert; proven routes from other projects (template only) | built (RELEASE-CHECKS § 2.0.0 Part B) |
 | C Two modes | Chat with structure (new) + Pick (improved); delete Steps/Blueprint/Journey/Swimlanes/Express; additive migration with "Before 2.0" restore point; acceptance: RC replay | built (RELEASE-CHECKS § 2.0.0 Part C) |
-| D Hands and loop | hands: per-project site list, forms and non-final clicks, final-button stop; morning check; prompt tests; Improve-PT loop (read, fix, "fixed in"); metrics | open |
-| E Setup and helpers | GitHub App guide, GitHub connector, auto-merge (Dependabot only), cloud tasks; computer use; helper programs declared in advance (no Calendar/Contacts/Music/Photos, no e-mail/Slack sorting) | open |
+| D Hands and loop | hands: per-project site list, forms and non-final clicks, final-button stop; morning check; prompt tests; Improve-PT loop (read, fix, "fixed in"); metrics | built (RELEASE-CHECKS § 2.0.0 Part D) |
+| E Setup and helpers | GitHub App guide, GitHub connector, auto-merge (Dependabot only), cloud tasks; computer use; helper programs declared in advance (no Calendar/Contacts/Music/Photos, no e-mail/Slack sorting) | built (RELEASE-CHECKS § 2.0.0 Part E) |
 
 ## Owner decisions that bind every wave
 - Projects never get other projects' rules or facts. Worked solutions from other projects may appear on the map next to the others, re-checked against this project, without that project's rules.
@@ -42,3 +42,16 @@ All waves below ship together as 2.0.0: no owner preview try; Claude tests the p
 - [x] A9 layout: text column first, action columns no fixed share
 - [x] A10 plain words: out of scope, right-sizing, fix together, assumption statuses
 - [x] A11 "Add requirement does nothing" (1.2.1 report): reproduce or close
+
+## Part D items
+- [x] D0 hunt 5 green: automatic steps close their own action (cause 93)
+- [x] D1 hands per project: site list, plan first, action contract, forms (form_input) and non-final clicks, the final-button stop ("Your click" + Take me there), keys/passwords never typed or read (cause 94)
+- [x] D2 morning check: first open of the day (owner), 1.10 GitHub checks, tripwires since the last check, not-yet watch lines (platform knowledge, watched pages via Fetch), one card, Route alert via m20WatchSoon; no scheduled task by PT (cause 95)
+- [x] D3 prompt tests: up to 5 inputs, one quick call, cost first, pass/fail against never/must with PT's word check (cause 96)
+- [x] D4 Improve-PT loop: reports in WS settings, open/fixed, IMPROVE_FIXED on version change, told once (cause 97)
+- [x] D5 metrics: local only, Settings › Metrics
+
+## Part E items
+- [x] E1 guides in three languages: GitHub App, connector, Dependabot-only auto-merge, cloud scheduled task, computer use, per helper
+- [x] E2 HELPERS20 (Filesystem, Git, Fetch, Blender MCP), detection, Needs <program> on the route card, CAPABILITIES-2.0.json
+- [x] E3 CSS of the five removed views removed (verified unused)

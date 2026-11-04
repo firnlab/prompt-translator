@@ -510,8 +510,101 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
 - Found by the hunt once it visited the page details (both also on ab8ef98 with the same hunt): (5) the Design page drew the open kit
   questions twice, in "What you decide" and in its kits block (two boxes with one id) — fixed, the kits block leaves out what is above;
   (6) hunt 5: "Make about 30 variants" on the Review page's test details, followed by PT's automatic trial, cannot be undone back to the
-  exact engine state (the trial's engine climb is not part of the click's actions) — NOT fixed in Part C, fails identically on ab8ef98.
+  exact engine state (the trial's engine climb is not part of the click's actions) — NOT fixed in Part C, fails identically on ab8ef98; fixed in Part D (cause 93).
 - Left out (not built, say so if asked): the workspace-level "reading hint" when the owner corrects "about the tool / about PT" (one tap
   "No, it's about my tool" files it as a tool rule instead); sending feedback about PT to Improve PT by itself (one tap opens the report
   with the words filled in); a resizable split between conversation and workspace (fixed 58/42, one column under 1000 px); the CSS of
-  the five removed views is left in styles.css (no screen uses it). New projects still start in Pick (Settings › default: Pick or Chat).
+  the five removed views is left in styles.css (no screen uses it; removed in Part E). New projects still start in Pick (Settings › default: Pick or Chat).
+
+## 2.0.0 Part D — hands and loop (src/v200_hands.js, src/v200_loop.js, src/strings29.js, test/e2e200_hands.py, test/e2e200_loop.py)
+- What changes for the owner: each project has "PT's hands" (More ⋯; the route card links to it): a list of the project's sites (add,
+  remove; github.com stays read only), "Ask PT's hands" (his words → PT writes the steps before any page opens), a card that shows what,
+  where, why, whether it can be undone and every step with whose it is, then Run: PT opens the page, types into fields, chooses options,
+  clicks ordinary buttons and stops one step before the final one ("Your click: Send" · Take me there). On his first open of a day the
+  cockpit shows one "Morning check" card. The facts book (and the test page) has "Prompt tests". Settings › PT health lists his Improve
+  PT reports with open / fixed in; Settings › Metrics shows how PT works for him.
+- Data for Part E and later: `p.hands20 = {sites: [host]}` (an action: Undo takes a site back), `p.hands20log` (a record, DIFF_SKIP:
+  {id, at, what, host, n, end: done|final|stopped, final}), `p.ptest20 = {inputs: [text], runs: [{id, at, v, n, pass, items: [{i, input,
+  src, ref, answer, rules: [{id, kind, rule, ok, code, why, judged}], pass, empty}]}]}` (a record, at most 5 runs), `WS.settings.morning20
+  = {day, at, lines: [{k, st: ok|new|warn|skip, text, pid}], prs: [n], kp, watch: {"pid:nyid": hash}, seen, calls}`, `WS.settings.ipt20 =
+  [{id, at, v, where, text, status: open|fixed, fixed}]`, `ipt20v`, `ipt20news`, `WS.settings.met20 = {pid: {asked, twice, repaired, hands,
+  ptests, goalAt}}`. Functions: `h20Call(p, tool, input)` (the only way for project hands), `h20Vet`, `h20Run`, `h20Go`, `h20Clear`,
+  `h20IsFinal`, `h20SecretField`, `h20SecretVal`, `h20SiteOk` / `h20WriteOk`, `mc20Run`, `mc20Since`, `pt20Run`, `pt20Inputs`, `ipt20Add`,
+  `ipt20Version`, `m20Metric(p, k, n)`, `IMPROVE_FIXED` (version → report ids; empty for 2.0.0 until the release fills it from the inbox).
+- Cause 93 (hunt 5, red since ab8ef98): PT's automatic steps (`autoEngine`: the trial 900 ms after a visit to Design, the engine
+  suggestion, the frontier scan) opened their action with `snapshot` and never closed it; the next click's `actOpen` closed it, so it
+  landed in the Undo history after the click had started, and "Undo everything the click set off" also took back the finished trial
+  (`engine.climb`, the loop's default state). Now `autoEngine` closes the project's action when each automatic step ends, and
+  `aiTrialRun` closes its own. Check: hunt 5 green on both data sets; e2e200_loop L7; planted bug "an automatic step leaves its action
+  open" in check_the_pick.py.
+- Cause 94 (owner, 3–4 Nov 2026: "real clicks and typing in forms are OK; final buttons — merge, send, delete, pay, publish — and
+  keys/passwords always stay mine"): 1.10's hands could only point (scroll, hover), so every form was the owner's; letting them click
+  without a rule would let one wrong label press a final button. Now (per project) a plan first (one call, before any page; page text
+  never adds a step), a contract card before Run, and two gates by code: at plan time a click whose label holds a final word (en/de/zh:
+  merge, send, submit, pay, buy, delete, publish, confirm, save, install, agree …) ends the steps and becomes "Your click"; on the page
+  `h20Clear` clears an element only the moment before its action (a click only on a non-final label, a fill only into a field that is not
+  a key / password / code / card / account / id field), and `h20Call` refuses a click or fill on anything not cleared, a click by
+  coordinates, key presses, typing by keys, other tools, sites off the project's list (github.com too), a key-shaped value, another login.
+  A click that leads to a page off the list stops the run. Check: e2e200_hands D1–D7 (49 checks); planted bugs: final-word check off, an
+  uncleared click, a password field typed, a key-shaped value typed, any site opened, github.com writable, steps run before the
+  contract, a click off the list goes on.
+- Cause 95 (Part B left it open: "the Not possible yet watch line is shown, but nothing watches it on a schedule"): the watch lines and
+  the tripwires were checked only when something happened inside PT. Now the morning check (owner, once a day on first open; the mock
+  keeps it off unless a test asks): the 1.10 GitHub checks (pull requests with what is new since the last check, key dates, the release;
+  outside the desktop app one line and no further try), per project the tripwires against what came in since the last check (facts,
+  failed tests, serious findings → `m20WatchSoon`, deduplicated by ref), the not-yet lines when PT's platform knowledge changed, and a
+  watched page (an https address in the watch line) read through the Fetch helper — a changed page is a map event and goes to the Route
+  alert. PT creates no scheduled task (the cloud guide is one tap away). Check: e2e200_loop L1; planted bugs "twice a day", "for another
+  login", "skips the tripwires", "a watched page that changed raises nothing".
+- Cause 96 (prompt tests): a test that sends the project's rules channel with the inputs tests PT's prompt, not the tool's, and a model
+  that answers and grades in one call tends to grade itself kindly. Now one quick-tier call (cost on the button) answers up to five inputs
+  following only the package and grades each never / must; no `<your_rules>` block goes in (raw `[[task:ptest-run]]` prompt, no project
+  marker), and code reads every answer for a never's key words in a non-negated sentence: such a hit fails the answer even when the call
+  says the rule holds. Check: e2e200_loop L2; planted bug "prompt tests trust the call over PT's word check".
+- Cause 97 (Improve PT): reports went to the `toolfeedback` collection with no status, so the owner never learned what an update fixed.
+  Now every report sent (header, rail, an error card, the chat's one tap) is also kept in `WS.settings.ipt20` (open), on a version change
+  the ids listed for it in `IMPROVE_FIXED` become "fixed in <version>" and one card says so once (Got it). Check: e2e200_loop L3;
+  planted bugs "a report is not kept", "fixed reports are announced on every open".
+- Metrics (design §9, local only): questions PT showed (askOnceRun: items minus held back), asked twice and held back, rule breaks
+  caught and repaired (factsGuardHits with a hit), routes on the map, goal → decision (first confirmed goal field or the project's start
+  → the active decision); never in a prompt, report or export. Check: e2e200_loop L4; planted bug "asked-twice questions are not counted".
+- Found while building: (1) a `<rules>` tag named in the prompt's prose before the block made the mock read the prose as the block (a
+  real model would read either); the prose no longer names the tags. (2) A screen-reader-only label (`.sr20`, absolutely placed) in a
+  table header escaped the table's scroll box at 390 px and widened the page by 82 px; the header carries `aria-label` instead and the
+  scroll box is `position:relative`.
+- Left out (not built, say so if asked): a quick-tier second opinion on "is this button final" (the design's "plus a quick-tier check":
+  code only, conservative word list, and the guard refuses anything not cleared); typing into a field the page marks only by
+  `type=password` without a telling label (find answers role and name only; such fields are caught when their label says password /
+  code / key); the morning check's AI parts as their own cost line (they are the Route-alert quick calls PT makes anyway); a list of the
+  ids fixed in 2.0.0 (`IMPROVE_FIXED["2.0.0"]` is empty: the release fills it from the inbox).
+
+## 2.0.0 Part E — setup and helpers (src/v200_setup.js, src/strings29.js `su20.*`, CAPABILITIES-2.0.json, test/e2e200_loop.py L5–L6)
+- What changes for the owner: Settings › Setup lists one helper program per kind of job with its state on his Mac (Ready / Not checked
+  yet / Installed but tools are missing / Not installed / Only in the desktop app), what PT does with it, "Check it's there" and its
+  install guide; nine click-by-click guides (the Claude GitHub App for firnlab, the GitHub connector, auto-merge for Dependabot pull
+  requests only, the morning check as a cloud scheduled task, computer use in the desktop app, one per helper). A route card whose route
+  needs a helper says "Needs <program> on your Mac — Install guide" (or "ready", or "Excluded by your PT rule").
+- HELPERS20 (tool names from each program's own page, checked 4 Nov 2026; host server = the entry name in claude_desktop_config.json):
+  | kind | program | host server | tools PT calls | what PT does |
+  | files | Filesystem (MCP reference server) | host:filesystem | list_allowed_directories, list_directory, write_file | saves the prompt as a NEW file in the allowed folder after a contract (never overwrites; it has no delete) |
+  | code history | Git (MCP reference server) | host:git | git_status | morning check: changes not committed yet in the folder he names |
+  | web pages | Fetch (MCP reference server) | host:fetch | fetch | morning check: reads the pages the not-yet watch lines name |
+  | 3D | Blender MCP (community add-on, ahujasid/blender-mcp) | host:blender | execute_blender_code | "Check it's there" runs one read-only script (counts the scene's objects), shown first |
+  Never: Calendar, Contacts, Music, Photos, e-mail / Slack sorting or drafting (an excluded category on a route card is named, never
+  offered). Not declared in 2.0 (no program whose tools could be checked on its own official page, or PT already does the job):
+  terminal, databases (the SQLite / Postgres reference servers are archived), office documents, notes, other browsers (PT's hands are
+  the only browser), memory (the facts book), time.
+- Detection: `listTools()` never asks the viewer; a server the app runs lists with descriptions (or `authStatus: "connected"`), one only
+  declared in the page lists with empty descriptions → "Not checked yet"; "Check it's there" makes one read-only call where the helper
+  has one (Filesystem: list_allowed_directories; Git: git_status of the named folder); Blender's only tool runs code, so its check shows
+  the script and runs only after yes. `helper20Call` refuses any tool not declared for the helper, drops key-shaped answers, owner only.
+- CAPABILITIES-2.0.json (repo root, for the publish manifest): the 1.10 set plus `form_input` on host:claude_browser and one entry per
+  helper with only the tools PT calls; e2e200_loop L5 checks it against `HELPERS20` and `H20_TOOLS`. Planted bugs: "a helper declared
+  only in the page counts as ready", "a helper runs a tool that is not declared for it", "the Blender check runs its code without
+  showing it first", "the prompt file is written over an existing file", "a route that needs a helper does not say so".
+- Cleanup: the CSS of the five removed views (Steps `.steps2 .stepmain .spine2 .sgroup .sglabel`, Blueprint `.bp2 .bp-st .bp-label .lnk
+  .homeB`, Journey `.tiles .tnext`, Swimlanes `.lgrid .lh .ln .lc .lpart .cbtn`, Express `.xp .bubble .xcard .xnext`) is gone from
+  styles.css / styles18.css (57 selectors; each class checked unused in src/*.js, dynamic names included: `k-${kind}` stays, the
+  Design page's parts map uses it). What the Design page and the stage strip still use (`.bpmap .bp-node .mapwrap .station …`) stays.
+- Not testable here: the real helpers and the real desktop app (the mock answers in the shapes the programs' pages give); the live
+  preview is tried in the desktop app before main.
