@@ -52,7 +52,7 @@ NEVER = "We never log in to Google or Samsung accounts."
 OTHER = "We never upload the photos to Dropbox."
 OLD_FNS = ["modeSteps", "modeJourney", "modeSwimlanes", "modeExpress", "modeBlueprint", "spineHTML", "aiExpressDraft", "aiExpressNext", "aiImpactParts"]
 OLD_ACTS = ["goto-steps", "express-draft", "express-next", "express-change", "cmap", "cmap-ask", "pk-map", "mode-back", "xp-more", "xp-fold", "confirm-all-as"]
-OLD_KEYS = re.compile(r"^(xp\.|j\.|sl\.step|lane\.|cm\.|sp\.map\.|md\.(steps|blueprint|journey|swimlanes|express)|mg\.(steps|blueprint|journey|swimlanes|express)|m\.(steps|journey|swimlanes|express)$|mode\.suggested|nav\.backto)")
+OLD_KEYS = re.compile(r"^(j\.(after|here|next)$|lane\.|sl\.step$|sp\.map\.|md\.|mode\.(label|suggested|switched)$|m\.(steps|journey|swimlanes|express)$|mg\.(steps|blueprint|journey|swimlanes|express)$|nav\.backto$|act\.express$|as\.confirmstep$|xp\.(title|lead|draft|drafting|draftnext|needs|next|ai|you|change|changeph|keys|acceptall|accepted|allset|okn|openfull|tocheck|hint)$|cm\.(ask|flagged|items|none|parts|thinking|untouched)$)")
 NEW_PROJ = """(name, mode) => { const p = blankProject(name); p.mode = mode; p.autoInterview = false; WS.projects.push(p); touch(p); openProject(p.id); return p.id; }"""
 
 with sync_playwright() as pw:
@@ -85,10 +85,9 @@ with sync_playwright() as pw:
         check("one tap on Chat with structure shows the conversation (and saves the face)", ev(pg, "projMode(curP())") == "chat" and ev(pg, "!!document.querySelector('.c20 .c20-log[role=log]')") and ev(pg, "curP().mode") == "chat")
         pg.locator(".face20 [data-v=pick]").click(); pg.wait_for_timeout(300)
         check("…and back to Pick (the cover and its pages)", ev(pg, "projMode(curP())") == "pick" and not ev(pg, "!!document.querySelector('.c20')") and ev(pg, "!!document.querySelector('.pg-cover, .pg')"))
-        ev(pg, "(() => { UI.modal = {kind: 'settings'}; render(); })()"); pg.wait_for_timeout(200)
+        ev(pg, "(() => { UI.view = 'settings'; UI.setTab = 'general'; render(); })()"); pg.wait_for_timeout(200)
         opts = ev(pg, "[...document.querySelectorAll('select')].map(s => [...s.options].map(o => o.value)).find(v => v.includes('pick')) || []")
         check("Settings: the default for new projects is one of the two faces", sorted(opts) == ["chat", "pick"], opts)
-        close_modals(pg); ev(pg, "UI.modal = null; render()")
         ev(pg, "(() => { UI.view = 'start'; UI.home = false; render(); })()"); pg.wait_for_timeout(200)
         cards = ev(pg, "[...document.querySelectorAll('[data-a=start-mode]')].map(b => b.dataset.v)")
         check("the start screen offers the two faces", sorted(cards) in (["chat", "pick"], []), cards)
@@ -107,8 +106,9 @@ with sync_playwright() as pw:
         check("PT answers in the chat and names what it filed", last["by"] == "pt" and last["text"] and last["filed"], last)
         note = ev(pg, "[...document.querySelectorAll('.c20-note')].map(n => n.innerText).join(' | ')")
         check("…the receipt under the answer: ✓ Noted as never “…” with edit and take back", "Noted as never" in note and NEVER in note and ev(pg, "!!document.querySelector('.c20-note [data-a=c20-fedit]') && !!document.querySelector('.c20-note [data-a=facts-withdraw]')"), note)
-        P = prompts(pg, "chat20")[-1]
-        check("the chat's prompt has your rules first (<your_rules> right after the task line)", re.search(r"^\[\[task:chat20\]\]\n<your_rules", P.split("Ground rule:")[-1] if False else P[P.index("[[task:chat20]]"):]) is not None or P.index("<your_rules") < P.index("<best_practices"), P[:300])
+        say(pg, "Fine.")
+        P = prompts(pg, "chat20")[-1]; P = P[P.index("[[task:chat20]]"):]
+        check("the chat's prompt has your rules first (<your_rules> right after the task line, the never whole)", re.match(r"\[\[task:chat20\]\]\n<your_rules", P) is not None and NEVER in P[:P.index("</your_rules>")], P[:300])
         check("…before the decision the route-splitting rule (no detail questions yet)", "route-splitting value" in P and "<chosen_route>" not in P)
         G = ev(pg, "goal20Read(curP())")
         check("a goal guess goes to the goal card as PT's guess (you confirm it)", G["f"]["outcome"] and G["by"].get("outcome") == "pt", G)
@@ -119,7 +119,7 @@ with sync_playwright() as pw:
         check("answered in the chat = answered in Pick (the log has it, the deck has not)", ans and ans["answer"] and not ev(pg, f"pickDeck(curP()).some(c => c.id === '{cid}')"), ans)
         check("…the chat shows it as answered", "Answered:" in main(pg))
         ev(pg, "window.__chatCalls = 0")
-        say(pg, "Who uses the list? The four of us. ASKAGAIN")
+        say(pg, "Anything to ask me? ASKAGAIN")
         n_ask = ev(pg, "pickRead(curP()).cards.filter(c => /^Who uses the list/.test(c.q)).length")
         ev(pg, "(() => { const p = curP(); const k = pickOf(p); const c = k.cards.find(x => /^Who uses the list/.test(x.q)); if (c) pickAnswer(p, c.id, {keys: ['A']}); render(); })()"); wait_ai(pg)
         say(pg, "Anything else? ASKAGAIN")
@@ -139,7 +139,7 @@ with sync_playwright() as pw:
         pg.locator("[data-a=c20-ipt]").last.click(); pg.wait_for_timeout(200)
         check("…Send to Improve PT opens the report with the words filled in", ev(pg, "UI.modal && UI.modal.kind === 'toolreport' && /too small/.test(UI.modal.pre || '')"))
         close_modals(pg); ev(pg, "UI.modal = null; render()")
-        ev(pg, "window.__mockOverride = (task) => task === 'chat20' ? 'Sorry, no.' : null")
+        ev(pg, "(() => { window.__mockOverride = (task) => task === 'chat20' ? 'Sorry, no.' : null; })()")
         say(pg, "We never send anything by e-mail.")
         ev(pg, "window.__mockOverride = null")
         lf = ev(pg, "curP().chat20.msgs.slice(-1)[0]")
@@ -176,7 +176,7 @@ with sync_playwright() as pw:
         check("…the same list in Pick's Decisions page and in the chat's Decided tab", chat_ids == pick_ids and chat_ids, [chat_ids, pick_ids])
         ev(pg, "factsOpen(curP())"); pg.wait_for_timeout(200)
         book = ev(pg, "factsActive(curP()).map(e => e.id)")
-        shown = ev(pg, "[...new Set((document.querySelector('.main').innerText.match(/\\bF\\d+\\b/g) || []))]")
+        shown = ev(pg, "[...document.querySelectorAll('.main [data-fact]')].map(x => x.dataset.fact)")
         check("Pick's facts book shows every entry the chat filed", all(i in shown for i in book), [book, shown])
         ev(pg, "face20Set(curP(), 'chat')"); pg.wait_for_timeout(200)
 
@@ -279,10 +279,11 @@ with sync_playwright() as pw:
                     const cnt = q => ({req: arr(q.requirements).length, tests: arr(q.tests).length, as: arr(q.assumptions).length, risks: arr(q.risks).length, dec: arr(q.decisions).length, qa: arr(q.qa).length, runs: arr(q.runs).length, rel: arr(q.releases).length, fnd: arr(q.findings).length, picks: arr(q.pick && q.pick.log).length, ex: arr(q.goal && q.goal.examples).length});
                     const a = cnt(old), b = cnt(p), less = Object.keys(a).filter(k => b[k] < a[k]);
                     const pkOld = JSON.stringify(arr(old.pick && old.pick.log)), pkNew = JSON.stringify(arr(p.pick && p.pick.log));
-                    return {diff, less, a, b, pickSame: pkOld === pkNew, modeOk: MODES.includes(p.mode), modeKept: !MODES.includes(old.mode) ? p.modeBefore200 === old.mode || !old.mode : true}; })()""")
+                    const changed = m200Changed(p, p.m200.prints || {}), recorded = arr(p.m200.changed);
+                    return {om: old.mode, b160: p.modeBefore160, b200: p.modeBefore200, pm: p.mode, diff: changed, recorded, less, a, b, n: Object.keys(p.m200.prints || {}).length, pickSame: pkOld === pkNew, modeOk: MODES.includes(p.mode), modeKept: !MODES.includes(old.mode) ? [p.modeBefore200, p.modeBefore160].includes(old.mode) || !old.mode : true}; })()""")
                 if lost.get("none"):
                     check(f"{tag} the project was moved (restore point Before 2.0)", False, lost); continue
-                check(f"{tag} nothing lost: every field it had is unchanged and nothing counts less after the move", not lost.get("noload") and not lost["diff"] and not lost["less"] and lost["pickSame"], lost)
+                check(f"{tag} nothing lost: every field it had is unchanged by the move (a hash per field, {lost.get('n')}) and nothing counts less than in “Before 2.0”", not lost.get("noload") and lost.get("n") and not lost["diff"] and not lost["recorded"] and not lost["less"] and lost["pickSame"], lost)
                 check(f"{tag} …its face is Pick or Chat; an old 1.x view is kept as modeBefore200", lost["modeOk"] and lost["modeKept"], lost)
                 # rules never cut: every never / must, whole, in the rules block of every project prompt (also under a small budget)
                 R0 = ev(pg, "factsActive(curP(), FACT_RULES).map(e => factText(e))")
@@ -295,6 +296,7 @@ with sync_playwright() as pw:
                 # replay through Chat: the person restates their rules → nothing filed twice
                 ev(pg, "face20Set(curP(), 'chat')"); pg.wait_for_timeout(250)
                 n0 = ev(pg, "factsActive(curP()).length")
+                say(pg, "Hello, where are we?")
                 for rule in R0[:3]:
                     say(pg, rule)
                 n1 = ev(pg, "factsActive(curP()).length")
@@ -310,16 +312,16 @@ with sync_playwright() as pw:
                 hist = ev(pg, "[...arr(curP().qa).filter(q => str(q.answer).trim()).map(q => q.q), ...pickRead(curP()).log.filter(e => str(e.answer).trim()).map(e => e.q)].filter(Boolean).slice(0, 4)")
                 rep = []
                 for q in hist:
-                    ev(pg, "window.__chatHook = (out) => { out.cards = [{q: " + json.dumps(q) + ", why: 'replay', target: 'decision', multi: false, options: [{k: 'A', label: 'One', text: 'one'}, {k: 'B', label: 'Two', text: 'two'}], rec: 0, recWhy: 'r', recBasis: 'estimate', mind: ''}]; return out; }")
+                    ev(pg, "(() => { window.__chatHook = (out) => { out.cards = [{q: " + json.dumps(q) + ", why: 'replay', target: 'decision', multi: false, options: [{k: 'A', label: 'One', text: 'one'}, {k: 'B', label: 'Two', text: 'two'}], rec: 0, recWhy: 'r', recBasis: 'estimate', mind: ''}]; return out; }; })()")
                     say(pg, "And now?")
                     if ev(pg, f"pickRead(curP()).cards.some(c => c.q === {json.dumps(q)})"): rep.append(q)
-                ev(pg, "window.__chatHook = null")
+                ev(pg, "(() => { window.__chatHook = null; })()")
                 check(f"{tag} no repeated questions: {len(hist)} questions it answered before, asked again in the chat, are all dropped", not rep, rep)
                 # both faces show the same ledger: the chat's Decided tab, Pick's facts book and Decisions page
                 ev(pg, "(() => { const S = c20St(curP()); S.tab = 'decided'; S.side = 'ws'; render(); })()"); pg.wait_for_timeout(200)
-                ids_chat = sorted(set(re.findall(r"\bF\d+\b", ev(pg, "(document.querySelector('.c20-ws') || {}).innerText || ''"))))
+                ids_chat = sorted(set(ev(pg, "[...document.querySelectorAll('.c20-ws [data-fact]')].map(x => x.dataset.fact)")))
                 ev(pg, "face20Set(curP(), 'pick'); factsOpen(curP())"); pg.wait_for_timeout(250)
-                ids_pick = sorted(set(re.findall(r"\bF\d+\b", main(pg))))
+                ids_pick = sorted(set(ev(pg, "[...document.querySelectorAll('.main [data-fact]')].map(x => x.dataset.fact)")))
                 book = sorted(ev(pg, "factsActive(curP()).map(e => e.id)"))
                 check(f"{tag} both faces show the same ledger ({len(book)} entries)", set(book) <= set(ids_chat) and set(book) <= set(ids_pick), [book, ids_chat, ids_pick])
                 ev(pg, "ACTIONS['rows-open']()"); pg.wait_for_timeout(300)
@@ -338,11 +340,19 @@ with sync_playwright() as pw:
                 check(f"[{wsi}] a never said in one project's chat reaches no other project (book, prompt)", "Dropbox" not in Pn and not ev(pg, "factsRead(curP()).entries.some(e => /Dropbox/.test(e.words))"))
             # after a reload: the move does not run again, nothing doubles
             snap = ev(pg, "JSON.stringify(WS.projects.map(p => [p.id, arr(p.restore).length, factsRead(p).entries.length, m20Read(p).routes.length]))")
-            ev(pg, "flushSaves && flushSaves()") if ev(pg, "typeof flushSaves === 'function'") else None
-            pg.wait_for_timeout(1500)
-            pg2 = open_page(ctx, pick=wsi); pg2.wait_for_timeout(800)
-            snap2 = ev(pg2, "JSON.stringify(WS.projects.map(p => [p.id, arr(p.restore).length, factsRead(p).entries.length, m20Read(p).routes.length]))")
-            check(f"[{wsi}] after a reload the move does not run again (restore points, entries, routes the same)", snap == snap2, [snap, snap2])
+            ev(pg, "flushSaves()")
+            for _ in range(100):
+                if ev(pg, "Store.queue.size === 0 && Store.busy.size === 0"): break
+                pg.wait_for_timeout(100)
+            pg.wait_for_timeout(500)
+            if ev(pg, "window.__mockPersisted !== false"):
+                pg2 = open_page(ctx, pick=wsi); pg2.wait_for_timeout(800)
+                snap2 = ev(pg2, "JSON.stringify(WS.projects.map(p => [p.id, arr(p.restore).length, factsRead(p).entries.length, m20Read(p).routes.length]))")
+                check(f"[{wsi}] after a reload the move does not run again (restore points, entries, routes the same)", snap == snap2, [snap, snap2])
+            else:   # a big real-data copy does not fit the mock's localStorage: the same check without the reload
+                again = ev(pg, "(() => { const n = m200All(); return [n, WS.projects.map(p => m200Run(p)).filter(Boolean).length]; })()")
+                snap2 = ev(pg, "JSON.stringify(WS.projects.map(p => [p.id, arr(p.restore).length, factsRead(p).entries.length, m20Read(p).routes.length]))")
+                check(f"[{wsi}] opening again does not move a project twice (restore points, entries, routes the same)", again == [0, 0] and snap == snap2, [again, snap, snap2])
             ctx.close()
     check("no page errors", not errors, errors[:5])
     b.close()

@@ -176,7 +176,7 @@ function c20Apply(p, you, r){
   const F = c20File(p, s, list, ref);
   const goal = r && about !== "pt" ? c20Goal(p, r.goal) : [];
   let card = null;
-  if (r && about !== "pt"){ const k = pickOf(p), asked = [...k.log.map(e => e.q), ...k.cards.map(c => c.q)];
+  if (r && about !== "pt"){ const k = pickOf(p), asked = k.cards.map(c => c.q);   // a question answered before goes through ask once below (dropped and named, never asked again)
     for (const c0 of arr(r.cards).slice(0, 1)){ const c = pickCleanCard(c0, k.session.n, k); if (!c || asked.some(a => pickSame(a, c.q))) continue; c.by = "chat"; c.chat = you.id; k.cards.unshift(c); markPT(p, "pick:" + c.id, "added", t("c20.why.card")); card = c.id; } }
   const G = r ? c20Guard(p, str(r.reply).trim()) : {text: "", cut: null};
   const pt = c20Add(p, {by: "pt", text: r ? G.text || t("c20.cut.all") : t("c20.fail"), cut: G.cut, fail: !r, about, filed: F.filed, known: F.known, goal, card, next: r ? oneOf(str(r.next), ["map", "goal", "none"], "none") : "none", to: you.id});
@@ -349,10 +349,17 @@ function m200Order(p, chosen){
   if (chosen || !details){ p.order20 = true; return chosen ? "decided" : "early"; }
   return "kept";
 }
+/* the fields the move may write (its own, additive ones); every other field of the project must be exactly as before (a hash per field) */
+const M200_OWN = new Set(["restore", "ledger", "map20", "goal20", "chat20", "m200", "order20", "mode", "modeBefore200", "seq", "marks", "updatedAt"]);
+const M200_CURSOR = new Set(["focus", "seenAt"]);   // where the cursor is and when the project was last opened: not content
+function m200Prints(p){ const o = {}; for (const k of Object.keys(p)) if (!M200_OWN.has(k) && !M200_CURSOR.has(k) && !k.startsWith("_")) o[k] = hashStr(JSON.stringify(p[k]) || ""); return o; }
+function m200Changed(p, fp){ return Object.keys(fp).filter(k => hashStr(JSON.stringify(p[k]) || "") !== fp[k]); }
 function m200Run(p, raw){
   if (!p || p.m200) return null;
-  const rp = addRestore(p, {kind: "migrate", label: t("c20.mig.rp"), source: raw || null}) || arr(p.restore).slice(-1)[0] || null;   // the same content as the last restore point: that one is labelled "Before 2.0" too
-  const rec = {v: 1, at: now(), rp: rp ? rp.id : "", from: {mode: str(p.mode), before: str(p.modeBefore160)}, rules: 0, routes: 0, order: "", errs: []};
+  const names = arr(STR["c20.mig.rp"]), had = arr(p.restore).find(r => names.some(n => str(r.label).includes(n)));   // run again (a record lost): the point made the first time stands
+  const rp = had || addRestore(p, {kind: "migrate", label: t("c20.mig.rp"), source: raw || null}) || arr(p.restore).slice(-1)[0] || null;   // the same content as the last restore point: that one is labelled "Before 2.0" too
+  const fp = m200Prints(p);
+  const rec = {v: 1, at: now(), rp: rp ? rp.id : "", from: {mode: str(p.mode), before: str(p.modeBefore160)}, rules: 0, routes: 0, order: "", errs: [], prints: fp};
   const step = (name, fn) => { try{ fn(); }catch(e){ rec.errs.push(name); onAppError(e && e.message, "m200:" + name); } };
   step("mode", () => { if (!MODES.includes(p.mode)){ if (p.mode) p.modeBefore200 = p.mode; p.mode = "pick"; } });
   step("goal", () => { goal20Of(p); });
@@ -361,6 +368,7 @@ function m200Run(p, raw){
   step("routes", () => { const R = m200Routes(p); rec.routes = R.n; chosen = R.chosen; });
   step("order", () => { rec.order = m200Order(p, chosen); });
   step("chat", () => { c20Of(p); if (!c20Read(p).msgs.some(m => m.m200)) c20Add(p, {by: "sys", m200: true, text: t("c20.mig.msg." + (rec.order || "kept"), {r: rec.rules, n: rec.routes})}); });
+  rec.changed = m200Changed(p, fp);   // checked by code: the move changed none of the fields the project had (only its own new ones)
   p.m200 = rec;
   touch(p);
   return rec;

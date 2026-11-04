@@ -3,7 +3,6 @@
    try version=Testversion=试用版 · ceiling=Obergrenze=上限 · platform=Plattform=平台 · stand-in=Platzhalter=替代 */
 Object.assign(STR, {
 "m.pick":["Pick","Wählen","选择"],
-"md.pick":["Design by picking: short rounds of concrete options you click, combine or answer in a few words","Entwerfen durch Wählen: kurze Runden mit konkreten Optionen, die du anklickst, kombinierst oder mit ein paar Worten beantwortest","通过选择来设计：每轮几个具体选项，点选、组合，或用几个词回答"],
 "job.pickres":["Pick research","Recherche für Wählen","选择模式调研"],
 "pf.n.scope":["Only what each part needs","Nur, was jeder Teil braucht","每部分只拿所需权限"],
 "pf.d.scope":["Each part gets only the tools and data it needs; a part that reads outside content cannot also send.","Jeder Teil bekommt nur die Werkzeuge und Daten, die er braucht; ein Teil, der fremde Inhalte liest, kann nicht auch senden.","每个部分只获得所需的工具和数据；读取外部内容的部分不能同时发送。"],
@@ -158,7 +157,6 @@ Object.assign(STR, {
 "pk.md.confirm":["Checked by","Geprüft durch","检验方式"],
 "pk.md.revisit":["Revisit if","Neu prüfen, wenn","如出现以下情况需重新考虑"],
 "pk.md.was":["Before ({d})","Vorher ({d})","之前（{d}）"],
-"nav.backto":["Back to {m}","Zurück zu {m}","返回{m}"],
 "mg.pick":["Good for designing a new tool fast: concrete options to click, research first, a first version to try early.","Gut, um ein neues Tool schnell zu entwerfen: konkrete Optionen zum Anklicken, zuerst Recherche, früh eine erste Version zum Testen.","适合快速设计新工具：点选具体选项，先做调研，尽早得到可试用的第一版。"],
 "pk.try.reqs":["Requirements updated for the next version","Anforderungen für die nächste Version angepasst","已为下一版更新需求"],
 "pk.try.away":["You opened another project while the next version was built. Its requirement changes wait there for you; try again from that project.","Du hast ein anderes Projekt geöffnet, während die nächste Version gebaut wurde. Die Änderungen an den Anforderungen warten dort auf dich; teste es von jenem Projekt aus noch einmal.","在构建下一版时你打开了另一个项目。需求的修改在那里等你；请回到该项目再试一次。"],

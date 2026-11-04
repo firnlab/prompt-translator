@@ -55,6 +55,8 @@ with sync_playwright() as pw:
     ev(pg, "(() => { Store.isOwner = true; })()")
     pid = ev(pg, "(() => { const p = WS.projects.find(x => /watch/i.test(x.name)) || WS.projects[0]; openProject(p.id); p.autoInterview = false; return p.id; })()")
     other = ev(pg, f"(WS.projects.find(x => x.id !== '{pid}') || {{}}).id || ''")
+    # 2.0 Part C: the move to 2.0 fills each book with the project's own 1.x rules; Part A's checks start from an empty book
+    ev(pg, "WS.projects.forEach(p => { p.ledger = {v: 1, entries: [], props: [], conflicts: [], known: [], blocked: []}; if (p.seq) delete p.seq.F; }); render()")
     pg.wait_for_timeout(500)
 
     # ---------- A1 the facts book ----------

@@ -149,7 +149,7 @@ ACT_NO.add("pk-last-close"); ACT_NO.add("pk-gaps");
 /* every project works in Pick from 1.6.0 on (one-time move; the earlier view is kept as the project's map) */
 function spineMoveOnce(){
   if (!WS || !WS.settings || WS.settings.m160) return;
-  for (const p of WS.projects || []){ if (p.mode !== "pick"){ p.modeBefore160 = projMode(p); p.mode = "pick"; touch(p); } }
+  for (const p of WS.projects || []){ if (p.mode !== "pick"){ p.modeBefore160 = str(p.mode) || "steps"; p.mode = "pick"; touch(p); } }   // 2.0: the stored 1.x view as it was (projMode no longer knows it)
   WS.settings.m160 = now(); saveWs();
 }
 { const orig = openWorkspace; openWorkspace = async function(id){ const r = await orig(id); if (UI.wsReady && !UI.fatal && WS.id === id) spineMoveOnce(); return r; }; }
