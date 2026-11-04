@@ -656,3 +656,6 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
 - Dropped with their feature (Part C removed it): e2e12_on14 "mode … renders" (×5), "switch to … keeps the place" (×5), "Guided shows
   the guide strip", "no sideways scroll at 420 px in <view>" (now per page); e2e13 part 6 "quick mode" (Express: the short list, J/K,
   Enter, "Accept all recommended").
+- 2.0.0 hunt check 28 (await race) went quietly empty: it looked for AI buttons on the step pages, which 2.0 removed, so it clicked
+  nothing, stayed green, and its planted bug was MISSED by check_the_hunts. Now it starts an answer in both faces (a chat message;
+  the first Pick-cover button that starts one) and fails when no answer starts at all, so it can never pass by doing nothing.
