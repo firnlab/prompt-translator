@@ -186,7 +186,7 @@ function pgBody(p, id){
 /* the kit decisions on the Design page: decided ones as one line each, open ones one row each, the rest as what PT assumes */
 function pgKitsBlock(p){
   if (typeof kitDecidedList !== "function") return "";
-  const dec = kitDecidedList(p), open = pgQueue(p, "design").filter(x => /^kit-/.test(x.kind)), asm = typeof kitAssumed === "function" ? kitAssumed(p) : [];
+  const shown = new Set(pgYou(p, "design").slice(0, 8).map(x => x.key)), dec = kitDecidedList(p), open = pgQueue(p, "design").filter(x => /^kit-/.test(x.kind) && !shown.has(x.key)), asm = typeof kitAssumed === "function" ? kitAssumed(p) : [];
   if (!dec.length && !open.length && !asm.length) return "";
   return `<section class="panel pg-kits" data-anchor="kits"><div class="row"><h3 style="flex:1 1 12em">${esc(t("pg.kits"))}</h3><span class="small muted">${esc(t("pg.kits.sub"))}</span></div>
     ${dec.length ? `<div class="list">${dec.map(d => `<div class="item">${stSlot("ok")}<div class="body"><span class="small"><b>${esc(d.q)}</b> → ${esc(d.a)}</span>${d.by === "you" ? "" : `<span class="small muted">${esc(t("pg.kits.bypt"))}</span>`}</div><button class="btn xs ghost" data-a="q-goto" data-ref="${esc(d.ref)}">${esc(t("btn.change"))}</button></div>`).join("")}</div>` : ""}

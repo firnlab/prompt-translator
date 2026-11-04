@@ -133,7 +133,7 @@ with sync_playwright() as pw:
         lt = ev(pg, "curP().chat20.msgs.slice(-1)[0]")
         check("an answer that still breaks your rule is left out and named (never shown as advice)", lt.get("cut") and "Google" not in lt["text"] and "Left out" in main(pg), lt)
         nb = ev(pg, "factsRead(curP()).entries.length")
-        say(pg, "PT, the button text is too small on this screen.")
+        say(pg, "PT, you must make the button text bigger, it is too small on this screen.")
         lp = ev(pg, "curP().chat20.msgs.slice(-1)[0]")
         check("feedback about PT is never filed into the project; Improve PT is offered", lp["about"] == "pt" and ev(pg, "factsRead(curP()).entries.length") == nb and ev(pg, "!!document.querySelector('[data-a=c20-ipt]')"), lp)
         pg.locator("[data-a=c20-ipt]").last.click(); pg.wait_for_timeout(200)

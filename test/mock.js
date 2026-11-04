@@ -87,9 +87,9 @@
     const mm = /<message>([\s\S]*?)<\/message>/.exec(prompt); let msg = ""; try{ msg = JSON.parse(mm[1]); }catch(e){}
     const sent = msg.split(/(?<=[.!?])\s+/).filter(Boolean), file = [];
     for (const s of sent){ if (/\bnever\b/i.test(s)) file.push({kind: "never", said: s, norm: s}); else if (/\bmust\b/i.test(s)) file.push({kind: "must", said: s, norm: s}); else if (/\b(has|have|uses|use) (a|an|the)\b/i.test(s)) file.push({kind: "fact", said: s, norm: s}); else if (/\bwe take\b|\bI choose\b/i.test(s)) file.push({kind: "decision", said: s, norm: s}); }
-    const about = /\bPT\b|\bbutton\b|\bscreen\b/.test(msg) ? (file.length ? "both" : "pt") : "tool";
+    const about = /^PT\b/.test(msg) ? "pt" : /\bPT\b|\bbutton\b|\bscreen\b/.test(msg) ? (file.length ? "both" : "pt") : "tool";   // "PT, …": about PT (the list it still returns must be ignored by PT)
     const goalEmpty = /"outcome":"empty"/.test(prompt);
-    const out = {reply: "Noted. " + (file.length ? "I filed " + file.length + " entries." : "Tell me more."), about, file: about === "pt" ? [] : file, goal: goalEmpty && about !== "pt" ? {outcome: sent[0] || msg} : {}, cards: [], next: "map"};
+    const out = {reply: "Noted. " + (file.length ? "I filed " + file.length + " entries." : "Tell me more."), about, file, goal: goalEmpty && about !== "pt" ? {outcome: sent[0] || msg} : {}, cards: [], next: "map"};
     if (/ASKME/.test(msg)) out.cards = [{q: "Must it work during phone calls?", why: "This removes or keeps the audio-only routes.", target: "decision", multi: false, options: [{k: "A", label: "Yes, on calls", text: "It must work during calls", ex: "Dad adds milk while on the phone"}, {k: "B", label: "No", text: "Calls do not matter", ex: "Lists are edited between calls"}], rec: 0, recWhy: "Most families talk while shopping", recBasis: "estimate", mind: "If nobody calls while shopping"}];
     if (/ASKAGAIN/.test(msg)) out.cards = [{q: "Who uses the list?", why: "Decides the sharing routes.", target: "decision", multi: false, options: [{k: "A", label: "The four of us", text: "family"}, {k: "B", label: "Only me", text: "one person"}], rec: 0, recWhy: "You said family", recBasis: "estimate", mind: ""}];
     if (/QUOTEBAD/.test(msg) && !window.__chatRepaired){ window.__chatRepaired = 1; out.file = [{kind: "never", said: "something the person never said", norm: "made up"}]; }
