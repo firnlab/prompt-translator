@@ -76,7 +76,7 @@ code,pre,.mono{font-family:var(--f-mono);font-size:12.5px}
 .nav-proj{font-size:13px}
 .rail-foot{margin-top:auto;padding:12px;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line)}
 .main{min-width:0;min-height:0;overflow-y:auto;position:relative}
-.main-inner{padding:20px max(16px,env(safe-area-inset-right,0px)) 64px max(16px,env(safe-area-inset-left,0px));max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.main-inner{padding:20px max(16px,env(safe-area-inset-right,0px)) 64px max(16px,env(safe-area-inset-left,0px));max-width:none;margin:0 auto;display:flex;flex-direction:column;gap:18px}
 .drawer{border-left:1px solid var(--line);background:var(--bg-2);min-height:0;display:flex;flex-direction:column}
 
 /* ---------- Top bar & North Star ---------- */
@@ -642,7 +642,7 @@ details.more .mi.danger{color:var(--crit)}
 .legend14{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--fg-2)}
 .legend14 span{display:inline-flex;gap:5px;align-items:center}
 .legend14.lines svg path{stroke-width:1.6}
-.chips{display:inline-flex;gap:4px;flex-wrap:wrap;align-items:center;flex:none;max-width:45%}
+.chips{display:inline-flex;gap:4px;flex-wrap:wrap;align-items:center;flex:0 1 auto;max-width:100%}   /* 2.0 (A9): text first; chips follow the text, no fixed share of the row */
 .ihead-wrap{padding-left:10px}
 .ihead-wrap>.sslot{margin-top:0}
 .irow .ihead{padding-left:4px}
@@ -695,7 +695,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .qrow>.sslot{margin-top:1px}
 .qbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .qtitle{font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:break-word}
-.qacts{display:flex;gap:4px;flex:none;align-items:center;flex-wrap:wrap;justify-content:flex-end;max-width:46%}
+.qacts{display:flex;gap:4px;flex:0 1 auto;align-items:center;flex-wrap:wrap;justify-content:flex-end;max-width:100%}   /* 2.0 (A9): the buttons wrap under the text when it needs the room */
 /* Finish */
 .finish .dcard{border:1px solid var(--line-2);border-radius:var(--r);padding:16px;background:var(--surface-2);display:flex;flex-direction:column;gap:12px}
 .finish .dtitle{font-size:17px;line-height:1.35;overflow-wrap:break-word}

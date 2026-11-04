@@ -78,7 +78,7 @@ code,pre,.mono{font-family:var(--f-mono);font-size:12.5px}
 .nav-proj{font-size:13px}
 .rail-foot{margin-top:auto;padding:12px;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line)}
 .main{min-width:0;min-height:0;overflow-y:auto;position:relative}
-.main-inner{padding:20px max(16px,env(safe-area-inset-right,0px)) 64px max(16px,env(safe-area-inset-left,0px));max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.main-inner{padding:20px max(16px,env(safe-area-inset-right,0px)) 64px max(16px,env(safe-area-inset-left,0px));max-width:none;margin:0 auto;display:flex;flex-direction:column;gap:18px}
 .drawer{border-left:1px solid var(--line);background:var(--bg-2);min-height:0;display:flex;flex-direction:column}
 
 /* ---------- Top bar & North Star ---------- */
@@ -644,7 +644,7 @@ details.more .mi.danger{color:var(--crit)}
 .legend14{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--fg-2)}
 .legend14 span{display:inline-flex;gap:5px;align-items:center}
 .legend14.lines svg path{stroke-width:1.6}
-.chips{display:inline-flex;gap:4px;flex-wrap:wrap;align-items:center;flex:none;max-width:45%}
+.chips{display:inline-flex;gap:4px;flex-wrap:wrap;align-items:center;flex:0 1 auto;max-width:100%}   /* 2.0 (A9): text first; chips follow the text, no fixed share of the row */
 .ihead-wrap{padding-left:10px}
 .ihead-wrap>.sslot{margin-top:0}
 .irow .ihead{padding-left:4px}
@@ -697,7 +697,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .qrow>.sslot{margin-top:1px}
 .qbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .qtitle{font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:break-word}
-.qacts{display:flex;gap:4px;flex:none;align-items:center;flex-wrap:wrap;justify-content:flex-end;max-width:46%}
+.qacts{display:flex;gap:4px;flex:0 1 auto;align-items:center;flex-wrap:wrap;justify-content:flex-end;max-width:100%}   /* 2.0 (A9): the buttons wrap under the text when it needs the room */
 /* Finish */
 .finish .dcard{border:1px solid var(--line-2);border-radius:var(--r);padding:16px;background:var(--surface-2);display:flex;flex-direction:column;gap:12px}
 .finish .dtitle{font-size:17px;line-height:1.35;overflow-wrap:break-word}
@@ -1476,7 +1476,7 @@ label.fld{color:var(--fg-2);font-weight:500}
 .sslot.pill18 svg{width:16px;height:16px;flex:none}
 /* the status is a word now, so a narrow queue row (1024 with the inspector) puts the actions on the next line instead of squeezing the text (hunt 13, cause 68) */
 .qrow{flex-wrap:wrap}
-.qrow>.qbody{flex:1 1 12em}
+.qrow>.qbody{flex:1 1 18em;min-width:min(18em,100%)}   /* 2.0 (A9): the text keeps at least 18em; the buttons move under it before it is squeezed */
 .qrow>.qacts{margin-left:auto}
 @media (min-width:821px){.tsgrid{grid-template-columns:repeat(auto-fit,minmax(11em,1fr))}}   /* the three tool states: two per line when the step column is narrow (same hunt) */
 .sslot.pill18 .ssw{white-space:nowrap}
@@ -2335,10 +2335,10 @@ const STR = {
 "acat.feasibility":["Feasibility","Machbarkeit","技术可行性"],
 "acat.gtm":["Go-to-market","Markteinführung","市场推广"],
 "acat.legal":["Legal & ethics","Recht & Ethik","法律与伦理"],
-"ast.untested":["untested","ungetestet","未验证"],
-"ast.testing":["testing","wird getestet","验证中"],
-"ast.validated":["validated","bestätigt","已证实"],
-"ast.invalid":["proven wrong","widerlegt","已证伪"],
+"ast.untested":["not checked yet","noch nicht geprüft","还没确认"],
+"ast.testing":["being checked","wird geprüft","正在确认"],
+"ast.validated":["yes, it holds","ja, stimmt","是的，成立"],
+"ast.invalid":["no, it does not hold","nein, stimmt nicht","不，不成立"],
 "rk.title":["Risk register","Risikoregister","风险清单"],
 "rk.sub":["What could go wrong, how likely, how bad, and what you'll do about it.", "Was schiefgehen kann, wie wahrscheinlich, wie schlimm und was du dagegen tust.", "可能出什么问题、可能性多大、后果多严重，以及你打算如何应对。"],
 "rk.add":["Add risk","Risiko hinzufügen","添加风险"],
@@ -2368,8 +2368,8 @@ const STR = {
 "req.then":["Then","Dann","那么"],
 "req.tests":["{n} tests","{n} Tests","{n} 个测试"],
 "req.notests":["no test yet","noch kein Test","还没有测试"],
-"req.oos":["Out of scope","Nicht im Umfang","不在范围内"],
-"req.oos.sub":["What this solution deliberately won't do.","Was diese Lösung bewusst nicht tut.","此解决方案有意不做的事情。"],
+"req.oos":["Not in this version","Nicht in dieser Version","这个版本不做"],
+"req.oos.sub":["What this version deliberately leaves out (one per line); later versions can take it in.","Was diese Version bewusst weglässt (eins pro Zeile); spätere Versionen können es aufnehmen.","这个版本有意不做的事（每行一条）；以后的版本可以再加。"],
 "req.const":["Constitution","Grundsätze","基本原则"],
 "req.const.sub":["Non-negotiable principles every part must respect.","Unverhandelbare Grundsätze, die jeder Teil einhalten muss.","每个部分都必须遵守的、不可妥协的原则。"],
 "req.lines":["One item per line.","Ein Punkt pro Zeile.","每行一项。"],
@@ -2844,7 +2844,7 @@ const STR = {
 "ins.running":["Looking for patterns across your projects…", "Muster über deine Projekte hinweg werden gesucht …", "正在寻找各项目之间的共性模式…"],
 "ins.none":["Create a project first.", "Erstelle zuerst ein Projekt.", "请先创建项目。"],
 "ins.profile":["What the tool knows about you", "Was das Tool über dich weiss", "工具对你的了解"],
-"ins.profile.sub":["Used in every AI step. Edit or remove anything; nothing is added without your OK.", "Wird in jedem KI-Schritt genutzt. Alles ist bearbeitbar oder entfernbar; nichts wird ohne dein OK ergänzt.", "每个 AI 步骤都会参考。你可以编辑或删除任何内容；未经你同意，不会添加任何内容。"],
+"ins.profile.sub":["Your notes about how you work, kept for the workspace. Since 2.0 they no longer go into a project's prompts (projects never get rules from elsewhere): to use one in a project, copy it there from that project's facts book. Nothing is added without your OK.","Deine Notizen dazu, wie du arbeitest, für den Arbeitsbereich. Seit 2.0 gehen sie nicht mehr in die Prompts eines Projekts (Projekte bekommen nie Regeln von anderswo): Um eine in einem Projekt zu verwenden, kopiere sie dort aus dem Faktenbuch des Projekts. Nichts wird ohne dein OK ergänzt.","关于你工作方式的笔记，属于整个工作区。从 2.0 起，它们不再进入项目的提示（项目从不接收来自别处的规则）：要在某个项目中使用其中一条，请在该项目的事实簿中复制它。未经你同意，不会添加任何内容。"],
 "ins.profileempty":["Nothing yet. Add preferences yourself or analyse your projects.", "Noch nichts. Füge Vorlieben selbst hinzu oder analysiere deine Projekte.", "还没有内容。你可以自行添加偏好，或分析你的项目。"],
 "ins.suggested":["Suggested from your projects", "Vorschläge aus deinen Projekten", "从你的项目中归纳出的建议"],
 "ins.patterns":["Patterns across projects","Muster über Projekte hinweg","跨项目模式"],
@@ -2977,7 +2977,7 @@ const STR2 = {
 "rd.sub10":["Copying unlocks at 100%. Everything below 10/10 is listed with the button that fixes it.","Kopieren ist ab 100 % möglich. Alles unter 10/10 steht hier, mit der Schaltfläche, die es behebt.","就绪度达到 100% 后才能复制。所有低于 10/10 的条目都列在这里，并附有对应的修复按钮。"],
 "rd.ns.need":["Problem, goal and a measurable success measure are filled in and confirmed.","Problem, Ziel und ein messbares Erfolgskriterium sind ausgefüllt und bestätigt.","问题、目标和可衡量的成功标准均已填写并确认。"],
 "rd.dims":["Full picture","Vollständiges Bild","全貌"], "rd.dims.need":["Every dimension is confirmed, or marked not relevant.","Jede Dimension ist bestätigt oder als nicht relevant markiert.","每个维度都已确认，或已标记为不相关。"],
-"rd.assume.need":["The riskiest assumptions are validated, disproven or accepted with a reason.","Die riskantesten Annahmen sind belegt, widerlegt oder mit Begründung akzeptiert.","风险最高的假设均已验证、被推翻，或已说明理由后接受。"],
+"rd.assume.need":["The riskiest assumptions are answered: yes, no, or not sure with a reason.","Die riskantesten Annahmen sind beantwortet: ja, nein oder nicht sicher mit Begründung.","风险最大的假设都已回答：是、否，或不确定并说明原因。"],
 "rd.risks.need":["Every high risk has a mitigation built in, or is accepted with a reason.","Jedes hohe Risiko hat eine eingebaute Gegenmassnahme oder ist mit Begründung akzeptiert.","每个高风险都已有内置的应对措施，或已说明理由后接受。"],
 "rd.early":["Early checks","Frühe Prüfungen","早期检查"], "rd.early.need":["Requirements and Architecture were checked; their problems are in the Review list.","Anforderungen und Architektur wurden geprüft; ihre Probleme stehen in der Liste unter «Prüfung».","需求和架构都已检查，发现的问题已列入审查列表。"],
 "rd.flags":["Nothing needs updating","Nichts muss aktualisiert werden","没有待更新的内容"], "rd.flags.need":["No item is waiting for an update after an earlier change.","Kein Element wartet nach einer früheren Änderung auf ein Update.","没有条目因之前的改动而等待更新。"],
@@ -3002,7 +3002,7 @@ const STR2 = {
 "rtab.open":["Open","Offen","待处理"], "rtab.waiting":["Waiting for confirmation","Wartet auf Bestätigung","等待确认"], "rtab.signoff":["Needs your sign-off", "Von dir abzuzeichnen", "需要你签字确认"], "rtab.done":["Done","Erledigt","已完成"], "rtab.accepted":["Accepted risks","Akzeptierte Risiken","已接受的风险"],
 "fst.open":["Open","Offen","待处理"], "fst.waiting":["Waiting for confirmation","Wartet auf Bestätigung","等待确认"], "fst.signoff":["Needs your sign-off", "Von dir abzuzeichnen", "需要你签字确认"], "fst.done":["Done","Erledigt","已完成"], "fst.accepted":["Accepted risk","Akzeptiertes Risiko","已接受的风险"],
 "rev.problems":["Problems","Probleme","问题"], "rev.problems.sub":["Fixed problems move to Done; nothing is deleted. A problem that comes back is reopened, not counted as new.","Behobene Probleme wandern zu «Erledigt»; nichts wird gelöscht. Ein Problem, das wiederkommt, wird wieder geöffnet und nicht neu gezählt.","已修复的问题会移到“已完成”，不会删除任何内容。再次出现的问题会被重新打开，而不是算作新问题。"],
-"rev.fixauto":["Fix automatically","Automatisch beheben","自动修复"], "rev.fixtogether":["Fix it together with me","Gemeinsam mit mir beheben","和我一起修复"], "rev.acceptrisk":["Accept the risk","Risiko akzeptieren","接受风险"], "rev.confirmnow":["Check the fix now","Korrektur jetzt prüfen","立即检查修复"], "rev.signoff":["Sign off","Abzeichnen","签字确认"], "rev.reopen":["Reopen","Wieder öffnen","重新打开"],
+"rev.fixauto":["Fix automatically","Automatisch beheben","自动修复"], "rev.fixtogether":["PT drafts a fix, you pick what to keep","PT entwirft eine Lösung, du wählst, was bleibt","PT 起草修复，你挑选要保留的部分"], "rev.acceptrisk":["Accept the risk","Risiko akzeptieren","接受风险"], "rev.confirmnow":["Check the fix now","Korrektur jetzt prüfen","立即检查修复"], "rev.signoff":["Sign off","Abzeichnen","签字确认"], "rev.reopen":["Reopen","Wieder öffnen","重新打开"],
 "rev.explain":["What does this mean?","Was bedeutet das?","这是什么意思？"], "rev.explaining":["Explaining in plain language…","Wird in einfachen Worten erklärt …","正在用通俗的话解释…"], "rev.rec":["Recommended","Empfohlen","推荐"], "rev.choice.auto":["fix automatically","automatisch beheben","自动修复"], "rev.choice.together":["fix it together","gemeinsam beheben","一起修复"], "rev.choice.accept":["accept the risk","Risiko akzeptieren","接受风险"],
 "rev.walk":["Walk me through, one at a time","Einzeln mit mir durchgehen","带我逐个处理"], "rev.fixall":["Fix all open automatically ({n})","Alle offenen automatisch beheben ({n})","自动修复所有待处理问题（{n}）"],
 "rev.audit":["Audit record","Audit-Protokoll","审计记录"], "rev.hideaudit":["Hide audit","Audit-Protokoll ausblenden","隐藏审计记录"], "rev.beforeafter":["Text before and after","Text vorher und nachher","修改前后的文本"],
@@ -3017,7 +3017,7 @@ const STR2 = {
 /* first questions */
 "int.answered":["Answered ({n})","Beantwortet ({n})","已回答（{n}）"], "int.change":["Change answer","Antwort ändern","修改回答"], "int.saveanswer":["Save the new answer","Neue Antwort speichern","保存新回答"], "int.ripple":["Later steps that depend on this answer will be marked “needs updating”.","Spätere Schritte, die von dieser Antwort abhängen, werden als «Muss aktualisiert werden» markiert.","依赖这个回答的后续步骤会被标记为“需要更新”。"], "int.saved":["Saved. Dependent items are marked for updating.","Gespeichert. Abhängige Elemente sind zum Aktualisieren markiert.","已保存。相关条目已标记为需要更新。"], "int.fold":["Fold","Einklappen","收起"], "int.unfold":["Show","Anzeigen","展开"],
 "st.na":["Not relevant","Nicht relevant","不相关"],
-"as.validate":["Mark validated","Als belegt markieren","标记为已验证"], "as.evidenceph":["What shows it is true? (evidence)","Was zeigt, dass es stimmt? (Beleg)","有什么能证明它成立？（证据）"],
+"as.validate":["Yes, it holds","Ja, stimmt","是的，成立"], "as.evidenceph":["What shows it is true? (evidence)","Was zeigt, dass es stimmt? (Beleg)","有什么能证明它成立？（证据）"],
 "rk.suggest":["Suggest a mitigation","Gegenmassnahme vorschlagen","建议应对措施"], "rk.suggesting":["Suggesting a mitigation…","Gegenmassnahme wird vorgeschlagen …","正在提出应对措施…"], "rk.markmit":["Mark mitigated","Als entschärft markieren","标记为已缓解"],
 "res.run":["Research it","Recherchieren","进行调研"], "res.assumption":["Is this true, and what is the evidence? {x}","Stimmt das, und was belegt es? {x}","这是真的吗？有什么证据？{x}"],
 "res.auto.understand":["How do top professionals and existing tools solve this, and what already exists: {g}","Wie lösen Top-Fachleute und bestehende Tools das, und was gibt es schon: {g}","顶尖专业人士和现有工具如何解决这个问题，以及已经有哪些方案：{g}"],
@@ -3095,7 +3095,7 @@ const STR2 = {
 "rp.then":["Then","Damals","当时"], "rp.now":["Now","Jetzt","现在"], "rp.before":["Before: {x}","Vor: {x}","执行前：{x}"], "rp.beforeai":["Before an AI change","Vor einer KI-Änderung","AI 修改前"], "rp.beforerestore":["Before restoring","Vor dem Wiederherstellen","还原前"], "rp.stepdone":["{s} finished","{s} abgeschlossen","{s}已完成"], "rp.release":["Release v{v}","Freigabe v{v}","正式发布 v{v}"],
 /* activity */
 "log.tab.activity":["Activity","Aktivität","动态"], "log.search":["Search the activity…","Aktivität durchsuchen …","搜索动态…"], "log.all":["Everything","Alles","全部"], "log.important":["Important","Wichtig","重要"], "log.noact":["No activity yet.","Noch keine Aktivität.","还没有动态。"],
-"act.created":["Project created","Projekt erstellt","项目已创建"], "act.migrated":["Carried over from Prompt Translator v1; nothing was lost.","Aus Prompt Translator v1 übernommen; nichts ging verloren.","已从 Prompt Translator v1 迁移，没有丢失任何内容。"], "act.ai":["Claude drafted {x}","Claude hat {x} entworfen","Claude 起草了{x}"], "act.review":["Review: {n} new problems, {r} reopened","Prüfung: {n} neue Probleme, {r} wieder geöffnet","审查：{n} 个新问题，{r} 个重新打开"], "act.fixed":["Fixes applied to {n}; {m} could not be applied","Korrekturen an {n} angewendet; {m} konnten nicht angewendet werden","已对 {n} 项应用修复；{m} 项未能应用"], "act.confirmed":["Separate check confirmed {n} of {m} fixes","Separate Kontrolle hat {n} von {m} Korrekturen bestätigt","独立检查确认了 {m} 项修复中的 {n} 项"], "act.early":["Early check of {s}: {n} problems","Frühe Prüfung von {s}: {n} Probleme","{s}早期检查：{n} 个问题"], "act.item":["Changed {r}","{r} geändert","已修改{r}"], "act.express":["Express drafted the first steps","Express hat die ersten Schritte entworfen","快速模式起草了前几个步骤"], "act.updated":["Updated the affected parts","Betroffene Teile aktualisiert","已更新受影响的部分"], "act.existing":["Existing work read in","Bestehende Arbeit eingelesen","已读入现有成果"], "act.job":["Background run started: {k}","Hintergrundlauf gestartet: {k}","后台运行已启动：{k}"], "act.jobdone":["Background run {k}: {s}","Hintergrundlauf {k}: {s}","后台运行{k}：{s}"], "act.signed":["Signed off: {x}","Abgezeichnet: {x}","已签字确认：{x}"], "act.accepted":["Risk accepted: {x}","Risiko akzeptiert: {x}","已接受风险：{x}"], "act.judged":["You decided {id}: {v}", "Du hast {id} entschieden: {v}", "你对 {id} 的判定：{v}"], "act.reanswered":["Answer changed: {x}","Antwort geändert: {x}","已修改回答：{x}"], "act.validated":["Validated: {x}","Belegt: {x}","已验证：{x}"], "act.copied":["Build line copied","Bauzeile kopiert","已复制构建指令"], "act.report":["Build report checked {ok}","Baubericht geprüft {ok}","已检查构建报告 {ok}"], "act.released":["Released v{v}","v{v} freigegeben","已正式发布 v{v}"], "act.rolledback":["Rolled back to v{v}","Zurückgesetzt auf v{v}","已回退到 v{v}"], "act.restored":["Restored to {x}","Wiederhergestellt auf {x}","已还原到{x}"], "act.rpdeleted":["A restore point was deleted","Ein Wiederherstellungspunkt wurde gelöscht","删除了一个还原点"], "act.plan":["Update planned v{a} → v{b}","Update geplant v{a} → v{b}","已计划更新 v{a} → v{b}"], "act.deployed":["Deployed v{v}","v{v} ausgerollt","已部署 v{v}"], "act.paused":["Schedule paused","Zeitplan pausiert","计划已暂停"], "act.resumed":["Schedule resumed","Zeitplan fortgesetzt","计划已恢复"], "act.guide":["Asked the Guide: {q}","Guide gefragt: {q}","询问向导：{q}"], "act.stepdone":["{s} finished","{s} abgeschlossen","{s}已完成"], "act.tests":["Tests: {r}% of {n} tests, {k} runs","Tests: {r} % von {n} Tests, {k} Läufe","测试：{n} 个测试，通过率 {r}%，运行 {k} 次"], "act.confirmed1":["Confirmed {r}","{r} bestätigt","已确认{r}"],
+"act.created":["Project created","Projekt erstellt","项目已创建"], "act.migrated":["Carried over from Prompt Translator v1; nothing was lost.","Aus Prompt Translator v1 übernommen; nichts ging verloren.","已从 Prompt Translator v1 迁移，没有丢失任何内容。"], "act.ai":["Claude drafted {x}","Claude hat {x} entworfen","Claude 起草了{x}"], "act.review":["Review: {n} new problems, {r} reopened","Prüfung: {n} neue Probleme, {r} wieder geöffnet","审查：{n} 个新问题，{r} 个重新打开"], "act.fixed":["Fixes applied to {n}; {m} could not be applied","Korrekturen an {n} angewendet; {m} konnten nicht angewendet werden","已对 {n} 项应用修复；{m} 项未能应用"], "act.confirmed":["Separate check confirmed {n} of {m} fixes","Separate Kontrolle hat {n} von {m} Korrekturen bestätigt","独立检查确认了 {m} 项修复中的 {n} 项"], "act.early":["Early check of {s}: {n} problems","Frühe Prüfung von {s}: {n} Probleme","{s}早期检查：{n} 个问题"], "act.item":["Changed {r}","{r} geändert","已修改{r}"], "act.express":["Express drafted the first steps","Express hat die ersten Schritte entworfen","快速模式起草了前几个步骤"], "act.updated":["Updated the affected parts","Betroffene Teile aktualisiert","已更新受影响的部分"], "act.existing":["Existing work read in","Bestehende Arbeit eingelesen","已读入现有成果"], "act.job":["Background run started: {k}","Hintergrundlauf gestartet: {k}","后台运行已启动：{k}"], "act.jobdone":["Background run {k}: {s}","Hintergrundlauf {k}: {s}","后台运行{k}：{s}"], "act.signed":["Signed off: {x}","Abgezeichnet: {x}","已签字确认：{x}"], "act.accepted":["Risk accepted: {x}","Risiko akzeptiert: {x}","已接受风险：{x}"], "act.judged":["You decided {id}: {v}", "Du hast {id} entschieden: {v}", "你对 {id} 的判定：{v}"], "act.reanswered":["Answer changed: {x}","Antwort geändert: {x}","已修改回答：{x}"], "act.validated":["Answered yes: {x}","Mit Ja beantwortet: {x}","已回答“是”：{x}"], "act.copied":["Build line copied","Bauzeile kopiert","已复制构建指令"], "act.report":["Build report checked {ok}","Baubericht geprüft {ok}","已检查构建报告 {ok}"], "act.released":["Released v{v}","v{v} freigegeben","已正式发布 v{v}"], "act.rolledback":["Rolled back to v{v}","Zurückgesetzt auf v{v}","已回退到 v{v}"], "act.restored":["Restored to {x}","Wiederhergestellt auf {x}","已还原到{x}"], "act.rpdeleted":["A restore point was deleted","Ein Wiederherstellungspunkt wurde gelöscht","删除了一个还原点"], "act.plan":["Update planned v{a} → v{b}","Update geplant v{a} → v{b}","已计划更新 v{a} → v{b}"], "act.deployed":["Deployed v{v}","v{v} ausgerollt","已部署 v{v}"], "act.paused":["Schedule paused","Zeitplan pausiert","计划已暂停"], "act.resumed":["Schedule resumed","Zeitplan fortgesetzt","计划已恢复"], "act.guide":["Asked the Guide: {q}","Guide gefragt: {q}","询问向导：{q}"], "act.stepdone":["{s} finished","{s} abgeschlossen","{s}已完成"], "act.tests":["Tests: {r}% of {n} tests, {k} runs","Tests: {r} % von {n} Tests, {k} Läufe","测试：{n} 个测试，通过率 {r}%，运行 {k} 次"], "act.confirmed1":["Confirmed {r}","{r} bestätigt","已确认{r}"],
 /* preview of heavy runs */
 "pv.title":["What Claude will do","Was Claude tun wird","Claude 将要做什么"], "pv.generic":["This runs several AI steps.","Das umfasst mehrere KI-Schritte.","这会运行多个 AI 步骤。"], "pv.reads":["Reads","Liest","读取"], "pv.reads.x":["This project's current state.","Den aktuellen Stand dieses Projekts.","此项目的当前状态。"], "pv.changes":["Changes","Ändert","修改"], "pv.changes.x":["Only what this action is for. A restore point is saved first.","Nur das, wofür diese Aktion da ist. Zuerst wird ein Wiederherstellungspunkt gespeichert.","只修改此操作所针对的内容。会先保存还原点。"], "pv.keeps":["Never touches","Berührt nie","绝不触碰"], "pv.keeps.x":["Your other projects, the other person's workspace, and anything outside PT unless the action says so.", "Deine anderen Projekte, den Arbeitsbereich der anderen Person und alles ausserhalb von PT, ausser die Aktion sagt es ausdrücklich.", "你的其他项目、另一个人的工作区，以及 PT 之外的任何内容（除非此操作明确说明）。"], "pv.cost":["Cost","Kosten","消耗"], "pv.skip":["Don't ask again for this action","Für diese Aktion nicht mehr fragen","此操作不再询问"], "pv.go":["Go","Los","开始"],
 "pv.fix-all":["Fixes every open item that can be fixed automatically, one after another, then shows what still needs you.", "Behebt jedes offene Element, das sich automatisch beheben lässt, eines nach dem anderen, und zeigt dann, was dich noch braucht.", "逐个修复所有能自动修复的待处理条目，然后显示还需要你处理的内容。"], "pv.update-deploy":["A background run updates the live tool in place, then checks it: nothing lost, no gaps, no fossils, no new issues.","Ein Hintergrundlauf aktualisiert das Live-Tool direkt und prüft es dann: nichts verloren, keine Lücken, keine Altlasten, keine neuen Probleme.","后台运行会就地更新线上工具，然后检查：没有丢失、没有缺口、没有遗留内容、没有新问题。"], "pv.pilot-run":["A background run tests the package for real with live web search.","Ein Hintergrundlauf testet das Paket unter echten Bedingungen mit Live-Websuche.","后台运行会在真实条件下、使用实时网络搜索测试配置包。"], "pv.express-draft":["Claude clarifies the idea, drafts understanding, first questions and requirements. Everything stays assumed until you confirm.", "Claude klärt die Idee und entwirft Verständnis, erste Fragen und Anforderungen. Alles bleibt eine Annahme, bis du bestätigst.", "Claude 会整理想法，并起草问题理解、初步提问和需求。在你确认之前，所有内容都只是假设。"],
@@ -3219,7 +3219,7 @@ Object.assign(STR, {
 "rd.f.costok":["Accept with a reason", "Mit Begründung akzeptieren", "说明理由后接受"],
 "cost.reason":["Why is the longer or costlier draft acceptable?", "Warum ist der längere oder teurere Entwurf vertretbar?", "为什么可以接受这个更长或成本更高的草稿？"],
 "act.costok":["Accepted a longer or costlier draft: {r}", "Längeren oder teureren Entwurf akzeptiert: {r}", "已接受更长或成本更高的草稿：{r}"],
-"rd.engine":["Frontier & right-sizing", "Frontier & Dimensionierung", "前沿与规模适配"],
+"rd.engine":["Frontier & how much runs by itself","Frontier & wie viel von selbst läuft","前沿与自动运行程度"],
 "bl.scan":["The frontier scan has not run yet", "Der Frontier-Scan ist noch nicht gelaufen", "前沿扫描尚未运行"],
 "bl.scanrun":["The frontier scan is still running", "Der Frontier-Scan läuft noch", "前沿扫描仍在运行"],
 "bl.gate":["{g} not answered: {q}", "{g} nicht beantwortet: {q}", "{g} 尚未回答：{q}"],
@@ -3331,8 +3331,8 @@ Object.assign(STR, {
 "eng.mini.running":["Mini-test {i}/{n} · {s}…", "Mini-Test {i}/{n} · {s} …", "小测试 {i}/{n} · {s}…"],
 "eng.mini.log.up":["one step up passed clearly more ({a}% → {b}%)", "eine Stufe höher bestand deutlich mehr ({a} % → {b} %)", "升一级后通过率明显更高（{a}% → {b}%）"],
 "act.mini":["Mini-test: {x}", "Mini-Test: {x}", "小测试：{x}"],
-"eng.score":["Right-sizing score", "Dimensionierungswert", "规模适配评分"],
-"eng.score.sub":["Seven questions that decide how much design this needs. PT suggests; you can change any answer.", "Sieben Fragen, die entscheiden, wie viel Bauweise dies braucht. PT schlägt vor; du kannst jede Antwort ändern.", "七个问题决定这需要多复杂的设计。PT 会给出建议，你可以修改任何答案。"],
+"eng.score":["How much should run by itself?","Wie viel soll von selbst laufen?","有多少应该自动运行？"],
+"eng.score.sub":["Seven questions that decide how much of this runs by itself and how much stays with you. PT suggests; you can change any answer.","Sieben Fragen, die entscheiden, wie viel davon von selbst läuft und wie viel bei dir bleibt. PT schlägt vor; du kannst jede Antwort ändern.","七个问题决定这里有多少自动运行、多少由你来做。PT 会给出建议，你可以修改任何答案。"],
 "eng.suggest":["Suggest", "Vorschlagen", "建议"],
 "eng.score.rung":["Suggests {r} · {x}", "Schlägt {r} vor · {x}", "建议 {r} · {x}"],
 "eng.autonomycap":["Autonomy at most {x} (error cost)", "Autonomie höchstens {x} (Fehlerkosten)", "自主程度最高 {x}（出错代价）"],
@@ -3778,8 +3778,8 @@ Object.assign(STR, {
 "cl.13.changed":["Quick mode shows what needs you first, folds everything settled, has “Accept all recommended” and keys (↑ ↓, Enter, E, R)|New items appear on top, marked New, until you leave the step|German now uses “du”|The language you pick on the first page is kept for that person|Mini-map replaces “Blueprint as home”|PT writes project content in the project's language; answers to your questions follow your screen language", "Der Express-Modus zeigt zuerst, was dich braucht, klappt alles Erledigte zu, hat «Alle empfohlenen übernehmen» und Tasten (↑ ↓, Enter, E, R)|Neue Elemente erscheinen oben, als Neu markiert, bis du den Schritt verlässt|Deutsch verwendet jetzt «du»|Die Sprache, die du auf der ersten Seite wählst, bleibt für diese Person gespeichert|Die Mini-Karte ersetzt «Bauplan als Startseite»|PT schreibt Projektinhalte in der Projektsprache; Antworten auf deine Fragen folgen deiner Bildschirmsprache", "快速模式会先显示需要你处理的内容，收起所有已确定的项，提供“接受全部推荐”和快捷键（↑ ↓、Enter、E、R）|新条目会显示在顶部并标为“新增”，直到你离开该步骤|德语界面现改用非正式称呼“du”|你在首页选择的语言会为该用户保留|小地图取代了“以蓝图为首页”|PT 用项目语言撰写项目内容；对你提问的回答则使用你的界面语言"],
 "cl.13.fixed":["Text you typed could be lost when the screen refreshed or a popup closed – now every box keeps a draft|Blueprint labels no longer cover boxes or each other|Chinese typing: Enter while choosing characters no longer sends|A save that fails is retried by itself; you see “Not saved yet” and can retry now; going offline shows a notice", "Getippter Text konnte verloren gehen, wenn der Bildschirm neu lud oder sich ein Pop-up schloss – jetzt behält jedes Feld einen Entwurf|Beschriftungen im Bauplan verdecken keine Kästen und einander nicht mehr|Chinesische Eingabe: Enter während der Zeichenauswahl sendet nicht mehr|Ein fehlgeschlagenes Speichern wird automatisch wiederholt; du siehst «Noch nicht gespeichert» und kannst es sofort erneut versuchen; offline erscheint ein Hinweis", "屏幕刷新或弹窗关闭时，已输入的文字可能丢失——现在每个输入框都会保留草稿|蓝图中的标签不再遮挡方框，也不再彼此重叠|中文输入：选字时按 Enter 不再发送|保存失败会自动重试；你会看到“尚未保存”，并可立即重试；离线时会显示提示"],
 "cl.13.removed":["Fix / Adjust / Change / Add as separate buttons (now Edit and Refine…)", "Korrigieren / Anpassen / Ändern / Hinzufügen als separate Knöpfe (jetzt Bearbeiten und Verfeinern …)", "“修复 / 调整 / 更改 / 添加”这些独立按钮（现为“编辑”和“优化…”）"],
-"as.validate.tip":["It's true: mark this assumption validated", "Stimmt: diese Annahme als belegt markieren", "属实：将此假设标记为已验证"],
-"xp.tocheck":["{n} assumptions need checking (Mark validated, or More › Research it)", "{n} Annahmen brauchen eine Prüfung («Als belegt markieren» oder Weiteres › «Recherchieren»)", "{n} 项假设需要核实（“标记为已验证”，或 更多 › “进行调研”）"],
+"as.validate.tip":["It holds: answer yes for this assumption","Stimmt: diese Annahme mit Ja beantworten","成立：对这个假设回答“是”"],
+"xp.tocheck":["Assumptions waiting for your yes / no / not sure: {n} (or More › Research it)","Annahmen, die auf dein Ja / Nein / Nicht sicher warten: {n} (oder Weiteres › «Recherchieren»)","等你回答 是 / 否 / 不确定 的假设：{n} 个（或 更多 › 调研）"],
 "xp.more":["Show {n} more", "{n} weitere zeigen", "再显示 {n} 项"],
 "btn.undo1":["Undo", "Rückgängig", "撤销"],
 "ntype.scratch":["Scratch pad", "Notizblock", "草稿区"],
@@ -4299,7 +4299,7 @@ Object.assign(STR, {
 "m14.rp":["Before the PT 1.4 one-time repairs","Vor den einmaligen Reparaturen von PT 1.4","PT 1.4 一次性修复之前"],
 "u14.big":["This change was too big for a single Undo. Use Restore points to go back to before it.","Diese Änderung war zu gross für ein einzelnes Rückgängig. Nutze die Wiederherstellungspunkte, um davor zurückzugehen.","此更改过大，无法单步撤销。请使用还原点回到更改之前。"],
 "fx.version":["Fix for me","Für mich beheben","帮我修复"],
-"ast.accepted":["accepted for now","vorerst akzeptiert","暂时接受"],
+"ast.accepted":["not sure, going ahead anyway","nicht sicher, wir machen trotzdem weiter","不确定，先继续"],
 "q.runincomplete":["The last test run stopped after {a} of {b} runs: run the tests again","Der letzte Testlauf stoppte nach {a} von {b} Durchläufen: Tests erneut ausführen","上次测试只运行了 {b} 次中的 {a} 次就停止了：请重新运行测试"],
 "fin.resume":["Back to Finish (decision {i} of {n})","Zurück zu Fertigstellen (Entscheidung {i} von {n})","返回“完成”（第 {i}/{n} 个决定）"],
 "fin.rolledact":["Finish: a fixing pass made it worse, taken back","Fertigstellen: ein Korrekturdurchgang machte es schlechter, zurückgenommen","完成：一轮修复让情况变差，已撤回"],
@@ -4310,7 +4310,7 @@ Object.assign(STR, {
 "m14.lang":["Content language: {l}","Inhaltssprache: {l}","内容语言：{l}"],
 "m14.youconfirmed":["Confirmed by you, {d}","Von dir bestätigt, {d}","你已于 {d} 确认"],
 "m14.as.why":["You confirmed this on {d}; 1.3 had left it in 'testing'.","Du hast das am {d} bestätigt; 1.3 hatte es auf «wird geprüft» gelassen.","你已于 {d} 确认；1.3 把它留在了“测试中”。"],
-"m14.as":["Assumption validated: {x}","Annahme bestätigt: {x}","假设已验证：{x}"],
+"m14.as":["Assumption answered yes: {x}","Annahme mit Ja beantwortet: {x}","假设已回答“是”：{x}"],
 "m14.arch.why":["'{a}' was an automatic placeholder; the design PT drew and the package describe '{b}'.","«{a}» war ein automatischer Platzhalter; der gezeichnete Entwurf und die Bau-Anleitung beschreiben «{b}».","“{a}”只是自动占位；PT 绘制的设计和构建说明描述的是“{b}”。"],
 "m14.arch":["Design choice set to the one that was drawn: {b} (was {a})","Entwurfswahl auf den gezeichneten gesetzt: {b} (vorher {a})","设计选择改为已绘制的方案：{b}（原为 {a}）"],
 "m14.phantom":["False alarm: PT's own cut-off created this, not your text.","Fehlalarm: PTs eigene Kürzung hat das erzeugt, nicht dein Text.","误报：这是 PT 自己截断文本造成的，不是你的内容。"],
@@ -6112,8 +6112,6 @@ Object.assign(STR, {
 "cone.pre.sentence":["From your sentence: “{x}”","Aus deinem Satz: «{x}»","来自你的句子：「{x}」"],
 "cone.pre.earlier":["Your earlier decision: {x}","Dein früherer Entscheid: {x}","你之前的决定：{x}"],
 "cone.pre.assumed":["{x} (your sentence does not say it; one tap settles it)","{x} (dein Satz sagt es nicht; ein Tipp klärt es)","{x}（你的句子没有说明，点一下就能确定）"],
-"cone.pre.policy":["You chose {x} last time (on “{y}”); still your call.","Letztes Mal hast du {x} gewählt (bei «{y}»); du entscheidest trotzdem neu.","你上次选了「{x}」（在「{y}」）；这次仍由你决定。"],
-"cone.pol.why":["you chose this last time (on “{x}”)","das hast du letztes Mal gewählt (bei «{x}»)","你上次选了这个（在「{x}」）"],
 "cone.cuts":["cuts {n}","streicht {n}","去掉 {n} 种"],
 "cone.known.cust":["customers or the public","Kunden oder die Öffentlichkeit","客户或公众"],
 "cone.known.nocust":["no customers","keine Kunden","没有客户"],
@@ -7292,6 +7290,134 @@ Object.assign(STR, {
 "cl.1100.added":["PT's hands (Settings › PT health, in the Claude desktop app): PT checks your open pull requests, this version's GitHub release and the end dates of your GitHub keys for you, and “Take me there” opens the right GitHub page and puts the pointer on the spot the next step names; PT never presses a final button, never types and never looks at a key","PTs Hände (Einstellungen › PT-Zustand, in der Claude-Desktop-App): PT prüft für dich deine offenen Pull Requests, das GitHub-Release dieser Version und die Ablaufdaten deiner GitHub-Schlüssel, und «Bring mich hin» öffnet die richtige GitHub-Seite und setzt den Zeiger auf die Stelle, die der nächste Schritt nennt; PT drückt nie einen letzten Knopf, tippt nie und schaut nie einen Schlüssel an","PT 的双手（设置 › PT 健康，在 Claude 桌面应用中）：PT 替你检查未合并的拉取请求、此版本在 GitHub 上的发布以及你的 GitHub 密钥到期日期；“带我过去”会打开正确的 GitHub 页面，并把指针放在下一步提到的位置；PT 从不按最后一步的按钮，从不输入内容，也从不查看密钥"],
 });
 
+/* 2.0.0 Part A · the facts book, the rules channel, ask once, receipts and one Next, error cards (v200_facts.js, v200_events.js) */
+Object.assign(STR, {
+"facts.title":["Facts book","Faktenbuch","事实簿"],
+"facts.sub":["What you told PT for this project, in your words: rules that must never or always hold, facts, decisions and rules for the finished tool. Every AI step of this project reads your rules first; nothing here goes to another project.","Was du PT für dieses Projekt gesagt hast, in deinen Worten: Regeln, die nie oder immer gelten, Fakten, Entscheide und Regeln für das fertige Tool. Jeder KI-Schritt dieses Projekts liest zuerst deine Regeln; nichts davon geht in ein anderes Projekt.","你为这个项目告诉 PT 的内容，用你自己的话：绝不或必须遵守的规则、事实、决定，以及成品工具的规则。这个项目的每个 AI 步骤都先读你的规则；这里的内容不会进入其他项目。"],
+"facts.empty":["Nothing in the facts book yet. Add a rule in your own words, or let PT find the ones you already gave.","Noch nichts im Faktenbuch. Schreib eine Regel in deinen Worten auf oder lass PT die finden, die du schon genannt hast.","事实簿里还没有内容。用你自己的话加一条规则，或让 PT 找出你已经说过的规则。"],
+"facts.k.never":["Never","Nie","绝不"],
+"facts.k.must":["Must","Muss","必须"],
+"facts.k.fact":["Fact","Fakt","事实"],
+"facts.k.decision":["Decided","Entschieden","已决定"],
+"facts.k.tool":["Tool rule","Tool-Regel","工具规则"],
+"facts.g.never":["Never","Nie","绝不"],
+"facts.g.must":["Must","Muss","必须"],
+"facts.g.fact":["Facts","Fakten","事实"],
+"facts.g.decision":["Decided","Entschieden","已决定"],
+"facts.g.tool":["Rules for the finished tool","Regeln für das fertige Tool","成品工具的规则"],
+"facts.src.you":["typed here","hier eingegeben","在这里输入"],
+"facts.src.ns":["from the North Star constraints","aus den Grenzen im Nordstern","来自北极星的限制"],
+"facts.src.oos":["from Not in this version","aus «Nicht in dieser Version»","来自“这个版本不做”"],
+"facts.src.const":["from the constitution","aus der Verfassung","来自章程"],
+"facts.src.note":["from a note","aus einer Notiz","来自一条笔记"],
+"facts.src.qa":["from an interview answer","aus einer Interview-Antwort","来自访谈回答"],
+"facts.src.pick":["from a pick","aus einer Auswahl","来自一次选择"],
+"facts.src.dec":["from a decision","aus einem Entscheid","来自一个决定"],
+"facts.src.profile":["copied from your workspace profile","aus deinem Arbeitsbereich-Profil kopiert","从你的工作区档案复制"],
+"facts.by.pt":["found by PT, added by you","von PT gefunden, von dir hinzugefügt","由 PT 找到，由你添加"],
+"facts.st.replaced":["replaced","ersetzt","已替换"],
+"facts.st.withdrawn":["withdrawn","zurückgezogen","已撤回"],
+"facts.kind":["Kind","Art","类型"],
+"facts.words":["In your words","In deinen Worten","用你自己的话"],
+"facts.ph":["For example: We never log in to the phone maker's account.","Zum Beispiel: Wir melden uns nie beim Konto des Handyherstellers an.","例如：我们绝不登录手机厂商的账号。"],
+"facts.short":["PT reads it as:","PT liest es so:","PT 的理解："],
+"facts.add":["Add to the facts book","Ins Faktenbuch","加入事实簿"],
+"facts.need":["Write the rule or fact in your words first.","Schreib die Regel oder den Fakt zuerst in deinen Worten.","请先用你自己的话写下规则或事实。"],
+"facts.added":["Facts book: {x} added","Faktenbuch: {x} hinzugefügt","事实簿：已添加 {x}"],
+"facts.withdraw":["Withdraw","Zurückziehen","撤回"],
+"facts.useagain":["Use again","Wieder verwenden","重新使用"],
+"facts.find":["Find rules in this project","Regeln in diesem Projekt finden","在这个项目中找规则"],
+"facts.find.sub":["PT reads your constraints, Not in this version, the constitution, notes, interview answers and picks, and proposes entries; you tick and add them in one go.","PT liest deine Grenzen, «Nicht in dieser Version», die Verfassung, Notizen, Interview-Antworten und Auswahlen und schlägt Einträge vor; du hakst sie ab und fügst sie in einem Schritt hinzu.","PT 读取你的限制、“这个版本不做”、章程、笔记、访谈回答和选择，并提出条目；你勾选后一次添加。"],
+"facts.find.busy":["Finding the rules you already gave…","Die Regeln, die du schon genannt hast, werden gesucht …","正在查找你已经给出的规则……"],
+"facts.find.none":["This project holds nothing to read yet (no constraints, notes or answers).","Dieses Projekt enthält noch nichts zum Lesen (keine Grenzen, Notizen oder Antworten).","这个项目里还没有可读的内容（没有限制、笔记或回答）。"],
+"facts.find.nothing":["PT found nothing new for the facts book.","PT hat nichts Neues fürs Faktenbuch gefunden.","PT 没有找到可加入事实簿的新内容。"],
+"facts.find.done":["Facts book: proposals found: {n}","Faktenbuch: gefundene Vorschläge: {n}","事实簿：找到的建议：{n}"],
+"facts.act.find":["Facts book: PT's proposals","Faktenbuch: Vorschläge von PT","事实簿：PT 的建议"],
+"facts.props.t":["PT found these in your project ({n}) · tick what holds","PT hat das in deinem Projekt gefunden ({n}) · hake ab, was stimmt","PT 在你的项目中找到这些（{n}）· 勾选成立的"],
+"facts.props.sub":["Each one quotes your own words and says where they are. Nothing is added before you press the button.","Jeder zitiert deine eigenen Worte und sagt, wo sie stehen. Nichts kommt dazu, bevor du den Knopf drückst.","每一条都引用你的原话并注明出处。按下按钮之前不会添加任何内容。"],
+"facts.props.take":["Add the ticked ones ({n})","Die abgehakten hinzufügen ({n})","添加已勾选的（{n}）"],
+"facts.props.drop":["Discard the proposals","Vorschläge verwerfen","放弃这些建议"],
+"facts.props.none":["Nothing is ticked.","Nichts ist abgehakt.","没有勾选任何内容。"],
+"facts.props.added":["Facts book: entries added: {n}","Faktenbuch: hinzugefügte Einträge: {n}","事实簿：已添加的条目：{n}"],
+"facts.conf.busy":["Checking the facts book for contradictions…","Das Faktenbuch wird auf Widersprüche geprüft …","正在检查事实簿中的矛盾……"],
+"facts.act.conflict":["Facts book: two entries do not fit together","Faktenbuch: zwei Einträge passen nicht zusammen","事实簿：两条内容互相矛盾"],
+"facts.conf.t":["These two do not fit together","Diese zwei passen nicht zusammen","这两条互相矛盾"],
+"facts.conf.a":["Keep A","A behalten","保留 A"],
+"facts.conf.b":["Keep B","B behalten","保留 B"],
+"facts.conf.both":["Keep both","Beide behalten","两条都保留"],
+"facts.conf.whykept":["you kept {x} instead","du hast stattdessen {x} behalten","你改为保留了 {x}"],
+"facts.guard.busy":["Checking the proposals against your rules…","Die Vorschläge werden mit deinen Regeln verglichen …","正在用你的规则检查这些建议……"],
+"facts.blocked.opt":["Blocked by your rule: “{x}”","Durch deine Regel gesperrt: «{x}»","被你的规则阻止：“{x}”"],
+"facts.blocked.take":["This option breaks one of your rules, so it cannot be chosen. Change the rule in the facts book if it no longer holds.","Diese Option bricht eine deiner Regeln und kann darum nicht gewählt werden. Ändere die Regel im Faktenbuch, wenn sie nicht mehr gilt.","这个选项违反了你的一条规则，所以不能选择。如果规则不再适用，请在事实簿中修改。"],
+"facts.blocked.n":["Left out because of your rule: {n}","Wegen deiner Regel weggelassen: {n}","因你的规则而省略：{n}"],
+"facts.blocked.t":["Left out because of your rules ({n})","Wegen deiner Regeln weggelassen ({n})","因你的规则而省略（{n}）"],
+"facts.blocked.by":["breaks “{x}”:","bricht «{x}»:","违反“{x}”："],
+"facts.known.t":["Not asked again, because you already answered ({n})","Nicht nochmals gefragt, weil du schon geantwortet hast ({n})","因为你已经回答过而不再询问（{n}）"],
+"facts.old.t":["Withdrawn or replaced ({n})","Zurückgezogen oder ersetzt ({n})","已撤回或已替换（{n}）"],
+"facts.prof.t":["From your workspace profile ({n}) · not used here unless you copy it","Aus deinem Arbeitsbereich-Profil ({n}) · hier nur verwendet, wenn du es kopierst","来自你的工作区档案（{n}）· 只有复制后才会在这里使用"],
+"facts.prof.sub":["Your profile belongs to the workspace, not to a project, so PT no longer puts it into this project's prompts. Copy an entry if it holds for this project; it then becomes a fact of this project only.","Dein Profil gehört zum Arbeitsbereich, nicht zu einem Projekt; darum gibt PT es nicht mehr in die Prompts dieses Projekts. Kopiere einen Eintrag, wenn er für dieses Projekt gilt; er wird dann ein Fakt nur dieses Projekts.","你的档案属于工作区，而不属于某个项目，所以 PT 不再把它放进这个项目的提示中。如果某条适用于这个项目，就复制它；它会成为仅属于这个项目的事实。"],
+"facts.prof.copy":["Copy into this project","In dieses Projekt kopieren","复制到这个项目"],
+"facts.prof.done":["copied","kopiert","已复制"],
+"ask.busy":["Checking whether you already answered this…","Es wird geprüft, ob du das schon beantwortet hast …","正在检查你是否已经回答过……"],
+"ask.act":["Not asked again: you already answered","Nicht nochmals gefragt: schon beantwortet","不再询问：你已经回答过"],
+"ask.known":["Already known:","Schon bekannt:","已经知道："],
+"ask.change":["change","ändern","修改"],
+"ex.toolasks":["The tool would ask:","Das Tool würde fragen:","工具会问："],
+"ex.v.good":["good","gut","好"],
+"ex.v.bad":["not good","nicht gut","不好"],
+"rc.saved":["Saved:","Gespeichert:","已保存："],
+"rc.w.qa":["Interview answers","Interview-Antworten","访谈回答"],
+"rc.w.pick":["Decisions","Entscheide","决定"],
+"rc.w.cone":["Kind of tool","Art des Tools","工具类型"],
+"rc.w.note":["Notes of this project","Notizen dieses Projekts","这个项目的笔记"],
+"rc.w.ns":["North Star","Nordstern","北极星"],
+"rc.w.dec":["Decisions","Entscheide","决定"],
+"rc.w.openq":["Open questions","Offene Fragen","待解决的问题"],
+"rc.w.notice":["What you noticed (it becomes picks next)","Was dir aufgefallen ist (daraus werden als Nächstes Auswahlen)","你注意到的内容（接下来会变成选择）"],
+"rc.w.dump":["PT reads it into picks","PT macht daraus Auswahlen","PT 会把它整理成选择"],
+"rc.w.mock":["Notes on the mock","Notizen zum Entwurf","对样稿的备注"],
+"rc.w.start":["Start answers","Start-Antworten","开始时的回答"],
+"rc.w.und":["Understanding","Verständnis","理解"],
+"rc.w.facts":["Facts book","Faktenbuch","事实簿"],
+"rc.w.factsk":["Facts book · {k}","Faktenbuch · {k}","事实簿 · {k}"],
+"rc.w.withdrawn":["Facts book · withdrawn","Faktenbuch · zurückgezogen","事实簿 · 已撤回"],
+"rc.w.ex.left":["Examples · still to judge: {n}","Beispiele · noch zu beurteilen: {n}","示例 · 还要评判：{n}"],
+"rc.w.ex.done":["Examples · all judged; next: make the rules from them","Beispiele · alle beurteilt; als Nächstes: Regeln daraus machen","示例 · 已全部评判；下一步：据此生成规则"],
+"rc.w.ex.checked":["Examples · all checked; next: finish the round","Beispiele · alle geprüft; als Nächstes: die Runde abschliessen","示例 · 已全部检查；下一步：结束这一轮"],
+"ev20.title":["Events","Ereignisse","事件"],
+"ev20.sub":["What went wrong, in plain words, with what you can do. Each card stays until you dismiss it. Only technical details are kept, never your project's text.","Was schiefging, in einfachen Worten, mit dem, was du tun kannst. Jede Karte bleibt, bis du sie wegklickst. Gespeichert werden nur technische Angaben, nie der Text deines Projekts.","出了什么问题，用简单的话说明，并告诉你可以做什么。每张卡片会一直保留，直到你关闭它。只保存技术细节，从不保存你项目的文字。"],
+"ev20.none":["No errors kept. Nothing went wrong that PT noticed.","Keine Fehler gespeichert. PT hat nichts bemerkt, das schiefging.","没有保存的错误。PT 没有发现任何问题。"],
+"ev20.chip":["Errors: {n}","Fehler: {n}","错误：{n}"],
+"ev20.why":["What happened?","Was ist passiert?","发生了什么？"],
+"ev20.times":["{n}×","{n}×","{n}×"],
+"ev20.did":["What PT did:","Was PT gemacht hat:","PT 做了什么："],
+"ev20.did.ai":["The step stopped without changing your project.","Der Schritt hat aufgehört, ohne dein Projekt zu ändern.","这一步停止了，没有改动你的项目。"],
+"ev20.did.fault":["Nothing was lost: your data stays as it was.","Nichts ging verloren: deine Daten bleiben, wie sie waren.","没有丢失任何内容：你的数据保持原样。"],
+"ev20.next":["What you can do:","Was du tun kannst:","你可以做什么："],
+"ev20.c.busy":["Claude was busy","Claude war ausgelastet","Claude 正忙"],
+"ev20.c.noanswer":["Claude did not answer","Claude hat nicht geantwortet","Claude 没有回应"],
+"ev20.c.unreadable":["Claude's answer could not be read","Die Antwort von Claude war nicht lesbar","无法读取 Claude 的回答"],
+"ev20.c.offline":["No internet connection","Keine Internetverbindung","没有网络连接"],
+"ev20.c.unavailable":["AI is not available in this view","KI ist in dieser Ansicht nicht verfügbar","此视图中无法使用 AI"],
+"ev20.c.quota":["The usage limit was reached","Das Nutzungslimit ist erreicht","已达到使用上限"],
+"ev20.c.ai":["An AI step did not finish","Ein KI-Schritt wurde nicht fertig","一个 AI 步骤没有完成"],
+"ev20.c.fault":["PT hit a fault in its own code","PT ist auf einen Fehler im eigenen Code gestossen","PT 在自身代码中遇到错误"],
+"ev20.n.busy":["Wait a minute, then press the same button again.","Warte eine Minute und drücke dann denselben Knopf nochmals.","等一分钟，然后再按一次同一个按钮。"],
+"ev20.n.noanswer":["Press the same button again; if it happens again, report it.","Drücke denselben Knopf nochmals; wenn es wieder passiert, melde es.","再按一次同一个按钮；如果再次发生，请报告。"],
+"ev20.n.unreadable":["Press the same button again (PT already asked once more); if it happens again, report it.","Drücke denselben Knopf nochmals (PT hat schon einmal nachgefragt); wenn es wieder passiert, melde es.","再按一次同一个按钮（PT 已经重试过一次）；如果再次发生，请报告。"],
+"ev20.n.offline":["Check the connection, then press the same button again.","Prüfe die Verbindung und drücke dann denselben Knopf nochmals.","检查网络连接，然后再按一次同一个按钮。"],
+"ev20.n.unavailable":["Open PT in claude.ai or the Claude app, where AI steps work.","Öffne PT in claude.ai oder in der Claude-App, wo KI-Schritte funktionieren.","请在 claude.ai 或 Claude 应用中打开 PT，那里可以运行 AI 步骤。"],
+"ev20.n.quota":["Wait until your limit resets, or continue with the steps that need no AI.","Warte, bis dein Limit zurückgesetzt ist, oder mach mit den Schritten ohne KI weiter.","等待额度重置，或继续进行不需要 AI 的步骤。"],
+"ev20.n.ai":["Press the same button again; if it happens again, report it.","Drücke denselben Knopf nochmals; wenn es wieder passiert, melde es.","再按一次同一个按钮；如果再次发生，请报告。"],
+"ev20.n.fault":["Report it to Improve PT (the technical detail is filled in for you); reloading PT usually helps.","Melde es bei «PT verbessern» (die technischen Angaben sind schon eingetragen); PT neu laden hilft meistens.","请通过“改进 PT”报告（技术细节已为你填好）；重新加载 PT 通常有帮助。"],
+"ev20.tech":["Technical detail","Technische Angaben","技术细节"],
+"ev20.report":["Report to Improve PT","Bei «PT verbessern» melden","报告给“改进 PT”"],
+"ev20.dismiss":["Dismiss","Wegklicken","关闭"],
+"ev20.session":["Messages shown since PT was opened ({n}) · not kept after closing","Seit dem Öffnen gezeigte Meldungen ({n}) · nach dem Schliessen nicht behalten","打开 PT 以来显示过的消息（{n}）· 关闭后不保留"],
+"ev20.where":["The error cards are kept in this workspace's own storage (at most 20), so Claude can read them when you ask it to improve PT.","Die Fehlerkarten liegen im eigenen Speicher dieses Arbeitsbereichs (höchstens 20), damit Claude sie lesen kann, wenn du PT verbessern lässt.","错误卡片保存在这个工作区自己的存储中（最多 20 张），这样你让 Claude 改进 PT 时它可以读取。"],
+"ev20.pre":["PT error (technical detail only, no project text):","PT-Fehler (nur technische Angaben, kein Projekttext):","PT 错误（仅技术细节，没有项目文字）："]
+});
+
 /* ===================== CORE ===================== */
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
@@ -7674,7 +7800,7 @@ async function runAI(key0, label, prompt, {json=true, step="default", images=nul
   if (typeof prompt === "string" && !prompt.startsWith("Ground rule:")) prompt = DATA_RULE + prompt;
   else if (Array.isArray(prompt) && prompt[0] && typeof prompt[0].content === "string" && !prompt[0].content.startsWith("Ground rule:")) prompt = [{...prompt[0], content: DATA_RULE + prompt[0].content}, ...prompt.slice(1)];
   const sample = await getSample();
-  if (!sample){ toast(t("ai.err.unavailable"), "err"); return null; }
+  if (!sample){ toast(t("ai.err.unavailable"), "err"); if (typeof ev20AI === "function") ev20AI("unavailable", step); return null; }
   if (AI.running.has(key)) return null;
   const ctl = new AbortController();
   const m = quick ? {tier:"quick", model:"", effort:""} : tier ? {tier, model:"", effort:""} : modelFor(step);
@@ -7695,7 +7821,7 @@ async function runAI(key0, label, prompt, {json=true, step="default", images=nul
       let out = null, weak = false, errs = [];
       try{
         if (json){ out = await sample.json(prompt, opts); weak = out == null || (validate && !validate(out));
-          if (!weak && check){ best = out; try{ errs = arr(check(out)).map(str).filter(Boolean); }catch(e){ errs = []; } weak = errs.length > 0; } }
+          if (!weak && check){ best = out; try{ errs = arr(await check(out)).map(str).filter(Boolean); }catch(e){ errs = []; } weak = errs.length > 0; } }   // 2.0: a check may ask (the rules check confirms a hit with one quick call)
         else { const r = await sample(prompt, opts); out = r.text; if (r.truncated) toast(t("ai.truncated"), "err"); weak = !str(out).trim(); }
       }catch(e){
         const code = e && e.code || "upstream_error";
@@ -7715,7 +7841,7 @@ async function runAI(key0, label, prompt, {json=true, step="default", images=nul
       let up = nextTier(curTier); if (up && avoidTier && up === avoidTier) up = nextTier(up);
       if (!up || tries >= 3){
         if (best != null){ AI.log.push({at: now(), step, tier: curTier, tries, usedBest: true}); if (typeof trayDone === "function") trayDone(key, job); const pp = pid && WS.projects ? WS.projects.find(x => x.id === pid) : null; if (pp && typeof actOpen === "function"){ actOpen(pp, label, {by: "pt"}); actCloseSoon(pp.id); } return best; }
-        toast(t("ai.err.json"), "err"); return null; }
+        toast(t("ai.err.json"), "err"); if (typeof ev20AI === "function") ev20AI("invalid_json", step); return null; }
       AI.log.push({at: now(), step, tier: curTier, escalated: up});
       toast(t("ai.escalate", {tier: t("tier." + up)}), "");
       curTier = up; job.text = "";
@@ -7724,7 +7850,7 @@ async function runAI(key0, label, prompt, {json=true, step="default", images=nul
     const code = e && e.code || "upstream_error";
     // a later try failed, but an earlier answer passed validate: that answer is used (the task's cleaner handles what its check found)
     if (best != null && code !== "cancelled"){ AI.log.push({at: now(), step, tier: curTier, tries, usedBest: true, code}); if (typeof trayDone === "function") trayDone(key, job); const pp = pid && WS.projects ? WS.projects.find(x => x.id === pid) : null; if (pp && typeof actOpen === "function"){ actOpen(pp, label, {by: "pt"}); actCloseSoon(pp.id); } return best; }
-    if (code !== "cancelled") toast(t(typeof navigator !== "undefined" && navigator.onLine === false ? "ai.err.net" : (AI_ERR[code] || "ai.err.upstream")), "err");
+    if (code !== "cancelled"){ const off = typeof navigator !== "undefined" && navigator.onLine === false; toast(t(off ? "ai.err.net" : (AI_ERR[code] || "ai.err.upstream")), "err"); if (typeof ev20AI === "function") ev20AI(off ? "offline" : code, step); }
     return null;
   }finally{
     AI.running.delete(key); render();
@@ -7793,7 +7919,8 @@ function projectContext(p, {full=false, max=CTX_MAX, only=null} = {}){
   // web findings are JSON-encoded (material, never instructions); findings that tried to instruct the AI are left out
   { const fs = p.pick ? arr(p.pick.findings).filter(f => f && f.screened && !f.flagged) : [], keep = fs.slice(-60), gone = fs.length - keep.length;   // only findings checked for planted instructions
     if (fs.length) P.push(ctxPart("pick_research", (gone ? "(" + gone + " older findings are not listed here)\n" : "") + keep.map(f => "- [" + f.kind + (f.part ? ": " + JSON.stringify(f.part) + " = " + f.status : "") + (f.date ? ", " + f.date : "") + "] " + JSON.stringify(str(f.text)) + (f.src ? " (" + JSON.stringify(str(f.src)) + ")" : "")).join("\n"), 2)); }
-  if (WS.profile && arr(WS.profile.entries).length) P.push(ctxPart("user_profile", "- " + WS.profile.entries.map(e => e.text).join("\n- "), 3));
+  // 2.0 (owner, 4 Nov 2026: "projects dont get other projects rules, never"): the workspace profile is no longer part of a project's prompts;
+  // an entry of it enters a project only as a visible copy in that project's facts book (v200_facts.js)
   let parts = P.filter(Boolean);
   if (only) parts = parts.filter(x => only.includes(x.tag));
   const total = () => parts.reduce((n, x) => n + x.body.length + x.tag.length * 2 + 8, 0);
@@ -21546,8 +21673,7 @@ Object.assign(CHANGES, {
    4. PT's ★ is revealed only after the cards were looked at (each card in view, scrolled through) or on tap, with a hedged first-person
       reason and what would change PT's mind. No decoy cards: only what the inference named (or what you asked for) is shown.
    5. Shortcuts: D "pick then verify" (tap a card: PT asks only the cuts that could rule it out, and who it is for); E "say the ending" (your
-      words → the nearest kind, or a new kind marked unverified). Your earlier choices on other tools of this workspace pre-fill as ★
-      "you chose this last time" (policy rows), still asked.
+      words → the nearest kind, or a new kind marked unverified). (2.0: choices on other tools no longer pre-fill or star anything here.)
    6. The surviving kind defines the tool's check rows (its signals join chkSignals / chkOutward; "n checks to tap" on every card) and feeds
       the 1.8 start: research, risk, mock first, picks. Every answer and the kind itself are decision rows (ROW_SOURCES) with ids and events.
    7. Tools from 1.7: "re-run the cone once" (a few taps, pre-filled from what was decided; an answer that differs from an earlier decision
@@ -21736,16 +21862,8 @@ function coneConflict(c, d, v){
   if (k.why === "customers") return v !== "customers" ? k : null;
   return v === "customers" ? k : null;
 }
-/** your choice on your other tools in this workspace (the latest; the other workspace never counts here) */
-function conePolicy(p, d){
-  let best = null, n = 0;
-  for (const q of arr(WS && WS.projects)){
-    if (!q || !p || q.id === p.id) continue;
-    const a = q.cone && q.cone.ans && q.cone.ans[d]; if (!a || !CONE_OPTS[d].includes(a.v) || a.v === "unsure") continue;
-    n++; if (!best || str(a.at) > str(best.at)) best = {v: a.v, at: str(a.at), name: str(q.name)};
-  }
-  return best ? Object.assign(best, {n}) : null;
-}
+/* 2.0 (owner, 4 Nov 2026: "projects dont get other projects rules, never"): your choice on another tool no longer pre-fills or stars
+   a question here (it was "you chose this last time"); each tool's cone starts from its own sentence and its own decisions only. */
 function conePre(p, c, d){
   const k = c.known && c.known[d]; if (k && k.v) return {v: k.v, src: "earlier", label: coneKnownLabel(k)};
   const s = c.pre && c.pre[d];
@@ -21993,9 +22111,8 @@ function coneRowSrc(p, add){
   const A = coneAns(c), cur = coneCurDim(p);
   for (const d of CONE_DIMS){
     const a = A[d]; if (!a && cur !== d) continue;
-    const pol = conePolicy(p, d);
     add({src: "cone:" + d, ref: "cone:" + d, branch: "U", stage: d === "aud" ? 2 : 1, target: d === "aud" ? "audience" : "", question: t("cone.q." + d),
-      options: CONE_OPTS[d].map(v => ({label: t("cone.o." + d + "." + v), why: t("cone.rev." + d + "." + v)})), star: pol ? {label: t("cone.o." + d + "." + pol.v), why: t("cone.pol.why", {x: pol.name})} : null, hard: d === "aud",
+      options: CONE_OPTS[d].map(v => ({label: t("cone.o." + d + "." + v), why: t("cone.rev." + d + "." + v)})), star: null, hard: d === "aud",
       decided: !!a, val: a ? str(a.v) : "", chosen: a ? t("cone.o." + d + "." + a.v) : "", by: "owner", at: a ? str(a.at) : str(c.at)});
   }
   if (c.ending){ const fam = coneFam(c, c.ending.f), st = c.star && coneFam(c, c.star.f);
@@ -22038,14 +22155,13 @@ function coneDoneHTML(p, c){
   return `<div class="cone-done" aria-label="${esc(t("cone.done"))}">${L.map(d => `<span class="chip cone-a" data-d="${d}"><span>${esc(t("cone.qs." + d))}: <b>${esc(t("cone.o." + d + "." + A[d].v))}</b></span>${coneRevChip(d, A[d].v)}${coneActive(p) ? `<button class="iconbtn cone-x" data-a="cone-x" data-d="${d}" aria-label="${esc(t("cone.x", {x: t("cone.qs." + d)}))}" title="${esc(t("cone.x", {x: t("cone.qs." + d)}))}">${ic("x")}</button>` : ""}</span>`).join("")}</div>`;
 }
 function coneQHTML(p, c, d){
-  const pre = conePre(p, c, d), pol = conePolicy(p, d), fam = c.picked ? coneFam(c, c.picked.f) : null, fams = coneLiveFams(c);
+  const pre = conePre(p, c, d), fam = c.picked ? coneFam(c, c.picked.f) : null, fams = coneLiveFams(c);
   const why = fam ? t(d === "aud" ? "cone.why.vaud" : "cone.why.verify", {x: fam.title}) : d === "aud" ? t("cone.why.aud") : t("cone.why.cut", {n: Math.max(0, ...CONE_OPTS[d].map(v => coneCutsIf(c, d, v)))});
   const preLine = !pre ? "" : pre.src === "sentence" ? `<p class="small cone-pre">${esc(t("cone.pre.sentence", {x: pre.span}))}</p>` : pre.src === "earlier" ? `<p class="small cone-pre">${esc(t("cone.pre.earlier", {x: pre.label}))}</p>`
     : `<p class="small cone-pre"><span class="as18"><span class="as18-w">${esc(t("look.assume"))}</span> ${esc(t("cone.pre.assumed", {x: t("cone.o." + d + "." + pre.v)}))}</span></p>`;
-  const polLine = pol ? `<p class="small cone-pol">★ ${esc(t("cone.pre.policy", {x: t("cone.o." + d + "." + pol.v), y: pol.name}))}</p>` : "";
   const opts = CONE_OPTS[d].map(v => { const n = fams.length ? coneCutsIf(c, d, v) : 0;
-    return `<button class="btn cone-opt ${pre && pre.v === v ? "pre" : ""}" data-a="cone-ans" data-d="${d}" data-v="${v}"><span class="cone-ol">${pol && pol.v === v ? "★ " : ""}${esc(t("cone.o." + d + "." + v))}</span>${coneRevChip(d, v)}<span class="cone-revt">${esc(t("cone.rev." + d + "." + v))}</span>${n ? `<span class="cone-cutn">${esc(t("cone.cuts", {n}))}</span>` : ""}</button>`; }).join("");
-  return `<div class="cone-q" id="cone-q" data-anchor="cone:${d}" data-d="${d}"><h3>${esc(t("cone.q." + d))}</h3><p class="small muted">${esc(why)}</p>${preLine}${polLine}
+    return `<button class="btn cone-opt ${pre && pre.v === v ? "pre" : ""}" data-a="cone-ans" data-d="${d}" data-v="${v}"><span class="cone-ol">${esc(t("cone.o." + d + "." + v))}</span>${coneRevChip(d, v)}<span class="cone-revt">${esc(t("cone.rev." + d + "." + v))}</span>${n ? `<span class="cone-cutn">${esc(t("cone.cuts", {n}))}</span>` : ""}</button>`; }).join("");
+  return `<div class="cone-q" id="cone-q" data-anchor="cone:${d}" data-d="${d}"><h3>${esc(t("cone.q." + d))}</h3><p class="small muted">${esc(why)}</p>${preLine}
     <div class="cone-opts" role="group" aria-label="${esc(t("cone.q." + d))}">${opts}</div></div>`;
 }
 function coneConflictHTML(p, c){
@@ -26348,6 +26464,640 @@ Object.assign(ACTIONS, {
   "hands-check": (el) => handsCheck(el && el.dataset ? str(el.dataset.k) : ""),
   "hands-go": (el) => { const u = el && el.dataset ? str(el.dataset.url) : ""; return handsUrlOk(u) ? handsGo(u, str(el.dataset.q)) : undefined; }
 });
+
+/* ===================== 2.0 Part A: the facts book (one per project), the rules channel, ask once, contradictions =====================
+   The owner (2 Nov 2026): "We never log in to Google or Samsung — second time I have to tell this — find why and fix it" and
+   "projects dont get other porjects rules, never". Why it happened: the rule lived in notes / answers / constraints as text with a low
+   priority, the budget logic could leave it out and many steps asked projectContext for a subset (`only`) without it.
+   1. The facts book (`p.ledger`, one per project, never shared): entries never / must / fact / decision / tool rule, each with the
+      owner's words, PT's short form, where it came from, the date, and a status (active / replaced / withdrawn). A panel to see, add,
+      edit and withdraw (the page "Facts book" next to Decisions, and More ⋯). factsBodyHTML(p) is the panel without the page, so a
+      chat workspace can show it later as its "Decided" tab. "Find rules in this project": one AI pass proposes entries from what the
+      project already holds (north star constraints, not in this version, constitution, notes, interview answers, picks and decisions);
+      the owner ticks them and adds them in one batch (one Undo step).
+   2. The rules channel: every project prompt (buildPrompt with proj) carries <your_rules> (never / must) and <your_facts> right after its
+      task line, whole, also when the caller passes `only` (they are not part of projectContext, so its budget logic never sees them).
+      The output check (runAI): before a proposal is shown, code looks for a rule's key words in a sentence that is not a negation (a
+      "must" rule: its words in a negated sentence); a hit gets one quick-tier confirm; a confirmed violation is asked again once through
+      runAI's check/repair path; what still breaks a rule is left out (recorded in the facts book) or, for an option of a pick, shown
+      greyed as "blocked by your rule" and cannot be taken.
+   3. Ask once: questions PT made (picks, interview) are matched against the answered questions, picks, decisions and active facts before
+      they are shown (bigram similarity as pickSame; one quick-tier check only for the unclear ones); answered ones are not asked again
+      and show "Already known: … (change)".
+   4. Contradictions: a new or changed entry gets one quick-tier check against the active entries; a conflict shows both, quoted, with
+      keep A / keep B / keep both.
+   5. The workspace profile is no longer part of project prompts (core.js); an entry of it is copied into one project on request
+      ("Copy into this project"), where it becomes that project's fact. */
+const FACT_KINDS = ["never", "must", "fact", "decision", "tool"];
+const FACT_RULES = ["never", "must"];
+const FACT_SRC = ["you", "ns", "oos", "const", "note", "qa", "pick", "dec", "profile"];
+const FACT_PROPS_MAX = 24, FACT_KNOWN_MAX = 40, FACT_BLOCKED_MAX = 40, FACT_HITS_MAX = 12, FACT_SRC_MAX = 60000;
+/* a sentence that says no: the rule's words in it are not a proposal to break a never (and they break a must) */
+const FACT_NEG = /\b(no|not|without|never|don't|doesn't|won't|cannot|can't|avoid|kein|keine|keinen|keinem|ohne|nicht|nie|niemals)\b|n't\b|不|没有|无需|禁止|绝不|别/i;
+const FACT_STOP = new Set("a an the of to for in on at and or is are be will would should can could does do did which what who how when where your you we our us i me my this that these those with from it its by as into onto any all every only also than then there here never must always no not without don't doesn't won't avoid ever use using used make made get let lets via per tool tools thing things one der die das ein eine einer eines einen und oder ist sind wird werden soll sollte sollen kann können wir uns unser ich mich mein du dein deine mit von für im in am an auf den dem des zu zum zur nie niemals immer muss müssen kein keine keinen ohne nicht nur auch alle jede jeder jedes es".split(" "));
+
+/* ---------- 0. the book ---------- */
+{ const orig = blankProject; blankProject = function(name){ const p = orig(name); p.ledger = {v: 1, entries: [], props: [], conflicts: [], known: [], blocked: []}; return p; }; }   // ok:field the template default (normalizeProject fills it for older projects)
+function factsRead(p){ const L = p && p.ledger; return L && typeof L === "object" ? {entries: arr(L.entries), props: arr(L.props), conflicts: arr(L.conflicts), known: arr(L.known), blocked: arr(L.blocked)} : {entries: [], props: [], conflicts: [], known: [], blocked: []}; }
+function factsOf(p){ if (!p.ledger || typeof p.ledger !== "object") p.ledger = {v: 1}; const L = p.ledger; for (const k of ["entries", "props", "conflicts", "known", "blocked"]) L[k] = arr(L[k]); L.v = 1; return L; }   // ok:field the book's own default (blankProject has it; older projects get it here)
+function factsActive(p, kinds){ return factsRead(p).entries.filter(e => e && e.status === "active" && (!kinds || kinds.includes(e.kind))); }
+function factById(p, id){ return factsRead(p).entries.find(e => e.id === id) || null; }
+function factText(e){ return str(e && (e.short || e.words)).trim(); }
+function factNorm(s){ return str(s).replace(/\s+/g, " ").trim(); }
+/** add one entry (the caller has opened the action: a click does that by itself) */
+function factsAdd(p, {kind, words, short = "", src = null, kw = null, by = "you"}){
+  const L = factsOf(p), w = factNorm(words); if (!w) return null;
+  const e = {id: nextId(p, "F", L.entries), kind: oneOf(kind, FACT_KINDS, "fact"), words: w, short: factNorm(short) || w, kw: arr(kw).map(x => str(x).toLowerCase().trim()).filter(Boolean).slice(0, 8),
+    src: src && FACT_SRC.includes(src.k) ? {k: src.k, ref: str(src.ref), label: str(src.label)} : {k: "you", ref: "", label: ""}, at: now(), by, status: "active", hist: []};
+  L.entries.push(e); markRef(p, "fact:" + e.id, "added", {by: by === "pt" ? "pt" : "you"});
+  return e;
+}
+function factKindLabel(k){ return t("facts.k." + oneOf(k, FACT_KINDS, "fact")); }
+function factSrcLabel(e){ const s = e && e.src || {}; return t("facts.src." + oneOf(s.k, FACT_SRC, "you")) + (s.label ? " · " + s.label : ""); }
+
+/* ---------- 1. key words of a rule (the code half of the output check) ---------- */
+function factWords(s){ return str(s).toLowerCase().replace(/[“”«»"'’]/g, " ").split(/[^\p{L}\p{N}-]+/u).filter(Boolean); }
+function factKw(e){
+  if (arr(e.kw).length) return e.kw;
+  const txt = factText(e) + " " + str(e.words), out = [];
+  for (const w of factWords(txt)) if (w.length >= 3 && !FACT_STOP.has(w) && !/^\p{Script=Han}+$/u.test(w) && !out.includes(w)) out.push(w);
+  for (const run of txt.match(/\p{Script=Han}+/gu) || []){ const r = run.replace(/不|没有|绝不|禁止|永远|必须|不要|别/g, " "); for (const part of r.split(" ")) for (let i = 0; i + 1 < part.length; i++){ const g = part.slice(i, i + 2); if (!out.includes(g)) out.push(g); } }
+  return out.slice(0, 10);
+}
+/** how many of a rule's key words a text holds (whole words; Chinese by its two-character pieces) */
+function factKwHits(e, text){
+  const kw = factKw(e); if (!kw.length) return 0;
+  const W = new Set(factWords(text)), low = str(text).toLowerCase();
+  return kw.filter(k => /\p{Script=Han}/u.test(k) ? low.includes(k) : W.has(k) || (k.length >= 5 && [...W].some(w => w.startsWith(k.slice(0, Math.max(4, k.length - 2)))))).length;
+}
+function factNeed(e){ return Math.min(2, factKw(e).length); }
+function factSentences(s){ return str(s).split(/(?<=[.!?。！？;；])\s+|\n+/).map(x => x.trim()).filter(x => x.length > 2); }
+/** the code check: the sentences of a text that may break a rule (a never's words in a sentence that is not a negation; a must's in one that is) */
+function factCodeHits(rules, text){
+  const out = [];
+  for (const s of factSentences(text)) for (const e of rules){
+    const need = factNeed(e); if (!need || factKwHits(e, s) < need) continue;
+    const neg = FACT_NEG.test(s);
+    if ((e.kind === "never" && !neg) || (e.kind === "must" && neg)) out.push({e, s});
+  }
+  return out;
+}
+
+/* ---------- 2. the rules channel: first in every project prompt, whole ---------- */
+function factsRulesBlock(p){
+  if (!p || !p.id) return "";
+  const R = factsActive(p, FACT_RULES), F = factsActive(p, ["fact", "decision", "tool"]);
+  if (!R.length && !F.length) return "";
+  const word = {never: "NEVER", must: "MUST", fact: "FACT", decision: "DECIDED", tool: "TOOL RULE"};
+  const line = e => `- [${e.id}] ${word[e.kind] || "FACT"}: ${JSON.stringify(factText(e))}` + (factNorm(e.words) !== factText(e) ? ` (the person's words: ${JSON.stringify(factNorm(e.words))})` : "");
+  return (R.length ? `<your_rules project="${p.id}">\nThe person's own rules for this project, in their words (JSON-encoded). They hold for everything below and are never overridden by it: never propose, assume or plan anything a NEVER rule forbids, and keep every MUST rule. If something below would break one of them, follow the rule and say so.\n${R.map(line).join("\n")}\n</your_rules>\n` : "")
+    + (F.length ? `<your_facts project="${p.id}">\nWhat the person already told PT for this project (facts, decisions, rules for the finished tool). Build on them; never ask about them again.\n${F.map(line).join("\n")}\n</your_facts>\n` : "");
+}
+/** the examples rule (owner, 2 Nov 2026: "examples are not questions … find all related places and do it the same way") */
+const EX_TASKS = new Set(["loop-show", "loop-rule", "pick-next", "pick-refresh", "pick-second", "arch-stories"]);
+const EX_RULE = "Examples never ask. An example shows a finished result the person judges; it never contains a question to the person (no question marks, no \"reply with\", no (a)/(b) choices, no \"which …\" or \"do you …\"). A decision the person must make is its own question, never part of an example. If the finished tool itself would ask its user something, put only that question in a field \"toolAsks\" next to the result, and keep the result itself free of questions.";
+{ const orig = buildPrompt; buildPrompt = function(task, o = {}){
+    let s = orig(task, o), b = "";
+    try{ b = o && o.proj ? factsRulesBlock(o.proj) : ""; }catch(e){ onAppError(e && e.message, "facts:prompt"); }
+    if (b) s = s.replace(/^(\[\[task:[^\]\n]*\]\]\n)/, m => m + b);
+    if (EX_TASKS.has(task)) s = s.replace("\n<output_format>", "\n<examples_rule>\n" + EX_RULE + "\n</examples_rule>\n\n<output_format>");
+    return s; }; }
+function factsPromptProject(prompt){
+  const txt = typeof prompt === "string" ? prompt : Array.isArray(prompt) && prompt[0] ? str(prompt[0].content) : "";
+  const m = /<your_(?:rules|facts) project="([^"]+)">/.exec(txt.slice(0, 20000));
+  return m ? (WS.projects || []).find(x => x.id === m[1]) || null : null;
+}
+function promptTask(prompt){ const txt = typeof prompt === "string" ? prompt : Array.isArray(prompt) && prompt[0] ? str(prompt[0].content) : ""; const m = /\[\[task:([a-z0-9-]+)\]\]/.exec(txt.slice(0, 4000)); return m ? m[1] : ""; }   // ok:cut only the head of the prompt is searched for the task line
+
+/* ---------- 3. the output check: code first, one quick-tier confirm on a hit, repaired once, then left out or greyed ---------- */
+const FACT_GUARD = {cache: new Map()};   // rule id + sentence → does it break the rule (the quick check's verdict)
+const FACT_SKIP_KEYS = new Set(["id", "ids", "ref", "refs", "k", "key", "target", "kind", "url", "src", "status", "verdict", "dim", "category", "priority", "lang", "rec", "recBasis", "fromExamples", "critIds", "reqIds", "touches", "toolAsks"]);
+function factStrings(node, out = [], key = "", depth = 0){
+  if (depth > 8 || out.length > 400) return out;
+  if (typeof node === "string"){ if (!FACT_SKIP_KEYS.has(key) && node.trim().length > 2) out.push(node); return out; }
+  if (Array.isArray(node)){ for (const x of node) factStrings(x, out, key, depth + 1); return out; }
+  if (node && typeof node === "object") for (const k of Object.keys(node)) if (!FACT_SKIP_KEYS.has(k) && k !== "_blocked") factStrings(node[k], out, k, depth + 1);
+  return out;
+}
+function factGuardKey(e, s){ return e.id + "|" + factText(e) + "|" + s; }
+/** the sentences of an answer that break a rule (code hits confirmed by one quick-tier call; no answer from it counts as a break) */
+async function factsGuardHits(p, rules, out){
+  const hits = [], seen = new Set();
+  for (const txt of factStrings(out)) for (const h of factCodeHits(rules, txt)){ const k = factGuardKey(h.e, h.s); if (!seen.has(k)){ seen.add(k); hits.push(h); } }
+  const ask = hits.filter(h => !FACT_GUARD.cache.has(factGuardKey(h.e, h.s))).slice(0, FACT_HITS_MAX);
+  if (ask.length){
+    const prompt = `[[task:facts-guard]]
+You check what an AI step proposed against the person's own rules for their project. For each numbered sentence, decide whether it proposes, assumes, plans or requires something the rule given with it forbids (a NEVER rule) or leaves out what it demands (a MUST rule). A sentence that only names the rule, refuses it or keeps it does not break it.
+<checks>
+${JSON.stringify(ask.map((h, i) => ({i, rule_kind: h.e.kind, rule: factText(h.e), sentence: h.s})))}
+</checks>
+Reply with only JSON: {"verdicts":[{"i":0,"breaks":true,"why":"one short sentence"}]}`;
+    const r = await runAI("facts-guard-" + uid("g"), t("facts.guard.busy"), prompt, {quick: true, validate: o => o && Array.isArray(o.verdicts)});
+    ask.forEach((h, i) => { const v = r ? arr(r.verdicts).find(x => x && num(x.i, -1) === i) : null; FACT_GUARD.cache.set(factGuardKey(h.e, h.s), v ? v.breaks !== false : true); });
+    if (FACT_GUARD.cache.size > 600) FACT_GUARD.cache.clear();
+  }
+  return hits.filter(h => FACT_GUARD.cache.get(factGuardKey(h.e, h.s)) !== false);
+}
+/** what still breaks a rule after the one repair: an option of a pick is kept greyed (_blocked), anything else in a list is left out and recorded */
+function factsGuardApply(p, rules, out, task){
+  const breaks = (s) => { for (const h of factCodeHits(rules, s)) if (FACT_GUARD.cache.get(factGuardKey(h.e, h.s)) !== false) return h; return null; };
+  const gone = [];
+  const walk = (node, key) => {
+    if (typeof node === "string") return FACT_SKIP_KEYS.has(key) ? null : breaks(node);
+    if (Array.isArray(node)){
+      for (let i = node.length - 1; i >= 0; i--){ const x = node[i], h = walk(x, key); if (!h) continue;
+        if (key === "options" && x && typeof x === "object"){ x._blocked = {id: h.e.id, rule: factText(h.e), s: h.s}; continue; }
+        gone.push({h, text: typeof x === "string" ? x : factStrings(x).slice(0, 3).join(" · ")}); node.splice(i, 1); }
+      return null;
+    }
+    if (node && typeof node === "object"){ let first = null; for (const k of Object.keys(node)){ if (k === "_blocked" || FACT_SKIP_KEYS.has(k)) continue; const h = walk(node[k], k); if (h && !first) first = h; } return first; }
+    return null;
+  };
+  const top = walk(out, "");
+  if (top) gone.push({h: top, text: top.s, kept: true});
+  if (!gone.length || !p || !(WS.projects || []).includes(p)) return 0;
+  const L = factsOf(p);
+  for (const g of gone) L.blocked.unshift({at: now(), task, rule: g.h.e.id, short: factText(g.h.e), text: g.text, kept: !!g.kept});
+  L.blocked = L.blocked.slice(0, FACT_BLOCKED_MAX);
+  UI.blocked20 = {pid: p.id, n: gone.length, rule: factText(gone[0].h.e), at: Date.now()};
+  touch(p);
+  return gone.length;
+}
+/** the problems runAI asks again about (once): each sentence that breaks a rule, with the rule */
+function factsGuardWords(hits){ return hits.map(h => `this part breaks the person's rule [${h.e.id}] ${h.e.kind === "never" ? "NEVER" : "MUST"} ${JSON.stringify(factText(h.e))}: ${JSON.stringify(h.s)} — leave it out or change it so the rule is kept`); }
+
+/* ---------- 4. examples never ask (the code half of the examples rule) ---------- */
+const EX_ASK = [/[?？]/, /\b(reply|answer|respond) with\b/i, /\(\s*[a-c1-3]\s*\)[^()\n]{0,80}\(\s*[a-c1-3]\s*\)/i, /(^|[.!:;]\s*)which\b|\bwhich (one|of)\b/i, /\b(do|would|should|could|can|will) (you|i)\b|\bshall i\b|\bare you\b/i,
+  /\bantworte(t)? mit\b|\bantwort mit\b/i, /\b(welche[rsnm]?|möchtest du|willst du|soll ich|kannst du|hast du|bist du)\b/i, /请回复|请回答|回复\s*[“"]?[AaBb12]|哪个|哪一个|你想|你要不要|是否需要|要不要/];
+function exAsks(text){ const s = str(text); return !!s.trim() && EX_ASK.some(rx => rx.test(s)); }
+/** split a result into what it shows and the question in it (the question goes out: "The tool would ask: …") */
+function exSplitAsk(text){
+  const S = factSentences(text), q = S.filter(exAsks), rest = S.filter(s => !exAsks(s));
+  if (!q.length) return {rest: str(text), ask: ""};
+  const keep = str(text).split("\n").filter(l => !q.some(x => l.includes(x)) && !exAsks(l)).join("\n").trim();
+  return {rest: keep || rest.join(" ").trim(), ask: q.join(" ")};
+}
+function exFields(task, out){
+  const F = [];
+  if (!out || typeof out !== "object") return F;
+  if (task === "loop-show") arr(out.examples).forEach((e, i) => { if (e && typeof e === "object") F.push({o: e, f: "output", n: i + 1}); });
+  if (task === "loop-rule") arr(out.checks).forEach((e, i) => { if (e && typeof e === "object") F.push({o: e, f: "output", n: i + 1}); });
+  if (/^pick-/.test(task)) arr(out.cards).forEach((c, i) => arr(c && c.options).forEach((o, j) => { if (o && typeof o === "object"){ F.push({o, f: "ex", n: (i + 1) + "." + (j + 1)}); F.push({o, f: "out", n: (i + 1) + "." + (j + 1)}); } }));
+  return F.filter(x => str(x.o[x.f]).trim());
+}
+function exAskWords(task, out){ return exFields(task, out).filter(x => exAsks(x.o[x.f])).map(x => `example ${x.n}: its result asks a question (${JSON.stringify(str(x.o[x.f]).slice(0, 160))}). Examples never ask: write the finished result. If the finished tool would really ask its user something, put only that question in "toolAsks" and keep the result without it.`); }   // ok:cut the repair note quotes the start of the result; the result itself is kept whole
+const EX_ASKS = new Map();   // a cleaned result → the question that was in it (newExample picks it up as "The tool would ask")
+function exAskClean(task, out){
+  let n = 0;
+  for (const x of exFields(task, out)){
+    const own = str(x.o.toolAsks).trim();
+    if (!exAsks(x.o[x.f])){ if (own && x.f !== "ex") EX_ASKS.set(str(x.o[x.f]).trim(), own); continue; }
+    const sp = exSplitAsk(x.o[x.f]); x.o[x.f] = sp.rest; x.o.toolAsks = [own, sp.ask].filter(Boolean).join(" "); n++;
+    if (x.f !== "ex" && sp.rest.trim()) EX_ASKS.set(sp.rest.trim(), x.o.toolAsks);
+  }
+  if (EX_ASKS.size > 200) EX_ASKS.clear();
+  return n;
+}
+{ const orig = newExample; newExample = function(p, o){ const e = orig.apply(this, arguments); const k = str(e && e.output).trim(); if (k && EX_ASKS.has(k)){ e.toolAsks = EX_ASKS.get(k); EX_ASKS.delete(k); } return e; }; }
+
+/* ---------- the two checks inside runAI (one repair through its check path; what is left over is cleaned after) ---------- */
+{ const orig = runAI; runAI = async function(key0, label, prompt, o = {}){
+    const task = promptTask(prompt), p = factsPromptProject(prompt);
+    const rules = p && o.json !== false && !/^(facts-|ask-once)/.test(task) ? factsActive(p, FACT_RULES) : [], exT = o.json !== false && EX_TASKS.has(task);
+    if (!rules.length && !exT) return orig.apply(this, arguments);
+    const check0 = o.check;
+    const o2 = Object.assign({}, o, {check: async out => {
+      const a = check0 ? arr(await check0(out)) : [];
+      let b = []; try{ b = rules.length ? factsGuardWords(await factsGuardHits(p, rules, out)) : []; }catch(e){ onAppError(e && e.message, "facts:guard"); }
+      return [...a, ...b, ...(exT ? exAskWords(task, out) : [])]; }});
+    const r = await orig.call(this, key0, label, prompt, o2);
+    if (r && typeof r === "object"){
+      try{ if (rules.length) factsGuardApply(liveP(p), rules, r, task); if (exT) exAskClean(task, r); }catch(e){ onAppError(e && e.message, "facts:clean"); }
+    }
+    return r; }; }
+
+/* a pick option that still breaks a rule stays visible, greyed, and cannot be taken; the ★ never points at it */
+{ const orig = pickCleanCard; pickCleanCard = function(c0, round, k){
+    const c = orig.apply(this, arguments); if (!c || !c0) return c;
+    for (const o of c.options){ const s = arr(c0.options).find(x => x && (str(x.label) || str(x.text)) === o.label); if (!s) continue;
+      if (s._blocked) o.blocked = {id: str(s._blocked.id), rule: str(s._blocked.rule)}; if (str(s.toolAsks).trim()) o.toolAsks = str(s.toolAsks).trim(); }
+    if (c.rec >= 0 && c.options[c.rec] && c.options[c.rec].blocked){ c.rec = -1; c.recWhy = ""; }
+    return c; }; }
+{ const orig = pickOptHTML; pickOptHTML = function(p, c, o, i, ctx){
+    if (o && o.blocked) return `<div class="pk-opt blocked20" data-blocked="${esc(o.blocked.id)}"><div class="pk-btn" aria-disabled="true"><span class="pk-k">${esc(o.k)}</span><span class="pk-l">${esc(o.label)}</span></div>
+      <p class="small blocked20-why">${ic("shield")} ${esc(t("facts.blocked.opt", {x: o.blocked.rule}))}</p></div>`;
+    const h = orig.apply(this, arguments);
+    return o && o.toolAsks ? h.replace(/<\/div>$/, `<p class="small toolasks20"><b>${esc(t("ex.toolasks"))}</b> ${esc(o.toolAsks)}</p></div>`) : h; }; }
+{ const orig = pickAnswer; pickAnswer = function(p, cid, o = {}){
+    const c = p && pickRead(p).cards.find(x => x.id === cid);
+    if (c && arr(o.keys).some(k => (c.options.find(x => x.k === k) || {}).blocked)){ toast(t("facts.blocked.take"), "err"); return null; }
+    return orig.apply(this, arguments); }; }
+{ const orig = pickStarable; pickStarable = function(p){ return orig(p).filter(c => !(c.options[c.rec] || {}).blocked); }; }
+/* an example result with the question taken out shows it, labelled, as the tool's own turn */
+{ const orig = exCard; exCard = function(p, e){ const h = orig.apply(this, arguments); return e && str(e.toolAsks).trim() ? h.replace('<div class="row exverd">', `<p class="small toolasks20"><b>${esc(t("ex.toolasks"))}</b> ${esc(e.toolAsks)}</p><div class="row exverd">`) : h; }; }
+
+/* ---------- 5. find rules in this project: one AI pass over what the project holds, confirmed in one batch ---------- */
+function factsSources(p){
+  const S = [], ns = p.northStar || {};
+  if (str(ns.constraints).trim()) S.push({k: "ns", ref: "ns", text: str(ns.constraints)});
+  arr(p.outOfScope).forEach((x, i) => { if (str(x).trim()) S.push({k: "oos", ref: "oos:" + (i + 1), text: str(x)}); });
+  arr(p.constitution).forEach((x, i) => { if (str(x).trim()) S.push({k: "const", ref: "const:" + (i + 1), text: str(x)}); });
+  for (const n of (WS.notes || []).filter(n => n.projectId === p.id && !n.deletedAt && !n.noAI).slice(-40)) S.push({k: "note", ref: "note:" + n.id, text: str(n.text)});
+  for (const q of arr(p.qa)) if (str(q.answer).trim()) S.push({k: "qa", ref: "qa:" + q.id, text: "Q: " + str(q.q) + "\nA: " + str(q.answer)});
+  for (const e of arr(p.pick && p.pick.log)) if (str(e.answer).trim()) S.push({k: "pick", ref: "pe:" + e.id, text: "Q: " + str(e.q) + "\nA: " + str(e.answer) + (str(e.own).trim() ? "\nOwn words: " + str(e.own) : "")});
+  for (const d of arr(p.decisions)) if (!d.replaced && !d.pick && str(d.choice).trim()) S.push({k: "dec", ref: "dec:" + str(d.id), text: str(d.title) + ": " + str(d.choice)});
+  return S;
+}
+function factInSource(src, quote){ const q = factNorm(quote).toLowerCase(); if (q.length < 3) return null; return src.find(s => factNorm(s.text).toLowerCase().includes(q)) || src.find(s => pickSame(s.text, quote)) || null; }
+function factsFindWords(src, o){ return arr(o && o.entries).filter(e => e && str(e.quote).trim() && !factInSource(src, e.quote)).slice(0, 8).map(e => `the quote ${JSON.stringify(str(e.quote).slice(0, 120))} is not in the material: quote the person's exact words, or leave the entry out`); }   // ok:cut the repair note quotes the start of the quote
+async function factsFind(p){
+  const src = factsSources(p); if (!src.length){ toast(t("facts.find.none"), ""); return null; }
+  const ws0 = WS.id;
+  const prompt = buildPrompt("facts-find", {proj: p, rules: ["elicit"], context: "",
+    body: `Read what this project already holds (the material below: constraints, what is not in this version, the constitution, notes, interview answers, picks and decisions) and list the person's binding statements as facts-book entries:
+- "never": something that must never happen or never be used ("we never log in to Google"); "must": something that must always hold; "fact": a fact about the person's situation; "decision": something the person decided; "tool": a rule for how the finished tool behaves.
+- Quote the person's own words exactly in "quote" (copied from the material, never invented), give PT's short form in "short" (one plain sentence), the source kind in "src" and the ref of the material in "ref", and 2-5 key words of the entry in "kw" (in the project's language, the words a proposal breaking it would contain).
+- Only what the person really said or decided; leave out guesses, PT's own drafts and anything already in <your_rules> or <your_facts>. At most ${FACT_PROPS_MAX} entries, the binding ones (never / must) first.
+<material>
+${untrusted("project_material", jsonFit(src.map(s => ({src: s.k, ref: s.ref, text: s.text})), FACT_SRC_MAX, x => x.ref))}
+</material>`,
+    schema: `{"entries":[{"kind":"never|must|fact|decision|tool","quote":"the person's exact words","short":"PT's short form","src":"ns|oos|const|note|qa|pick|dec","ref":"the ref","kw":["…"]}]}`});
+  const r = await runAI("facts-find", t("facts.find.busy"), prompt, {pid: p.id, step: "interview", validate: o => o && Array.isArray(o.entries), check: o => factsFindWords(src, o)});
+  if (!r) return null;
+  const q = pickLive(p, ws0); if (!q) return null;
+  snapshot(q, t("facts.act.find"));
+  const L = factsOf(q), have = [...L.entries.filter(e => e.status === "active").map(factText), ...L.props.map(x => x.short)];
+  let n = 0;
+  for (const e of arr(r.entries)){
+    if (L.props.length >= FACT_PROPS_MAX) break;
+    const s = factInSource(src, e && e.quote); if (!s) continue;   // the cleaner: an entry without the person's words is left out
+    const short = factNorm(e.short) || factNorm(e.quote); if (have.some(h => pickSame(h, short) || pickSame(h, e.quote))) continue;
+    L.props.push({id: uid("fp"), kind: oneOf(str(e.kind), FACT_KINDS, "fact"), words: factNorm(e.quote), short, kw: arr(e.kw).map(str).slice(0, 6), src: {k: oneOf(s.k, FACT_SRC, "you"), ref: s.ref, label: ""}, at: now()});
+    have.push(short); n++;
+  }
+  logAct(q, t("facts.find.done", {n}), {step: "interview"});
+  touch(q); render();
+  if (!n) toast(t("facts.find.nothing"), "");
+  return n;
+}
+/** the batch: every ticked proposal becomes an entry (one Undo step), then the contradiction check */
+function factsTakeProps(p){
+  const L = factsOf(p), off = (UI.factsOff && UI.factsOff[p.id]) || {}, take = L.props.filter(x => !off[x.id]);
+  if (!take.length){ toast(t("facts.props.none"), ""); return []; }
+  const ids = take.map(x => factsAdd(p, {kind: x.kind, words: x.words, short: x.short, src: x.src, kw: x.kw, by: "pt"})).filter(Boolean).map(e => e.id);
+  L.props = []; if (UI.factsOff) delete UI.factsOff[p.id];
+  logAct(p, t("facts.props.added", {n: ids.length}), {step: "interview", important: true});
+  rcpt20(p, ids.map(id => factText(factById(p, id))).join(" · "), t("rc.w.facts"));
+  touch(p); render();
+  factsConflictSoon(p, ids);
+  return ids;
+}
+
+/* ---------- 6. contradictions: one quick-tier check when an entry is added or changed ---------- */
+function factsConflictSoon(p, ids){ setTimeout(() => { factsConflict(p, ids).catch(e => onAppError(e && e.message, "facts:conflict")); }, 0); }
+async function factsConflict(p, ids){
+  const act = factsActive(p), mine = act.filter(e => ids.includes(e.id)), others = act.filter(e => !ids.includes(e.id));
+  if (!mine.length || (!others.length && mine.length < 2)) return null;
+  const ws0 = WS.id;
+  const prompt = buildPrompt("facts-conflict", {proj: p, rules: [], context: "",
+    body: `The person keeps a facts book for this project. Check whether a NEW entry contradicts another active entry: both cannot hold at the same time, or keeping one breaks the other. A narrower, more specific or additional entry is no contradiction. Only real contradictions; none is a fine answer.
+<new>${JSON.stringify(mine.map(e => ({id: e.id, kind: e.kind, text: factText(e)})))}</new>
+<active>${JSON.stringify(others.map(e => ({id: e.id, kind: e.kind, text: factText(e)})))}</active>`,
+    schema: `{"conflicts":[{"a":"id of the older entry","b":"id of the new entry","why":"one short sentence"}]}`});
+  const r = await runAI("facts-conflict", t("facts.conf.busy"), prompt, {quick: true, validate: o => o && Array.isArray(o.conflicts)});
+  if (!r) return null;
+  const q = pickLive(p, ws0); if (!q) return null;
+  const L = factsOf(q), live = new Set(factsActive(q).map(e => e.id));
+  const list = arr(r.conflicts).filter(c => c && live.has(str(c.a)) && live.has(str(c.b)) && str(c.a) !== str(c.b) && (ids.includes(str(c.a)) || ids.includes(str(c.b))))
+    .filter(c => !L.conflicts.some(x => x.status === "open" && [x.a, x.b].sort().join() === [str(c.a), str(c.b)].sort().join())).slice(0, 6);
+  if (!list.length) return [];
+  snapshot(q, t("facts.act.conflict"));
+  for (const c of list){ const [a, b] = ids.includes(str(c.a)) && !ids.includes(str(c.b)) ? [str(c.b), str(c.a)] : [str(c.a), str(c.b)]; L.conflicts.push({id: uid("fc"), a, b, why: str(c.why), at: now(), status: "open"}); }
+  touch(q); render();
+  return list;
+}
+function factsResolve(p, cid, how){
+  const L = factsOf(p), c = L.conflicts.find(x => x.id === cid); if (!c || c.status !== "open") return;
+  const A = factById(p, c.a), B = factById(p, c.b);
+  if (how === "a" && B){ B.status = "replaced"; B.replacedBy = c.a; B.why = t("facts.conf.whykept", {x: c.a}); }
+  if (how === "b" && A){ A.status = "replaced"; A.replacedBy = c.b; A.why = t("facts.conf.whykept", {x: c.b}); }
+  c.status = how === "both" ? "both" : "kept-" + how; c.done = now();
+  rcpt20(p, how === "both" ? t("facts.conf.both") : factText(how === "a" ? A : B), t("rc.w.facts"));
+  touch(p); render();
+}
+
+/* ---------- 7. ask once: what is already known is not asked again ---------- */
+function askPool(p){
+  const out = [];
+  for (const q of arr(p.qa)) if (str(q.answer).trim()) out.push({ref: "qa:" + q.id, q: str(q.q), a: str(q.answer)});
+  for (const e of arr(p.pick && p.pick.log)) if (str(e.q).trim()) out.push({ref: "pe:" + e.id, q: str(e.q), a: str(e.answer)});
+  for (const d of arr(p.decisions)) if (!d.replaced && !d.pick && str(d.title).trim()) out.push({ref: "dec:" + str(d.id), q: str(d.title), a: str(d.choice)});
+  for (const e of factsActive(p)) out.push({ref: "fact:" + e.id, q: factText(e), a: factNorm(e.words), fact: e});
+  return out;
+}
+function askSim(a, b){ const A = pickGrams(a), B = pickGrams(b); if (!A.size || !B.size) return pickNorm(a) === pickNorm(b) ? 1 : 0; let n = 0; for (const x of A) if (B.has(x)) n++; return n / (A.size + B.size - n); }
+/** code first: known (as pickSame), unclear (worth one quick check) or new */
+function askMatch(p, text, pool = askPool(p)){
+  let best = null; for (const x of pool){ const s = askSim(text, x.q); if (!best || s > best.s) best = {x, s}; }
+  if (best && best.s >= 0.8) return {st: "known", by: best.x};
+  const kw = pool.some(x => x.fact && factNeed(x.fact) && factKwHits(x.fact, text) >= factNeed(x.fact));
+  return (best && best.s >= 0.4) || kw ? {st: "check"} : {st: "new"};
+}
+async function askOnceAI(p, items, pool){
+  const prompt = buildPrompt("ask-once", {proj: p, rules: [], context: "",
+    body: `PT wants to ask the person these questions. For each one, say whether something the person already said or decided (the entries below) answers it, so it must not be asked again: give that entry's ref, or "none". Only when the entry really answers the question.
+<questions>${JSON.stringify(items.map((x, i) => ({i, q: x.q})))}</questions>
+<entries>${jsonFit(pool.map(x => ({ref: x.ref, q: x.q, a: x.a})), 40000, x => x.ref)}</entries>`,
+    schema: `{"known":[{"i":0,"ref":"qa:… | pe:… | dec:… | fact:F1 | none"}]}`});
+  const r = await runAI("ask-once-" + uid("a"), t("ask.busy"), prompt, {quick: true, validate: o => o && Array.isArray(o.known)});
+  const out = new Map(); if (!r) return out;
+  for (const k of arr(r.known)){ const i = num(k && k.i, -1), x = pool.find(y => y.ref === str(k && k.ref)); if (i >= 0 && i < items.length && x) out.set(i, x); }
+  return out;
+}
+function askRecord(p, q, by, where){
+  const L = factsOf(p); L.known.unshift({at: now(), q: str(q), ref: by.ref, a: str(by.a), where}); L.known = L.known.slice(0, FACT_KNOWN_MAX);
+  const K = UI.known20 && UI.known20.pid === p.id ? UI.known20 : (UI.known20 = {pid: p.id, list: []}); K.list.unshift({q: str(q), ref: by.ref, a: str(by.a)}); K.list = K.list.slice(0, 3);
+}
+/** the questions just made: the known ones go (recorded), the unclear ones wait hidden for one quick check */
+async function askOnceRun(p, items, {drop, where}){
+  if (!items.length) return 0;
+  const pool = askPool(p); if (!pool.length) return 0;
+  let n = 0; const unclear = [];
+  for (const x of items){ const m = askMatch(p, x.q, pool); if (m.st === "known"){ drop(x); askRecord(p, x.q, m.by, where); n++; } else if (m.st === "check") unclear.push(x); }
+  if (n){ touch(p); render(); }
+  if (!unclear.length) return n;
+  UI.ask1Wait = UI.ask1Wait || new Set(); for (const x of unclear) UI.ask1Wait.add(x.id); render();
+  let res = new Map();
+  try{ res = await askOnceAI(p, unclear, pool); }
+  finally{ for (const x of unclear) UI.ask1Wait.delete(x.id); }
+  const q = (WS.projects || []).includes(p) ? p : null;
+  if (q && res.size){ snapshot(q, t("ask.act")); unclear.forEach((x, i) => { const by = res.get(i); if (by){ drop(x); askRecord(q, x.q, by, where); n++; } }); touch(q); }
+  render();
+  return n;
+}
+{ const orig = pickOpenCards; pickOpenCards = function(p){ const L = orig(p), W = UI.ask1Wait; return W && W.size ? L.filter(c => !W.has(c.id)) : L; }; }
+{ const orig = pickQueue; pickQueue = function(p, add){ const W = UI.ask1Wait; return orig(p, x => { if (W && W.size && W.has(str(x.ref).slice(5))) return; add(x); }); }; }
+{ const orig = qCard; qCard = function(p, q){ return UI.ask1Wait && q && UI.ask1Wait.has(q.id) ? "" : orig.apply(this, arguments); }; }
+{ const orig = aiPickNext; aiPickNext = async function(p){
+    const ws0 = WS.id, before = new Set(pickRead(p).cards.map(c => c.id));
+    const r = await orig.apply(this, arguments);
+    try{ const q = pickLive(p, ws0); if (q){ const fresh = pickRead(q).cards.filter(c => !before.has(c.id) && !c.qkey);
+        await askOnceRun(q, fresh.map(c => ({id: c.id, q: c.q})), {where: "pick", drop: x => { const k = pickOf(q); k.cards = k.cards.filter(c => c.id !== x.id); }}); } }
+    catch(e){ onAppError(e && e.message, "ask-once:pick"); }
+    return r; }; }
+{ const orig = aiInterview; aiInterview = async function(p){
+    const ws0 = WS.id, before = new Set(arr(p.pendingQs).map(q => q.id));
+    const r = await orig.apply(this, arguments);
+    try{ const q = pickLive(p, ws0); if (q){ const fresh = arr(q.pendingQs).filter(x => !before.has(x.id));
+        await askOnceRun(q, fresh.map(x => ({id: x.id, q: x.text})), {where: "interview", drop: x => { q.pendingQs = arr(q.pendingQs).filter(y => y.id !== x.id); }}); } }
+    catch(e){ onAppError(e && e.message, "ask-once:interview"); }
+    return r; }; }
+/** "(change)": the place the earlier answer lives */
+function askChange(p, ref){
+  const [k, id] = [str(ref).split(":")[0], str(ref).slice(str(ref).indexOf(":") + 1)];
+  if (k === "fact"){ factsOpen(p); UI.factsEdit = id; render(); focusSoon("fe-" + id); return; }
+  if (k === "pe" && ACTIONS["pk-change"]){ ACTIONS["pk-change"]({dataset: {id}}); return; }
+  if (k === "qa"){ UI.reanswer = id; goRef("qa:" + id); return; }
+  if (ACTIONS["rows-open"]) ACTIONS["rows-open"]();
+}
+
+/* ---------- 8. the page: next to Decisions, and in More ⋯ ---------- */
+function factsOpen(p){ if (!p) return; pushNav(); UI.factsView = p.id; UI.rowsView = null; UI.home = false; UI.finish = null; render(); const m = document.querySelector(".main"); if (m) m.scrollTop = 0; }
+{ const orig = pgBar; pgBar = function(p){
+    let h = orig(p); const on = UI.factsView === p.id, n = factsActive(p).length;
+    if (on) h = h.replace(/(class="sp-st [a-z]+ )here"/g, '$1"').replace(/aria-current="true"/g, 'aria-current="false"');
+    const b = `<span class="sp-line"></span><button class="btn xs ghost sp-facts ${on ? "sel" : ""}" data-a="facts-open" aria-current="${on}">${ic("shield")}<span>${esc(t("facts.title"))}${n ? " · " + n : ""}</span></button>`;
+    return /<\/div><\/nav>/.test(h) ? h.replace(/<\/div><\/nav>/, b + "</div></nav>") : h + b; }; }
+{ const orig = modeBody; modeBody = function(p){ return p && UI.factsView === p.id ? factsViewHTML(p) : orig(p); }; }
+{ const orig = pgOpen; pgOpen = function(){ UI.factsView = null; return orig.apply(this, arguments); }; }
+{ const orig = goRef; goRef = function(){ UI.factsView = null; return orig.apply(this, arguments); }; }
+{ const orig = popNav; popNav = function(){ UI.factsView = null; return orig.apply(this, arguments); }; }
+{ const orig = ACTIONS["home"]; ACTIONS["home"] = function(){ UI.factsView = null; return orig.apply(this, arguments); }; }
+{ const orig = ACTIONS["rows-open"]; ACTIONS["rows-open"] = function(){ UI.factsView = null; return orig.apply(this, arguments); }; }
+{ const orig = openProject; openProject = function(){ UI.factsView = null; UI.factsEdit = null; UI.ask1Wait = null; UI.known20 = null; UI.blocked20 = null; return orig.apply(this, arguments); }; }
+MORE_ITEMS.splice(1, 0, {a: "facts-open", icon: "shield", l: "facts.title"});
+
+function factsViewHTML(p){
+  return `<div class="pg facts-view" data-page="facts" data-anchor="page-facts">${pgBar(p)}<header class="pg-head"><h2>${ic("shield")} ${esc(t("facts.title"))}</h2></header>${factsBodyHTML(p)}</div>`;
+}
+function factRowHTML(p, e){
+  const ed = UI.factsEdit === e.id, off = e.status !== "active";
+  const meta = `${esc(factSrcLabel(e))} · ${esc(fmtDate(e.at))}${e.by === "pt" ? " · " + esc(t("facts.by.pt")) : ""}${off ? " · " + esc(t("facts.st." + (e.status === "replaced" ? "replaced" : "withdrawn"))) + (e.replacedBy ? " → " + esc(e.replacedBy) : "") : ""}`;
+  const body = ed ? `<form class="stack" data-form="facts-edit" data-id="${esc(e.id)}"><label class="fld"><span>${esc(t("facts.words"))}</span><textarea id="fe-${esc(e.id)}" rows="2">${esc(e.words)}</textarea></label>
+      <div class="row"><button class="btn sm primary" type="submit">${ic("check")}${esc(t("btn.save"))}</button><button class="btn sm ghost" type="button" data-a="facts-edit" data-id="${esc(e.id)}">${esc(t("btn.cancel"))}</button></div></form>`
+    : `<div class="fact20-text">“${clampHTML(e.words, "fw:" + e.id, {lines: 3})}”</div>${factNorm(e.words) !== factText(e) ? `<div class="small">${esc(t("facts.short"))} ${clampHTML(factText(e), "fs:" + e.id, {lines: 2})}</div>` : ""}<div class="small muted">${meta}</div>`;
+  const acts = ed ? "" : off ? `<button class="btn xs ghost" data-a="facts-back" data-id="${esc(e.id)}">${ic("undo")}${esc(t("facts.useagain"))}</button>`
+    : `<button class="btn xs ghost" data-a="facts-edit" data-id="${esc(e.id)}">${ic("edit")}${esc(t("btn.edit"))}</button><button class="btn xs ghost" data-a="facts-withdraw" data-id="${esc(e.id)}">${ic("x")}${esc(t("facts.withdraw"))}</button>`;
+  return `<div class="item fact20 ${off ? "off" : ""}" id="ir-fact:${esc(e.id)}" data-anchor="fact:${esc(e.id)}" data-fact="${esc(e.id)}">${stSlot(off ? "todo" : FACT_RULES.includes(e.kind) ? "warn" : "ok")}<div class="body">${body}</div>${acts ? `<div class="qacts">${acts}</div>` : ""}</div>`;
+}
+function factsBodyHTML(p){
+  const R = factsRead(p), act = R.entries.filter(e => e.status === "active"), old = R.entries.filter(e => e.status !== "active");
+  const off = (UI.factsOff && UI.factsOff[p.id]) || {};
+  const kindOpts = FACT_KINDS.map(k => `<option value="${k}">${esc(factKindLabel(k))}</option>`).join("");
+  const add = `<form class="stack facts-add" data-form="facts-add"><div class="row"><label class="fld" style="flex:0 1 12em"><span>${esc(t("facts.kind"))}</span><select id="fa-kind">${kindOpts}</select></label>
+      <label class="fld" style="flex:1 1 18em"><span>${esc(t("facts.words"))}</span><textarea id="fa-words" rows="2" placeholder="${esc(t("facts.ph"))}">${esc(UI.qDraft["facts-add"] || "")}</textarea></label></div>
+      <div class="row"><button class="btn sm primary" type="submit">${ic("plus")}${esc(t("facts.add"))}</button>${aiBtn("facts-find", t("facts.find"), "M", {key: "facts-find"})}<span class="hint">${esc(t("facts.find.sub"))}</span></div></form>${busyHTML("facts-find")}`;
+  const props = R.props.length ? `<section class="panel facts-props" data-anchor="facts-props"><h3>${esc(t("facts.props.t", {n: R.props.length}))}</h3><p class="small muted">${esc(t("facts.props.sub"))}</p><div class="list">${R.props.map(x =>
+      `<label class="item chk fprop20"><input type="checkbox" data-a-change="facts-tick" data-id="${esc(x.id)}" ${off[x.id] ? "" : "checked"}><span class="body"><b class="small">${esc(factKindLabel(x.kind))}</b> “${esc(x.words)}”${factNorm(x.words) !== factNorm(x.short) ? `<span class="small"> · ${esc(t("facts.short"))} ${esc(x.short)}</span>` : ""}<span class="small muted"> · ${esc(t("facts.src." + x.src.k))}</span></span></label>`).join("")}</div>
+      <div class="row"><button class="btn sm primary" data-a="facts-take">${ic("check")}${esc(t("facts.props.take", {n: R.props.filter(x => !off[x.id]).length}))}</button><button class="btn sm ghost" data-a="facts-drop">${esc(t("facts.props.drop"))}</button></div></section>` : "";
+  const conf = R.conflicts.filter(c => c.status === "open").map(c => { const A = factById(p, c.a), B = factById(p, c.b); if (!A || !B) return "";
+      return `<section class="panel facts-conf" data-anchor="facts-conf:${esc(c.id)}" role="alert"><h3>${ic("flag")} ${esc(t("facts.conf.t"))}</h3><p class="small">${esc(c.why)}</p>
+        <div class="grid2 conf20"><blockquote class="small"><b>A · ${esc(factKindLabel(A.kind))}</b><br>“${esc(A.words)}”</blockquote><blockquote class="small"><b>B · ${esc(factKindLabel(B.kind))}</b><br>“${esc(B.words)}”</blockquote></div>
+        <div class="row"><button class="btn sm" data-a="facts-resolve" data-id="${esc(c.id)}" data-v="a">${esc(t("facts.conf.a"))}</button><button class="btn sm" data-a="facts-resolve" data-id="${esc(c.id)}" data-v="b">${esc(t("facts.conf.b"))}</button><button class="btn sm ghost" data-a="facts-resolve" data-id="${esc(c.id)}" data-v="both">${esc(t("facts.conf.both"))}</button></div></section>`; }).join("");
+  const groups = FACT_KINDS.map(k => { const L = act.filter(e => e.kind === k); return L.length ? `<section class="panel facts-g" data-kind="${k}"><h3>${esc(t("facts.g." + k))} · ${L.length}</h3><div class="list">${L.map(e => factRowHTML(p, e)).join("")}</div></section>` : ""; }).join("");
+  const prof = arr(WS.profile && WS.profile.entries).filter(e => str(e.text).trim());
+  const copied = new Set(R.entries.filter(e => e.src && e.src.k === "profile").map(e => e.src.ref));
+  const profH = prof.length ? `<details class="facts-prof"><summary class="small">${esc(t("facts.prof.t", {n: prof.length}))}</summary><p class="small muted">${esc(t("facts.prof.sub"))}</p><div class="list">${prof.map(e =>
+      `<div class="item"><div class="body small">${esc(e.text)}</div><div class="qacts">${copied.has(e.id) ? `<span class="chip ok">${ic("check")}${esc(t("facts.prof.done"))}</span>` : `<button class="btn xs" data-a="facts-copyprof" data-id="${esc(e.id)}">${ic("copy")}${esc(t("facts.prof.copy"))}</button>`}</div></div>`).join("")}</div></details>` : "";
+  const known = R.known.length ? `<details class="facts-known"><summary class="small">${esc(t("facts.known.t", {n: R.known.length}))}</summary><ul class="small">${R.known.map(k => `<li>${esc(k.q)} → ${esc(k.a)} <span class="muted">· ${esc(fmtDate(k.at))}</span></li>`).join("")}</ul></details>` : "";
+  const blocked = R.blocked.length ? `<details class="facts-blocked"><summary class="small">${esc(t("facts.blocked.t", {n: R.blocked.length}))}</summary><ul class="small">${R.blocked.map(b => `<li><span class="muted">${esc(t("facts.blocked.by", {x: b.short}))}</span> ${esc(b.text)}</li>`).join("")}</ul></details>` : "";
+  const olds = old.length ? `<details class="facts-old"><summary class="small">${esc(t("facts.old.t", {n: old.length}))}</summary><div class="list">${old.map(e => factRowHTML(p, e)).join("")}</div></details>` : "";
+  return `<section class="panel facts20" data-anchor="facts"><p class="small muted">${esc(t("facts.sub"))}</p>${add}</section>${props}${conf}${groups || `<p class="small muted">${esc(t("facts.empty"))}</p>`}${olds}${known}${blocked}${profH}`;
+}
+
+Object.assign(ACTIONS, {
+  "facts-open": () => factsOpen(curP()),
+  "facts-find": () => { const p = curP(); if (p) factsFind(p); },
+  "facts-take": () => { const p = curP(); if (p) factsTakeProps(p); },
+  "facts-drop": () => { const p = curP(); if (!p) return; factsOf(p).props = []; touch(p); render(); },
+  "facts-edit": (el) => { UI.factsEdit = UI.factsEdit === el.dataset.id ? null : el.dataset.id; render(); if (UI.factsEdit) focusSoon("fe-" + UI.factsEdit); },
+  "facts-withdraw": (el) => { const p = curP(), e = p && factById(p, el.dataset.id); if (!e) return; e.status = "withdrawn"; e.withdrawnAt = now(); rcpt20(p, factText(e), t("rc.w.withdrawn")); touch(p); render(); },
+  "facts-back": (el) => { const p = curP(), e = p && factById(p, el.dataset.id); if (!e) return; e.status = "active"; delete e.replacedBy; touch(p); render(); factsConflictSoon(p, [e.id]); },
+  "facts-resolve": (el) => { const p = curP(); if (p) factsResolve(p, el.dataset.id, el.dataset.v); },
+  "facts-copyprof": (el) => { const p = curP(), x = p && arr(WS.profile && WS.profile.entries).find(e => e.id === el.dataset.id); if (!x) return;
+    const e = factsAdd(p, {kind: "fact", words: x.text, src: {k: "profile", ref: x.id, label: ""}}); if (!e) return; rcpt20(p, factText(e), t("rc.w.facts")); touch(p); render(); factsConflictSoon(p, [e.id]); },
+  "ask-change": (el) => askChange(curP(), el.dataset.ref),
+  "known-close": () => { UI.known20 = null; render(); },
+  "blocked-close": () => { UI.blocked20 = null; render(); }
+});
+["facts-open", "facts-edit", "known-close", "blocked-close", "ask-change"].forEach(a => ACT_NO.add(a));
+Object.assign(CHANGES, { "facts-tick": (el) => { const p = curP(); if (!p) return; UI.factsOff = UI.factsOff || {}; const o = UI.factsOff[p.id] = UI.factsOff[p.id] || {}; if (el.checked) delete o[el.dataset.id]; else o[el.dataset.id] = true; render(); } });
+FORMS["facts-add"] = f => { const p = curP(); if (!p) return; const w = str((f.querySelector("#fa-words") || {}).value).trim(), k = str((f.querySelector("#fa-kind") || {}).value);
+  if (!w){ toast(t("facts.need"), "err"); return; }
+  const e = factsAdd(p, {kind: k, words: w}); if (!e) return; delete UI.qDraft["facts-add"];
+  logAct(p, t("facts.added", {x: e.id}), {step: "interview"}); rcpt20(p, factText(e), t("rc.w.factsk", {k: factKindLabel(e.kind)}));
+  touch(p); render(); factsConflictSoon(p, [e.id]); };
+FORMS["facts-edit"] = f => { const p = curP(), e = p && factById(p, f.dataset.id); if (!e) return; const w = factNorm((f.querySelector("#fe-" + e.id) || {}).value);
+  if (!w){ toast(t("facts.need"), "err"); return; }
+  if (w !== e.words){ e.hist = arr(e.hist); e.hist.push({at: now(), words: e.words, short: e.short}); if (factText(e) === e.words) e.short = w; e.words = w; e.kw = []; e.at = now(); }
+  UI.factsEdit = null; rcpt20(p, factText(e), t("rc.w.facts")); touch(p); render(); factsConflictSoon(p, [e.id]); };
+document.addEventListener("input", e => { const el = e.target; if (el && el.id === "fa-words") UI.qDraft["facts-add"] = el.value; });
+
+/* ===================== 2.0 Part A: one Next and "✓ done", error cards kept, plain words that act =====================
+   The owner (2 Nov 2026): "Why didn't it change so I see it's done? … How do I know what's next?", "the text field does nothing",
+   "When I finished the last example it brought me to one I already answered … what is the next button?" and (3 Nov) "An error popped
+   up bottom right – what was the issue, how do we fix it?".
+   1. Receipts: after an answer or a text entry the project shows "✓ Saved: … → where it went" (rcpt20) until the next one or until it
+      is closed; one Next bar under the page bar always names exactly one next step (the spine's next, the same as the cover's).
+   2. The examples loop never lands on an example you judged while another one waits; when all are judged it says so and names the next.
+   3. Errors: onAppError and a failed AI step are kept (technical text only, no project text: quoted text is replaced by "…") in the
+      workspace's own storage (WS.settings.events, newest first, at most 20), shown as error cards in an Events list (what happened,
+      what PT did, what you can do, the technical detail folded) until you dismiss them; "Report to Improve PT" fills the message with
+      the technical detail. Error messages shown this session (toasts) get a "What happened?" link and stay in the list for this session.
+   4. "Fix it together with me" became "PT drafts a fix, you pick what to keep": the draft starts at once. */
+const EV20_MAX = 20;
+const EV20 = {session: [], pending: [], busy: false, touches: 0};
+
+/* ---------- 1. receipts and the one Next ---------- */
+function rcpt20(p, what, where){ if (!p || !str(what).trim()) return; UI.rcpt20 = {pid: p.id, what: str(what).replace(/\s+/g, " ").trim(), where: str(where), at: Date.now()}; }
+function nx20HTML(p){
+  const R = UI.rcpt20 && UI.rcpt20.pid === p.id ? UI.rcpt20 : null, K = UI.known20 && UI.known20.pid === p.id && arr(UI.known20.list).length ? UI.known20 : null, B = UI.blocked20 && UI.blocked20.pid === p.id ? UI.blocked20 : null;
+  const rc = R ? `<div class="rc20" role="status" aria-live="polite"><span class="rc20-ok">${ic("check")}${esc(t("rc.saved"))}</span><span class="rc20-what">${clampHTML(R.what, "rc20", {lines: 2})}</span><span class="rc20-where">→ ${esc(R.where)}</span><button class="iconbtn sm" data-a="rc20-close" title="${esc(t("btn.close"))}" aria-label="${esc(t("btn.close"))}">${ic("x")}</button></div>` : "";
+  const kn = K ? `<div class="rc20 known20" role="status"><span class="rc20-ok">${ic("check")}${esc(t("ask.known"))}</span><span class="rc20-what">${K.list.map(k => `${esc(k.q)} → <b>${esc(k.a)}</b> <button class="btn xs ghost" data-a="ask-change" data-ref="${esc(k.ref)}">${esc(t("ask.change"))}</button>`).join(" · ")}</span><button class="iconbtn sm" data-a="known-close" title="${esc(t("btn.close"))}" aria-label="${esc(t("btn.close"))}">${ic("x")}</button></div>` : "";
+  const bl = B ? `<div class="rc20 blocked20-n" role="status"><span class="rc20-ok">${ic("shield")}${esc(t("facts.blocked.n", {n: B.n}))}</span><span class="rc20-what">“${esc(B.rule)}”</span><button class="btn xs ghost" data-a="facts-open">${esc(t("facts.title"))}</button><button class="iconbtn sm" data-a="blocked-close" title="${esc(t("btn.close"))}" aria-label="${esc(t("btn.close"))}">${ic("x")}</button></div>` : "";
+  let nx = ""; try{ nx = pgNextBtn(p); }catch(e){ onAppError(e && e.message, "next:button"); }
+  return `<div class="nx20" data-anchor="next">${rc}${kn}${bl}<div class="row nx20-next"><span class="small muted">${esc(t("sp.next.label"))}</span>${nx}</div></div>`;
+}
+/* inside the page bar's nav, so wherever the bar is left out (Pick inside a page) the Next goes with it: one Next per screen */
+{ const orig = pgBar; pgBar = function(p){ const h = orig(p); let n = ""; try{ n = p ? nx20HTML(p) : ""; }catch(e){ onAppError(e && e.message, "next:bar"); } return /<\/nav>\s*$/.test(h) ? h.replace(/<\/nav>\s*$/, n + "</nav>") : h + n; }; }
+{ const orig = openProject; openProject = function(){ UI.rcpt20 = null; return orig.apply(this, arguments); }; }
+/* where an answer or a text goes */
+{ const orig = answerQ; answerQ = function(p, qid){ const id = orig.apply(this, arguments); if (id){ const a = arr(p.qa).find(x => x.id === id); if (a) rcpt20(p, a.q + " → " + a.answer, t("rc.w.qa")); } return id; }; }
+{ const orig = pickAnswer; pickAnswer = function(p, cid, o = {}){ const e = orig.apply(this, arguments); if (e && !o.assumed && str(e.answer).trim()) rcpt20(p, str(e.q) + " → " + str(e.answer), t("rc.w.pick")); return e; }; }
+{ const orig = coneAnswer; coneAnswer = function(p, d, v){ const r = orig.apply(this, arguments); try{ const a = coneAns(coneRead(p) || {})[d]; if (a && a.v === v) rcpt20(p, t("cone.qs." + d) + " → " + t("cone.o." + d + "." + v), t("rc.w.cone")); }catch(e){ onAppError(e && e.message, "rcpt:cone"); } return r; }; }
+{ const orig = addNote; addNote = function(o = {}){ const n = orig.apply(this, arguments); const p = o && o.projectId && UI.view === "project" ? curP() : null; if (p && p.id === o.projectId && str(o.text).trim()) rcpt20(p, o.text, t("rc.w.note")); return n; }; }
+{ const orig = touch; touch = function(){ EV20.touches++; return orig.apply(this, arguments); }; }
+/* the text forms of a project: what you wrote is shown with where it went (only when the form really changed something) */
+const RC20_FORMS = {"ns": "rc.w.ns", "decision": "rc.w.dec", "openq": "rc.w.openq", "pk-notice": "rc.w.notice", "pk-dump": "rc.w.dump", "mock-note": "rc.w.mock", "cone-say": "rc.w.cone", "pk8-qs": "rc.w.start", "iv19-area": "rc.w.qa", "sn-add": "rc.w.und"};
+for (const [k, where] of Object.entries(RC20_FORMS)){
+  const orig = FORMS[k]; if (!orig) continue;
+  FORMS[k] = function(f){
+    const p = curP(), el = f && f.querySelector && f.querySelector("textarea, input[type=text]"), txt = str(el && el.value).trim(), n0 = EV20.touches, r0 = UI.rcpt20;
+    const out = orig.apply(this, arguments);
+    const done = () => { if (p && txt && EV20.touches !== n0 && UI.rcpt20 === r0){ rcpt20(p, txt, t(where)); render(); } };
+    if (out && typeof out.then === "function") out.then(done, () => {}); else done();   // ok:catch the form shows its own failure
+    return out;
+  };
+}
+/* the examples loop: never back to one you judged while another waits; all judged → it says so and names the next */
+{ const orig = ACTIONS["ex-grade"]; ACTIONS["ex-grade"] = function(el){
+    const p = curP(), r = orig.apply(this, arguments); if (!p) return r;
+    const e = exById(p, el.dataset.id), L = loopRead(p);
+    if (!e || !e.verdict || (L.phase !== "react" && L.phase !== "check")) return r;
+    const {list, i} = loopCur(p), cur = list[i];
+    if (cur && cur.verdict && !(e.verdict === "bad" && cur.id === e.id && !str(e.why).trim())){ const j = list.findIndex(x => !x.verdict); if (j >= 0 && j !== i){ loopOf(p).i = j; render(); } }
+    const left = list.filter(x => !x.verdict).length;
+    rcpt20(p, exTitle(e) + " → " + t(e.verdict === "good" ? "ex.v.good" : e.verdict === "bad" ? "ex.v.bad" : "ex.unsure"), left ? t("rc.w.ex.left", {n: left}) : t(L.phase === "react" ? "rc.w.ex.done" : "rc.w.ex.checked"));
+    render(); return r; }; }
+/* PT drafts the fix at once; you pick what to keep (the box shows the draft field by field with a tick each) */
+{ const orig = ACTIONS["item-tool"]; ACTIONS["item-tool"] = function(el){ const r = orig.apply(this, arguments);
+    if (el && el.dataset && el.dataset.k === "fix" && el.dataset.text && ACTIONS["item-send"]) setTimeout(() => { if (document.getElementById("it-in")) ACTIONS["item-send"]({dataset: {ref: el.dataset.ref}}); }, 30);
+    return r; }; }
+Object.assign(ACTIONS, { "rc20-close": () => { UI.rcpt20 = null; render(); } });
+ACT_NO.add("rc20-close");
+
+/* ---------- 2. errors: kept, explained, until dismissed ---------- */
+/** technical text only: quoted text (where project words could sit) becomes "…", one line, at most 240 characters */
+function ev20Clean(s){ return str(s).replace(/"[^"\n]{12,}"|'[^'\n]{12,}'|“[^”\n]{12,}”|«[^»\n]{12,}»|「[^」\n]{6,}」/g, "\"…\"").replace(/\s+/g, " ").trim().slice(0, 240); }
+function ev20List(){ return arr(WS && WS.settings && WS.settings.events); }
+function ev20Store(){
+  if (EV20.busy || !WS || !WS.settings || !WS._set) return false;
+  EV20.busy = true;
+  try{ const L = ev20List().slice(); for (const x of EV20.pending.splice(0)){ const d = L.find(y => y.kind === x.kind && y.code === x.code && y.msg === x.msg && y.src === x.src); if (d){ d.n = num(d.n, 1) + 1; d.at = x.at; L.splice(L.indexOf(d), 1); L.unshift(d); } else L.unshift(x); }
+    const fresh = L.length !== ev20List().length || L[0] !== ev20List()[0];
+    WS.settings.events = L.slice(0, EV20_MAX); saveWs();
+    if (fresh && !EV20.renderT) EV20.renderT = setTimeout(() => { EV20.renderT = null; try{ render(); }catch(e){ console.warn("PT events render", e); } }, 0); }   // ok:catch a new card shows on the next screen anyway
+  catch(e){ try{ console.warn("PT events", e); }catch(_){ /* ok:catch nothing more to do */ } }
+  finally{ EV20.busy = false; }
+  return true;
+}
+function ev20Add(o){
+  if (EV20.busy) return null;
+  const x = {id: uid("ev"), at: now(), kind: oneOf(o.kind, ["error", "ai"], "error"), code: ev20Clean(o.code).slice(0, 60), msg: ev20Clean(o.msg), src: ev20Clean(o.src).slice(0, 120), step: ev20Clean(o.step).slice(0, 40), v: PT_VERSION, n: 1};
+  EV20.pending.push(x); if (EV20.pending.length > EV20_MAX) EV20.pending.shift();
+  ev20Store();
+  return x;
+}
+/** core.js runAI: a step that ended without an answer */
+function ev20AI(code, step){ if (str(code) === "cancelled") return; ev20Add({kind: "ai", code: str(code) || "upstream_error", msg: "", src: "runAI", step}); }
+{ const orig = onAppError; onAppError = function(msg, src){ const last = ERRS[ERRS.length - 1], r = orig.apply(this, arguments); if (ERRS[ERRS.length - 1] !== last) ev20Add({kind: "error", msg, src}); return r; }; }
+{ const orig = openWorkspace; openWorkspace = function(){ const r = orig.apply(this, arguments); const go = () => { if (EV20.pending.length && WS._set) ev20Store(); }; if (r && typeof r.then === "function") r.then(go, () => {}); else setTimeout(go, 0); return r; }; }   // ok:catch a workspace that does not open shows its own message
+/* a message shown at the bottom right gets "What happened?" and stays in the list for this session (its text may hold project words, so it is never stored) */
+{ const orig = toast; toast = function(msg, kind = ""){
+    const r = orig.apply(this, arguments);
+    if (kind === "err"){
+      EV20.session.unshift({id: uid("es"), at: now(), msg: str(msg)}); EV20.session = EV20.session.slice(0, EV20_MAX);
+      try{ const host = document.getElementById("toasts"), el = host && host.lastElementChild; if (el && !el.dataset.a){ el.dataset.a = "events-open"; el.dataset.why = t("ev20.why"); el.title = t("ev20.why"); el.classList.add("toast-why"); } }   // the whole message opens the list (its text stays as it was)
+      catch(e){ console.warn("toast link", e); }   // ok:catch the message itself is shown
+    }
+    return r; }; }
+const EV20_AI = {rate_limited: "busy", overloaded: "busy", upstream_error: "noanswer", server_unavailable: "noanswer", timeout: "noanswer", invalid_json: "unreadable", empty_completion: "unreadable", offline: "offline", unavailable: "unavailable", quota_exceeded: "quota", usage_limit: "quota"};
+function ev20Kind(e){ return e.kind === "ai" ? (EV20_AI[e.code] || "ai") : "fault"; }
+function ev20Detail(e){ return ["Prompt Translator " + e.v, e.kind === "ai" ? "AI step" + (e.step ? " (" + e.step + ")" : "") + ": " + e.code : "error: " + e.msg, e.src ? "at " + e.src : "", (e.n > 1 ? e.n + "× · last " : "") + e.at].filter(Boolean).join(" · "); }
+function ev20Card(e){
+  const k = ev20Kind(e);
+  return `<article class="ev20 panel" data-ev="${esc(e.id)}" role="group" aria-label="${esc(t("ev20.c." + k))}"><div class="row">${stSlot("bad")}<b style="flex:1 1 14em">${esc(t("ev20.c." + k))}</b><span class="small muted">${esc(fmtDate(e.at))}${e.n > 1 ? " · " + esc(t("ev20.times", {n: e.n})) : ""}</span></div>
+    <p class="small"><b>${esc(t("ev20.did"))}</b> ${esc(t(e.kind === "ai" ? "ev20.did.ai" : "ev20.did.fault"))}</p>
+    <p class="small"><b>${esc(t("ev20.next"))}</b> ${esc(t("ev20.n." + k))}</p>
+    <details class="small"><summary>${esc(t("ev20.tech"))}</summary><code class="ev20-tech">${esc(ev20Detail(e))}</code></details>
+    <div class="row"><button class="btn sm" data-a="ev20-report" data-id="${esc(e.id)}">${ic("flag")}${esc(t("ev20.report"))}</button><button class="btn sm ghost" data-a="ev20-dismiss" data-id="${esc(e.id)}">${ic("check")}${esc(t("ev20.dismiss"))}</button></div></article>`;
+}
+function ev20HTML(){
+  const L = ev20List(), S = EV20.session;
+  return `<div class="stack ev20-list">${L.length ? L.map(ev20Card).join("") : `<p class="small muted">${esc(t("ev20.none"))}</p>`}
+    ${S.length ? `<details class="ev20-session" open><summary class="small">${esc(t("ev20.session", {n: S.length}))}</summary><ul class="small">${S.map(x => `<li><span class="muted">${esc(fmtDate(x.at))}</span> ${esc(x.msg)}</li>`).join("")}</ul></details>` : ""}
+    <p class="small muted">${esc(t("ev20.where"))}</p></div>`;
+}
+MODAL14.events = (m, p, hd) => `${hd(t("ev20.title"))}<p class="sub">${esc(t("ev20.sub"))}</p>${ev20HTML()}`;   // ok:esc hd() builds the escaped heading
+/* the Events list is reachable from the status bar (while there are any) and from Settings › PT health */
+{ const orig = statusBar; statusBar = function(){ const h = orig(); const n = ev20List().length; if (!n) return h; return h.replace('<span id="savestate"', `<button class="chip tap warn ev20-chip" data-a="events-open">${ic("flag")}${esc(t("ev20.chip", {n}))}</button><span id="savestate"`); }; }
+{ const orig = hr18HTML; hr18HTML = function(){ const h = orig.apply(this, arguments); let mine = ""; try{ mine = `<div class="stack ev20-health" data-ev20="1"><h4>${esc(t("ev20.title"))}</h4>${ev20HTML()}</div>`; }catch(e){ onAppError(e && e.message, "events:health"); } return h.replace(/<\/div>\s*$/, m => mine + m); }; }
+/* "Report to Improve PT": the message starts with the technical detail */
+{ const orig = toolReportModal; toolReportModal = function(m){ const h = orig.apply(this, arguments); return m && m.pre ? h.replace('placeholder="' + esc(t("tr.ph")) + '"></textarea>', 'placeholder="' + esc(t("tr.ph")) + '">' + esc(m.pre) + "</textarea>") : h; }; }
+Object.assign(ACTIONS, {
+  "events-open": () => { UI.modal = {kind: "events"}; render(); },
+  "ev20-dismiss": (el) => { if (!WS.settings) return; WS.settings.events = ev20List().filter(e => e.id !== el.dataset.id); saveWs(); render(); },
+  "ev20-report": (el) => { const e = ev20List().find(x => x.id === el.dataset.id); if (!e) return; UI.modal = {kind: "toolreport", where: t("ev20.title"), pre: t("ev20.pre") + "\n" + ev20Detail(e) + "\n\n"}; render(); focusSoon("tr-in"); }
+});
+["events-open", "ev20-dismiss", "ev20-report"].forEach(a => ACT_NO.add(a));
+
+/* ---------- 3. the look (text first; buttons follow the text, never a fixed share of the row) ---------- */
+const V200_CSS = `
+.nx20{display:flex;flex-direction:column;gap:6px;margin:6px 0 2px}
+.nx20-next{gap:8px;align-items:center}
+.rc20{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;padding:7px 10px;border-radius:12px;border:1px solid var(--ok);background:var(--ok-soft,var(--bg-2));font-size:13.5px}
+.rc20 .rc20-ok{display:inline-flex;align-items:center;gap:5px;font-weight:600;color:var(--ok)}
+.rc20 .rc20-what{flex:1 1 16em;max-width:100%;overflow-wrap:break-word}
+.rc20 .rc20-where{color:var(--muted)}
+.rc20.known20{border-color:var(--accent)}.rc20.known20 .rc20-ok{color:var(--accent)}
+.rc20.blocked20-n{border-color:var(--warn)}.rc20.blocked20-n .rc20-ok{color:var(--warn)}
+.fact20 .body{flex:1 1 18em;max-width:100%}
+.fact20.off{opacity:.7}
+.fact20-text{overflow-wrap:break-word}
+.fprop20{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+.fprop20 .body{flex:1 1 18em}
+.conf20 blockquote{margin:0;padding:8px 10px;border-left:3px solid var(--warn);background:var(--bg-2);border-radius:6px;overflow-wrap:break-word}
+.pk-opt.blocked20{opacity:.6;filter:grayscale(1)}
+.pk-opt.blocked20 .pk-btn{cursor:not-allowed;text-decoration:line-through}
+.blocked20-why{margin:4px 0 0;color:var(--warn)}
+.toolasks20{margin:6px 0 0;padding:6px 8px;border-left:3px solid var(--accent);background:var(--bg-2);border-radius:6px}
+.ev20 .ev20-tech{display:block;white-space:pre-wrap;overflow-wrap:break-word;font-size:12px}
+.toast.toast-why{cursor:pointer}
+.toast.toast-why::after{content:" · " attr(data-why);text-decoration:underline;white-space:nowrap}
+.sp-facts.sel{box-shadow:inset 0 0 0 2px var(--accent)}
+`;
+function v200Css(){ try{ if (document.getElementById("v200-css")) return; const s = document.createElement("style"); s.id = "v200-css"; s.textContent = V200_CSS; (document.head || document.documentElement).appendChild(s); }catch(e){ console.warn("2.0: no styles", e); } }   // ok:catch without its sheet the page still works, plainer
+v200Css();
 
 boot();
 

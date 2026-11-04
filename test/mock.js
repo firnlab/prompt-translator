@@ -154,6 +154,14 @@
     if (task === "pick-understand"){ const own = (() => { const m = /<untrusted_\w+ label="own_words"[^>]*>\n([\s\S]*?)\n<\/untrusted_/.exec(prompt); try{ return m ? JSON.parse(m[1]) : ""; }catch(e){ return ""; } })(); if (/either|oder|或/.test(own)) return {clear: false, keys: [], answer: "", readings: ["You meant the first option", "You meant something new: " + own]}; const keys = [...own.matchAll(/\b([A-H])\b/g)].map(m => m[1]); return {clear: true, keys, answer: own, readings: []}; }
     if (task === "pick-second") return {verdict: "One gap found.", issues: [{q: "Who checks the legal flags before you act?", why: "Two checks may disagree", target: "legal", hard: true, multi: false, options: [{label: "Me, from the canton map"}, {label: "A lawyer for bold ones"}], rec: -1}]};
     if (task === "pick-risk") return window.__pickRisk || {risk: "desire", why: "The parts are known to work; the open question is what the person wants", spike: {}};   // 1.8: which risk comes first
+    /* 2.0 Part A: the facts book (find, contradiction), the rules check (confirm a code hit), ask once */
+    if (task === "facts-find"){ let m = []; try{ m = JSON.parse(grabU(prompt, "project_material").replace(/\n\[not included to fit:[^\]]*\]$/, "")); }catch(e){ m = []; }
+      const kind = s => /\bnever\b|\bnie\b|绝不|从不/i.test(s) ? "never" : /\bmust\b|\bmuss\b|必须/i.test(s) ? "must" : /\bdecid|entschied/i.test(s) ? "decision" : "";
+      return {entries: m.flatMap(x => String(x.text).split(/\n|(?<=[.!?])\s+/).filter(l => kind(l)).map(l => { l = l.replace(/^(Q|A|Own words): /, ""); const w = l.toLowerCase().split(/[^a-z0-9äöüß]+/).filter(z => z.length > 3 && !/never|must|always/.test(z)); return {kind: kind(l), quote: l, short: l, src: x.src, ref: x.ref, kw: w.slice(0, 4)}; }))}; }
+    if (task === "facts-guard"){ const m = /<checks>\n([\s\S]*?)\n<\/checks>/.exec(prompt); let L = []; try{ L = JSON.parse(m[1]); }catch(e){ L = []; } window.__guardN = (window.__guardN || 0) + 1;
+      return {verdicts: L.map(x => ({i: x.i, breaks: window.__guardSays === undefined ? true : !!window.__guardSays, why: "mock"}))}; }
+    if (task === "facts-conflict") return window.__conflict || {conflicts: []};
+    if (task === "ask-once") return window.__askOnce || {known: []};
     if (task === "cone") return window.__cone || coneMock(prompt);   // 1.8 the cone: kinds of tool from one sentence (spans taken from the sentence)
     if (task === "cone-say") return window.__coneSay || coneSayMock(prompt);
     if (task === "pick-resq") return {research: "fundraising strategies for families in need", platform: "", parts: ["weekly scheduled research", "a page with filters"]};
