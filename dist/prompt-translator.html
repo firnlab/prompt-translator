@@ -27850,7 +27850,7 @@ function stage20RowsHTML(p, id){
       "PT's guess — confirm"; your rules come from the facts book. Versioned (G1, G2 …); a change on a project with a map first shows its
       effect on the map (one quick-tier call: which routes rise, fall or drop out, and your chosen route) and applies only on "Apply"
       (a restore point before it).
-   2. The map (p.map20, one field of the project, so a change is one write): routes with the 28 fields of §3.2 in 8 groups, statuses
+   2. The map (p.map20, one field of the project, so a change is one write): routes with the fields of M20_SCHEMA (33 per route, 9 per not-yet entry; the design §3.2 named 28) in 8 groups, statuses
       Possible today / With your work / With a helper / Not possible yet / Blocked by your rule (computed: a route that breaks an active
       never or must of the facts book stays visible, greyed, with the rule), the Not-possible-yet lane (why, how it could become possible,
       who could, what PT watches, closest today), map events (every round, correction and change as a visible diff).

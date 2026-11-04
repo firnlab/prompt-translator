@@ -567,7 +567,7 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   planted bugs "a report is not kept", "fixed reports are announced on every open".
 - Metrics (design §9; kept in WS.settings.met20, saved with the workspace and part of "Export my data", never in a prompt): questions PT showed (askOnceRun: items minus held back), asked twice and held back, rule breaks
   caught and repaired (factsGuardHits with a hit), routes on the map, goal → decision (first confirmed goal field or the project's start
-  → the active decision); never in a prompt, report or export. Check: e2e200_loop L4; planted bug "asked-twice questions are not counted".
+  → the active decision); never in a prompt or report (they are in the workspace export). Check: e2e200_loop L4; planted bug "asked-twice questions are not counted".
 - Found while building: (1) a `<rules>` tag named in the prompt's prose before the block made the mock read the prose as the block (a
   real model would read either); the prose no longer names the tags. (2) A screen-reader-only label (`.sr20`, absolutely placed) in a
   table header escaped the table's scroll box at 390 px and widened the page by 82 px; the header carries `aria-label` instead and the

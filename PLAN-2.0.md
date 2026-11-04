@@ -49,7 +49,7 @@ All waves below ship together as 2.0.0: no owner preview try; Claude tests the p
 - [x] D2 morning check: first open of the day (owner), 1.10 GitHub checks, tripwires since the last check, not-yet watch lines (platform knowledge, watched pages via Fetch), one card, Route alert via m20WatchSoon; no scheduled task by PT (cause 95)
 - [x] D3 prompt tests: up to 5 inputs, one quick call, cost first, pass/fail against never/must with PT's word check (cause 96)
 - [x] D4 Improve-PT loop: reports in WS settings, open/fixed, IMPROVE_FIXED on version change, told once (cause 97)
-- [x] D5 metrics: local only, Settings › Metrics
+- [x] D5 metrics: in the workspace (part of "Export my data"), never in a prompt; Settings › Metrics
 
 ## Part E items
 - [x] E1 guides in three languages: GitHub App, connector, Dependabot-only auto-merge, cloud scheduled task, computer use, per helper
