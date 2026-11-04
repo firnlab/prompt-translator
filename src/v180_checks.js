@@ -4,8 +4,8 @@
       per tool. Tools other people use keep Legal and Output & usability (with accessibility) as fixed floors.
    2. Private tools (the owner's or the second owner's): every lens and gate that applies is a row you tap, apply or skip. PT never applies
       or skips one by itself and there is no tap for all of them. Each row says why it helps this tool, what it costs (units, CHF,
-      minutes, taps), when it is not needed, and PT's ★ with one line why. Your choice on an earlier tool of this workspace is the next ★
-      ("you chose this last time"), still asked. Checks that do not apply to this tool (audience, what it reads and does) are no rows at
+      minutes, taps), when it is not needed, and PT's ★ with one line why. (2.0: your choice on another tool is no longer
+      a ★ here: no carry-over between projects.) Checks that do not apply to this tool (audience, what it reads and does) are no rows at
       all; the panel names them in one folded line. A lens runs only once its row is applied; a gate (tests, attack drill) likewise.
       Tools other people use keep today's behaviour: everything starts ticked, the floors cannot be unticked.
    3. Fix until green: the fixer and its independent checker go round until the checker confirms; the same fix proposed twice stops and
@@ -114,27 +114,22 @@ function chkLensOn(p, id, L0 = null){
 function chkOnLenses(p, L0 = null){ const L1 = L0 || (chkActive(p) && chkPrivate(p) ? chkList(p) : null); return LENSES.map(l => l.id).filter(id => chkLensOn(p, id, L1)); }
 /** is a gate (tests, attack drill) on: shared tools as before; private tools once its row is applied */
 function chkGateOn(p, id, L0 = null){ if (!chkActive(p) || chkShared(p)) return true; return chkState(p, id) === "apply" && (L0 || chkList(p)).rows.some(x => x.id === id); }
-/** your choice for this check on another tool of this workspace (the latest); the other workspace's choices never count here */
-function chkPrev(p, id){
-  let best = null;
-  for (const q of arr(WS && WS.projects)){ if (!q || q.id === p.id) continue; const r = arr(q.checks && q.checks.rows).find(y => y && y.id === id && (y.v === "apply" || y.v === "skip")); if (r && (!best || str(r.at) > str(best.at))) best = {v: r.v, at: str(r.at), name: str(q.name)}; }
-  return best;
-}
 /** PT's own ★: every quality area starts ticked (owner: all preselected); the gates by what the tool does */
 function chkPtStar(p, x){
   if (x.id === "tests") return {v: "apply", why: chkOutward(p) ? t("chk.star.tests.out", {k: chkTrials(p), x: chkOutward(p)}) : t("chk.star.tests", {k: chkTrials(p)})};
   if (x.id === "drill") return {v: "apply", why: t("chk.star.drill")};
   return {v: "apply", why: t("chk.star.lens")};
 }
-/** the ★ shown: your earlier choice when there is one ("you chose this last time"), otherwise PT's */
-function chkStar(p, x){ const pt = chkPtStar(p, x), prev = chkPrev(p, x.id); return prev ? {v: prev.v, why: t("chk.star.last", {x: prev.name}), last: true, pt} : {v: pt.v, why: pt.why, last: false, pt}; }
+/** the ★ shown: PT's own, from this tool alone. 2.0 (owner: "projects dont get other projects rules, never"): your choice on another tool
+    is no longer carried over as a ★ or a "you chose this last time" line (that was a carry-over of another tool's choice as a suggestion) */
+function chkStar(p, x){ const pt = chkPtStar(p, x); return {v: pt.v, why: pt.why, last: false, pt}; }
 /** what a check costs: units of PT's weekly budget, minutes, CHF (it runs on your Claude plan) and taps */
 function chkCost(p, x){
   if (x.id === "tests"){ const k = chkTrials(p), n = arr(p.tests).length; return {u: n ? testRunCost(p, k) : 10 * k * (TIER_WEIGHT.default * 2 + TIER_WEIGHT.complex), m: Math.max(1, Math.round((n || 10) * k * 3 * 15 / 60))}; }
   if (x.id === "drill") return {u: num(COST_EST.redteam, 8), m: 2};
   return {u: TIER_WEIGHT.complex, m: 1};
 }
-/** the person's tap: one Undo step, one decision line, the next tool sees it as "you chose this last time" */
+/** the person's tap: one Undo step, one decision line (for this tool only) */
 function chkSet(p, id, v, {by = "you"} = {}){
   if (!p || !["apply", "skip"].includes(v) || chkFloor(p, id)) return false;
   const cur = chkRowOf(p, id); if (cur && cur.v === v) return true;

@@ -16,6 +16,8 @@ const STAGE20_PHASES = {goal: ["capture", "understand", "interview"], map: ["arc
 const STAGE20_WAIT = ["assume", "require"];   // detail phases: asked only once a route is chosen
 
 { const orig = blankProject; blankProject = function(name){ const p = orig(name); p.order20 = true; return p; }; }
+/* a project stored before 2.0 has no flag: it keeps its order (normalizeProject would copy the new project's flag onto it) */
+{ const orig = normalizeProject; normalizeProject = function(p){ const had = !!p && Object.prototype.hasOwnProperty.call(p, "order20"); const r = orig.apply(this, arguments); if (p && !had) p.order20 = false; return r; }; }
 function stage20On(p){ return !!p && p.order20 === true; }
 /** the route the project took (the map's decision, or a 1.x architecture choice the person made) */
 function stage20Decided(p){ if (!p) return false; if (typeof m20Chosen === "function" && m20Chosen(p)) return true; const a = p.arch || {}; return !!a.chosen && !a.chosenAssumed && !stage20On(p); }
@@ -41,8 +43,8 @@ function stage20Rows(p, id){
       row("quiet", C && C.lastNew === 0, {n: C ? C.lastNew : 0});
       row("cells", C && C.cellsOpen === 0, {n: C ? C.cellsOpen : 0});
       row("rules", M && M.rounds.length);
-      row("proven", M && M.rounds.length && M.libChecked);
-      row("ceiling", M && M.routes.some(r => r.rung >= 4));
+      row("proven", M && M.rounds.length && (M.libChecked || !m20LibRoutes(p).length));
+      row("ceiling", M && M.routes.some(r => r.lvl >= 4));
       break; }
     case "decide": {
       const D = M && typeof m20Decision === "function" ? m20Decision(p) : null;

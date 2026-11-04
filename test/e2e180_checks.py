@@ -2,8 +2,8 @@
 Covers (PLAN-1.8 §5, owner rounds O1, O3, O4 reading (a), "tap every check"):
  1 quality areas ticked per tool: all preselected, stored per project, changeable per tool; floors for tools others use
  2 check rows for private tools: every lens and gate that applies is a row you tap (apply / skip), never applied or skipped by PT,
-   no tap for all; each row with why it helps, cost (units, CHF, minutes, taps), when not needed and PT's ★; your earlier choice is
-   the next ★ ("you chose this last time") but still asked; early pruning removes rows; a check runs only once applied
+   no tap for all; each row with why it helps, cost (units, CHF, minutes, taps), when not needed and PT's ★ (2.0: your choice on another
+   tool is never this tool's ★, the owner's rule against carry-over between projects); early pruning removes rows; a check runs only once applied
  3 fix until green: the same fix proposed twice stops with before → after; 5 rounds is the breaker and the fifth writes the
    residual risk; "Fix automatically" goes round in whole passes with the same stops, one restore point
  4 tests 3 times, 5 for tools that act outward; a tool passes only when every run passes
@@ -71,7 +71,7 @@ with sync_playwright() as pw:
     check("…and the panel names what is not a check here, with the reason, folded", ev(pg, "(() => { const d = document.querySelector('.pg-checks .chk-pruned'); return !!d && !d.open && d.textContent.includes(t('chk.pr.legal')); })()"))
     check("the notes tool runs its tests 3 times, the mail tool 5", ev(pg, "chkTrials(curP())") == 3 and ev(pg, f"chkTrials(WS.projects.find(p => p.id === '{mid}'))") == 5)
 
-    print("2 tapping a row: one Undo step, your choice is the next ★, still asked")
+    print("2 tapping a row: one Undo step; your choice stays with this tool (2.0: never the next tool's ★)")
     ev(pg, f"openProject('{mid}'); pgOpen(curP(), 'review')"); pg.wait_for_timeout(250)
     a0 = ev(pg, "arr(curP().acts).filter(a => !a.undone).length")
     pg.locator(".pg-checks [data-a=chk-set][data-id=intent][data-v=apply]").first.click(); pg.wait_for_timeout(250)
@@ -85,9 +85,10 @@ with sync_playwright() as pw:
     check("the restore points are untouched by taps (PT never makes or deletes them for this)", ev(pg, "arr(curP().restore).length") == ev(pg, f"arr(WS.projects.find(p => p.id === '{mid}').restore).length"))
     ev(pg, f"openProject('{nid}'); pgOpen(curP(), 'review')"); pg.wait_for_timeout(250)
     s = ev(pg, "(() => { const r = chkList(curP()).rows.find(x => x.id === 'product'); return {st: chkState(curP(), 'product'), star: chkStar(curP(), r)}; })()")
-    check("on the next tool your earlier choice is the ★ ('you chose this last time'), and the row is still asked", s["st"] == "open" and s["star"]["last"] and s["star"]["v"] == "skip" and "Mail helper 18" in s["star"]["why"], s)
-    check("…shown on the row with PT's own view next to it", ev(pg, "(() => { const r = document.querySelector('.pg-checks [data-anchor=\"chk:product\"]'); return !!r && r.textContent.includes(t('chk.lastchip')) && r.textContent.includes(t('chk.ptview', {x: t('chk.o.apply'), y: t('chk.star.lens')}).slice(0, 12)); })()"))
-    check("…and the ★ button of the open row is the earlier choice", ev(pg, "(() => { const b = document.querySelector('.pg-checks [data-a=chk-set][data-id=product].primary'); return !!b && b.dataset.v === 'skip'; })()"))
+    # 2.0 (owner, "projects dont get other projects rules, never"): the opposite of 1.8 — another tool's choice is no ★ and no line here
+    check("on the next tool the row is still asked and the ★ is PT's own, not your choice on the other tool", s["st"] == "open" and not s["star"]["last"] and s["star"]["v"] == "apply" and "Mail helper 18" not in s["star"]["why"], s)
+    check("…no 'you chose this last time' chip on the row", ev(pg, "(() => { const r = document.querySelector('.pg-checks [data-anchor=\"chk:product\"]'); return !!r && !r.textContent.includes(t('chk.lastchip')); })()"))
+    check("…and the ★ button of the open row is PT's (Apply)", ev(pg, "(() => { const b = document.querySelector('.pg-checks [data-a=chk-set][data-id=product].primary'); return !!b && b.dataset.v === 'apply'; })()"))
 
     print("3 a check runs only once applied; the review seal counts the applied lenses")
     ev(pg, "window.__rv = []")

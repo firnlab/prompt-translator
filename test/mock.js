@@ -46,7 +46,7 @@
   /* 2.0 Part B: made-up routes per lens; a later round finds the same ones again (merged, 0 new) unless window.__mapNew is set */
   const MAP_R = (name, where, how, lvl, o = {}) => Object.assign({name, fam: o.fam || "Family " + where, line: o.line || "What you get with " + name, day: ["Mum adds milk", "It shows on the other phones", "Dad ticks it off"], lvl, lvlWhy: "level " + lvl, typical: o.typical == null ? 0.5 : o.typical,
     fit: [{f: "outcome", v: "yes", why: "shared list"}, {f: "whom", v: o.fit2 || "part", why: "four people"}], notv: "no history", actors: {claude: o.claude || "", hands: "", helper: "", you: "Set it up once", others: "Family accepts"}, setupMin: o.setup == null ? 15 : o.setup, weeklyMin: o.weekly || 0,
-    first: o.first || "today", money: {once: "", monthly: o.chf || "0", perUse: "", who: "you", free: ""}, usage: "none", risks: [{text: "Risk of " + name, l: o.risk || "medium", i: "medium"}], assume: o.assume || ["All four phones are from the same maker"],
+    first: o.first || "today", money: {once: "", monthly: o.chf || "0", perUse: "", who: "you", free: ""}, usage: "none", risks: [{text: "Risk of " + name, l: o.risk || "medium", i: "medium"}], assume: o.assume || ["The " + name + " stays free to use"],
     lock: "Tied to one maker", rev: "Easy: export the list", maint: "Updates may change sharing", data: "In the maker's cloud", logins: "Your account", status: o.status || "today", conf: "medium", evidence: "PT's reasoning, not checked", where, how, up: "", down: "",
     pattern: o.pattern || "Shared list on phones", recipe: o.recipe || ["Create one shared list", "Invite the others"], breaks: o.breaks || []}, o.extra || {});
   const MAP_L = {
@@ -54,7 +54,7 @@
     build: [MAP_R("PT-built family list page", "web", "build", 3, {setup: 40, first: "2 days", status: "work", claude: "Claude builds the page", typical: 0.1}), MAP_R("Scheduled list digest", "cloud", "build", 3, {status: "work", typical: 0.15})],
     process: [MAP_R("Group chat list", "person", "buy", 1, {setup: 0, typical: 0.6}), MAP_R("Paper list on the fridge", "person", "build", 1, {setup: 0, typical: 0.1})],
     hack: [MAP_R("Shared note in the notes app", "phone", "build", 1, {setup: 10}), MAP_R("One text message thread", "person", "combine", 1, {setup: 0, typical: 0.12})],
-    frontier: [MAP_R("Receipt reader agent", "local", "build", 4, {setup: 60, status: "helper", first: "1 week", typical: 0.05}), MAP_R("Kitchen speaker", "desktop", "buy", 4, {setup: 30, chf: "60 once", status: "work", typical: 0.1})],
+    frontier: [MAP_R("Shared reminders list", "phone", "buy", 2, {setup: 15, assume: ["All four phones are from the same maker"]}), MAP_R("Receipt reader agent", "local", "build", 4, {setup: 60, status: "helper", first: "1 week", typical: 0.05}), MAP_R("Kitchen speaker", "desktop", "buy", 4, {setup: 30, chf: "60 once", status: "work", typical: 0.1})],
     inversion: [MAP_R("The shop delivers a weekly box", "cloud", "buy", 2, {setup: 20, chf: "12", typical: 0.08}), MAP_R("Family list on the computer", "desktop", "build", 2, {setup: 25, typical: 0.2})]
   };
   const MAP_NY = [{name: "Fridge that knows what is missing", why: "No affordable fridge camera opens its data", blocker: "vendor", evidence: "PT's reasoning, not checked", sure: "medium", change: "A maker opens an interface", who: "vendor", watch: "Maker news on Sunday", near: "Receipt reader agent"}];
@@ -232,8 +232,10 @@
     return new Promise((res, rej) => {
       const prompt = typeof input === "string" ? input : input.map(x => x.content).join("\n");
       if (opts.cache === false) window.__nocache = (window.__nocache || 0) + 1;
+      window.__inflight = (window.__inflight || 0) + 1; window.__inflightMax = Math.max(window.__inflightMax || 0, window.__inflight);   // 2.0 Part B: how many calls run at once
       window.__lastPrompts = window.__lastPrompts || []; window.__lastPrompts.push(prompt.slice(0, 400)); window.__allPrompts = window.__allPrompts || []; window.__allPrompts.push(prompt);
       setTimeout(() => {
+        window.__inflight--;
         if (opts.signal && opts.signal.aborted) return rej({code:"cancelled"});
         // 1.4.2 bug-class check: broken AI answers (empty, not JSON, wrong shapes) must never crash PT or damage data
         const g = window.__mockGarbage;
