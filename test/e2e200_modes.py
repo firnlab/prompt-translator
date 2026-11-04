@@ -50,9 +50,11 @@ def prompts(pg, task): return ev(pg, f"(window.__allPrompts || []).filter(x => x
 def sx(pg): return ev(pg, "(() => { const m = document.querySelector('.main'); return Math.max(document.documentElement.scrollWidth - innerWidth, m ? m.scrollWidth - m.clientWidth : 0); })()")
 NEVER = "We never log in to Google or Samsung accounts."
 OTHER = "We never upload the photos to Dropbox."
-OLD_FNS = ["modeSteps", "modeJourney", "modeSwimlanes", "modeExpress", "modeBlueprint", "spineHTML", "aiExpressDraft", "aiExpressNext", "aiImpactParts"]
+# 2.0 gate (cause 99): aiImpactParts and its busy line cm.thinking stay — the Run page's change request (Operate) asks which parts a
+# change touches; only the change map that also used them is gone (its actions cmap / cmap-ask are in OLD_ACTS)
+OLD_FNS = ["modeSteps", "modeJourney", "modeSwimlanes", "modeExpress", "modeBlueprint", "spineHTML", "aiExpressDraft", "aiExpressNext"]
 OLD_ACTS = ["goto-steps", "express-draft", "express-next", "express-change", "cmap", "cmap-ask", "pk-map", "mode-back", "xp-more", "xp-fold", "confirm-all-as"]
-OLD_KEYS = re.compile(r"^(j\.(after|here|next)$|lane\.|sl\.step$|sp\.map\.|md\.|mode\.(label|suggested|switched)$|m\.(steps|journey|swimlanes|express)$|mg\.(steps|blueprint|journey|swimlanes|express)$|nav\.backto$|act\.express$|as\.confirmstep$|xp\.(title|lead|draft|drafting|draftnext|needs|next|ai|you|change|changeph|keys|acceptall|accepted|allset|okn|openfull|tocheck|hint)$|cm\.(ask|flagged|items|none|parts|thinking|untouched)$)")
+OLD_KEYS = re.compile(r"^(j\.(after|here|next)$|lane\.|sl\.step$|sp\.map\.|md\.|mode\.(label|suggested|switched)$|m\.(steps|journey|swimlanes|express)$|mg\.(steps|blueprint|journey|swimlanes|express)$|nav\.backto$|act\.express$|as\.confirmstep$|xp\.(title|lead|draft|drafting|draftnext|needs|next|ai|you|change|changeph|keys|acceptall|accepted|allset|okn|openfull|tocheck|hint)$|cm\.(ask|flagged|items|none|parts|untouched)$)")
 NEW_PROJ = """(name, mode) => { const p = blankProject(name); p.mode = mode; p.autoInterview = false; WS.projects.push(p); touch(p); openProject(p.id); return p.id; }"""
 
 with sync_playwright() as pw:

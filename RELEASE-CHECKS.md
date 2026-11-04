@@ -625,7 +625,8 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
 - Cause 99 (flows 1.2, a page error): Part C removed `aiImpactParts` with the 1.x change map (and Part C's string clean-up `cm.thinking`),
   but the Run page's change request ("Tell PT what to change", Operate) still calls it: the request was filed and then the page threw.
   Restored (one quick call that lists the parts and items a change touches, as in 1.x). `static_checks.js` now flags a function the
-  release before had (`src_v180_backup`) that is gone while a caller is left (`[calls]`); planted in check_the_checks.py.
+  release before had (`src_v180_backup`) that is gone while a caller is left (`[calls]`); planted in check_the_checks.py. e2e200_modes
+  no longer lists `aiImpactParts` / `cm.thinking` among the removed 1.x code (the change map's actions `cmap`, `cmap-ask` stay listed).
 - Cause 100 (flows 1.2): `pickDefaultsOnce` recorded the workspace's earlier default view only when it was in `MODES`; 2.0's `MODES`
   holds Pick and Chat, so a workspace's 1.x default (Blueprint, Journey …) was recorded as "steps" (the record of what he had was
   lost). The stored value is kept now. Check: e2e12_on14 part 1; planted bug in check_the_pick.py.
