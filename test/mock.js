@@ -43,6 +43,44 @@
     const f = /e-?mail|digest|weekly|every/i.test(said) ? "C" : /phone/i.test(said) ? "F" : /\bsend|\bpost|\breply/i.test(said) ? "D" : /shop|booking|subscri/i.test(said) ? "E" : "B";
     return {f, shape: f + "1", fit: "good", title: "Said: " + said.slice(0, 40), why: "It matches what you said"};
   }
+  /* 2.0 Part B: made-up routes per lens; a later round finds the same ones again (merged, 0 new) unless window.__mapNew is set */
+  const MAP_R = (name, where, how, lvl, o = {}) => Object.assign({name, fam: o.fam || "Family " + where, line: o.line || "What you get with " + name, day: ["Mum adds milk", "It shows on the other phones", "Dad ticks it off"], lvl, lvlWhy: "level " + lvl, typical: o.typical == null ? 0.5 : o.typical,
+    fit: [{f: "outcome", v: "yes", why: "shared list"}, {f: "whom", v: o.fit2 || "part", why: "four people"}], notv: "no history", actors: {claude: o.claude || "", hands: "", helper: "", you: "Set it up once", others: "Family accepts"}, setupMin: o.setup == null ? 15 : o.setup, weeklyMin: o.weekly || 0,
+    first: o.first || "today", money: {once: "", monthly: o.chf || "0", perUse: "", who: "you", free: ""}, usage: "none", risks: [{text: "Risk of " + name, l: o.risk || "medium", i: "medium"}], assume: o.assume || ["All four phones are from the same maker"],
+    lock: "Tied to one maker", rev: "Easy: export the list", maint: "Updates may change sharing", data: "In the maker's cloud", logins: "Your account", status: o.status || "today", conf: "medium", evidence: "PT's reasoning, not checked", where, how, up: "", down: "",
+    pattern: o.pattern || "Shared list on phones", recipe: o.recipe || ["Create one shared list", "Invite the others"], breaks: o.breaks || []}, o.extra || {});
+  const MAP_L = {
+    buy: [MAP_R("Shared reminders list", "phone", "buy", 2, {setup: 15, assume: ["All four phones are from the same maker"], recipe: ["Create one shared list", "Invite the others", "Add items by voice"]}), MAP_R("Family list app", "phone", "combine", 2, {setup: 20, chf: "0-3", status: "work"}), MAP_R("Google sign-in list app", "web", "buy", 2, {line: "A popular list app; you sign in with your Google account to use it."})],
+    build: [MAP_R("PT-built family list page", "web", "build", 3, {setup: 40, first: "2 days", status: "work", claude: "Claude builds the page", typical: 0.1}), MAP_R("Scheduled list digest", "cloud", "build", 3, {status: "work", typical: 0.15})],
+    process: [MAP_R("Group chat list", "person", "buy", 1, {setup: 0, typical: 0.6}), MAP_R("Paper list on the fridge", "person", "build", 1, {setup: 0, typical: 0.1})],
+    hack: [MAP_R("Shared note in the notes app", "phone", "build", 1, {setup: 10}), MAP_R("One text message thread", "person", "combine", 1, {setup: 0, typical: 0.12})],
+    frontier: [MAP_R("Receipt reader agent", "local", "build", 4, {setup: 60, status: "helper", first: "1 week", typical: 0.05}), MAP_R("Kitchen speaker", "desktop", "buy", 4, {setup: 30, chf: "60 once", status: "work", typical: 0.1})],
+    inversion: [MAP_R("The shop delivers a weekly box", "cloud", "buy", 2, {setup: 20, chf: "12", typical: 0.08}), MAP_R("Family list on the computer", "desktop", "build", 2, {setup: 25, typical: 0.2})]
+  };
+  const MAP_NY = [{name: "Fridge that knows what is missing", why: "No affordable fridge camera opens its data", blocker: "vendor", evidence: "PT's reasoning, not checked", sure: "medium", change: "A maker opens an interface", who: "vendor", watch: "Maker news on Sunday", near: "Receipt reader agent"}];
+  function mapMock(task, prompt){
+    window.__mapCalls = (window.__mapCalls || []); window.__mapCalls.push(task);
+    const lens = Object.entries({buy: "BUY IT:", build: "BUILD IT WITH CLAUDE:", process: "CHANGE THE PROCESS", hack: "CHEAPEST HACK", frontier: "FRONTIER:", inversion: "INVERSION:"}).find(([k, v]) => prompt.includes(v));
+    if (task === "map-lens"){ const k = lens ? lens[0] : "buy"; const L = JSON.parse(JSON.stringify(MAP_L[k]));
+      if (window.__mapNew){ const n = (window.__mapNewN = (window.__mapNewN || 0) + 1); L.push(MAP_R("New idea " + n + " " + k, "web", "combine", 2)); }
+      if (window.__mapLensHook) window.__mapLensHook(k, L, prompt);
+      return {found: L, notyet: k === "frontier" ? MAP_NY : []}; }
+    if (task === "map-redteam" || task === "map-ask"){
+      const cells = (() => { const m = /Open cells: (\[[^\n]*\])\./.exec(prompt); try{ return m ? JSON.parse(m[1]) : []; }catch(e){ return []; } })();
+      const ids = [...prompt.matchAll(/"id":"(R\d+)"/g)].map(m => m[1]);
+      const out = {missing: [MAP_R("Neighbour does the shopping", "person", "combine", 1, {setup: 5, typical: 0.05})], breaks: ids.length ? [{id: ids[0], why: "The free plan limit is not checked yet", status: "work", fitDrop: 0}] : [], cells: cells.map(c => ({cell: c, why: "Not meaningful for a family list"})), tried: ["buy", "no tool", "the shop's side"]};
+      if (task === "map-ask"){ out.answer = "Offline: the reminders list keeps working and syncs later."; out.missing = [MAP_R("Offline list app", "phone", "buy", 2)]; out.breaks = []; }
+      if (window.__mapRed) return window.__mapRed(out, prompt);
+      return out; }
+    if (task === "map-merge") return window.__mapMerge || {same: []};
+    if (task === "map-prove") return window.__mapProve || {aid: "a1", assumption: "All four phones are from the same maker", verdict: "unclear", why: "PT cannot see the phones.", how: "PT's reasoning only", check: "Look at the four phones' settings"};
+    if (task === "map-alert"){ const m = /<new_items>([\s\S]*?)<\/new_items>/.exec(prompt); let L = []; try{ L = JSON.parse(m[1]); }catch(e){}
+      const on = [...prompt.matchAll(/"id":"(a\d+|t\d+)"/g)].map(x => x[1]);
+      return {hits: L.filter(x => /another maker|different phone|ALERTME/i.test(x.text)).map(x => ({i: x.i, on: on[0] || "a1", how: "blocks", why: "One phone is from another maker, so the shared list leaves that person out"}))}; }
+    if (task === "map-repair") return {ok: true, repair: "Use the list's web version on the other phone.", steps: ["Open the web version", "Sign in once"], cost: "CHF 0, 10 min of your time"};
+    if (task === "map-goalfit"){ const ids = [...prompt.matchAll(/"id":"(R\d+)"/g)].map(m => m[1]); return {effects: ids.map((id, i) => ({id, e: ["rise", "fall", "out"][i] || "same", why: "mock effect " + i}))}; }
+    return null;
+  }
   function respond(prompt){
     const m = /\[\[task:([a-z0-9-]+)\]\]/.exec(prompt); const task = m ? m[1] : "?";
     if (window.__mockOverride){ const o = window.__mockOverride(task, prompt); if (o) return o; }
@@ -162,6 +200,8 @@
       return {verdicts: L.map(x => ({i: x.i, breaks: window.__guardSays === undefined ? true : !!window.__guardSays, why: "mock"}))}; }
     if (task === "facts-conflict") return window.__conflict || {conflicts: []};
     if (task === "ask-once") return window.__askOnce || {known: []};
+    /* 2.0 Part B: the solution map (lenses, red team, merge, prove, alert, repair, goal effect, ask) */
+    if (task.startsWith("map-")){ const r = mapMock(task, prompt); if (r) return r; }
     if (task === "cone") return window.__cone || coneMock(prompt);   // 1.8 the cone: kinds of tool from one sentence (spans taken from the sentence)
     if (task === "cone-say") return window.__coneSay || coneSayMock(prompt);
     if (task === "pick-resq") return {research: "fundraising strategies for families in need", platform: "", parts: ["weekly scheduled research", "a page with filters"]};

@@ -199,7 +199,8 @@ function exAskClean(task, out){
 /* ---------- the two checks inside runAI (one repair through its check path; what is left over is cleaned after) ---------- */
 { const orig = runAI; runAI = async function(key0, label, prompt, o = {}){
     const task = promptTask(prompt), p = factsPromptProject(prompt);
-    const rules = p && o.json !== false && !/^(facts-|ask-once)/.test(task) ? factsActive(p, FACT_RULES) : [], exT = o.json !== false && EX_TASKS.has(task);
+    // 2.0 Part B: the map keeps a rule-breaking route visible, greyed with the rule (m20RulesCheck), so its calls are not repaired here
+    const rules = p && o.json !== false && !/^(facts-|ask-once|map-)/.test(task) ? factsActive(p, FACT_RULES) : [], exT = o.json !== false && EX_TASKS.has(task);
     if (!rules.length && !exT) return orig.apply(this, arguments);
     const check0 = o.check;
     const o2 = Object.assign({}, o, {check: async out => {
