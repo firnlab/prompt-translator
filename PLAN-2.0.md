@@ -15,7 +15,7 @@ All waves below ship together as 2.0.0: no owner preview try; Claude tests the p
 |---|---|---|
 | A Foundation | facts book per project; rules channel never cut + output check; ask once; contradiction check; cross-project leaks closed; one Next + "✓ done"; error cards kept; no questions in examples; layout width; plain words; "Add requirement" bug | built (RELEASE-CHECKS § 2.0.0 Part A) |
 | B Solution map | order goal → map → decide → details; live map (28 fields, not-yet lane); coverage engine (6 angles, rounds, red-team, saturation note); shortlist/compare/Prove it/Take this; tripwires + route alert; proven routes from other projects (template only) | built (RELEASE-CHECKS § 2.0.0 Part B) |
-| C Two modes | Chat with structure (new) + Pick (improved); delete Steps/Blueprint/Journey/Swimlanes/Express; additive migration with "Before 2.0" restore point; acceptance: RC replay | open |
+| C Two modes | Chat with structure (new) + Pick (improved); delete Steps/Blueprint/Journey/Swimlanes/Express; additive migration with "Before 2.0" restore point; acceptance: RC replay | built (RELEASE-CHECKS § 2.0.0 Part C) |
 | D Hands and loop | hands: per-project site list, forms and non-final clicks, final-button stop; morning check; prompt tests; Improve-PT loop (read, fix, "fixed in"); metrics | open |
 | E Setup and helpers | GitHub App guide, GitHub connector, auto-merge (Dependabot only), cloud tasks; computer use; helper programs declared in advance (no Calendar/Contacts/Music/Photos, no e-mail/Slack sorting) | open |
 

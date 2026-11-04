@@ -134,7 +134,7 @@ with sync_playwright() as pw:
     ph = ev(pg, "(() => { const cs = [...document.querySelectorAll('.pk-deck > .pk-card')].filter(e => e.offsetParent); const peek = document.querySelector('.pk-peek'); return {shown: cs.length, peek: !!(peek && peek.offsetParent), all: document.querySelectorAll('.pk-deck > .pk-card').length}; })()")
     check("R22 on a phone one card is shown, the next ones named below", ph["shown"] == 1 and (ph["peek"] or ph["all"] < 2), ph)
     pg.set_viewport_size({"width": 1440, "height": 900}); pg.wait_for_timeout(100)
-    check("R23 the steps of a design suggest Pick, not Express", ev(pg, "SUGGEST.capture") == "pick")
+    check("R23 a design is made in Pick or Chat with structure (2.0: Express and the other 1.x views are gone)", ev(pg, "JSON.stringify(MODES) === '[\"pick\",\"chat\"]' && typeof modeExpress === 'undefined'"))
     check("R23 Pick's commands are in the palette", ev(pg, "PALETTE_CMDS().some(c => c.k === 'pk-try')"))
     check("R24 a pick's Undo step names the pick", ev(pg, "(() => { const a = arr(curP().acts).filter(a => /^Pick/.test(a.label)).slice(-1)[0]; return !!a && a.refs.some(r => r.startsWith('pick:')); })()"))
     check("R25 German says Entscheid, not Wahl", ev(pg, "(() => { const o = LANG; LANG = 'de'; const s = t('pk.more') + t('pk.made', {n: 2}); LANG = o; return /Entscheid/.test(s) && !/Wahl/.test(s); })()"))

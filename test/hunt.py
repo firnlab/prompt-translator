@@ -38,7 +38,7 @@ PIDS = None
 PHASES = ["capture", "understand", "interview", "assume", "require", "arch", "build", "review", "test", "launch", "release", "operate"]
 RAWKEY = r"""(() => { const txt = (document.querySelector('.app') || document.body).innerText; const keys = Object.keys(STR); const hit = keys.filter(k => k.includes('.') && txt.includes(k) && !/^(q|ex|pt|sb)\.[a-z]$/.test(k)).slice(0, 5); return hit; })()"""
 SCREENS = lambda pid: [f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{pid}'); UI.home=true; render(); }})()"] + \
-    [f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{pid}'); curP().mode='steps'; UI.home=false; setPhase('{ph}'); render(); }})()" for ph in PHASES] + \
+    [f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{pid}'); UI.home=false; setPhase('{ph}'); pgShowPhase(curP(), '{ph}'); render(); }})()" for ph in PHASES] + \
     [f"(() => {{ UI.modal=null; UI.review=null; openProject('{pid}'); UI.home=false; setPhase('require'); curP().mode='{m}'; render(); }})()" for m in ["blueprint", "journey", "swimlanes", "express", "pick"]] + \
     [f"(() => {{ UI.modal=null; UI.review=null; openProject('{pid}'); UI.home=false; curP().mode='pick'; window.__pickFixture(curP()); UI.pkCands = {str(c).lower()}; UI.pkDump = {str(c).lower()}; render(); }})()" for c in [False, True]]   # 1.5.0: every Pick screen, filled
 VOLATILE = ["updatedAt", "_rev", "seenAt", "lastWhere", "focus", "usageMonth"]
@@ -219,7 +219,7 @@ with sync_playwright() as pw:
                     m = pg.evaluate(MENUS)
                     if m: menu_bad.append([where, m])
         # an item box opened from the inspector is on the screen once
-        pg.evaluate(f"(() => {{ openProject('{PIDS[0]}'); UI.home = false; curP().mode = 'steps'; setPhase('assume'); render(); }})()")
+        pg.evaluate(f"(() => {{ openProject('{PIDS[0]}'); UI.home = false; setPhase('assume'); pgShowPhase(curP(), 'assume'); render(); }})()")
         ref = pg.evaluate("(() => { const a = curP().assumptions[0]; return a ? 'assumption:' + a.id : null; })()")
         if ref:
             pg.evaluate(f"(() => {{ UI.open.add('{ref}'); render(); const b = document.querySelector('[data-a=insp-open][data-ref=\"{ref}\"]'); b && b.click(); }})()"); pg.wait_for_timeout(80)
@@ -244,7 +244,7 @@ with sync_playwright() as pw:
     check("14 go-to: every kind of open item lands visibly in every mode", not go_bad, go_bad[:6])
     here_bad = []
     for ph in PHASES:
-        pg.evaluate(f"(() => {{ openProject('{PIDS[0]}'); UI.home = false; curP().mode = 'journey'; setPhase('{ph}'); render(); }})()")
+        pg.evaluate(f"(() => {{ openProject('{PIDS[0]}'); UI.home = false; setPhase('{ph}'); pgShowPhase(curP(), '{ph}'); render(); }})()")
         h = pg.evaluate("(() => { const s = [...document.querySelectorAll('.station')].find(x => x.querySelector('.here') && x.querySelector('.here').textContent.trim()); return s ? s.dataset.ph : null; })()")
         if h != ph: here_bad.append([ph, h])
     check("15 you are here: the Journey marker is on the step you are viewing", not here_bad, here_bad[:4])

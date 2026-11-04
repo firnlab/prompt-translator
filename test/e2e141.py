@@ -29,7 +29,7 @@ with sync_playwright() as pw:
 
     # ---------- 2. the examples loop: show → react → rule → check, with keys, Undo, round size per level ----------
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
-    ev(pg, "UI.home=false; curP().mode='steps'; setPhase('capture')")
+    ev(pg, "UI.home=false; setPhase('capture'); pgShowPhase(curP(), 'capture'); render()")
     r = ev(pg, "({learn: loopSize(curP()), lv: levelOf(curP())})")
     check("loop: Learning round size 3 + 2", r["learn"] == [3, 2], r)
     ev(pg, "(() => { WS.settings.help = 'pro'; render(); })()")
@@ -77,7 +77,7 @@ with sync_playwright() as pw:
 
     # ---------- 3. the Examples board and "+ Add example" (four ways, one panel, key A) ----------
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
-    ev(pg, "UI.home=false; curP().mode='steps'; setPhase('capture')")
+    ev(pg, "UI.home=false; setPhase('capture'); pgShowPhase(curP(), 'capture'); render()")
     n0 = ev(pg, "goalOf(curP()).examples.length")
     pg.locator("#exboard [data-a=ex-addpanel]").first.click(); pg.wait_for_timeout(200)
     check("add: one panel with four ways", pg.locator(".modal [data-a=exa-way]").count() == 4)
@@ -124,7 +124,7 @@ with sync_playwright() as pw:
 
     # ---------- 4. the frame: inspector, Why, revert to PT's version, status bar, keys, level chip ----------
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
-    ev(pg, "UI.home=false; curP().mode='steps'; setPhase('require')")
+    ev(pg, "UI.home=false; setPhase('require'); pgShowPhase(curP(), 'require'); render()")
     ref = ev(pg, "'req:' + curP().requirements[0].id")
     pg.locator(f"[data-a=insp-open][data-ref='{ref}']").first.click(); pg.wait_for_timeout(200)
     check("inspector: Details of the item", pg.locator(".drawer.insp .insp-title").count() == 1 and ev(pg, "UI.panelTab") == "details")
@@ -155,7 +155,7 @@ with sync_playwright() as pw:
 
     # ---------- 5. examples in every stage ----------
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
-    ev(pg, "UI.home=false; curP().mode='steps'; setPhase('understand')")
+    ev(pg, "UI.home=false; setPhase('understand'); pgShowPhase(curP(), 'understand'); render()")
     pg.locator("#problem [data-a=pc-make]").click(); idle(pg)
     check("problem cards: several ways to say the problem", pg.locator("#problem .pcard2").count() >= 3)
     g0 = ev(pg, "problemRead(curP()).cards.filter(c => c.verdict === 'good').length")
@@ -187,7 +187,7 @@ with sync_playwright() as pw:
 
     # ---------- 6. the three levels ----------
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
-    ev(pg, "UI.home=false; curP().mode='steps'; setPhase('understand')")
+    ev(pg, "UI.home=false; setPhase('understand'); pgShowPhase(curP(), 'understand'); render()")
     check("learning: one moment at a time, attached to its step", pg.locator(".moment.lm").count() == 1 and pg.locator(".lm [data-a=lm-show]").count() == 1)
     pg.locator(".lm [data-a=lm-show]").click(); pg.wait_for_timeout(300)
     check("learning: Show me points at the control", pg.locator("#problem.flash").count() == 1)
@@ -261,7 +261,7 @@ with sync_playwright() as pw:
 
     # ---------- 7. audit fixes ----------
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
-    r = ev(pg, "(() => { const p = curP(); p.problem = {situation: 'typed only this'}; UI.home = false; p.mode = 'steps'; setPhase('understand'); render(); setPhase('operate'); render(); return !!document.querySelector('.app'); })()")
+    r = ev(pg, "(() => { const p = curP(); p.problem = {situation: 'typed only this'}; UI.home = false; setPhase('understand'); render(); setPhase('operate'); render(); return !!document.querySelector('.app'); })()")
     check("audit: a partly filled problem section renders (Understand and Operate)", r and not errors, errors[:2])
     check("audit: frame words only as whole words (EN/DE/ZH)", ev(pg, """(() => { const W = [["When When a seller uploads","a seller uploads"],["whenever x","x"],["If, the photo","the photo"],["iframe loads","iframe loads"],["Fallstudien zeigen","Fallstudien zeigen"],["Falls nötig","nötig"],["Wenn wenn der Kunde","der Kunde"],["当用户上传照片时","用户上传照片"],["当前页面加载时","当前页面加载"],["当地时间","当地时间"],["如果没有照片","没有照片"],["sobald","sobald"]];
  const T = [["the resulting file is small","the resulting file is small"],["the results table lists","the results table lists"],["the result the result shows","shows"],["The result is that it works","it works"],["then the result: ok","ok"],["dann ist das Ergebnis: gut","gut"],["Dannenberg","Dannenberg"],["结果：包含","包含"],["结果显示","显示"],["thenceforth","thenceforth"]];
@@ -318,7 +318,7 @@ with sync_playwright() as pw:
     check("hunt: opening another project starts with a clean panel and filter", not r["ref"] and not r["f"] and not r["raw"], r)
     r = ev(pg, """(() => { WS.settings.help = 'pro'; openProject('p-mvf7qpwqud0aj'); UI.home = true; UI.qView = 'table'; UI.qTab = 'you'; render(); ACTIONS['qt-all'](); const nAll = Object.keys(UI.qSel2.keys).length; ACTIONS['q-tab']({dataset: {v: 'later'}}); return {nAll, after: Object.keys(UI.qSel2.keys).length, vis: qtVisibleSel(curP()).length}; })()""")
     check("hunt: switching tabs drops the bulk selection", r["nAll"] > 0 and r["after"] == 0 and r["vis"] == 0, r)
-    r = ev(pg, """(() => { const p = WS.projects.find(x => arr(x.pkg && x.pkg.sections).length > 1); openProject(p.id); p.mode = 'steps'; UI.home = false; setPhase('build'); ACTIONS['rb-toggle'](); render(); const s0 = p.pkg.sections[0]; s0.content = s0.content + ' (PT changed this)'; const el = document.getElementById('rb-in'); el.value = el.value.replace('=== ' + p.pkg.sections[1].id, 'X\\n=== ' + p.pkg.sections[1].id); ACTIONS['rb-apply'](); return {kept: /PT changed this/.test(p.pkg.sections[0].content), open: UI.rawOpen}; })()""")
+    r = ev(pg, """(() => { const p = WS.projects.find(x => arr(x.pkg && x.pkg.sections).length > 1); openProject(p.id); UI.home = false; setPhase('build'); pgShowPhase(p, 'build'); render(); ACTIONS['rb-toggle'](); render(); const s0 = p.pkg.sections[0]; s0.content = s0.content + ' (PT changed this)'; const el = document.getElementById('rb-in'); el.value = el.value.replace('=== ' + p.pkg.sections[1].id, 'X\\n=== ' + p.pkg.sections[1].id); ACTIONS['rb-apply'](); return {kept: /PT changed this/.test(p.pkg.sections[0].content), open: UI.rawOpen}; })()""")
     check("hunt: the raw editor never overwrites a newer brief", r["kept"] and r["open"], r)
     r = ev(pg, """(() => { const rows = [{id: 'T1', x: 'pass', y: 'pass'}, {id: 'T2', x: 'pass', y: 'fail'}]; return rows.sort((m, n) => (m.x === m.y) - (n.x === n.y))[0].id; })()""")
     check("hunt: run compare puts changed tests first", r == "T2", r)

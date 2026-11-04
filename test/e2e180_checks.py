@@ -119,7 +119,7 @@ with sync_playwright() as pw:
     check("…and the gates stay as before (fixed rows)", sh["gates"] == [True, True, True], sh)
     ev(pg, "chkSet(curP(), 'cost', 'skip')")
     check("unticking one area is stored with this tool only", ev(pg, "!chkLensOn(curP(), 'cost') && curP().checks.rows.some(r => r.id === 'cost' && r.v === 'skip')") and ev(pg, f"chkLensOn(WS.projects.find(p => p.id === '{mid}'), 'cost')"))
-    ev(pg, "(() => { const p = curP(); p.mode = 'steps'; UI.home = false; setPhase('review'); render(); })()"); pg.wait_for_timeout(250)
+    ev(pg, "(() => { const p = curP(); UI.home = false; setPhase('review'); pgShowPhase(p, 'review'); render(); })()"); pg.wait_for_timeout(250)
     check("the lens chips of the review step show this tool's ticks", ev(pg, "(() => { const c = document.querySelector('input[data-a-change=lens][data-id=cost]'); const d = document.querySelector('input[data-a-change=lens][data-id=intent]'); return !!c && !c.checked && d.checked; })()"))
     pg.locator("label:has(input[data-a-change=lens][data-id=cost])").first.click(); pg.wait_for_timeout(250)
     check("ticking a chip there changes this tool's row (one Undo step)", ev(pg, "chkLensOn(curP(), 'cost') && curP().checks.rows.find(r => r.id === 'cost').v === 'apply'"))

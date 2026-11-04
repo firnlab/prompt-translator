@@ -28522,9 +28522,10 @@ function c20Add(p, m){ const C = c20Of(p); const x = Object.assign({id: "c" + (+
 const M200 = {raw: null, ran: null};
 { const orig = normalizeProject; normalizeProject = function(p){
     const had = !!p && Object.prototype.hasOwnProperty.call(p, "m200");
+    const m0 = had && p.m200 && typeof p.m200 === "object" ? clone(p.m200) : null;   // the record as stored (the one-level fill would add the new project's keys to it)
     try{ if (!had && M200.raw && p && p.id && !M200.raw.has(p.id)) M200.raw.set(p.id, clone(p)); }catch(e){ console.warn("2.0 move: copy as stored", e); }   // ok:catch without the copy the restore point is made from the loaded project
     const r = orig.apply(this, arguments);
-    if (p && !had) delete p.m200;
+    if (p && !had) delete p.m200; else if (p && m0) p.m200 = m0;
     return r; }; }
 
 /* ---------- 2. the face: which one is shown, and the switch ---------- */

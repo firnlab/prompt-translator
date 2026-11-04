@@ -449,3 +449,61 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   and the file still parsed (cause 62 again, this time a call, not an assignment); the waiting-details count stayed empty. static_checks.js
   now also flags a `// comment` followed by `name.method(…);` at the end of a line; planted in check_the_checks.py.
 - check_the_pick.py must start from a tree whose own test is green: a planted-bug run on a red baseline reads every bug as "caught".
+
+## 2.0.0 Part C — two modes, one ledger (src/v200_modes.js, src/strings28.js, test/e2e200_modes.py)
+- What changes for the owner: every project has a switch "Chat with structure · Pick" (status line, also on the cover). Chat: he types
+  freely; PT answers in a sentence or four and files what he said into the facts book ("✓ Noted as never: “…”" with ✎ and Take back;
+  "Already in your facts book" when it is there), keeps the goal card, the map, Decided, Plan and Events beside the conversation
+  (on a phone: one tap between conversation and workspace), shows the one Next and a few chips; a question PT asks is a pick card
+  in the chat (tap an answer). Pick: the same cards, pages and facts book; before the route is decided its Picks page leads to the
+  route (goal → map → shortlist → compare) and the details wait. Steps, Blueprint, Journey, Swimlanes and Express are gone (their
+  data stays; the Design page keeps the parts map). On first open in 2.0 each project gets a restore point "Before 2.0", then its
+  own 1.x rules go into its facts book and its 1.x design options onto its map; a confirmed design choice is the chosen route.
+- Data for Parts D–E: `MODES = ["pick", "chat"]` (`projMode` reads any other stored value as Pick); `p.chat20 = {v, n, msgs: [{id: c<n>,
+  at, by: you|pt|sys, text, filed: [F…], known: [F…], goal: [field], card: pick card id, dropped, cut: {n, rule, id}, about: tool|pt|both,
+  next, fail, to}]}` (at most 160, this project only); `p.m200 = {v, at, rp, from: {mode, before}, rules, routes, order: decided|early|
+  kept|on, errs, prints: {field: hash}, changed: []}` (a new project: `{fresh: true}`); `p.modeBefore200`; routes moved from 1.x carry
+  `from: "arch:<option id>", old: true`; facts filed by the chat have `src: {k: "chat", ref: "chat:<msg id>"}`, moved 1.x rules `src.k
+  ns|oos|const` with `m200: true`. Functions to reuse: `face20Set(p, v)`, `c20Show(p)`, `c20St(p)` (UI: tab goal|map|decided|plan|events,
+  side chat|ws), `c20Send(p, text)` / `c20Apply(p, msg, r)` (any new talking source: one call, filed, guarded), `c20File(p, text, list,
+  ref)` (file a list of {kind, said, norm} with the quote and the duplicate checks), `c20CodeFile(text)`, `c20Guard(p, text)` (the reply's
+  last rule check), `c20DecidedHTML(p)` (one Decided list for both faces), `c20PickDecideHTML(p)`, `m200Run(p, raw)` / `m200All()`
+  (idempotent), `m200Prints` / `m200Changed`.
+- Cause 90 (owner, 3–4 Nov 2026, "scrap all modes … make a new mode Chat with structure that can do all we want"): six ways of working
+  over one item model; what he said outside the Pick deck (notes, the Express box, the change map) was not filed anywhere binding, and
+  the switchers multiplied the places to look. Now two faces of one ledger: the chat files every message into the facts book (the
+  quote must be in the message — a made-up quote is sent back once; a never / must is also filed by code, so a failed call loses no
+  rule), feedback about PT is never filed (Improve PT offered), a chat question is a pick card through ask once, and the Decided list
+  is one function for both faces. Check: e2e200_modes C1–C3; planted bugs "the chat files nothing into the facts book", "the chat files
+  feedback about PT into the project", "a never is lost when the chat call fails", "a chat answer that breaks your rule is shown", "the
+  chat asks details before the decision", "a question in the chat is asked again", "Pick's Decisions page and the chat's Decided tab
+  differ", "an answer after the decision is not watched by the Route alert", "the old modes are back".
+- Cause 91 (Part A's output check on a free text): a chat reply is one string, so Part A's check could only record a rule break in it
+  (a top-level string is kept, not dropped). Now `c20Guard` leaves out each sentence that still breaks a confirmed rule after the one
+  repair and says so ("Left out of PT's answer …"); the whole reply is replaced when nothing is left. Check: e2e200_modes C2 (TEMPT).
+- Cause 92 (the move to 2.0, owner rules "restore points only the owner deletes", "projects don't get other projects' rules, never"):
+  a move that rewrites data cannot be checked and a move that runs twice adds everything twice. Now `m200Run`: restore point first
+  (the stored copy; an existing "Before 2.0" point is reused, none is ever deleted), then additive steps reading only that project
+  (rules from its constraints, not-in-this-version, constitution; routes from its design options; the decision as a facts-book entry
+  src dec ref route:R…; `order20 = true` only when decided or without detail work — a project mid-way keeps its order and is told how
+  to switch), a hash of every field it had before (`prints`) and the fields that changed (`changed`, must be empty), once per project
+  (`p.m200`; run again = the same: duplicates by ref and by similarity). Check: e2e200_modes C4 and R; planted bugs "the move makes no
+  restore point first", "the move twice adds the rules twice", "the move brings another project's rules", "the move changes a field
+  the project had", "a confirmed 1.x choice is not the chosen route after the move".
+- RC replay (acceptance, e2e200_modes R, green on work/backup-140, work/backup-141 and the made-up bundle): every project of both
+  workspaces is moved, then: nothing lost (the hash per field, and no count lower than in "Before 2.0"), rules never cut (every never /
+  must whole in the prompt with a 2 000-character context budget and in every chat prompt), no cross-project content (no other
+  project's rule in its book, map, chat or prompt; a never said in one project's chat reaches no other), no repeated questions (each
+  question it answered before, asked again in the chat, is dropped), the order (route-splitting before the decision, `<chosen_route>`
+  after, details waiting), the same ledger in both faces (facts book ids, Decided list), and opening again moves nothing twice.
+- Found while building: (1) the 1.6 one-time move recorded `projMode(p)` as the earlier view; with the 1.x views gone that read "pick",
+  so the view a project had was lost — it now keeps the stored value. (2) normalizeProject's one-level fill copied a new project's keys
+  into a stored record (`m200` gained `fresh: true`, the move looked undone and the record changed on every reload) — the stored record
+  is kept as it was; hunt 4 (persist) caught it. (3) A `// comment` put before a closing brace made the file stop parsing; `build.py`
+  still wrote the file — only `node test/static_checks.js` (check 0) says so: run it after every build, as the rules say.
+  (4) The layout audit read screen-reader-only text (`.sr20`) as clipped and a button half under the main area's lower edge as covered
+  by the status bar; both are now skipped (layout141).
+- Left out (not built, say so if asked): the workspace-level "reading hint" when the owner corrects "about the tool / about PT" (one tap
+  "No, it's about my tool" files it as a tool rule instead); sending feedback about PT to Improve PT by itself (one tap opens the report
+  with the words filled in); a resizable split between conversation and workspace (fixed 58/42, one column under 1000 px); the CSS of
+  the five removed views is left in styles.css (no screen uses it). New projects still start in Pick (Settings › default: Pick or Chat).

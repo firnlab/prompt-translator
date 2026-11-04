@@ -339,7 +339,7 @@ with sync_playwright() as pw:
                 Pn = prompts(pg, "chat20")[-1]
                 check(f"[{wsi}] a never said in one project's chat reaches no other project (book, prompt)", "Dropbox" not in Pn and not ev(pg, "factsRead(curP()).entries.some(e => /Dropbox/.test(e.words))"))
             # after a reload: the move does not run again, nothing doubles
-            snap = ev(pg, "JSON.stringify(WS.projects.map(p => [p.id, arr(p.restore).length, factsRead(p).entries.length, m20Read(p).routes.length]))")
+            snap = ev(pg, "JSON.stringify(WS.projects.map(p => [p.id, arr(p.restore).length, factsRead(p).entries.length, m20Read(p).routes.length]).sort((a, b) => a[0] < b[0] ? -1 : 1))")
             ev(pg, "flushSaves()")
             for _ in range(100):
                 if ev(pg, "Store.queue.size === 0 && Store.busy.size === 0"): break
@@ -347,11 +347,11 @@ with sync_playwright() as pw:
             pg.wait_for_timeout(500)
             if ev(pg, "window.__mockPersisted !== false"):
                 pg2 = open_page(ctx, pick=wsi); pg2.wait_for_timeout(800)
-                snap2 = ev(pg2, "JSON.stringify(WS.projects.map(p => [p.id, arr(p.restore).length, factsRead(p).entries.length, m20Read(p).routes.length]))")
+                snap2 = ev(pg2, "JSON.stringify(WS.projects.map(p => [p.id, arr(p.restore).length, factsRead(p).entries.length, m20Read(p).routes.length]).sort((a, b) => a[0] < b[0] ? -1 : 1))")
                 check(f"[{wsi}] after a reload the move does not run again (restore points, entries, routes the same)", snap == snap2, [snap, snap2])
             else:   # a big real-data copy does not fit the mock's localStorage: the same check without the reload
                 again = ev(pg, "(() => { const n = m200All(); return [n, WS.projects.map(p => m200Run(p)).filter(Boolean).length]; })()")
-                snap2 = ev(pg, "JSON.stringify(WS.projects.map(p => [p.id, arr(p.restore).length, factsRead(p).entries.length, m20Read(p).routes.length]))")
+                snap2 = ev(pg, "JSON.stringify(WS.projects.map(p => [p.id, arr(p.restore).length, factsRead(p).entries.length, m20Read(p).routes.length]).sort((a, b) => a[0] < b[0] ? -1 : 1))")
                 check(f"[{wsi}] opening again does not move a project twice (restore points, entries, routes the same)", again == [0, 0] and snap == snap2, [again, snap, snap2])
             ctx.close()
     check("no page errors", not errors, errors[:5])

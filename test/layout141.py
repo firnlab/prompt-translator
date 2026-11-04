@@ -15,7 +15,7 @@ AUDIT = r"""(() => {
     if (!/hidden|clip/.test(cs.overflowY)) continue;
     if (el.clientHeight <= 0 || el.scrollHeight <= el.clientHeight + 4) continue;
     if (el.matches('[data-clamp]') && el.nextElementSibling && el.nextElementSibling.classList.contains('morebtn')) continue;
-    if (el.matches('.clamp3,.app,.main,.rail,.drawer,.dr-body,.dock-notes,svg *,.tstream,.mapwrap *,.bp-node *,.lanes *')) continue;
+    if (el.matches('.clamp3,.app,.main,.rail,.drawer,.dr-body,.dock-notes,svg *,.tstream,.mapwrap *,.bp-node *,.lanes *,.sr20')) continue;   // .sr20: text for screen readers only, clipped on purpose
     if (el.closest('.bp-node,.lpart,.sbar,.ver-chip')) continue;
     if (el.matches('.ititle') && el.closest('.irow:not(.open)')) continue;   // a closed row opens with a click (aria-expanded)
     out.clipped.push((el.className && el.className.baseVal === undefined ? String(el.className) : el.tagName).split(' ').slice(0, 2).join('.') + ':' + (el.scrollHeight - el.clientHeight));
@@ -30,7 +30,7 @@ AUDIT = r"""(() => {
     if (el.closest('details:not([open]) > :not(summary)')) continue;   // inside a closed menu: not shown
     const b = el.getBoundingClientRect(); if (!vis(b)) continue;
     const x = b.left + b.width / 2, y = b.top + b.height / 2; if (y > innerHeight - 1 || x > innerWidth - 1) continue;
-    const sc = el.closest('.main, .dr-body, .modal'); if (sc){ const r = sc.getBoundingClientRect(); if (y < r.top || y > r.bottom || x < r.left || x > r.right) continue; }   // scrolled out of its own area
+    const sc = el.closest('.main, .dr-body, .modal'); if (sc){ const r = sc.getBoundingClientRect(); if (y < r.top || y > r.bottom || x < r.left || x > r.right || b.bottom > r.bottom + 1 || b.top < r.top - 1) continue; }   // scrolled (partly) out of its own area: the bar below it is not covering it
     const top = document.elementFromPoint(x, y); if (!top) continue;
     if (top === el || el.contains(top) || top.contains(el)) continue;
     if (top.closest('.overlay') && !el.closest('.overlay')) continue;   // a dialog on top is expected
@@ -48,16 +48,17 @@ AUDIT = r"""(() => {
 SCREENS = [
   ("cockpit", "go('cockpit')"),
   ("home", "UI.home=true; UI.finish=null; render()"),
-  ("blueprint/capture", "UI.home=false; curP().mode='blueprint'; setPhase('capture')"),
-  ("blueprint/require", "UI.home=false; curP().mode='blueprint'; setPhase('require')"),
-  ("steps/assume", "UI.home=false; curP().mode='steps'; setPhase('assume')"),
-  ("journey/test", "UI.home=false; curP().mode='journey'; setPhase('test')"),
-  ("swimlanes/arch", "UI.home=false; curP().mode='swimlanes'; setPhase('arch')"),
-  ("express", "UI.home=false; curP().mode='express'; setPhase('require')"),
-  ("pick", "UI.home=false; curP().mode='pick'; setPhase('require')"),
-  ("pick filled", "UI.home=false; curP().mode='pick'; window.__pickFixture(curP()); UI.pkCands=true; UI.pkDump=true; render()"),
-  ("inspector", "UI.home=false; curP().mode='blueprint'; setPhase('capture'); UI.drawer=true; UI.panelTab='details'; UI.inspRef='intake:raw'; render()"),
-  ("finish", "UI.home=false; ACTIONS['finish-open']()"),
+  ("page details/capture", "UI.home=false; setPhase('capture'); pgShowPhase(curP(), 'capture')"),
+  ("page details/require", "UI.home=false; setPhase('require'); pgShowPhase(curP(), 'require')"),
+  ("page details/assume", "UI.home=false; setPhase('assume'); pgShowPhase(curP(), 'assume')"),
+  ("page details/test", "UI.home=false; setPhase('test'); pgShowPhase(curP(), 'test')"),
+  ("page details/arch", "UI.home=false; setPhase('arch'); pgShowPhase(curP(), 'arch')"),
+  ("chat", "UI.home=false; face20Set(curP(), 'chat')"),
+  ("chat workspace", "UI.home=false; face20Set(curP(), 'chat'); c20St(curP()).tab='decided'; render()"),
+  ("pick", "face20Set(curP(), 'pick'); UI.home=false; setPhase('require'); render()"),
+  ("pick filled", "face20Set(curP(), 'pick'); UI.home=false; window.__pickFixture(curP()); UI.pkCands=true; UI.pkDump=true; render()"),
+  ("inspector", "UI.home=false; setPhase('capture'); pgShowPhase(curP(), 'capture'); UI.drawer=true; UI.panelTab='details'; UI.inspRef='intake:raw'; render()"),
+  ("finish", "face20Set(curP(), 'pick'); UI.home=false; ACTIONS['finish-open']()"),
   ("review page", "UI.finish=null; UI.drawer=false; (async () => { await updateAffected(curP(), ['req:R1'], {before: {'req:R1': 'x'}}); })()"),
   ("dialog", "UI.modal=null; UI.review=null; UI.home=true; render(); ACTIONS['goal-reuse'] ? ACTIONS['goal-reuse']() : null"),
 ]
