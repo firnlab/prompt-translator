@@ -144,23 +144,8 @@ pickTop = function(p, k, ready){
 /* the overview keeps import and export; the second opinion runs inside the rounds and before every first version */
 { const orig = pickOverview; pickOverview = function(p){ return orig(p).replace(/<button[^>]*data-a="pk-second"[\s\S]*?<\/button>/, ""); }; }
 
-/* ---------- 6. one way to work: Pick, with maps ---------- */
-const SP_MAPS = ["blueprint", "journey", "swimlanes", "steps"];
-let SP_MAP_RENDER = "";
-{ const orig = projMode; projMode = function(p){ if (SP_MAP_RENDER && p && UI.map && UI.map.pid === p.id) return SP_MAP_RENDER; return orig(p); }; }
-modeBar = function(p){
-  const m = UI.map && UI.map.pid === p.id ? UI.map.mode : "";
-  return `<div class="seg modeseg" role="group" aria-label="${esc(t("mode.label"))}"><button class="${m ? "" : "on"}" data-a="pk-map" data-v="pick" aria-pressed="${!m}" title="${esc(t("md.pick"))}">${ic("target")}<span class="mode-l">${esc(t("m.pick"))}</span></button>${SP_MAPS.map(x => `<button class="${m === x ? "on" : ""}" data-a="pk-map" data-v="${x}" aria-pressed="${m === x}" title="${esc(t("sp.map.tip", {x: t("m." + x)}))}">${ic(MODE_ICON[x])}<span class="mode-l">${esc(t("m." + x))}</span></button>`).join("")}</div>`;
-};
-{ const orig = modeBody; modeBody = function(p){
-    if (UI.map && UI.map.pid === p.id && SP_MAPS.includes(UI.map.mode)){
-      SP_MAP_RENDER = UI.map.mode;
-      try{ return `<div class="mode-back bar sp-mapbar"><span class="small">${ic(MODE_ICON[UI.map.mode])} ${esc(t("sp.map.title", {x: t("m." + UI.map.mode)}))}</span><button class="btn xs" data-a="pk-map" data-v="pick">${ic("target")}${esc(t("sp.map.back"))}</button></div>${orig(p)}`; }
-      finally{ SP_MAP_RENDER = ""; }
-    }
-    return orig(p); }; }
-ACTIONS["pk-map"] = el => { const p = curP(); if (!p) return; const v = str(el.dataset.v); UI.map = v && SP_MAPS.includes(v) ? {pid: p.id, mode: v} : null; render(); };
-ACT_NO.add("pk-map"); ACT_NO.add("pk-last-close"); ACT_NO.add("pk-gaps");
+/* ---------- 6. one way to work (1.6: Pick; 2.0: Pick or Chat with structure, v200_modes.js — the 1.x maps Steps, Blueprint, Journey, Swimlanes are gone) ---------- */
+ACT_NO.add("pk-last-close"); ACT_NO.add("pk-gaps");
 /* every project works in Pick from 1.6.0 on (one-time move; the earlier view is kept as the project's map) */
 function spineMoveOnce(){
   if (!WS || !WS.settings || WS.settings.m160) return;
@@ -175,4 +160,4 @@ function spineWake(p){
   if (k.findings.some(f => !f.screened) && !AI.running.has(akey("pk-screen", p.id))){ aiPickScreen(p); return; }   // the screen chains refresh and gaps itself
   if (!pickOpenCards(p).length && (k.log.length || k.cards.length)) pickGapCards(p);
 }
-{ const orig = openProject; openProject = function(id, phase){ if (UI.map && UI.map.pid !== id) UI.map = null; const r = orig(id, phase); setTimeout(() => { const p = curP(); if (p && p.id === id && UI.view === "project") spineWake(p); }, 400); return r; }; }
+{ const orig = openProject; openProject = function(id, phase){ const r = orig(id, phase); setTimeout(() => { const p = curP(); if (p && p.id === id && UI.view === "project") spineWake(p); }, 400); return r; }; }

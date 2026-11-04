@@ -204,12 +204,7 @@ function partPanel(p, cid){
     <div class="eyebrow">${esc(t("bp.linked"))}</div>
     ${phs.length ? phs.map(o => `<div class="stack" style="gap:6px"><span class="small muted">${esc(phName(o))}</span>${itemList(p, its.filter(i => i.ph === o))}</div>`).join("") : `<p class="small muted">${esc(t("bp.nolinks"))}</p>`}</section>`;
 }
-/* ---------- Blueprint mode and the overview map ---------- */
-function modeBlueprint(p){
-  const ph = p.focus.ph;
-  // 1.4.1: the map uses the whole width; a selected part opens in the inspector (no squeezed side column next to it)
-  return `<div class="stack">${lensBar(p)}<div class="stack">${mapBlock(p, {id: "bp"})}<p class="hint">${esc(t("bp.hint141"))}</p></div>${fullStep(p, ph)}</div>`;
-}
+/* ---------- the overview map (2.0: the Blueprint mode is gone; the parts map is the body of the Design page) ---------- */
 function overviewMap(p){
   if (!arr(p.arch.components).length) return `<h2>${esc(t("home.stages"))}</h2>${stageMap(p)}<p class="hint">${esc(t("home.nomap"))}</p>`;
   return `<div class="row"><h2 style="flex:1 1 12em">${esc(t("home.map"))}</h2></div>${lensBar(p)}${(UI.mapDetail || "parts") === "stages" ? stageMap(p) : mapBlock(p, {id: "ov"})}`;

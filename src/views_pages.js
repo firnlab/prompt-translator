@@ -93,7 +93,7 @@ function viewSettings(){
     body = `<div class="stack lg">
       <div class="stack"><h3>${esc(t("set.lang"))}</h3><div class="seg">${LANGS.map(l => `<button class="${LANG === l.id ? "on" : ""}" data-a="set-lang" data-l="${l.id}">${esc(l.label)}</button>`).join("")}</div><p class="hint">${esc(t("set.langhint"))}</p></div>
       <div class="stack"><h3>${esc(t("set.work"))}</h3><div class="grid3">
-        <label class="fld"><span>${esc(t("set.defmode"))}</span>${bindSelect("ws:settings.defaultMode", s.defaultMode || "steps", MODES.map(m => [m, t("m." + m)]))}</label>
+        <label class="fld"><span>${esc(t("set.defmode"))}</span>${bindSelect("ws:settings.defaultMode", projMode(null), MODES.map(m => [m, t("m." + m)]))}</label>
         <div class="fld"><span>${esc(t("help.level"))}</span>${helpSeg()}<span class="hint">${esc(t("help.tip." + helpLevel()))}</span></div>
         </div>
         <label class="chk"><input type="checkbox" data-bind="ws:settings.fileOnFinish" ${s.fileOnFinish !== false ? "checked" : ""}>${esc(t("set.fileonfinish"))}</label>

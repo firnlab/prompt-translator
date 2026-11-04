@@ -2,11 +2,10 @@
 const PHASE_IDS = ["capture","understand","interview","assume","require","arch","build","review","test","launch","release","operate"];
 const PHASE_GROUPS = [{id:"define", phases:["capture","understand","interview","assume","require"]}, {id:"design", phases:["arch","build","review","test"]}, {id:"run", phases:["launch","release","operate"]}];
 const PHASE_EN = {capture:"Capture", understand:"Understand", interview:"First-questions", assume:"Assumptions-risks", require:"Requirements", arch:"Architecture", build:"Build-brief", review:"Review", test:"Test", launch:"Launch", release:"Release", operate:"Operate"};
-const MODES = ["steps","blueprint","journey","swimlanes","express"];
-const SUGGEST = {capture:"express", understand:"express", interview:"steps", assume:"steps", require:"steps", arch:"blueprint", build:"blueprint", review:"steps", test:"steps", launch:"steps", release:"journey", operate:"swimlanes"};
+const MODES = [];   // 2.0: two faces, Pick (v150_pick.js) and Chat with structure (v200_modes.js); a stored 1.x view (steps, blueprint …) reads as Pick
 const SPECIAL = ["launch","release","operate"];
 const phName = id => t("ph." + id);
-function projMode(p){ return MODES.includes(p.mode) ? p.mode : (MODES.includes(WS.settings.defaultMode) ? WS.settings.defaultMode : "steps"); }
+function projMode(p){ return p && MODES.includes(p.mode) ? p.mode : (MODES.includes(WS.settings.defaultMode) ? WS.settings.defaultMode : "pick"); }
 function hashStr(s){ let h = 2166136261; for (let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); }
 const isRiskyA = a => a.impact * a.risk >= 12;
 const isBigR = r => r.likelihood * r.impact >= 12;

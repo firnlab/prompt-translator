@@ -918,7 +918,7 @@ function modePick(p){
   else main = `<section class="panel pk-empty"><p>${esc(k.enough ? t("pk.enough") + (k.enoughWhy ? " " + k.enoughWhy : "") : t("pk.nonext"))}</p>${k.cands && k.cands.likelyWrong ? `<p class="small muted">${esc(t("pk.cands.wrong", {x: k.cands.likelyWrong}))}</p>` : ""}<div class="row">${aiBtn("pk-next", k.enough ? t("pk.deeper") : t("pk.next"), "M", {primary: !k.enough, key: "pick"})}</div></section>`;
   return `<div class="pk" data-anchor="pick">${pickTop(p, k, ready)}${busyHTML("pick")}${busyHTML("pk-understand")}${busyHTML("pk-research")}<div class="pk-deck">${main}</div>${pickTryPanel(p, ready)}${pickOverview(p)}${pickParked(p)}${pickFindings(p)}</div>`;
 }
-{ const orig = modeBody; modeBody = function(p){ return projMode(p) === "pick" ? modePick(p) : orig(p); }; }
+{ const orig = modeBody; modeBody = function(p){ return MODES.includes(projMode(p)) ? modePick(p) : orig(p); }; }
 
 /* ---------- actions ---------- */
 UI.pkSel = UI.pkSel || {};
@@ -954,7 +954,7 @@ Object.assign(ACTIONS, {
     touch(p); actCloseSoon(p.id); render(); pickAfter(p); },
   "pk-change": el => { const p = curP(); if (!p) return; const k = pickOf(p), e = k.log.find(x => x.id === el.dataset.id); if (!e || !e.card) return; const had = k.cards.find(c => c.replaces === e.id); if (had){ UI.flashRef = "pick:" + had.id; render(); return; } actOpen(p, t("int.change"));
     const c = Object.assign({}, e.card, {target: e.card.target || e.target, id: uid("pk"), replaces: e.id, by: "you", at: now(), round: k.session.n}); k.cards.unshift(c); UI.pkSel[c.id] = arr(e.keys); UI.qDraft["pk-" + c.id] = str(e.own); touch(p); actCloseSoon(p.id);
-    if (projMode(p) !== "pick"){ p.mode = "pick"; UI.home = false; UI.drawer = false; }
+    UI.home = false; UI.drawer = false;   // both faces show the card again (Pick in its deck, Chat with structure in the conversation)
     UI.flashRef = "pick:" + c.id; render(); },
   "pk-ovfold": () => { UI.pkOv = UI.pkOv === false; render(); },
   "pk-second": () => { const p = curP(); if (p) return costGuard(p, "pk-second", () => aiPickSecond(p)); },
@@ -1061,10 +1061,9 @@ function pickDefaultsOnce(){
   WS.settings.modeBefore150 = MODES.includes(WS.settings.defaultMode) ? WS.settings.defaultMode : "steps";
   WS.settings.defaultMode = "pick"; WS.settings.m150 = now(); saveWs();
 }
-{ const orig = projMode; projMode = function(p){ if (p && !MODES.includes(p.mode) && WS.settings && WS.settings.m150 && WS.settings.modeBefore150 && str(p.createdAt) < str(WS.settings.m150)) return WS.settings.modeBefore150; return orig(p); }; }
-/* in Pick, the deck is the guide: the step tips and the guide strip of the other views stay out of the way */
-{ const orig = momentCard; momentCard = function(p){ return p && projMode(p) === "pick" ? "" : orig(p); }; }
-{ const orig = guideStrip; guideStrip = function(p){ return p && projMode(p) === "pick" ? "" : orig(p); }; }
+/* in both faces (Pick, Chat with structure) the deck and the chat are the guide: the 1.x step tips and the guide strip stay out of the way */
+{ const orig = momentCard; momentCard = function(p){ return p ? "" : orig(p); }; }
+{ const orig = guideStrip; guideStrip = function(p){ return p ? "" : orig(p); }; }
 
 { const orig = openWorkspace; openWorkspace = async function(id){ const r = await orig(id); if (UI.wsReady && !UI.fatal && WS.id === id) pickDefaultsOnce(); return r; }; }   // a workspace that failed to load is never written
 
@@ -1115,10 +1114,6 @@ SPECIAL_ANCHOR.proof = ["arch", ""];
 PHASE_OF.proof = "arch";
 
 /* ---------- Pick and the rest of the shell ---------- */
-// the steps you start a design in suggest Pick (no "Suggested here" on another view while you pick)
-for (const ph of ["capture","understand","interview"]) SUGGEST[ph] = "pick";
-// the stage bar in Pick opens that step in Steps; the bar above it brings you back to Pick
-for (const a of ["goto","stage"]){ const orig = ACTIONS[a]; ACTIONS[a] = function(el){ const p = curP(); if (p && UI.view === "project" && projMode(p) === "pick" && !UI.home){ UI.backMode = {pid: p.id, mode: "pick"}; p.mode = "steps"; } return orig.apply(this, arguments); }; }
 // Pick's own commands in the palette
 { const orig = PALETTE_CMDS; PALETTE_CMDS = () => { const c = orig(), p = UI.view === "project" ? curP() : null;
   if (p){ const go = a => () => { if (projMode(p) !== "pick"){ p.mode = "pick"; touch(p); render(); } const f = ACTIONS[a]; if (f) f({dataset: {}}); };

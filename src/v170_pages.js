@@ -10,7 +10,7 @@ const PG_OF_PHASE = {}; for (const [pg, phs] of Object.entries(PG_PHASES)) for (
 /* a step ref the old screens use → the page it lives on */
 const PG_OF_REF = {goal: "idea", "#pk-deck": "picks", "#pk-research": "picks", "#pk-summary": "picks", "#pk-try": "try", arch: "design", review: "review", test: "review", build: "build", release: "run", run: "run"};
 const PG_ICON = {idea: "target", picks: "list", try: "play", design: "layers", review: "shield", build: "bolt", run: "heart"};
-function pgOn(p){ return !!p && projMode(p) === "pick" && !(UI.map && UI.map.pid === p.id); }
+function pgOn(p){ return !!p && MODES.includes(projMode(p)); }   // 2.0: the pages are the structure of both faces (Pick and Chat with structure)
 /** the station of the one next step */
 function pgNextPage(s){ const nx = s.next || {}; return nx.a === "pk-try" ? "try" : nx.a === "pk-gaps" ? "picks" : PG_OF_REF[nx.ref] || (nx.ref === "goal" ? "idea" : "run"); }
 /** the track: done stations stay filled, exactly one station is current (the one of the next step), the rest is to do */
@@ -28,8 +28,7 @@ function pgOpen(p, id, {flash = null} = {}){
   if (!PG_PAGES.includes(id)) return;
   pushNav();
   if (UI.finish && UI.finish.pid === p.id && (UI.finish.step === "decide" || UI.finish.step === "done")) UI.finishPaused = UI.finish;
-  UI.pg = {pid: p.id, id}; UI.home = false; UI.finish = null; UI.nav = null; UI.map = null;
-  if (projMode(p) !== "pick"){ p.mode = "pick"; UI.backMode = null; touch(p); }
+  UI.pg = {pid: p.id, id}; UI.home = false; UI.finish = null; UI.nav = null;
   if (flash){ UI.flashRef = flash; UI.navRef = flash; UI.navTry = 0; }
   render(); const m = document.querySelector(".main"); if (m) m.scrollTop = 0;
 }
@@ -43,9 +42,9 @@ function pgShowPhase(p, ph){ const id = PG_OF_PHASE[ph]; if (!id) return false; 
     const p = curP();
     if (p && pgOn(p) && !UI.finish && PG_OF_REF[ref]){ const id = PG_OF_REF[ref]; pgOpen(p, id); const ph = ref.startsWith("#") ? "" : refPhase(p, ref); if (ph && PG_PHASES[id].includes(ph)){ p.focus = {ph, id: null}; UI.phase = ph; pgShowPhase(p, ph); }   // ok:field  focus is the existing cursor field
       UI.flashRef = ref; UI.navRef = ref; UI.navTry = 0; render(); return; }
-    const was = p && projMode(p) === "pick";
+    const was = p && pgOn(p);
     const r = orig(ref, o);
-    if (p && was && projMode(p) === "pick" && UI.view === "project" && !UI.home && ref && /:/.test(ref)){ const ph = refPhase(p, ref); if (pgShowPhase(p, ph)){ UI.flashRef = UI.flashRef || ref; UI.navRef = UI.flashRef; render(); } }
+    if (p && was && pgOn(p) && UI.view === "project" && !UI.home && ref && /:/.test(ref)){ const ph = refPhase(p, ref); if (pgShowPhase(p, ph)){ UI.flashRef = UI.flashRef || ref; UI.navRef = UI.flashRef; render(); } }
     return r; }; }
 /* a step button inside a page stays on the page: the details open on that step */
 { const orig = ACTIONS["goto"]; ACTIONS["goto"] = function(el){ const p = curP(); const ph = el && el.dataset ? el.dataset.ph : ""; if (p && pgOn(p) && !UI.home && PG_OF_PHASE[ph] && PHASE_IDS.includes(ph)){ p.focus = {ph, id: null}; UI.phase = ph; pgShowPhase(p, ph); if (typeof resetBase === "function") resetBase(p); render(); return; } return orig.apply(this, arguments); }; }   // ok:field  focus is the existing cursor field (DIFF_SKIP)
@@ -222,8 +221,7 @@ function pageHTML(p, id){
     const id = pgCur(p); UI.pgInPage = true;
     try{ return pageHTML(p, id); } finally{ UI.pgInPage = false; } }; }
 /* the old stage bar and the mode bar leave the main path: the page bar carries the cover and the seven pages */
-{ const orig = stageBar; stageBar = function(p){ return projMode(p) === "pick" ? "" : orig(p); }; }
-{ const orig = modeBar; modeBar = function(p){ return projMode(p) === "pick" ? "" : orig(p); }; }
+{ const orig = stageBar; stageBar = function(p){ return pgOn(p) ? "" : orig(p); }; }
 /* the cover shows the page bar too */
 { const orig = statusLine; statusLine = function(p){ return projMode(p) === "pick" && UI.home ? pgBar(p) + orig(p) : orig(p); }; }
 

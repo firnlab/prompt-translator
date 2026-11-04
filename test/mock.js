@@ -81,6 +81,22 @@
     if (task === "map-goalfit"){ const ids = [...prompt.matchAll(/"id":"(R\d+)"/g)].map(m => m[1]); return {effects: ids.map((id, i) => ({id, e: ["rise", "fall", "out"][i] || "same", why: "mock effect " + i}))}; }
     return null;
   }
+  // 2.0 Part C: the chat of "Chat with structure" (one call per message): what it files, the reply, at most one question card
+  function chatMock(prompt){
+    window.__chatCalls = (window.__chatCalls || 0) + 1;
+    const mm = /<message>([\s\S]*?)<\/message>/.exec(prompt); let msg = ""; try{ msg = JSON.parse(mm[1]); }catch(e){}
+    const sent = msg.split(/(?<=[.!?])\s+/).filter(Boolean), file = [];
+    for (const s of sent){ if (/\bnever\b/i.test(s)) file.push({kind: "never", said: s, norm: s}); else if (/\bmust\b/i.test(s)) file.push({kind: "must", said: s, norm: s}); else if (/\b(has|have|uses|use) (a|an|the)\b/i.test(s)) file.push({kind: "fact", said: s, norm: s}); else if (/\bwe take\b|\bI choose\b/i.test(s)) file.push({kind: "decision", said: s, norm: s}); }
+    const about = /\bPT\b|\bbutton\b|\bscreen\b/.test(msg) ? (file.length ? "both" : "pt") : "tool";
+    const goalEmpty = /"outcome":"empty"/.test(prompt);
+    const out = {reply: "Noted. " + (file.length ? "I filed " + file.length + " entries." : "Tell me more."), about, file: about === "pt" ? [] : file, goal: goalEmpty && about !== "pt" ? {outcome: sent[0] || msg} : {}, cards: [], next: "map"};
+    if (/ASKME/.test(msg)) out.cards = [{q: "Must it work during phone calls?", why: "This removes or keeps the audio-only routes.", target: "decision", multi: false, options: [{k: "A", label: "Yes, on calls", text: "It must work during calls", ex: "Dad adds milk while on the phone"}, {k: "B", label: "No", text: "Calls do not matter", ex: "Lists are edited between calls"}], rec: 0, recWhy: "Most families talk while shopping", recBasis: "estimate", mind: "If nobody calls while shopping"}];
+    if (/ASKAGAIN/.test(msg)) out.cards = [{q: "Who uses the list?", why: "Decides the sharing routes.", target: "decision", multi: false, options: [{k: "A", label: "The four of us", text: "family"}, {k: "B", label: "Only me", text: "one person"}], rec: 0, recWhy: "You said family", recBasis: "estimate", mind: ""}];
+    if (/QUOTEBAD/.test(msg) && !window.__chatRepaired){ window.__chatRepaired = 1; out.file = [{kind: "never", said: "something the person never said", norm: "made up"}]; }
+    if (/TEMPT/.test(msg)) out.reply = "Easiest: log in to your Google account and share a Google Keep list.";
+    if (window.__chatHook) return window.__chatHook(out, prompt, msg);
+    return out;
+  }
   function respond(prompt){
     const m = /\[\[task:([a-z0-9-]+)\]\]/.exec(prompt); const task = m ? m[1] : "?";
     if (window.__mockOverride){ const o = window.__mockOverride(task, prompt); if (o) return o; }
@@ -202,6 +218,7 @@
     if (task === "ask-once") return window.__askOnce || {known: []};
     /* 2.0 Part B: the solution map (lenses, red team, merge, prove, alert, repair, goal effect, ask) */
     if (task.startsWith("map-")){ const r = mapMock(task, prompt); if (r) return r; }
+    if (task === "chat20") return chatMock(prompt);
     if (task === "cone") return window.__cone || coneMock(prompt);   // 1.8 the cone: kinds of tool from one sentence (spans taken from the sentence)
     if (task === "cone-say") return window.__coneSay || coneSayMock(prompt);
     if (task === "pick-resq") return {research: "fundraising strategies for families in need", platform: "", parts: ["weekly scheduled research", "a page with filters"]};

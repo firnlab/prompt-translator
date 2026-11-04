@@ -7876,6 +7876,109 @@ Object.assign(STR, {
 "m20.al.neutral":["fits any route","passt zu jedem Weg","适用于任何路线"]
 });
 
+/* 2.0.0 Part C · two faces of one ledger: Pick and Chat with structure; the move to 2.0 (v200_modes.js) */
+Object.assign(STR, {
+"m.chat":["Chat with structure","Chat mit Struktur","结构化对话"],
+"mg.chat":["Good when you would rather talk: say anything, PT answers, files what it learns into your facts book and keeps the goal and the map beside the chat.","Gut, wenn du lieber erzählst: sag irgendwas, PT antwortet, legt ab, was es lernt, im Faktenbuch ab und hält Ziel und Karte neben dem Chat.","适合更想直接说的你：随便说，PT 回答，把学到的内容记入事实簿，并把目标和方案图放在对话旁边。"],
+"face.label":["How you work on this project","Wie du an diesem Projekt arbeitest","你如何处理这个项目"],
+"face.tip.chat":["Talk freely; PT files what it learns and keeps the goal and the map beside the chat","Frei erzählen; PT legt ab, was es lernt, und hält Ziel und Karte neben dem Chat","自由交谈；PT 记录学到的内容，并把目标和方案图放在旁边"],
+"face.tip.pick":["One decision at a time: tap options, the pages show the rest","Eine Entscheidung nach der anderen: Optionen antippen, die Seiten zeigen den Rest","一次一个决定：点选项，其余内容在各页面中"],
+"face.switched":["Now in {x}. Everything you said and decided is the same in both.","Jetzt in {x}. Alles, was du gesagt und entschieden hast, ist in beiden gleich.","已切换到{x}。你说过和决定的一切在两边都相同。"],
+"c20.next.say":["Tell PT what you want","Sag PT, was du willst","告诉 PT 你想要什么"],
+"c20.busy":["PT is answering …","PT antwortet …","PT 正在回答……"],
+"c20.wait":["PT is still answering your last message.","PT beantwortet noch deine letzte Nachricht.","PT 还在回答你上一条消息。"],
+"c20.act.you":["Your message in the chat","Deine Nachricht im Chat","你在对话中的消息"],
+"c20.act":["Chat: {x}","Chat: {x}","对话：{x}"],
+"c20.act.tool":["Filed as a rule for the tool","Als Regel für das Tool abgelegt","已记为工具规则"],
+"c20.fail":["I could not answer this time (the error is kept in Events). What you said is saved, and any never or must in it is in your facts book.","Diesmal konnte ich nicht antworten (der Fehler steht unter Ereignisse). Was du gesagt hast, ist gespeichert, und jedes Nie oder Muss darin steht im Faktenbuch.","这次我没能回答（错误已记录在“事件”中）。你说的内容已保存，其中的“绝不”或“必须”已记入事实簿。"],
+"c20.log":["Chat: {n} filed into the facts book","Chat: {n} im Faktenbuch abgelegt","对话：{n} 条记入事实簿"],
+"c20.why.card":["PT asked this in the chat","PT hat das im Chat gefragt","PT 在对话中问了这个"],
+"c20.src":["chat","Chat","对话"],
+"facts.src.chat":["the chat","der Chat","对话"],
+"c20.k.never":["never","nie","绝不"],
+"c20.k.must":["must","muss","必须"],
+"c20.k.fact":["fact","Fakt","事实"],
+"c20.k.decision":["decided","entschieden","已决定"],
+"c20.k.tool":["tool rule","Tool-Regel","工具规则"],
+"c20.you":["You","Du","你"],
+"c20.noted":["Noted as {k}:","Notiert als {k}:","已记为{k}："],
+"c20.noted.off":["Taken back ({k}):","Zurückgenommen ({k}):","已撤回（{k}）："],
+"c20.undo1":["Take back","Zurücknehmen","撤回"],
+"c20.known":["Already in your facts book:","Steht schon im Faktenbuch:","事实簿里已有："],
+"c20.goal":["Goal card, PT's guess: {x}","Zielkarte, Vermutung von PT: {x}","目标卡（PT 的猜测）：{x}"],
+"c20.about.pt":["This reads as feedback about PT, not your tool: nothing was filed for the project.","Das klingt nach Rückmeldung zu PT, nicht zu deinem Tool: fürs Projekt wurde nichts abgelegt.","这听起来是对 PT 的反馈，而不是关于你的工具：没有记入项目。"],
+"c20.about.both":["Part of this is about PT itself.","Ein Teil davon betrifft PT selbst.","其中一部分是关于 PT 本身的。"],
+"c20.about.send":["Send to Improve PT","An «PT verbessern» senden","发送到“改进 PT”"],
+"c20.about.tool":["No, it's about my tool","Nein, es geht um mein Tool","不，这是关于我的工具"],
+"c20.dropped":["PT had a question, but you answered it before; it was not asked again.","PT hatte eine Frage, aber du hast sie schon beantwortet; sie wurde nicht nochmals gestellt.","PT 本想提问，但你之前已回答过；没有再问。"],
+"c20.card.below":["Question below: tap an answer","Frage unten: tippe eine Antwort an","问题在下方：点一个答案"],
+"c20.card.done":["Answered:","Beantwortet:","已回答："],
+"c20.cut":["Left out of PT's answer: sentences that break your rule ({n})","Aus der Antwort von PT weggelassen: Sätze, die deine Regel brechen ({n})","已从 PT 的回答中删去违反你规则的句子（{n}）"],
+"c20.cut.all":["My answer broke one of your rules, so it is left out. Ask again, or say what to do instead.","Meine Antwort hat eine deiner Regeln gebrochen, darum ist sie weggelassen. Frag nochmals oder sag, was stattdessen.","我的回答违反了你的一条规则，因此已删去。请再问一次，或告诉我该怎么做。"],
+"c20.retry":["Try again","Nochmals versuchen","再试一次"],
+"c20.chip.idea":["Describe your idea","Beschreibe deine Idee","描述你的想法"],
+"c20.chip.idea.say":["I want a tool that ","Ich möchte ein Tool, das ","我想要一个工具，它"],
+"c20.chip.goal":["Check the goal card","Zielkarte prüfen","检查目标卡"],
+"c20.chip.map":["Show all routes","Alle Wege zeigen","显示所有路线"],
+"c20.chip.short":["Shortlist on the map ({n} so far)","Auf der Karte vormerken (bisher {n})","在方案图上加入候选（目前 {n}）"],
+"c20.chip.compare":["Compare the {n} on the shortlist","Die {n} vorgemerkten vergleichen","比较候选中的 {n} 条"],
+"c20.chip.never":["Add a never …","Ein Nie hinzufügen …","添加一条“绝不” …"],
+"c20.chip.never.say":["We never ","Niemals ","我们绝不"],
+"c20.chip.next":["What's next?","Was kommt als Nächstes?","下一步是什么？"],
+"c20.chip.next.say":["What is the next step?","Was ist der nächste Schritt?","下一步是什么？"],
+"c20.ask.t":["PT asks","PT fragt","PT 提问"],
+"c20.ask.more":["{n} more in Pick","{n} weitere in Wählen","在“选择”中还有 {n} 个"],
+"c20.dec.t":["Decided ({n})","Entschieden ({n})","已决定（{n}）"],
+"c20.dec.sub":["The same list in both faces: from your facts book and your picks.","Dieselbe Liste in beiden Ansichten: aus deinem Faktenbuch und deinen Wahlen.","两种方式中同一份清单：来自你的事实簿和你的选择。"],
+"c20.dec.route":["Route {x}","Weg {x}","路线 {x}"],
+"c20.dec.pick":["picked","gewählt","已选择"],
+"c20.dec.second":["picked (second opinion)","gewählt (Zweitmeinung)","已选择（第二意见）"],
+"c20.dec.picks":["Picks you answered ({n})","Deine beantworteten Wahlen ({n})","你已回答的选择（{n}）"],
+"c20.dec.noroute":["No route taken yet: details wait until you take one on the map.","Noch kein Weg gewählt: Details warten, bis du auf der Karte einen nimmst.","还没有选定路线：细节要等你在方案图上选定一条之后。"],
+"c20.dec.noroute1":["No route from the map taken yet.","Noch kein Weg von der Karte gewählt.","还没有从方案图上选定路线。"],
+"c20.dec.none":["Nothing decided yet.","Noch nichts entschieden.","还没有任何决定。"],
+"c20.plan.t":["The plan: goal → map → decide → details","Der Plan: Ziel → Karte → Entscheiden → Details","计划：目标 → 方案图 → 决定 → 细节"],
+"c20.plan.sub":["No detail questions before a route is taken.","Keine Detailfragen, bevor ein Weg gewählt ist.","选定路线前不问细节问题。"],
+"c20.plan.sub1":["This project keeps the order it was made with; take a route on the map to switch to the new one.","Dieses Projekt behält seine bisherige Reihenfolge; nimm einen Weg auf der Karte, um zur neuen zu wechseln.","此项目保留原来的顺序；在方案图上选定一条路线即可切换到新顺序。"],
+"c20.plan.pick":["See the pages in Pick","Die Seiten in Wählen ansehen","在“选择”中查看各页面"],
+"c20.ev.t":["What happened","Was passiert ist","发生了什么"],
+"c20.ev.none":["No map events yet.","Noch keine Ereignisse auf der Karte.","方案图上还没有事件。"],
+"c20.ev.errs":["Errors kept: {n}","Gespeicherte Fehler: {n}","已保留的错误：{n}"],
+"c20.tab.decided":["Decided","Entschieden","已决定"],
+"c20.tab.plan":["Plan","Plan","计划"],
+"c20.tab.events":["Events","Ereignisse","事件"],
+"c20.ws.back":["Back to the map","Zurück zur Karte","返回方案图"],
+"c20.ws":["Workspace","Arbeitsbereich","工作区"],
+"c20.conv":["Conversation","Gespräch","对话"],
+"c20.chips":["Quick answers","Schnelle Antworten","快速回答"],
+"c20.log.t":["The conversation with PT","Das Gespräch mit PT","与 PT 的对话"],
+"c20.hello":["Tell me what you want to make, in your own words. I will file what you say (your nevers and musts first), keep the goal card beside us, and show you all the ways to get there before we go into details.","Erzähl mir in deinen Worten, was du machen willst. Ich lege ab, was du sagst (zuerst deine Nie und Muss), halte die Zielkarte neben uns und zeige dir alle Wege dorthin, bevor wir in die Details gehen.","用你自己的话告诉我你想做什么。我会记下你说的内容（先记你的“绝不”和“必须”），把目标卡放在旁边，并在进入细节之前给你看所有可行的路线。"],
+"c20.hello.back":["Here is your project. Say anything: a new fact, a never, a question. Everything you decided in Pick is here too.","Hier ist dein Projekt. Sag irgendwas: einen neuen Fakt, ein Nie, eine Frage. Alles, was du in Wählen entschieden hast, ist auch hier.","这是你的项目。随便说：一个新事实、一条“绝不”、一个问题。你在“选择”中决定的一切这里也都有。"],
+"c20.ph":["Say anything: about the tool, about PT, a fact, a never, a question …","Sag irgendwas: zum Tool, zu PT, einen Fakt, ein Nie, eine Frage …","随便说：关于工具、关于 PT、一个事实、一条“绝不”、一个问题……"],
+"c20.send":["Send","Senden","发送"],
+"c20.need":["Write something first.","Schreib zuerst etwas.","请先写点内容。"],
+"c20.hint":["Ctrl+Enter sends. What you say is filed into this project's facts book only.","Ctrl+Enter sendet. Was du sagst, landet nur im Faktenbuch dieses Projekts.","Ctrl+Enter 发送。你说的内容只记入此项目的事实簿。"],
+"c20.pk.k":["Before details: the route","Vor den Details: der Weg","细节之前：先定路线"],
+"c20.pk.h.map":["First see all the ways to reach your goal","Zuerst alle Wege zu deinem Ziel sehen","先看所有能达成目标的路线"],
+"c20.pk.h.short":["Shortlist 2–3 routes, then compare","2–3 Wege vormerken, dann vergleichen","把 2–3 条路线加入候选，然后比较"],
+"c20.pk.h.cmp":["Compare your shortlist and take one","Vergleiche deine Auswahl und nimm einen","比较候选并选定一条"],
+"c20.pk.sub":["Detail questions wait until a route is taken, so nothing has to be asked again for another route.","Detailfragen warten, bis ein Weg gewählt ist, damit für einen anderen Weg nichts nochmals gefragt werden muss.","细节问题要等选定路线后再问，这样换路线时无需重问。"],
+"c20.pk.short":["☆ Shortlist","☆ Vormerken","☆ 加入候选"],
+"c20.pk.shorted":["★ On the shortlist","★ Vorgemerkt","★ 已在候选中"],
+"c20.pk.card":["Details","Details","详情"],
+"c20.mig.rp":["Before 2.0","Vor 2.0","2.0 之前"],
+"c20.mig.label":["from your earlier work","aus deiner früheren Arbeit","来自你之前的工作"],
+"c20.mig.oos":["Not in this version: {x}","Nicht in dieser Version: {x}","此版本不包含：{x}"],
+"c20.mig.evidence":["From your earlier design (1.x), not re-checked against the new map","Aus deinem früheren Entwurf (1.x), nicht gegen die neue Karte geprüft","来自你之前的设计（1.x），尚未按新方案图重新检查"],
+"c20.mig.dec":["Chosen design: {x}","Gewählter Entwurf: {x}","已选设计：{x}"],
+"c20.mig.decwhy":["You chose it before 2.0","Du hast ihn vor 2.0 gewählt","你在 2.0 之前选定的"],
+"c20.mig.ev":["Routes from your earlier design on the map: {n} (not re-checked yet)","Wege aus deinem früheren Entwurf auf der Karte: {n} (noch nicht geprüft)","方案图上来自你之前设计的路线：{n} 条（尚未重新检查）"],
+"c20.mig.msg.decided":["Moved to PT 2.0: restore point “Before 2.0” first. Your rules in the facts book: {r}, routes from your earlier design on the map: {n}; and your chosen design is the chosen route. Nothing was removed.","Zu PT 2.0 umgezogen: zuerst der Wiederherstellungspunkt «Vor 2.0». {r} deiner Regeln stehen im Faktenbuch, {n} Wege aus deinem früheren Entwurf auf der Karte, und dein gewählter Entwurf ist der gewählte Weg. Nichts wurde entfernt.","已迁移到 PT 2.0：先建立了还原点“2.0 之前”。你的 {r} 条规则已记入事实簿，你之前设计中的 {n} 条路线已在方案图上，你选定的设计就是已选路线。没有删除任何内容。"],
+"c20.mig.msg.early":["Moved to PT 2.0: restore point “Before 2.0” first. Your rules in the facts book: {r}; earlier design options on the map: {n}. Next: goal, then all routes, then you decide; details come after. Nothing was removed.","Zu PT 2.0 umgezogen: zuerst der Wiederherstellungspunkt «Vor 2.0». {r} deiner Regeln stehen im Faktenbuch und {n} frühere Entwurfsoptionen auf der Karte. Als Nächstes: Ziel, dann alle Wege, dann entscheidest du; Details kommen danach. Nichts wurde entfernt.","已迁移到 PT 2.0：先建立了还原点“2.0 之前”。你的 {r} 条规则已记入事实簿，{n} 个之前的设计选项已在方案图上。接下来：目标，然后所有路线，然后由你决定；细节在之后。没有删除任何内容。"],
+"c20.mig.msg.kept":["Moved to PT 2.0: restore point “Before 2.0” first. Your rules in the facts book: {r}; earlier design options on the map: {n}. This project keeps its order (it has details already); take a route on the map to switch to goal → map → decide → details. Nothing was removed.","Zu PT 2.0 umgezogen: zuerst der Wiederherstellungspunkt «Vor 2.0». {r} deiner Regeln stehen im Faktenbuch und {n} frühere Entwurfsoptionen auf der Karte. Dieses Projekt behält seine Reihenfolge (es hat schon Details); nimm einen Weg auf der Karte, um zu Ziel → Karte → Entscheiden → Details zu wechseln. Nichts wurde entfernt.","已迁移到 PT 2.0：先建立了还原点“2.0 之前”。你的 {r} 条规则已记入事实簿，{n} 个之前的设计选项已在方案图上。此项目保留原来的顺序（已有细节）；在方案图上选定路线即可切换到 目标 → 方案图 → 决定 → 细节。没有删除任何内容。"],
+"c20.mig.msg.on":["Moved to PT 2.0: restore point “Before 2.0” first. Your rules in the facts book: {r}. Nothing was removed.","Zu PT 2.0 umgezogen: zuerst der Wiederherstellungspunkt «Vor 2.0». {r} deiner Regeln stehen im Faktenbuch. Nichts wurde entfernt.","已迁移到 PT 2.0：先建立了还原点“2.0 之前”。你的 {r} 条规则已记入事实簿。没有删除任何内容。"]
+});
+
 /* ===================== CORE ===================== */
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
@@ -8556,11 +8659,10 @@ End your reply with two lines: the job id and its final status.`;
 const PHASE_IDS = ["capture","understand","interview","assume","require","arch","build","review","test","launch","release","operate"];
 const PHASE_GROUPS = [{id:"define", phases:["capture","understand","interview","assume","require"]}, {id:"design", phases:["arch","build","review","test"]}, {id:"run", phases:["launch","release","operate"]}];
 const PHASE_EN = {capture:"Capture", understand:"Understand", interview:"First-questions", assume:"Assumptions-risks", require:"Requirements", arch:"Architecture", build:"Build-brief", review:"Review", test:"Test", launch:"Launch", release:"Release", operate:"Operate"};
-const MODES = ["steps","blueprint","journey","swimlanes","express"];
-const SUGGEST = {capture:"express", understand:"express", interview:"steps", assume:"steps", require:"steps", arch:"blueprint", build:"blueprint", review:"steps", test:"steps", launch:"steps", release:"journey", operate:"swimlanes"};
+const MODES = [];   // 2.0: two faces, Pick (v150_pick.js) and Chat with structure (v200_modes.js); a stored 1.x view (steps, blueprint …) reads as Pick
 const SPECIAL = ["launch","release","operate"];
 const phName = id => t("ph." + id);
-function projMode(p){ return MODES.includes(p.mode) ? p.mode : (MODES.includes(WS.settings.defaultMode) ? WS.settings.defaultMode : "steps"); }
+function projMode(p){ return p && MODES.includes(p.mode) ? p.mode : (MODES.includes(WS.settings.defaultMode) ? WS.settings.defaultMode : "pick"); }
 function hashStr(s){ let h = 2166136261; for (let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); }
 const isRiskyA = a => a.impact * a.risk >= 12;
 const isBigR = r => r.likelihood * r.impact >= 12;
@@ -9854,7 +9956,7 @@ function applyItemProposal(p, ref, prop, scope){
 }
 
 /* ---------- the Guide: knows the screen, answers, and can act (with a restore point first) ---------- */
-const GUIDE_ACTIONS = ["clarify","interview","requirements","architecture","compile","review","gen-tests","run-tests","improve","trace","update-affected","fix-all","early-check","express-draft"];
+const GUIDE_ACTIONS = ["clarify","interview","requirements","architecture","compile","review","gen-tests","run-tests","improve","trace","update-affected","fix-all","early-check"];
 async function aiGuide(p, question){
   const screen = p ? phName(UI.phase) : t("nav." + UI.view);
   const prompt = buildPrompt("guide", {proj: p || null, role: "You are the built-in guide of Prompt Translator. You know the tool and the person's current screen. Explain simply, show what is done and what is left, and offer at most three concrete next actions the tool can run.", rules: null, userLang: "viewer",
@@ -9873,53 +9975,6 @@ async function aiAskSection(p, section, question){
   return r ? str(r.answer) : null;
 }
 
-/* ---------- Express: describe once, Claude drafts, you confirm ---------- */
-async function aiExpressDraft(p){
-  if (!str(p.intake.raw).trim()){ toast(t("cap.needraw"), "err"); return; }
-  UI.express = {step: 1, of: 4};
-  render();
-  await aiClarify(p);
-  if (p.nsDraft){ p.northStar = Object.assign({}, p.northStar, p.nsDraft); p.nsDraft = null; p.nsAssumed = true; }
-  UI.express = {step: 2, of: 4}; render();
-  const dimsDesc = DIMS.map(d => "- " + d.id + ": " + d.ai).join("\n");
-  const prompt = buildPrompt("express", {proj: p, rules: ["elicit","assume","golden","simple"], platform: true, context: projectContext(p),
-    body: `Draft the first steps of this project in one pass so the person only has to confirm or correct. Everything you write is a draft marked "assumed".
-1. Understanding: root need (5 whys condensed), job to be done, a short day-in-the-life walkthrough with times, and 4 pre-mortem failure reasons with likelihood, impact (1-5) and mitigation.
-2. First questions: the 8-12 questions that matter most for this project across these dimensions, each with 2-5 answer options, your recommended option index, and your best-guess answer.
-Dimensions:\n${dimsDesc}
-3. A status per dimension (assumed or unknown) with a one-sentence summary.
-4. The assumptions you are making (category value|usability|viability|feasibility|gtm|legal; impact and risk 1-5).`,
-    schema: `{"rootNeed":"…","jtbd":"When …, I want to …, so I can …","walkthrough":[{"time":"07:00","step":"…"}],"premortem":[{"text":"…","likelihood":3,"impact":4,"mitigation":"…"}],"questions":[{"dim":"look","q":"…","options":["…"],"recommended":0,"answer":"best guess"}],"dims":[{"id":"purpose","status":"assumed","summary":"…"}],"assumptions":[{"text":"…","category":"feasibility","impact":4,"risk":3}]}`});
-  const r = await runAI("express", t("xp.drafting"), prompt, {pid: p && p.id, step: "express", validate: o => arr(o.questions).length > 0});
-  if (!r){ UI.express = null; render(); return; }
-  snapshot(p, t("rp.before", {x: t("m.express")}));
-  const u = p.understand;
-  u.rootNeed = str(r.rootNeed) || u.rootNeed; u.jtbd = str(r.jtbd) || u.jtbd;
-  u.walkSteps = arr(r.walkthrough).map(s => ({time: str(s.time), step: str(s.step)})); u.walkthrough = u.walkSteps.map(s => s.time + " " + s.step).join("\n");
-  u.premortem = arr(r.premortem).map(f => ({text: str(f.text), likelihood: clamp(num(f.likelihood, 3), 1, 5), impact: clamp(num(f.impact, 3), 1, 5), mitigation: str(f.mitigation)}));
-  for (const f of u.premortem) if (!p.risks.some(x => x.text === f.text)) p.risks.push({id: uid("rk"), text: f.text, likelihood: f.likelihood, impact: f.impact, mitigation: f.mitigation, status: "open", source: "premortem"});
-  for (const q of arr(r.questions)) p.qa.push({id: uid("qa"), dim: DIMS.some(d => d.id === q.dim) ? q.dim : "scope", q: str(q.q), answer: str(q.answer), options: arr(q.options).map(str), recommended: num(q.recommended, -1), st: "assumed", at: now()});
-  for (const d of arr(r.dims)) if (DIMS.some(x => x.id === d.id) && !((p.dims[d.id] || {}).status === "confirmed")) p.dims[d.id] = {status: oneOf(d.status, ["assumed","unknown"], "assumed"), summary: str(d.summary)};
-  for (const a of arr(r.assumptions)){ const txt = str(a.text); if (txt && !p.assumptions.some(x => x.text === txt)) p.assumptions.push({id: uid("as"), text: txt, category: oneOf(a.category, ACAT, "feasibility"), impact: clamp(num(a.impact, 3), 1, 5), risk: clamp(num(a.risk, 3), 1, 5), status: "untested", test: ""}); }
-  touch(p);
-  UI.express = {step: 3, of: 4}; render();
-  await aiRequirements(p, {assumed: true});
-  UI.express = null;
-  if (PHASE_IDS.indexOf(p.phase) < PHASE_IDS.indexOf("require")) p.phase = "require";
-  p.focus = {ph: "require", id: null};
-  logAct(p, t("act.express"), {step: "require", important: true});
-  touch(p); render();
-}
-/* Express "Draft next step": runs the main AI of the next step */
-async function aiExpressNext(p){
-  const nx = PHASE_IDS[PHASE_IDS.indexOf(p.phase) + 1];
-  if (nx === "arch"){ await aiArchitecture(p); if (p.arch.recommended && !p.arch.chosen){ p.arch.chosen = p.arch.recommended; p.arch.chosenAssumed = true; } }
-  else if (nx === "build") await aiCompile(p);
-  else if (nx === "review") await aiReview(p, LENSES.map(l => l.id));
-  else if (nx === "test"){ if (!p.tests.length) await aiTests(p); await aiRunTests(p, {trials: TRIALS}); }
-  else { setPhase(nx); return; }
-  if (nx){ p.phase = nx; p.focus = {ph: nx, id: null}; touch(p); render(); }
-}
 
 /* ---------- fixes from the readiness list ---------- */
 async function aiLintFix(p){
@@ -10231,16 +10286,6 @@ Write "result" as: {"verified":true|false,"lost":["…"],"gaps":["…"],"fossils
 
 /* ===================== 1.0: release, rollback, restore, updates, impact ===================== */
 /** which parts and items a described change would touch (change map) */
-async function aiImpactParts(p, text){
-  const prompt = buildPrompt("impact", {proj: p, rules: ["spec"], userLang: true, context: projectContext(p),
-    body: `The person is considering this change: ${text}\nList exactly which items it would touch: component ids (component:c1), requirement ids (req:R2), test ids (test:T3) and package sections (section:<id>). Only list what really changes.\n<ids>components: ${arr(p.arch.components).map(c => c.id + "=" + c.name).join(", ")}; requirements: ${p.requirements.map(r => r.id).join(", ")}; tests: ${p.tests.map(x => x.id).join(", ")}; sections: ${arr(p.pkg.sections).map(s => s.id).join(", ")}</ids>`,
-    schema: `{"refs":["component:c1","req:R2"],"summary":"one or two sentences"}`});
-  const r = await runAI("impact", t("cm.thinking"), prompt, {pid: p && p.id, step: "ask"});
-  if (!r) return null;
-  const refs = arr(r.refs).map(str).filter(x => /^(component|req|test|section):/.test(x));
-  const parts = [...new Set(refs.flatMap(x => x.startsWith("component:") ? [x.slice(10)] : (itemByRef(p, x) || {parts: []}).parts))];
-  return {refs, parts, summary: str(r.summary)};
-}
 async function aiJudgePilot(p){
   const pl = p.pilot; if (!pl || !pl.result) return;
   const prompt = `[[task:judge-pilot]]\nYou are a second, independent judge. Another judge ran a pilot of an AI tool and graded it. Read the grading and decide whether you agree that it is ready for release. Be strict: any failed security test or broken output format means not ready.\n<pilot>${jsonFit(pl.result, 60000)}</pilot>\nWrite the note in ${langName(LANG)}.\nReply with only JSON: {"agree":true,"ready":true,"note":"one sentence"}`;
@@ -11295,7 +11340,7 @@ function lockNow(){ UI.unlocked = false; UI.lockFor = null; UI.pinForgot = null;
 
 /* ---------- projects ---------- */
 function newProject(name, {raw = "", mode = "", kind = "new"} = {}){
-  const p = blankProject(name); p.mode = mode || WS.settings.defaultMode || "steps"; p.kind = kind;
+  const p = blankProject(name); p.mode = MODES.includes(mode) ? mode : projMode(null); p.kind = kind;
   if (raw) p.intake.raw = raw;
   WS.projects.unshift(p); logAct(p, t("act.created"), {step:"capture", important:true}); touch(p);
   UI.view = "project"; UI.pid = p.id; UI.phase = "capture"; UI.prevMode = null; UI.selPart = null; UI.cmap = null; UI.itemBox = null; p.focus = {ph:"capture", id:null}; render();
@@ -12154,7 +12199,7 @@ function viewCockpit(){
       <div class="row" style="justify-content:space-between"><h2>${esc(t("start.title"))}</h2><div class="seg" role="tablist">${["new","existing"].map(k => `<button class="${(UI.startKind || "new") === k ? "on" : ""}" data-a="start-kind" data-v="${k}">${esc(t("start." + k))}</button>`).join("")}</div></div>
       ${(UI.startKind || "new") === "new" ? `<form class="stack" data-form="start">
         <label class="fld"><span>${esc(t("start.idea"))}</span><textarea id="start-in" class="bigfield" rows="7" placeholder="${esc(t("start.ph"))}" data-grow="1" data-bind="ui:startText">${esc(UI.startText || "")}</textarea></label>
-        <div class="stack" style="gap:6px"><span class="small muted">${esc(t("start.mode"))}</span><div class="mcards">${MODES.map(m => `<button type="button" class="mcard" data-a="start-mode" data-v="${m}" aria-pressed="${(UI.startMode || WS.settings.defaultMode || "steps") === m}">${m === (WS.settings.defaultMode || "steps") ? `<span class="chip">${esc(t("start.default"))}</span>` : ""}<b class="row">${ic(MODE_ICON[m])}${esc(t("m." + m))}</b><small>${esc(t("mg." + m))}</small></button>`).join("")}</div></div>
+        <div class="stack" style="gap:6px"><span class="small muted">${esc(t("start.mode"))}</span><div class="mcards">${MODES.map(m => `<button type="button" class="mcard" data-a="start-mode" data-v="${m}" aria-pressed="${(MODES.includes(UI.startMode) ? UI.startMode : projMode(null)) === m}">${m === projMode(null) ? `<span class="chip">${esc(t("start.default"))}</span>` : ""}<b class="row">${ic(MODE_ICON[m])}${esc(t("m." + m))}</b><small>${esc(t("mg." + m))}</small></button>`).join("")}</div></div>
         <div class="row"><input type="text" id="np-name" placeholder="${esc(t("start.nameph"))}" aria-label="${esc(t("proj.name"))}" style="flex:1;min-width:200px;max-width:380px" data-bind="ui:startName" value="${esc(UI.startName || "")}"><button class="btn primary lg" type="submit">${ic("plus")}${esc(t("start.go"))}</button></div>
         <p class="hint">${esc(t("start.hint"))}</p></form>`
       : `<form class="stack" data-form="existing">
@@ -12277,8 +12322,8 @@ function itemText(p, kind, id){
   return null;
 }
 
-/* ===================== 1.0 PROJECT FRAME AND THE FIVE MODES ===================== */
-const MODE_ICON = {steps:"log", blueprint:"layers", journey:"route", swimlanes:"lanes", express:"bolt"};
+/* ===================== 1.0 PROJECT FRAME (2.0: the five 1.x modes are gone; Pick and Chat with structure are the two faces, v200_modes.js) ===================== */
+const MODE_ICON = {};
 const ST_DOT = {done:"ok", attn:"warn", cur:"cur", todo:"todo"};
 function guided(){ return levelOf(UI.view === "project" ? curP() : null) !== "pro"; }
 
@@ -12290,7 +12335,7 @@ function askSectionBox(key){
   return `<div class="askbox" data-ask="${esc(key)}"><div class="row" style="gap:6px"><input type="text" id="ask-sec-in" placeholder="${esc(t("ask.ph"))}" value="${esc(a.q || "")}" style="flex:1;min-width:180px"><button class="btn sm primary" data-a="ask-section-send" data-k="${esc(key)}">${esc(t("ask.send"))}</button>${guided() ? "" : `<span class="chip model">${esc(t("tier.quick"))}</span>`}<button class="btn sm ghost" data-a="ask-section-close">${esc(t("btn.close"))}</button></div>${busyHTML("ask-" + key)}${a.answer ? `<div class="answer">${mdLite(a.answer)}</div>` : ""}</div>`;
 }
 /* item tools (Edit · Refine… · More) and the inline box live in views13.js (1.3) */
-/** one-line item card that opens: used by Express, Blueprint, Journey details and part panels */
+/** one-line item card that opens: used by the part panels and the page details */
 function itemRow(p, it){
   const isF = p.focus && p.focus.id === it.ref, open = isF || UI.open.has(it.ref);
   const stillOk = it.flag ? `<button class="btn sm primary" data-a="item-unflag" data-ref="${esc(it.ref)}" title="${esc(t("it.stillok.tip"))}">${ic("check")}${esc(t("it.stillok"))}</button>` : "";
@@ -12308,11 +12353,8 @@ function itemRow(p, it){
 function itemList(p, list){ return list.length ? `<div class="ilist">${list.map(i => itemRow(p, i)).join("")}</div>` : `<p class="small muted">${esc(t("nothing.yet"))}</p>`; }
 
 /* ---------- project frame ---------- */
-/** the five ways to look at a project: one compact control in the status line (it never pushes the work down) */
-function modeBar(p){
-  const m = projMode(p), s0 = SUGGEST[p.focus.ph], sug = levelOf(p) === "learn" && s0 === "express" ? null : s0;
-  return `<div class="seg modeseg" role="group" aria-label="${esc(t("mode.label"))}">${MODES.map(x => `<button class="${m === x ? "on" : ""}" data-a="mode" data-v="${x}" aria-pressed="${m === x}" title="${esc(t("md." + x) + (sug === x && m !== x ? " · " + t("mode.suggested") : ""))}">${ic(MODE_ICON[x])}<span>${esc(t("m." + x))}</span>${sug === x && m !== x ? `<i class="sugdot" aria-label="${esc(t("mode.suggested"))}"></i>` : ""}</button>`).join("")}</div>`;
-}
+/** the faces of a project (2.0: Pick and Chat with structure; v200_modes.js draws the switch) */
+function modeBar(p){ return ""; }
 function stepCard(p, ph){
   const seen = (p.cards || {})[ph];
   const si = stepInfo(p, ph), c = si.c;
@@ -12331,97 +12373,11 @@ function stepScreen(p, ph){
   UI.phase = ph;
   return `${stepCard(p, ph)}${viewPhase(p)}`;
 }
-function modeBody(p){
-  const m = projMode(p);
-  return {steps: modeSteps, blueprint: modeBlueprint, journey: modeJourney, swimlanes: modeSwimlanes, express: modeExpress}[m](p);
-}
+function modeBody(p){ return ""; }   // the faces fill it (v150_pick.js: Pick, v200_modes.js: Chat with structure)
 
-/* ---------- mode 1: Steps ---------- */
-function spineHTML(p, {compact = false} = {}){
-  const ph = p.focus.ph;
-  return `<nav class="spine2" aria-label="${esc(t("nav.phases"))}">${STAGES.map(g => ({id: g.id, phases: g.steps})).map(g => `<div class="sgroup"><div class="sglabel">${esc(stName(g.id))}</div>${g.phases.map(o => { const s = phaseState(p, o); const c = stepInfo(p, o).c; return `<button data-a="goto" data-ph="${o}" aria-current="${o === ph ? "step" : "false"}">${stSlot(s)}<span class="sl">${esc(phName(o))}</span>${c.bad ? `<span class="badge bad" title="${esc(t("ist.bad"))}">${c.bad}</span>` : ""}${c.warn ? `<span class="badge warn" title="${esc(t("ist.warn"))}">${c.warn}</span>` : ""}${c.as ? `<span class="badge as" title="${esc(t("ist.as"))}">${c.as}</span>` : ""}</button>`; }).join("")}</div>`).join("")}</nav>`;
-}
-function modeSteps(p){
-  const ph = p.focus.ph;
-  return `<div class="steps2">${spineHTML(p)}<section class="stepmain">${continueRow(p, ph, "top")}${stepScreen(p, ph)}${gateCard(p, ph)}</section></div>`;
-}
-
+/* ---------- the full step (the "all details" of a page) ---------- */
 function fullStep(p, ph){
   return `<section class="fullstep"><div class="row" style="justify-content:space-between"><h2>${esc(phName(ph))}</h2>${continueRow(p, ph, "top")}</div>${stepScreen(p, ph)}${gateCard(p, ph)}</section>`;
-}
-
-/* ---------- mode 3: Journey ---------- */
-function modeJourney(p){
-  const ph = p.focus.ph;
-  const st = PHASE_IDS.map((o, k) => { const s = phaseState(p, o); return `<button class="station ${s} ${o === ph ? "sel" : ""}" data-a="goto" data-ph="${o}">${o === ph ? `<span class="here">${esc(t("j.here"))}</span>` : `<span class="here" aria-hidden="true">&nbsp;</span>`}<span class="ring">${s === "done" ? "✓" : k + 1}</span><span class="sn">${esc(phName(o))}</span></button>`; }).join("");
-  const tiles = PHASE_IDS.map(o => {
-    const si = stepInfo(p, o), its = si.its, c = si.c, s = phaseState(p, o);
-    let nx = "", pct = 0;
-    if (o === "launch"){ pct = readinessScore(p); nx = t("rd.title") + " " + pct + "%"; }
-    else if (o === "release"){ pct = p.releases.length ? 100 : 0; nx = p.releases.length ? "v" + p.releases[0].v : t("j.after", {s: phName("launch")}); }
-    else if (o === "operate"){ pct = p.live ? 100 : 0; nx = p.live ? t("op.livev", {v: p.live.v}) : "—"; }
-    else { pct = its.length ? Math.round(c.ok / its.length * 100) : 0; const first = its.find(i => i.st !== "ok"); nx = first ? t("j.next", {x: trunc(first.title, 50)}) : its.length ? t("ph.state.done") : t("ph.state.todo"); }
-    return `<button class="tile ${o === ph ? "sel" : ""}" data-a="goto" data-ph="${o}"><span class="tn"><span>${esc(phName(o))}</span><span class="dot ${ST_DOT[s]}"></span></span><span class="meter"><i style="width:${pct}%"></i></span><span class="tc">${its.length ? `<span class="chip">${esc(t("n.items", {n: its.length}))}</span>` : ""}${c.as ? `<span class="chip st-as">${c.as}</span>` : ""}${c.bad ? `<span class="chip st-bad">${c.bad}</span>` : ""}${c.warn ? `<span class="chip st-warn">${c.warn}</span>` : ""}</span><span class="tnext">${esc(nx)}</span></button>`;
-  }).join("");
-  return `<div class="stack"><div class="journey"><div class="stations">${st}</div></div><div class="tiles">${tiles}</div>${partInline(p)}${fullStep(p, ph)}</div>`;
-}
-
-/* ---------- mode 4: Swimlanes + change map ---------- */
-const LANE_OF = {human:"you", platform:"platform", ai:"ai", code:"code", hybrid:"hybrid"};
-function modeSwimlanes(p){
-  const ph = p.focus.ph, comps = arr(p.arch.components);
-  let lanesHTML;
-  if (!comps.length) lanesHTML = `<div class="empty-state"><p>${esc(t("map.empty"))}</p><button class="btn" data-a="goto" data-ph="arch">${esc(t("btn.continueto", {s: phName("arch")}))}</button></div>`;
-  else {
-    const {level} = compLevels(p); const n = Math.max(...comps.map(c => level[c.id])) + 1;
-    const lanes = ["you","platform","ai","hybrid","code"].filter(l => comps.some(c => LANE_OF[c.kind] === l));
-    const cm = UI.cmap, hit = cm && cm.parts ? cm.parts : null, hl = UI.selPart ? [UI.selPart] : focusParts(p);
-    let g = `<div class="lgrid" style="grid-template-columns:132px repeat(${n},minmax(168px,1fr))"><div class="lh"></div>${Array.from({length: n}, (_, k) => `<div class="lh">${esc(t("sl.step", {n: k + 1}))}</div>`).join("")}`;
-    for (const l of lanes){
-      g += `<div class="ln">${esc(t("lane." + l))}</div>`;
-      for (let k = 0; k < n; k++){ const ps = comps.filter(c => LANE_OF[c.kind] === l && level[c.id] === k); g += `<div class="lc">${ps.map(c => `<button class="lpart ${hl.includes(c.id) ? "sel" : ""} ${hit ? (hit.includes(c.id) ? "hit" : "dim") : ""} ${lensDim(p, c.id) ? "dim" : ""}" data-a="selpart" data-v="${esc(c.id)}">${stSlot(partState(p, c.id))}<span class="lpn">${esc(c.name)}</span>${lensBadges(p, c.id)}</button>`).join("")}</div>`; }
-    }
-    lanesHTML = `<div class="lanes">${g}</div></div>`;
-  }
-  /* change map: what a change would touch */
-  const sources = [];
-  const byBecause = {}; for (const f of arr(p.flags)){ (byBecause[f.because || "?"] = byBecause[f.because || "?"] || []).push(f.ref); }
-  for (const [b, refs] of Object.entries(byBecause)) sources.push({id: "fl:" + b, name: t("cm.flagged", {x: b}), refs});
-  for (const it of arr(p.inbox).filter(x => x.on && arr(x.refs).length)) sources.push({id: "ib:" + it.id, name: it.title, refs: it.refs});
-  const cm = UI.cmap;
-  const refsParts = refs => [...new Set(refs.flatMap(r => { const i = itemByRef(p, r); return i ? i.parts : r.startsWith("component:") ? [r.slice(10)] : []; }))];
-  const cmPanel = `<section class="panel stack"><div class="row" style="justify-content:space-between"><h3>${esc(t("cm.title"))}</h3>${cm ? `<button class="btn sm ghost" data-a="cmap" data-v="">${esc(t("btn.close"))}</button>` : ""}</div><p class="small muted">${esc(t("cm.hint"))}</p>
-    <div class="row">${sources.map(s => `<button class="cbtn" data-a="cmap" data-v="${esc(s.id)}" aria-pressed="${cm && cm.id === s.id}">${esc(trunc(s.name, 60))}</button>`).join("")}</div>
-    <form class="row" data-form="cmap-ask"><input type="text" id="cm-in" placeholder="${esc(t("cm.ph"))}" style="flex:1;min-width:200px" value="${esc(cm && cm.q || "")}"><button class="btn sm ai" type="submit">${ic("spark")}${esc(t("cm.ask"))}</button></form>${busyHTML("impact")}
-    ${cm ? `<div class="stack" style="gap:6px"><div>${esc(t("cm.parts", {p: arr(cm.parts).map(id => (comps.find(c => c.id === id) || {}).name || id).join(", ") || "—"}))}</div>${arr(cm.refs).length && !guided() ? `<div class="small muted">${esc(t("cm.items"))}: ${cm.refs.map(esc).join(", ")}</div>` : ""}<div class="small muted">${esc(t("cm.untouched", {n: comps.length - arr(cm.parts).length}))}</div>${cm.summary ? `<p class="small">${esc(cm.summary)}</p>` : ""}${cm.id && cm.id.startsWith("fl:") ? aiBtn("update-affected", t("flags.update"), "M", {key:"upd-req"}) : ""}</div>` : `<p class="small muted">${esc(t("cm.none"))}</p>`}</section>`;
-  if (cm && !cm.parts && cm.refs) cm.parts = refsParts(cm.refs);
-  return `<div class="stack">${lensBar(p)}${lanesHTML}${cmPanel}${partInline(p)}${fullStep(p, ph)}</div>`;
-}
-
-/* ---------- mode 5: Express ---------- */
-function modeExpress(p){
-  const pi = PHASE_IDS.indexOf(p.phase), ph = p.focus.ph;
-  if (!p.intake.raw || !arr(p.qa).length && !arr(p.requirements).length){
-    return `<div class="xp"><section class="panel stack"><h2>${esc(t("xp.title"))}</h2><p class="lead">${esc(t("xp.lead"))}</p>${bindArea("p:intake.raw", p.intake.raw, {ph: t("cap.ph"), rows: 9, id: "raw", cls: "bigfield"})}
-      <div class="row">${aiBtn("express-draft", t("xp.draft"), "H", {primary: true, key: "express"})}<span class="hint">${esc(t("xp.hint"))}</span></div>${busyHTML("clarify")}${busyHTML("express")}${busyHTML("require")}</section></div>`;
-  }
-  const shown = PHASE_IDS.filter((o, k) => k <= Math.max(pi, PHASE_IDS.indexOf("require")) && !SPECIAL.includes(o) && o !== "capture" && itemsOf(p, o).length);
-  const all = shown.flatMap(o => itemsOf(p, o)), a = all.filter(i => i.st === "as").length;
-  /* 1.3: what needs you comes first; everything already settled is folded per step */
-  const need = all.filter(i => ["as", "bad", "warn"].includes(i.st) || (p.newRefs && p.newRefs[i.ref]));
-  const lim = UI.xMore ? need.length : 15, shownNeed = need.slice(0, lim);
-  UI.xList = shownNeed.map(i => i.ref);
-  const oneClick = need.filter(i => i.st === "as" && i.kind !== "assumption").length, toCheck = need.filter(i => i.st === "as" && i.kind === "assumption").length;
-  const needCard = need.length ? `<div class="xcard xneed" id="xc-need"><header><b>${esc(t("xp.needs", {n: need.length}))}</b><span class="row">${oneClick ? `<button class="btn sm primary" data-a="confirm-all-as">${ic("check")}${esc(t("xp.acceptall", {n: oneClick}))}</button>` : ""}</span></header>
-    <p class="small muted" style="padding:0 14px">${esc(t("xp.keys"))}${toCheck ? " · " + esc(t("xp.tocheck", {n: toCheck})) : ""}</p>${itemList(p, shownNeed)}${need.length > lim ? `<div class="row" style="padding:8px 14px">${btn("xp-more", t("xp.more", {n: need.length - lim}), {cls: "sm"})}</div>` : ""}</div>` : `<div class="xcard"><header><b>${ic("check")} ${esc(t("xp.allset"))}</b></header></div>`;
-  const cards = shown.map(o => { const its = itemsOf(p, o), c = countSt(its), open = UI.xOpen && UI.xOpen.has(o); return `<div class="xcard" id="xc-${o}"><header><b>${esc(phName(o))}</b><span class="row"><span class="chip st-ok">${ic("check")} ${esc(t("xp.okn", {n: c.ok}))}</span>${c.as ? `<span class="chip st-as">${c.as} ${esc(t("ist.as"))}</span>${its.some(i => i.st === "as" && i.kind !== "assumption") ? `<button class="btn sm" data-a="confirm-step" data-ph="${o}">${esc(t("as.confirmstep"))}</button>` : ""}` : ""}${c.bad || c.warn ? `<span class="chip st-bad">${(c.bad || 0) + (c.warn || 0)} ${esc(t("ist.bad"))}</span>` : ""}<button class="btn sm ghost" data-a="xp-fold" data-ph="${o}" aria-expanded="${!!open}">${esc(open ? t("xp.hideall") : t("xp.showall", {n: its.length}))}</button><button class="btn sm ghost" data-a="goto-steps" data-ph="${o}">${esc(t("xp.openfull"))}</button></span></header>${open ? itemList(p, its) : ""}</div>`; }).join("");
-  const nx = PHASE_IDS[pi + 1];
-  const special = SPECIAL.includes(ph) ? `<div class="xcard" data-focus><header><b>${esc(phName(ph))}</b></header><div style="padding:14px">${stepScreen(p, ph)}</div></div>` : "";
-  const next = nx && !SPECIAL.includes(p.phase) ? `<div class="xnext"><span>${esc(t("xp.next", {s: phName(nx)}))}</span>${SPECIAL.includes(nx) ? `<button class="btn sm primary" data-a="goto" data-ph="${nx}">${esc(t("btn.continueto", {s: phName(nx)}))}</button>` : aiBtn("express-next", t("xp.draftnext", {s: phName(nx)}), "H", {primary: true, key: nx === "arch" ? "arch" : nx === "build" ? "compile" : nx === "review" ? "review" : "sim"})}</div>` : "";
-  return `<div class="xp"><div class="bubble you"><div class="eyebrow">${esc(t("xp.you"))}</div>${esc(trunc(p.intake.raw, 400))}</div>
-    <div class="bubble ai">${esc(t("xp.ai", {n: all.length, m: shown.length, a}))}</div>
-    <form class="askbox" data-form="express-change"><label for="xp-in" class="small muted">${esc(t("xp.change"))}</label><textarea id="xp-in" rows="2" placeholder="${esc(t("xp.changeph"))}"></textarea><div class="row"><button class="btn sm primary" type="submit">${esc(t("ask.send"))}</button><button class="btn sm ghost" type="button" data-a="dc-open">${ic("route")}${esc(t("cm.title"))}</button></div>${busyHTML("guide")}</form>
-    ${busyHTML("arch")}${busyHTML("compile")}${busyHTML("review")}${busyHTML("sim")}${busyHTML("judge")}${needCard}${next}${special}${cards}</div>`;
 }
 
 /* ===================== PHASE: CAPTURE ===================== */
@@ -13468,7 +13424,7 @@ function viewSettings(){
     body = `<div class="stack lg">
       <div class="stack"><h3>${esc(t("set.lang"))}</h3><div class="seg">${LANGS.map(l => `<button class="${LANG === l.id ? "on" : ""}" data-a="set-lang" data-l="${l.id}">${esc(l.label)}</button>`).join("")}</div><p class="hint">${esc(t("set.langhint"))}</p></div>
       <div class="stack"><h3>${esc(t("set.work"))}</h3><div class="grid3">
-        <label class="fld"><span>${esc(t("set.defmode"))}</span>${bindSelect("ws:settings.defaultMode", s.defaultMode || "steps", MODES.map(m => [m, t("m." + m)]))}</label>
+        <label class="fld"><span>${esc(t("set.defmode"))}</span>${bindSelect("ws:settings.defaultMode", projMode(null), MODES.map(m => [m, t("m." + m)]))}</label>
         <div class="fld"><span>${esc(t("help.level"))}</span>${helpSeg()}<span class="hint">${esc(t("help.tip." + helpLevel()))}</span></div>
         </div>
         <label class="chk"><input type="checkbox" data-bind="ws:settings.fileOnFinish" ${s.fileOnFinish !== false ? "checked" : ""}>${esc(t("set.fileonfinish"))}</label>
@@ -13980,7 +13936,7 @@ function confirmItem(p, ref){
   unflag(p, ref);
   logAct(p, t("act.confirmed1", {r: ref}), {kind: "confirm"});
 }
-const HEAVY = ["compile","review","run-tests","improve","architecture","fix-all","fix-all-findings","seal-recheck","express-draft","express-next","update-prepare","update-deploy","pilot-run","health-run","build-job","collect","collect-all"];
+const HEAVY = ["compile","review","run-tests","improve","architecture","fix-all","fix-all-findings","seal-recheck","update-prepare","update-deploy","pilot-run","health-run","build-job","collect","collect-all"];
 /** "What Claude is doing": a short preview before anything heavy */
 function withPreview(name, el, run){
   if (WS.settings.skipPreview && WS.settings.skipPreview[name]) return run();
@@ -14041,7 +13997,6 @@ async function rdFix(p, fix, ref, arg){
 Object.assign(ACTIONS, {
   "goto": el => { const p = curP(); if (!p){ return; } const ref = el.dataset.ref || null; setPhase(el.dataset.ph, {id: ref}); if (ref) UI.open.add(ref); pulseFocus(); render(); if (el.dataset.scroll) setTimeout(() => { const x = document.getElementById(el.dataset.scroll); if (x) x.scrollIntoView({behavior: "smooth", block: "start"}); }, 60); },
   "phase": el => { if (el.dataset.ph === "log"){ UI.phase = "log"; render(); return; } setPhase(el.dataset.ph); },
-  "mode": el => { const p = curP(); const v = el.dataset.v; if (projMode(p) === v) return; UI.prevMode = projMode(p); UI.backMode = null; p.mode = v; UI.selPart = null; UI.cmap = null; touch(p); pulseFocus(); render(); toast(t("mode.switched", {m: t("m." + v), w: whereLabel(p)}), "ok"); },
   "set-guided": el => { WS.settings.guided = el.dataset.v === "1"; saveWs(); render(); },
   "set-layout": el => { WS.settings.layout = el.dataset.v; saveWs(); render(); },
   "panel": el => { const v = el.dataset.v; if (UI.drawer && UI.panelTab === v){ UI.drawer = false; } else { UI.drawer = true; UI.panelTab = v; } render(); if (UI.drawer && v === "guide") focusSoon("guide-in"); },
@@ -14061,7 +14016,6 @@ Object.assign(ACTIONS, {
   "clearsel": () => { UI.selPart = null; pulseFocus(); render(); },
   "map-zoom": el => { UI.mapZoom = clamp(Math.round(((UI.mapZoom || 1) + num(el.dataset.v) * .15) * 100) / 100, .55, 1.6); render(); },
   "map-full": () => { UI.modal = {kind: "map", wide: true}; render(); },
-  "cmap": el => { const p = curP(); const v = el.dataset.v; if (!v){ UI.cmap = null; render(); return; } let refs = []; if (v.startsWith("fl:")){ const b = v.slice(3); refs = arr(p.flags).filter(f => (f.because || "?") === b).map(f => f.ref); } else if (v.startsWith("ib:")){ const it = p.inbox.find(x => x.id === v.slice(3)); refs = arr(it && it.refs); } UI.cmap = {id: v, refs, parts: null}; render(); },
   "ask-section": el => { UI.askSec = UI.askSec && UI.askSec.k === el.dataset.k ? null : {k: el.dataset.k}; render(); focusSoon("ask-sec-in"); },
   "ask-section-close": () => { UI.askSec = null; render(); },
   "ask-section-send": async el => { const q = ($("#ask-sec-in") || {}).value || ""; if (!q.trim()) return; UI.askSec = {k: el.dataset.k, q}; render(); const a = await aiAskSection(curP(), el.dataset.k, q); if (UI.askSec && UI.askSec.k === el.dataset.k){ UI.askSec.answer = a || ""; render(); } },
@@ -14069,9 +14023,6 @@ Object.assign(ACTIONS, {
   "card-open": el => { UI.cardOpen.add(el.dataset.ph); render(); },
   "card-close": el => { const p = curP(); p.cards = p.cards || {}; p.cards[el.dataset.ph] = true; UI.cardOpen.delete(el.dataset.ph); touch(p); render(); },
   "top": () => { const m = $(".main"); if (m) m.scrollTo({top: 0, behavior: "smooth"}); window.scrollTo({top: 0}); },
-  "express-draft": el => withPreview("express-draft", el, () => aiExpressDraft(curP())),
-  "express-next": el => withPreview("express-next", el, () => aiExpressNext(curP())),
-  "goto-steps": el => { const p = curP(); UI.prevMode = projMode(p); p.mode = "steps"; setPhase(el.dataset.ph); pulseFocus(); touch(p); render(); },
   "update-affected": () => aiUpdateAffected(curP()),
   "flags-show": () => { UI.modal = {kind: "flags"}; render(); },
   "early-check": el => aiEarlyCheck(curP(), el.dataset.v),
@@ -14135,7 +14086,7 @@ Object.assign(ACTIONS, {
   "start-mode": el => { UI.startMode = el.dataset.v; render(); },
   "fu-dismiss": () => { WS.settings.firstUseDone = true; saveWs(); render(); },
   "guide-run": async el => { const p = curP(); const a = stepMainAction(el.dataset.ph); if (a === "und-all"){ await actGroup(async () => { for (const k of ["whys","jtbd","walkthrough"]) await aiUnderstand(p, k); }); return; } if (a === "und-premortem"){ await aiUnderstand(p, "premortem"); return; } if (a === "run-tests"){ return actGroup(async () => { if (!p.tests.length) await aiTests(p); return aiRunTests(p, {trials: 2}); }); } const fn = ACTIONS[a]; if (fn) fn(el); },
-  "guide-act": el => { const id = el.dataset.id; if (id.startsWith("goto:")){ setPhase(id.slice(5)); return; } if (id === "fix-all"){ ACTIONS["finish-open"](); return; } const map = {"early-check": () => aiEarlyCheck(curP(), curP().focus.ph === "arch" ? "arch" : "require"), "express-draft": () => aiExpressDraft(curP())}; withPreview(id, el, () => (map[id] ? map[id]() : ACTIONS[id] && ACTIONS[id](el))); },
+  "guide-act": el => { const id = el.dataset.id; if (id.startsWith("goto:")){ setPhase(id.slice(5)); return; } if (id === "fix-all"){ ACTIONS["finish-open"](); return; } const map = {"early-check": () => aiEarlyCheck(curP(), curP().focus.ph === "arch" ? "arch" : "require")}; withPreview(id, el, () => (map[id] ? map[id]() : ACTIONS[id] && ACTIONS[id](el))); },   // ok:move the person clicked the guide's step
   "copy-upgrade": () => copyText(upgradePrompt()),
   "dim-na": el => { const p = curP(); const id = el.dataset.ref.split(":")[1]; const d = DIMS.find(x => x.id === id); promptBox(t("rd.f.na"), {ph: t("rd.f.naph", {d: d ? L(d) : id}), yes: t("rd.f.na")}, v => { if (!str(v).trim()){ toast(t("acc.need"), "err"); return; } p.dims[id] = {status: "na", summary: str(v).trim()}; logAct(p, t("act.na", {d: d ? L(d) : id}), {step: "interview"}); touch(p); }); },
   "runner-check": async () => { try{ const r = await Runner.ensure(); toast(r && r.id ? t("about.runnerok", {id: r.id}) : t("about.runnermissing", {id: Runner.id()}), r && r.id ? "ok" : "err"); }catch(e){ toast(mcpErrText(e), "err"); } render(); },
@@ -14157,8 +14108,6 @@ Object.assign(FORMS, {
   "start": () => { const raw = ($("#start-in").value || "").trim(); const name = ($("#np-name").value || "").trim(); if (!raw && !name){ toast(t("start.need"), "err"); focusSoon("start-in"); return; } const mode = UI.startMode || WS.settings.defaultMode || "steps"; const p = newProject(name || suggestName(raw), {raw, mode}); UI.startMode = null; UI.startText = ""; UI.startName = ""; if (mode === "express") setTimeout(() => focusSoon("raw"), 40); toast(t("start.made", {m: t("m." + mode)}), "ok"); },
   "existing": async () => { const txt = ($("#ex-in").value || "").trim(); const files = arr(UI.exFiles); const all = [txt, ...files.map(f => `<file name="${f.name}">\n${f.text}\n</file>`)].filter(Boolean).join("\n\n"); if (!all.trim()){ toast(t("ex.need"), "err"); return; } const p = newProject(t("ex.newname"), {raw: all, mode: WS.settings.defaultMode, kind: "existing"}); UI.exFiles = null; UI.exText = ""; UI.startKind = "new"; await aiExisting(p, all); },
   "guide": async () => { const p = curP(); const q = ($("#guide-in").value || "").trim(); if (!q) return; $("#guide-in").value = ""; const r = await aiGuide(p, q); if (r){ if (p){ p.guide = arr(p.guide); p.guide.push(r); if (p.guide.length > 40) p.guide = p.guide.slice(-40); logAct(p, t("act.guide", {q: trunc(q, 60)}), {kind: "guide"}); touch(p); } else { UI.guideWs = arr(UI.guideWs); UI.guideWs.push(r); } render(); } },
-  "express-change": async () => { const p = curP(); const q = ($("#xp-in").value || "").trim(); if (!q) return; UI.drawer = true; UI.panelTab = "guide"; const r = await aiGuide(p, q); if (r){ p.guide = arr(p.guide); p.guide.push(r); touch(p); render(); } },
-  "cmap-ask": async () => { const p = curP(); const q = ($("#cm-in").value || "").trim(); if (!q) return; const r = await aiImpactParts(p, q); if (r){ UI.cmap = Object.assign({id: "q", q}, r); render(); } },
   "change-request": async () => { const p = curP(); const v = ($("#cr-in").value || "").trim(); if (!v) return; const it = {id: uid("ib"), src: "yours", title: trunc(v, 140), body: v, on: true, at: now(), k: "change"}; p.inbox.push(it); touch(p); render(); const r = await aiImpactParts(p, v); if (r){ it.refs = r.refs; touch(p); render(); } },
   "report-paste": () => { const p = curP(); const o = parseReport(($("#rep-in").value || "")); if (!o){ toast(t("rel.pasteerr"), "err"); return; } p.report = {at: now(), raw: o, check: checkReport(p, o), via: "paste", draft: (p.brief && p.brief.draft) || p.versionNo}; touch(p); render(); },
   "tool-report": () => { const v = ($("#tr-in").value || "").trim(); if (!v) return; const x = {id: uid("tf"), text: v, where: UI.modal.where || "", at: now(), ws: WS.name, status: "open", version: PT_VERSION}; Store.put("toolfeedback/" + x.id, x); WS.toolfb = [x, ...arr(WS.toolfb)]; UI.modal = null; render(); toast(t("tfb.sent"), "ok"); },
@@ -14503,28 +14452,6 @@ Object.assign(ACTIONS, {
 Object.assign(CHANGES, { "rv-tick": el => { const r = UI.review; if (!r) return; const x = r.items[num(el.dataset.i, -1)]; if (x){ x.on = el.checked; render(); } } });
 document.addEventListener("input", e => { const el = e.target; if (el.matches && el.matches("[data-rvedit]") && UI.review){ const [i, f] = el.dataset.rvedit.split(":"); const x = UI.review.items[num(i, -1)]; if (x){ x.edit[f] = el.value; } } });
 
-/* ---------- 1.3 quick mode: accept all, fold, keyboard ---------- */
-Object.assign(ACTIONS, {
-  "xp-more": () => { UI.xMore = true; render(); },
-  "confirm-all-as": () => { const p = curP(); const list = assumedItems(p).filter(i => i.kind !== "assumption"); if (!list.length) return; snapshot(p, t("xp.acceptall", {n: list.length})); probSnap(p); for (const i of list){ confirmItem(p, i.ref); markRef(p, i.ref, "confirmed"); } touch(p); render(); toastUndo(t("xp.accepted", {n: list.length})); afterChange(p); },
-  "xp-fold": el => { UI.xOpen = UI.xOpen || new Set(); const ph = el.dataset.ph; if (UI.xOpen.has(ph)) UI.xOpen.delete(ph); else UI.xOpen.add(ph); render(); }
-});
-document.addEventListener("keydown", e => {
-  if (e.isComposing || e.keyCode === 229 || e.metaKey || e.ctrlKey || e.altKey) return;
-  if (!UI.unlocked || UI.lockFor) return;
-  const p = UI.view === "project" ? curP() : null; if (!p || projMode(p) !== "express" || UI.modal || UI.palette || UI.capture) return;
-  const a = document.activeElement; if (a && a.matches && a.matches("input,textarea,select,button,a,summary,[contenteditable]")) return;   // a focused control handles its own keys
-  const list = arr(UI.xList); if (!list.length) return;
-  const k = e.key.toLowerCase(); let i = Math.max(0, list.indexOf(UI.xSel));
-  if (k === "arrowdown" || k === "j"){ e.preventDefault(); i = UI.xSel ? Math.min(list.length - 1, i + 1) : 0; }
-  else if (k === "arrowup" || k === "k"){ e.preventDefault(); i = Math.max(0, i - 1); }
-  else if (k === "enter" && UI.xSel){ e.preventDefault(); const it = itemByRef(p, UI.xSel); if (it && it.st === "as" && !["intake","nsdraft","pq"].includes(it.kind)){ if (it.kind === "assumption") ACTIONS["as-validate"]({dataset: {id: it.obj.id}}); else ACTIONS["item-confirm"]({dataset: {ref: it.ref}}); } else if (it && it.flag) ACTIONS["item-unflag"]({dataset: {ref: it.ref}}); return; }
-  else if (k === "e" && UI.xSel){ e.preventDefault(); ACTIONS["item-edit"]({dataset: {ref: UI.xSel}}); return; }
-  else if (k === "r" && UI.xSel){ e.preventDefault(); ACTIONS["item-tool"]({dataset: {ref: UI.xSel, k: "refine"}}); return; }
-  else return;
-  UI.xSel = list[i]; UI.open.add(UI.xSel); render();
-  const el = document.getElementById("ir-" + UI.xSel); if (el) el.scrollIntoView({block: "nearest"});
-});
 
 /* ---------- 1.3 notes panel actions (C1) ---------- */
 function dockSave(){ Store.lsSet("dock", {open: !!UI.drawer && (UI.panelTab || "notes") === "notes", w: num(UI.dockW, 360)}); }
@@ -15419,9 +15346,7 @@ function popNav(){
 }
 window.addEventListener("popstate", () => { popNav(); });
 function navBar(p){
-  // 1.5.0: a jump out of a view (Pick, Blueprint …) to show an item always offers the way back
-  const bm = UI.backMode && UI.backMode.pid === p.id && projMode(p) !== UI.backMode.mode ? `<div class="navbar14" role="navigation"><button class="btn xs primary" data-a="mode-back">← ${esc(t("nav.backto", {m: t("m." + UI.backMode.mode)}))}</button></div>` : "";
-  return bm + navBar1(p);
+  return navBar1(p);   // 2.0: no jump out of a face any more (the 1.5 "back to …" bar is gone)
 }
 function navBar1(p){
   const fp = UI.finishPaused && UI.finishPaused.pid === p.id && !UI.finish ? `<div class="navbar14 finpause" role="navigation"><button class="btn xs primary" data-a="finish-resume">← ${esc(t("fin.resume", {i: num(UI.finishPaused.i, 0) + 1, n: arr(UI.finishPaused.list).length}))}</button></div>` : "";
@@ -15506,8 +15431,8 @@ function navFallback(ref){
   const p = curP(); UI.navTry = (UI.navTry || 0) + 1;
   // 1. the current view has no place for it: open the full step (Back returns to the view you were in)
   // 1.5.0: in Pick, an item the side panel can show opens there (you stay in Pick)
-  if (UI.navTry === 1 && p && projMode(p) === "pick"){ const r0 = ref.startsWith("#") ? null : ref; if (r0 && (itemExists(p, r0) || /^(ns|arch:choice|intake:|und:|fs:|pq:|crit:|engine:|pick:|proof:|audience)/.test(r0))){ UI.navRef = null; UI.navTry = 0; inspOpen(r0, "details"); return; } }
-  if (UI.navTry === 1 && p && !["steps", "journey"].includes(projMode(p))){ UI.prevMode = projMode(p); UI.backMode = {pid: p.id, mode: projMode(p)}; p.mode = "steps"; UI.flashRef = ref; setTimeout(render, 0); return; }   // after the current render has finished, so nothing undoes the jump
+  if (UI.navTry === 1 && p && MODES.includes(projMode(p))){ const r0 = ref.startsWith("#") ? null : ref; if (r0 && (itemExists(p, r0) || /^(ns|arch:choice|intake:|und:|fs:|pq:|crit:|engine:|pick:|proof:|audience)/.test(r0))){ UI.navRef = null; UI.navTry = 0; inspOpen(r0, "details"); return; } }
+  // 2.0: there is no Steps view to jump to any more; the pages (both faces) and the side panel show every item
   UI.navRef = null; UI.navTry = 0;
   // 2. no place in the step either: the inspector shows it, with its details and tools
   const r = ref.startsWith("#") ? null : ref;
@@ -15517,7 +15442,6 @@ function navFallback(ref){
   toast(t("nav.attop"), "");
 }
 
-ACTIONS["mode-back"] = () => { const p = curP(); if (!p || !UI.backMode) return; p.mode = UI.backMode.mode; UI.backMode = null; touch(p); render(); };
 
 /* ===================== 1.4 FINISH: from every mode, in one go =====================
    1. Plan: what PT can do on its own, with the cost before anything runs.
@@ -16051,12 +15975,7 @@ function partPanel(p, cid){
     <div class="eyebrow">${esc(t("bp.linked"))}</div>
     ${phs.length ? phs.map(o => `<div class="stack" style="gap:6px"><span class="small muted">${esc(phName(o))}</span>${itemList(p, its.filter(i => i.ph === o))}</div>`).join("") : `<p class="small muted">${esc(t("bp.nolinks"))}</p>`}</section>`;
 }
-/* ---------- Blueprint mode and the overview map ---------- */
-function modeBlueprint(p){
-  const ph = p.focus.ph;
-  // 1.4.1: the map uses the whole width; a selected part opens in the inspector (no squeezed side column next to it)
-  return `<div class="stack">${lensBar(p)}<div class="stack">${mapBlock(p, {id: "bp"})}<p class="hint">${esc(t("bp.hint141"))}</p></div>${fullStep(p, ph)}</div>`;
-}
+/* ---------- the overview map (2.0: the Blueprint mode is gone; the parts map is the body of the Design page) ---------- */
 function overviewMap(p){
   if (!arr(p.arch.components).length) return `<h2>${esc(t("home.stages"))}</h2>${stageMap(p)}<p class="hint">${esc(t("home.nomap"))}</p>`;
   return `<div class="row"><h2 style="flex:1 1 12em">${esc(t("home.map"))}</h2></div>${lensBar(p)}${(UI.mapDetail || "parts") === "stages" ? stageMap(p) : mapBlock(p, {id: "ov"})}`;
@@ -17468,7 +17387,6 @@ Object.assign(ACTIONS, {
 });
 { const orig = ACTIONS["palette"]; if (orig) ACTIONS["palette"] = (el, e) => { WS.settings.palUses = num(WS.settings.palUses, 0) + 1; return orig(el, e); }; }
 /* Learning: Express is off by default for new projects (you can still pick it) */
-{ const orig = newProject; newProject = function(name, o = {}){ if (!o.mode && levelOf(null) === "learn" && (WS.settings.defaultMode || "") === "express") o = Object.assign({}, o, {mode: "steps"}); return orig(name, o); }; }
 
 /* the raw editor keeps what you type through re-renders (it is not a 1.3 draft: it always starts from the current brief) */
 document.addEventListener("input", e => { if (e.target && e.target.id === "rb-in"){ if (UI.rawText == null){ const p = curP(); if (p) UI.rawBase = hashStr(rawBrief(p)); } UI.rawText = e.target.value; } });   // the first keystroke starts from the brief on screen
@@ -18610,7 +18528,7 @@ function modePick(p){
   else main = `<section class="panel pk-empty"><p>${esc(k.enough ? t("pk.enough") + (k.enoughWhy ? " " + k.enoughWhy : "") : t("pk.nonext"))}</p>${k.cands && k.cands.likelyWrong ? `<p class="small muted">${esc(t("pk.cands.wrong", {x: k.cands.likelyWrong}))}</p>` : ""}<div class="row">${aiBtn("pk-next", k.enough ? t("pk.deeper") : t("pk.next"), "M", {primary: !k.enough, key: "pick"})}</div></section>`;
   return `<div class="pk" data-anchor="pick">${pickTop(p, k, ready)}${busyHTML("pick")}${busyHTML("pk-understand")}${busyHTML("pk-research")}<div class="pk-deck">${main}</div>${pickTryPanel(p, ready)}${pickOverview(p)}${pickParked(p)}${pickFindings(p)}</div>`;
 }
-{ const orig = modeBody; modeBody = function(p){ return projMode(p) === "pick" ? modePick(p) : orig(p); }; }
+{ const orig = modeBody; modeBody = function(p){ return MODES.includes(projMode(p)) ? modePick(p) : orig(p); }; }
 
 /* ---------- actions ---------- */
 UI.pkSel = UI.pkSel || {};
@@ -18646,7 +18564,7 @@ Object.assign(ACTIONS, {
     touch(p); actCloseSoon(p.id); render(); pickAfter(p); },
   "pk-change": el => { const p = curP(); if (!p) return; const k = pickOf(p), e = k.log.find(x => x.id === el.dataset.id); if (!e || !e.card) return; const had = k.cards.find(c => c.replaces === e.id); if (had){ UI.flashRef = "pick:" + had.id; render(); return; } actOpen(p, t("int.change"));
     const c = Object.assign({}, e.card, {target: e.card.target || e.target, id: uid("pk"), replaces: e.id, by: "you", at: now(), round: k.session.n}); k.cards.unshift(c); UI.pkSel[c.id] = arr(e.keys); UI.qDraft["pk-" + c.id] = str(e.own); touch(p); actCloseSoon(p.id);
-    if (projMode(p) !== "pick"){ p.mode = "pick"; UI.home = false; UI.drawer = false; }
+    UI.home = false; UI.drawer = false;   // both faces show the card again (Pick in its deck, Chat with structure in the conversation)
     UI.flashRef = "pick:" + c.id; render(); },
   "pk-ovfold": () => { UI.pkOv = UI.pkOv === false; render(); },
   "pk-second": () => { const p = curP(); if (p) return costGuard(p, "pk-second", () => aiPickSecond(p)); },
@@ -18753,10 +18671,9 @@ function pickDefaultsOnce(){
   WS.settings.modeBefore150 = MODES.includes(WS.settings.defaultMode) ? WS.settings.defaultMode : "steps";
   WS.settings.defaultMode = "pick"; WS.settings.m150 = now(); saveWs();
 }
-{ const orig = projMode; projMode = function(p){ if (p && !MODES.includes(p.mode) && WS.settings && WS.settings.m150 && WS.settings.modeBefore150 && str(p.createdAt) < str(WS.settings.m150)) return WS.settings.modeBefore150; return orig(p); }; }
-/* in Pick, the deck is the guide: the step tips and the guide strip of the other views stay out of the way */
-{ const orig = momentCard; momentCard = function(p){ return p && projMode(p) === "pick" ? "" : orig(p); }; }
-{ const orig = guideStrip; guideStrip = function(p){ return p && projMode(p) === "pick" ? "" : orig(p); }; }
+/* in both faces (Pick, Chat with structure) the deck and the chat are the guide: the 1.x step tips and the guide strip stay out of the way */
+{ const orig = momentCard; momentCard = function(p){ return p ? "" : orig(p); }; }
+{ const orig = guideStrip; guideStrip = function(p){ return p ? "" : orig(p); }; }
 
 { const orig = openWorkspace; openWorkspace = async function(id){ const r = await orig(id); if (UI.wsReady && !UI.fatal && WS.id === id) pickDefaultsOnce(); return r; }; }   // a workspace that failed to load is never written
 
@@ -18807,10 +18724,6 @@ SPECIAL_ANCHOR.proof = ["arch", ""];
 PHASE_OF.proof = "arch";
 
 /* ---------- Pick and the rest of the shell ---------- */
-// the steps you start a design in suggest Pick (no "Suggested here" on another view while you pick)
-for (const ph of ["capture","understand","interview"]) SUGGEST[ph] = "pick";
-// the stage bar in Pick opens that step in Steps; the bar above it brings you back to Pick
-for (const a of ["goto","stage"]){ const orig = ACTIONS[a]; ACTIONS[a] = function(el){ const p = curP(); if (p && UI.view === "project" && projMode(p) === "pick" && !UI.home){ UI.backMode = {pid: p.id, mode: "pick"}; p.mode = "steps"; } return orig.apply(this, arguments); }; }
 // Pick's own commands in the palette
 { const orig = PALETTE_CMDS; PALETTE_CMDS = () => { const c = orig(), p = UI.view === "project" ? curP() : null;
   if (p){ const go = a => () => { if (projMode(p) !== "pick"){ p.mode = "pick"; touch(p); render(); } const f = ACTIONS[a]; if (f) f({dataset: {}}); };
@@ -19666,23 +19579,8 @@ pickTop = function(p, k, ready){
 /* the overview keeps import and export; the second opinion runs inside the rounds and before every first version */
 { const orig = pickOverview; pickOverview = function(p){ return orig(p).replace(/<button[^>]*data-a="pk-second"[\s\S]*?<\/button>/, ""); }; }
 
-/* ---------- 6. one way to work: Pick, with maps ---------- */
-const SP_MAPS = ["blueprint", "journey", "swimlanes", "steps"];
-let SP_MAP_RENDER = "";
-{ const orig = projMode; projMode = function(p){ if (SP_MAP_RENDER && p && UI.map && UI.map.pid === p.id) return SP_MAP_RENDER; return orig(p); }; }
-modeBar = function(p){
-  const m = UI.map && UI.map.pid === p.id ? UI.map.mode : "";
-  return `<div class="seg modeseg" role="group" aria-label="${esc(t("mode.label"))}"><button class="${m ? "" : "on"}" data-a="pk-map" data-v="pick" aria-pressed="${!m}" title="${esc(t("md.pick"))}">${ic("target")}<span class="mode-l">${esc(t("m.pick"))}</span></button>${SP_MAPS.map(x => `<button class="${m === x ? "on" : ""}" data-a="pk-map" data-v="${x}" aria-pressed="${m === x}" title="${esc(t("sp.map.tip", {x: t("m." + x)}))}">${ic(MODE_ICON[x])}<span class="mode-l">${esc(t("m." + x))}</span></button>`).join("")}</div>`;
-};
-{ const orig = modeBody; modeBody = function(p){
-    if (UI.map && UI.map.pid === p.id && SP_MAPS.includes(UI.map.mode)){
-      SP_MAP_RENDER = UI.map.mode;
-      try{ return `<div class="mode-back bar sp-mapbar"><span class="small">${ic(MODE_ICON[UI.map.mode])} ${esc(t("sp.map.title", {x: t("m." + UI.map.mode)}))}</span><button class="btn xs" data-a="pk-map" data-v="pick">${ic("target")}${esc(t("sp.map.back"))}</button></div>${orig(p)}`; }
-      finally{ SP_MAP_RENDER = ""; }
-    }
-    return orig(p); }; }
-ACTIONS["pk-map"] = el => { const p = curP(); if (!p) return; const v = str(el.dataset.v); UI.map = v && SP_MAPS.includes(v) ? {pid: p.id, mode: v} : null; render(); };
-ACT_NO.add("pk-map"); ACT_NO.add("pk-last-close"); ACT_NO.add("pk-gaps");
+/* ---------- 6. one way to work (1.6: Pick; 2.0: Pick or Chat with structure, v200_modes.js — the 1.x maps Steps, Blueprint, Journey, Swimlanes are gone) ---------- */
+ACT_NO.add("pk-last-close"); ACT_NO.add("pk-gaps");
 /* every project works in Pick from 1.6.0 on (one-time move; the earlier view is kept as the project's map) */
 function spineMoveOnce(){
   if (!WS || !WS.settings || WS.settings.m160) return;
@@ -19697,7 +19595,7 @@ function spineWake(p){
   if (k.findings.some(f => !f.screened) && !AI.running.has(akey("pk-screen", p.id))){ aiPickScreen(p); return; }   // the screen chains refresh and gaps itself
   if (!pickOpenCards(p).length && (k.log.length || k.cards.length)) pickGapCards(p);
 }
-{ const orig = openProject; openProject = function(id, phase){ if (UI.map && UI.map.pid !== id) UI.map = null; const r = orig(id, phase); setTimeout(() => { const p = curP(); if (p && p.id === id && UI.view === "project") spineWake(p); }, 400); return r; }; }
+{ const orig = openProject; openProject = function(id, phase){ const r = orig(id, phase); setTimeout(() => { const p = curP(); if (p && p.id === id && UI.view === "project") spineWake(p); }, 400); return r; }; }
 
 /* ===================== 1.7.0 THE COVER AND THE SEVEN PAGES =====================
    Decided with the owner on 25 Oct 2026: the seven stations of the 1.6 spine become seven pages, one human question each, every page
@@ -19711,7 +19609,7 @@ const PG_OF_PHASE = {}; for (const [pg, phs] of Object.entries(PG_PHASES)) for (
 /* a step ref the old screens use → the page it lives on */
 const PG_OF_REF = {goal: "idea", "#pk-deck": "picks", "#pk-research": "picks", "#pk-summary": "picks", "#pk-try": "try", arch: "design", review: "review", test: "review", build: "build", release: "run", run: "run"};
 const PG_ICON = {idea: "target", picks: "list", try: "play", design: "layers", review: "shield", build: "bolt", run: "heart"};
-function pgOn(p){ return !!p && projMode(p) === "pick" && !(UI.map && UI.map.pid === p.id); }
+function pgOn(p){ return !!p && MODES.includes(projMode(p)); }   // 2.0: the pages are the structure of both faces (Pick and Chat with structure)
 /** the station of the one next step */
 function pgNextPage(s){ const nx = s.next || {}; return nx.a === "pk-try" ? "try" : nx.a === "pk-gaps" ? "picks" : PG_OF_REF[nx.ref] || (nx.ref === "goal" ? "idea" : "run"); }
 /** the track: done stations stay filled, exactly one station is current (the one of the next step), the rest is to do */
@@ -19729,8 +19627,7 @@ function pgOpen(p, id, {flash = null} = {}){
   if (!PG_PAGES.includes(id)) return;
   pushNav();
   if (UI.finish && UI.finish.pid === p.id && (UI.finish.step === "decide" || UI.finish.step === "done")) UI.finishPaused = UI.finish;
-  UI.pg = {pid: p.id, id}; UI.home = false; UI.finish = null; UI.nav = null; UI.map = null;
-  if (projMode(p) !== "pick"){ p.mode = "pick"; UI.backMode = null; touch(p); }
+  UI.pg = {pid: p.id, id}; UI.home = false; UI.finish = null; UI.nav = null;
   if (flash){ UI.flashRef = flash; UI.navRef = flash; UI.navTry = 0; }
   render(); const m = document.querySelector(".main"); if (m) m.scrollTop = 0;
 }
@@ -19744,9 +19641,9 @@ function pgShowPhase(p, ph){ const id = PG_OF_PHASE[ph]; if (!id) return false; 
     const p = curP();
     if (p && pgOn(p) && !UI.finish && PG_OF_REF[ref]){ const id = PG_OF_REF[ref]; pgOpen(p, id); const ph = ref.startsWith("#") ? "" : refPhase(p, ref); if (ph && PG_PHASES[id].includes(ph)){ p.focus = {ph, id: null}; UI.phase = ph; pgShowPhase(p, ph); }   // ok:field  focus is the existing cursor field
       UI.flashRef = ref; UI.navRef = ref; UI.navTry = 0; render(); return; }
-    const was = p && projMode(p) === "pick";
+    const was = p && pgOn(p);
     const r = orig(ref, o);
-    if (p && was && projMode(p) === "pick" && UI.view === "project" && !UI.home && ref && /:/.test(ref)){ const ph = refPhase(p, ref); if (pgShowPhase(p, ph)){ UI.flashRef = UI.flashRef || ref; UI.navRef = UI.flashRef; render(); } }
+    if (p && was && pgOn(p) && UI.view === "project" && !UI.home && ref && /:/.test(ref)){ const ph = refPhase(p, ref); if (pgShowPhase(p, ph)){ UI.flashRef = UI.flashRef || ref; UI.navRef = UI.flashRef; render(); } }
     return r; }; }
 /* a step button inside a page stays on the page: the details open on that step */
 { const orig = ACTIONS["goto"]; ACTIONS["goto"] = function(el){ const p = curP(); const ph = el && el.dataset ? el.dataset.ph : ""; if (p && pgOn(p) && !UI.home && PG_OF_PHASE[ph] && PHASE_IDS.includes(ph)){ p.focus = {ph, id: null}; UI.phase = ph; pgShowPhase(p, ph); if (typeof resetBase === "function") resetBase(p); render(); return; } return orig.apply(this, arguments); }; }   // ok:field  focus is the existing cursor field (DIFF_SKIP)
@@ -19923,8 +19820,7 @@ function pageHTML(p, id){
     const id = pgCur(p); UI.pgInPage = true;
     try{ return pageHTML(p, id); } finally{ UI.pgInPage = false; } }; }
 /* the old stage bar and the mode bar leave the main path: the page bar carries the cover and the seven pages */
-{ const orig = stageBar; stageBar = function(p){ return projMode(p) === "pick" ? "" : orig(p); }; }
-{ const orig = modeBar; modeBar = function(p){ return projMode(p) === "pick" ? "" : orig(p); }; }
+{ const orig = stageBar; stageBar = function(p){ return pgOn(p) ? "" : orig(p); }; }
 /* the cover shows the page bar too */
 { const orig = statusLine; statusLine = function(p){ return projMode(p) === "pick" && UI.home ? pgBar(p) + orig(p) : orig(p); }; }
 
@@ -28614,6 +28510,446 @@ const V200M_CSS = `
 `;
 function v200mCss(){ try{ if (document.getElementById("v200m-css")) return; const s = document.createElement("style"); s.id = "v200m-css"; s.textContent = V200M_CSS; (document.head || document.documentElement).appendChild(s); }catch(e){ console.warn("2.0 map: no styles", e); } }   // ok:catch without its sheet the map still works, plainer
 v200mCss();
+
+/* ===================== 2.0.0 PART C — TWO FACES OF ONE LEDGER: PICK AND CHAT WITH STRUCTURE =====================
+   The owner (3–4 Nov 2026): "scrap all modes, only keep and improve the Pick mode, and make a new mode Chat with structure that
+   can do all we want … as seamless, understandable, user-friendly, automatic, logical and visually matching as maximally possible".
+   - Two faces only: Pick (the deck, the pages) and Chat with structure (talk freely; PT answers, files what it learns into the
+     facts book with "✓ Noted" receipts, keeps the goal card and the live map beside the conversation, shows the one Next and
+     small chips so the owner rarely types). Both read and write the same project: p.ledger (Part A), p.goal20 / p.map20 (Part B),
+     p.pick (cards and answers). A question PT asks in the chat IS a pick card, so what is answered in one face is answered in the other.
+   - Every AI answer of the chat passes Part A's rules check (buildPrompt with proj: <your_rules> first, runAI's check); the order
+     goal → map → decide → details holds (before the decision the route-splitting rule, after it <chosen_route>).
+   - Steps, Blueprint, Journey, Swimlanes and Express are gone (their data stays readable: they were views over one item model).
+   - The move to 2.0 (once per project, when its workspace opens): a restore point "Before 2.0" first, then additive only — the
+     project's own rules into its facts book, its 1.x design options onto its map (a confirmed choice = the chosen route), p.mode
+     to a face; nothing is removed; nothing comes from another project. */
+
+MODES.push("chat");
+IC.chat20 = '<path d="M4 5h16v10H9l-5 4z"/><path d="M8 9h8M8 12h5"/>';
+MODE_ICON.chat = "chat20";
+FACT_SRC.push("chat");
+FACT_SKIP_KEYS.add("said"); FACT_SKIP_KEYS.add("norm");   // the person's own words in a chat answer are theirs, not a proposal to check against their rules
+EX_TASKS.add("chat20");   // the question card in a chat answer is a pick card: its examples never ask
+const C20_MAX = 160, C20_CTX = 10, C20_FILE_MAX = 6;
+const C20_TABS = ["goal", "map", "decided", "plan", "events"];
+const C20_NEVER = /\b(never|nie|niemals|nicht|no|kein|keine|keinen)\b|绝不|从不|不要|不能|不得/i;
+const C20_MUST = /\b(must|always|muss|müssen|immer)\b|必须|一定要|总是/i;
+const C20_PT = /\b(PT|Prompt Translator)\b|\b(this|the) (button|screen|page|tab|card|chip|menu)\b|\b(dieser|diese|dieses|der|die|das) (Knopf|Bildschirm|Seite|Karte|Reiter)\b|这个(按钮|页面|屏幕|卡片)/i;
+
+/* ---------- 1. data: the conversation of one project (never shared with another project) ---------- */
+function c20Blank(){ return {v: 1, msgs: [], n: 0}; }
+function c20Read(p){ const C = p && p.chat20 && typeof p.chat20 === "object" ? p.chat20 : null; return C ? {v: 1, msgs: arr(C.msgs), n: num(C.n, 0)} : c20Blank(); }
+function c20Of(p){ if (!p.chat20 || typeof p.chat20 !== "object") p.chat20 = c20Blank(); const C = p.chat20; C.msgs = arr(C.msgs); C.n = num(C.n, C.msgs.length); C.v = 1; return C; }   // ok:field the conversation's own default (blankProject has it; older projects get it here)
+function c20Add(p, m){ const C = c20Of(p); const x = Object.assign({id: "c" + (++C.n), at: now()}, m); C.msgs.push(x); if (C.msgs.length > C20_MAX) C.msgs = C.msgs.slice(-C20_MAX); return x; }
+{ const orig = blankProject; blankProject = function(name){ const p = orig(name); p.chat20 = c20Blank(); p.m200 = {v: 1, at: now(), fresh: true}; return p; }; }   // ok:field the template default: a new project needs no move to 2.0
+/* a project stored before 2.0 has no move record: normalizeProject would copy the new project's one onto it */
+const M200 = {raw: null, ran: null};
+{ const orig = normalizeProject; normalizeProject = function(p){
+    const had = !!p && Object.prototype.hasOwnProperty.call(p, "m200");
+    try{ if (!had && M200.raw && p && p.id && !M200.raw.has(p.id)) M200.raw.set(p.id, clone(p)); }catch(e){ console.warn("2.0 move: copy as stored", e); }   // ok:catch without the copy the restore point is made from the loaded project
+    const r = orig.apply(this, arguments);
+    if (p && !had) delete p.m200;
+    return r; }; }
+
+/* ---------- 2. the face: which one is shown, and the switch ---------- */
+function c20St(p){
+  if (!UI.c20 || UI.c20.pid !== p.id) UI.c20 = {pid: p.id, on: true, tab: c20DefTab(p), side: "chat"};
+  return UI.c20;
+}
+function c20DefTab(p){ const M = m20Read(p); return M.routes.length || M.notyet.length ? "map" : "goal"; }
+/** the conversation is on screen: the Chat face, and no page, facts book, decisions list or finish run opened over it */
+function c20Show(p){
+  if (!p || projMode(p) !== "chat" || UI.view !== "project") return false;
+  if (UI.factsView === p.id || UI.rowsView === p.id || (UI.finish && UI.finish.pid === p.id) || isPageModal()) return false;
+  return !!c20St(p).on;
+}
+function face20Set(p, v){
+  if (!p || !MODES.includes(v)) return;
+  const was = projMode(p);
+  if (was !== v){ p.mode = v; touch(p); }
+  UI.factsView = null; UI.rowsView = null; UI.finish = null; UI.pg = null;
+  if (v === "chat"){ const S = c20St(p); S.on = true; UI.home = false; }
+  else { UI.m20 = null; UI.home = true; if (UI.c20 && UI.c20.pid === p.id) UI.c20.on = false; }
+  render(); const m = document.querySelector(".main"); if (m) m.scrollTop = 0;
+  if (was !== v) toast(t("face.switched", {x: t("m." + v)}), "ok");
+  if (v === "chat") focusSoon("c20-in");
+}
+modeBar = function(p){
+  if (!p) return "";
+  const m = projMode(p), on = x => m === x && (x !== "chat" || c20Show(p));
+  return `<div class="seg face20" role="group" aria-label="${esc(t("face.label"))}">${["chat", "pick"].map(x => `<button class="${m === x ? "on" : ""}" data-a="face20" data-v="${x}" aria-pressed="${m === x}" ${on(x) ? 'aria-current="true"' : ""} title="${esc(t("face.tip." + x))}">${ic(MODE_ICON[x])}<span class="mode-l">${esc(t("m." + x))}</span></button>`).join("")}</div>`;
+};
+/* the switch is always in the status line (also on the cover and in the chat) */
+{ const orig = statusLine; statusLine = function(p){
+    const h = orig(p);
+    if (!p || h.includes('class="seg face20"')) return h;
+    return h.replace('<span style="flex:1"></span>', '<span style="flex:1"></span>' + modeBar(p)); }; }
+{ const orig = modeBody; modeBody = function(p){ return c20Show(p) ? c20HTML(p) : orig(p); }; }
+{ const orig = homeView; homeView = function(p){ return c20Show(p) ? c20HTML(p) : orig(p); }; }
+/* leaving the conversation for a page; Cover / Home / the face switch bring it back */
+{ const orig = pgOpen; pgOpen = function(p){ if (p && UI.c20 && UI.c20.pid === p.id) UI.c20.on = false; return orig.apply(this, arguments); }; }
+{ const orig = ACTIONS["home"]; ACTIONS["home"] = function(){ const p = curP(); if (p && projMode(p) === "chat"){ c20St(p).on = true; UI.pg = null; } return orig.apply(this, arguments); }; }
+{ const orig = openProject; openProject = function(id){ if (UI.c20 && UI.c20.pid !== id) UI.c20 = null; return orig.apply(this, arguments); }; }
+/* in the chat, the map, the goal card and the decision open in the workspace beside the conversation (one picture, never a jump away) */
+{ const orig = m20Open; m20Open = function(p, v = "map"){
+    if (p && projMode(p) === "chat" && UI.view === "project" && (c20St(p).on || UI.home)){ const S = c20St(p); S.on = true; S.tab = v === "goal" ? "goal" : "map"; S.side = "ws"; }
+    return orig.apply(this, arguments); }; }
+/* the one Next in the chat: "next pick" is the question in the conversation, "describe your idea" is the composer */
+{ const orig = pgNextBtn; pgNextBtn = function(p, o = {}){
+    if (!c20Show(p)) return orig.apply(this, arguments);
+    const nx = spineState(p).next || {};
+    if (nx.a === "goto-ref" && (nx.ref === "#pk-deck" || nx.ref === "goal")) return `<button class="btn ${o.big ? "lg" : "sm"} primary" data-a="c20-focus" data-v="${nx.ref === "goal" ? "say" : "card"}">${ic("arrow")}${esc(nx.ref === "goal" ? t("c20.next.say") : nx.label)}</button>`;
+    return orig.apply(this, arguments); }; }
+
+/* ---------- 3. the conversation: one call per message, filed into the facts book ---------- */
+const C20_SCHEMA = `{"reply":"your answer to the person, 1-4 short sentences in plain words","about":"tool|pt|both","file":[{"kind":"never|must|fact|decision|tool","said":"the person's exact words from the newest message","norm":"PT's short form, one plain sentence"}],"goal":{"outcome":"","whom":"","situation":"","success":"","where":"","budget":""},"cards":[${PK_CARD_SCHEMA}],"next":"map|goal|none"}`;
+function c20Ctx(p){
+  const C = c20Read(p), last = C.msgs.filter(m => m.by === "you" || m.by === "pt").slice(-C20_CTX);
+  return last.map(m => ({by: m.by === "you" ? "person" : "PT", text: str(m.text).slice(0, 1200)}));   // ok:cut the last turns as context; the whole conversation stays stored
+}
+function c20GoalJSON(p){ const G = goal20Read(p), o = {}; for (const k of M20_GOAL) o[k] = str(G.f[k]).trim() ? (G.by[k] === "you" ? {said: G.f[k]} : {guess: G.f[k]}) : "empty"; return o; }
+function c20MapJSON(p){
+  const M = m20Read(p), ch = m20Chosen(p);
+  return {routes: M.routes.slice(0, 30).map(r => ({id: r.id, name: r.name, status: m20Status(p, r)})), shortlisted: M.short, chosen: ch ? {id: ch.id, name: ch.name} : null};
+}
+function c20Decided(p){ return pickRead(p).log.filter(e => str(e.answer).trim()).slice(-30).map(e => ({q: str(e.q), a: str(e.answer)})); }
+function c20Prompt(p, text){
+  const stage = stage20Early(p) ? ST20_SPLIT : stage20RouteBlock(p);
+  return buildPrompt("chat20", {proj: p, rules: ["elicit", "simple"], context: projectContext(p, {max: 14000}),
+    body: `You are Prompt Translator's partner in "Chat with structure": the person talks freely about the tool they want built; you answer briefly AND file what they said, so nothing is asked twice and nothing they ruled out comes back.
+Read the newest message against the conversation so far, the goal card, what is decided and the map.
+1. "file": each rule, fact or decision the newest message states about the TOOL or the person's situation: "never" (must never happen or be used), "must" (must always hold), "fact" (about the person's world), "decision" (a choice), "tool" (how the finished tool behaves). "said" quotes the person's own words exactly from the newest message; "norm" is your short form. Leave out what <your_rules> or <your_facts> already hold, and anything you guess.
+2. "about": "pt" when the message is feedback about Prompt Translator itself (its screens, buttons, flow, wording) and not about the tool: then file nothing; "both" when it holds both; else "tool".
+3. "goal": only for goal fields that are "empty" or a guess, your best one-sentence guess from what the person said (leave the others out).
+4. "cards": at most one question, only when one answer would help most now, in Pick's card shape (2-4 options the person can tap). Never a question the facts, the decided list or the goal card already answer.
+5. "next": "map" when the goal is clear enough to look at all ways to reach it, "goal" when the goal card should be checked first, else "none".
+6. "reply": answer the person; when you filed something, say so in a few words. Never promise what PT cannot do.${stage}
+<goal>${JSON.stringify(c20GoalJSON(p))}</goal>
+<decided>${jsonFit(c20Decided(p), 12000, x => x.q)}</decided>
+<map>${JSON.stringify(c20MapJSON(p))}</map>
+<conversation>${JSON.stringify(c20Ctx(p).slice(0, -1))}</conversation>
+<message>${JSON.stringify(str(text))}</message>`,
+    schema: C20_SCHEMA});
+}
+function c20InMsg(text, said){ const q = factNorm(said).toLowerCase(), m = factNorm(text).toLowerCase(); return q.length >= 3 && (m.includes(q) || pickSame(m, q)); }
+function c20Checks(p, text, o){
+  const lang = contentLang(p), k = pickRead(p);
+  const bad = arr(o && o.file).filter(f => f && str(f.said).trim() && !c20InMsg(text, f.said)).slice(0, 4).map(f => `the quote ${JSON.stringify(str(f.said).slice(0, 120))} is not in the newest message: quote the person's exact words, or leave the entry out`);   // ok:cut the repair note quotes the start
+  return [...bad, ...arr(o && o.cards).slice(0, 1).flatMap(c => pickCardChecks(c, k, lang))];
+}
+async function c20AI(p, text){
+  const prompt = c20Prompt(p, text);
+  return runAI("chat20", t("c20.busy"), prompt, {pid: p.id, step: "interview", validate: o => o && typeof o.reply === "string" && !!o.reply.trim(), check: o => c20Checks(p, text, o)});
+}
+/** what code sees by itself in a message: a rule with "never" / "must" (a rule is never lost because a call failed or missed it) */
+function c20CodeFile(text){
+  if (C20_PT.test(text)) return [];
+  return factSentences(text).filter(s => C20_NEVER.test(s) || C20_MUST.test(s)).slice(0, 3).map(s => ({kind: C20_NEVER.test(s) ? "never" : "must", said: s, norm: s, code: true}));
+}
+/** file one message: new entries into the facts book (the ones it already holds are named, not added twice) */
+function c20File(p, text, list, ref){
+  const out = {filed: [], known: []}, seen = [];
+  for (const f of list){
+    if (out.filed.length >= C20_FILE_MAX) break;
+    const said = factNorm(f && f.said), norm = factNorm(f && f.norm) || said;
+    if (!said || !c20InMsg(text, said) || seen.some(s => askSim(s, norm) >= 0.8 || askSim(s, said) >= 0.8)) continue;
+    seen.push(norm);
+    const have = factsActive(p).find(e => askSim(factText(e), norm) >= 0.8 || askSim(factNorm(e.words), said) >= 0.8);
+    if (have){ out.known.push(have.id); continue; }
+    const e = factsAdd(p, {kind: oneOf(str(f.kind), FACT_KINDS, "fact"), words: said, short: norm, src: {k: "chat", ref, label: t("c20.src")}, by: "you"});
+    if (e) out.filed.push(e.id);
+  }
+  return out;
+}
+function c20Goal(p, g){
+  if (!g || typeof g !== "object") return [];
+  const G = goal20Of(p), ns = p.northStar = p.northStar || {}, NS = {outcome: "goal", whom: "users", success: "success", situation: "problem"}, done = [];   // ok:field the north star exists on every project
+  for (const k of M20_GOAL){ const v = factNorm(g[k]); if (!v || G.by[k] === "you" || str(G.f[k]).trim()) continue;
+    G.f[k] = v; G.by[k] = "pt"; done.push(k);
+    if (NS[k] && !str(ns[NS[k]]).trim()) ns[NS[k]] = v; }   // ok:field the north star exists on every project; it follows the card's guess only where it was empty
+  return done;
+}
+const C20RUN = {pid: null, n: 0};
+async function c20Send(p, text){
+  const s = str(text).trim(); if (!p || !s) return null;
+  if (AI.running.has(akey("chat20", p.id))){ toast(t("c20.wait"), ""); return null; }
+  const ws0 = WS.id;
+  actOpen(p, t("c20.act.you")); const you = c20Add(p, {by: "you", text: s}); touch(p); actClose(p.id);
+  render(); c20Scroll();
+  const r = await c20AI(p, s);
+  const q = pickLive(p, ws0); if (!q) return null;
+  return c20Apply(q, you, r);
+}
+function c20Apply(p, you, r){
+  const s = str(you.text), ref = "chat:" + you.id;
+  actOpen(p, t("c20.act", {x: trunc(s, 40)}), {by: "pt"});
+  const about = r ? oneOf(str(r.about), ["tool", "pt", "both"], "tool") : (C20_PT.test(s) ? "pt" : "tool");
+  const list = about === "pt" ? [] : [...arr(r && r.file), ...c20CodeFile(s)];
+  const F = c20File(p, s, list, ref);
+  const goal = r && about !== "pt" ? c20Goal(p, r.goal) : [];
+  let card = null;
+  if (r && about !== "pt"){ const k = pickOf(p), asked = [...k.log.map(e => e.q), ...k.cards.map(c => c.q)];
+    for (const c0 of arr(r.cards).slice(0, 1)){ const c = pickCleanCard(c0, k.session.n, k); if (!c || asked.some(a => pickSame(a, c.q))) continue; c.by = "chat"; c.chat = you.id; k.cards.unshift(c); markPT(p, "pick:" + c.id, "added", t("c20.why.card")); card = c.id; } }
+  const G = r ? c20Guard(p, str(r.reply).trim()) : {text: "", cut: null};
+  const pt = c20Add(p, {by: "pt", text: r ? G.text || t("c20.cut.all") : t("c20.fail"), cut: G.cut, fail: !r, about, filed: F.filed, known: F.known, goal, card, next: r ? oneOf(str(r.next), ["map", "goal", "none"], "none") : "none", to: you.id});
+  if (F.filed.length) rcpt20(p, F.filed.map(id => factText(factById(p, id))).join(" · "), t("rc.w.facts"));
+  logAct(p, t("c20.log", {n: F.filed.length}), {step: "interview"});
+  touch(p); actClose(p.id);
+  if (F.filed.length) factsConflictSoon(p, F.filed);
+  if (card) askOnceRun(p, [{id: card, q: pickCard(p, card).q}], {where: "chat", drop: x => { const k = pickOf(p); k.cards = k.cards.filter(c => c.id !== x.id); const m = c20Read(p).msgs.find(y => y.id === pt.id); if (m){ m.card = null; m.dropped = true; } }}).catch(e => onAppError(e && e.message, "ask-once:chat"));
+  render(); c20Scroll();
+  return pt;
+}
+/** the reply still breaks a rule after the one repair: those sentences are left out (named), never shown as advice */
+function c20Guard(p, text){
+  const rules = factsActive(p, FACT_RULES); if (!rules.length) return {text, cut: null};
+  const hits = factCodeHits(rules, text).filter(h => FACT_GUARD.cache.get(factGuardKey(h.e, h.s)) !== false); if (!hits.length) return {text, cut: null};
+  const bad = new Set(hits.map(h => h.s)), keep = factSentences(text).filter(s => !bad.has(s));
+  return {text: keep.join(" "), cut: {n: bad.size, rule: factText(hits[0].e), id: hits[0].e.id}};
+}
+function c20Scroll(){ setTimeout(() => { const L = document.querySelector(".c20-log"); if (L) L.scrollTop = L.scrollHeight; }, 30); }
+/** feedback about PT goes to Improve PT, never into the project */
+function c20ToolFile(p, mid){
+  const m = c20Read(p).msgs.find(x => x.id === mid); if (!m) return;
+  const you = c20Read(p).msgs.find(x => x.id === m.to); if (!you) return;
+  actOpen(p, t("c20.act.tool"));
+  const e = factsAdd(p, {kind: "tool", words: you.text, short: you.text, src: {k: "chat", ref: "chat:" + you.id, label: t("c20.src")}, by: "you"});
+  if (e){ m.filed = arr(m.filed).concat(e.id); m.about = "tool"; rcpt20(p, factText(e), t("rc.w.facts")); }
+  touch(p); actClose(p.id); render();
+}
+
+/* ---------- 4. the screen: the conversation and the workspace (goal · map · decided · plan · events) ---------- */
+function c20KindWord(k){ return t("c20.k." + oneOf(k, FACT_KINDS, "fact")); }
+function c20MsgHTML(p, m){
+  if (m.by === "you") return `<div class="c20-m you" id="c20m-${esc(m.id)}"><div class="c20-who">${esc(t("c20.you"))}</div><div class="c20-b">${esc(m.text)}</div></div>`;
+  if (m.by === "sys") return `<div class="c20-m sys" id="c20m-${esc(m.id)}"><div class="c20-b small">${ic("info")} ${esc(m.text)}</div></div>`;
+  const notes = [];
+  for (const id of arr(m.filed)){ const e = factById(p, id); if (!e) continue; const off = e.status !== "active";
+    notes.push(`<div class="c20-note ${off ? "off" : ""}" role="status"><span class="rc20-ok">${ic("check")}${esc(t(off ? "c20.noted.off" : "c20.noted", {k: c20KindWord(e.kind)}))}</span> <span class="c20-nw">“${esc(factText(e))}”</span> <span class="small muted">${esc(e.id)}</span>${off ? "" : `<button class="btn xs ghost" data-a="c20-fedit" data-id="${esc(e.id)}" aria-label="${esc(t("btn.edit") + ": " + factText(e))}">${ic("edit")}</button><button class="btn xs ghost" data-a="facts-withdraw" data-id="${esc(e.id)}" aria-label="${esc(t("c20.undo1") + ": " + factText(e))}">${ic("undo")}${esc(t("c20.undo1"))}</button>`}</div>`); }
+  for (const id of arr(m.known)){ const e = factById(p, id); if (e) notes.push(`<div class="c20-note known"><span>${ic("check")}${esc(t("c20.known"))}</span> <span class="c20-nw">“${esc(factText(e))}”</span> <span class="small muted">${esc(e.id)}</span></div>`); }
+  if (arr(m.goal).length) notes.push(`<div class="c20-note"><span>${ic("target")}${esc(t("c20.goal", {x: m.goal.map(k => t("g20.f." + k)).join(", ")}))}</span> <button class="btn xs" data-a="m20-open" data-v="goal">${esc(t("g20.check"))}</button></div>`);
+  if (m.about === "pt" || m.about === "both") notes.push(`<div class="c20-note about"><span>${ic("flag")}${esc(t(m.about === "pt" ? "c20.about.pt" : "c20.about.both"))}</span> <button class="btn xs" data-a="c20-ipt" data-id="${esc(m.id)}">${esc(t("c20.about.send"))}</button>${m.about === "pt" ? `<button class="btn xs ghost" data-a="c20-istool" data-id="${esc(m.id)}">${esc(t("c20.about.tool"))}</button>` : ""}</div>`);
+  if (m.cut) notes.push(`<div class="c20-note about"><span>${ic("shield")}${esc(t("c20.cut", {n: m.cut.n}))}</span> <span class="c20-nw">“${esc(m.cut.rule)}”</span> <span class="small muted">${esc(m.cut.id)}</span></div>`);
+  if (m.dropped) notes.push(`<div class="c20-note known"><span>${ic("check")}${esc(t("c20.dropped"))}</span></div>`);
+  if (m.card && pickCard(p, m.card)) notes.push(`<div class="c20-note"><span>${ic("arrow")}${esc(t("c20.card.below"))}</span></div>`);
+  else if (m.card && pickRead(p).log.some(e => e.cid === m.card)){ const e = pickRead(p).log.find(x => x.cid === m.card); notes.push(`<div class="c20-note"><span>${ic("check")}${esc(t("c20.card.done"))}</span> <span class="c20-nw">${esc(e.q)} → <b>${esc(e.answer)}</b></span></div>`); }
+  if (m.fail) notes.push(`<div class="row"><button class="btn xs" data-a="c20-retry" data-id="${esc(m.to || "")}">${esc(t("c20.retry"))}</button></div>`);
+  return `<div class="c20-m pt" id="c20m-${esc(m.id)}"><div class="c20-who">PT</div><div class="c20-b">${mdLite(m.text)}</div>${notes.join("")}</div>`;
+}
+function c20Chips(p){
+  const M = m20Read(p), out = [], busy = AI.running.size > 0 || m20Busy(p);
+  const G = goal20Read(p);
+  if (!str(G.f.outcome).trim()) out.push({a: "c20-say", v: t("c20.chip.idea.say"), l: t("c20.chip.idea")});
+  else {
+    if (!goal20Clear(p) && !G.skip) out.push({a: "m20-open", v: "goal", l: t("c20.chip.goal")});
+    if (!M.routes.length) out.push({a: "m20-open", v: "map", l: t("c20.chip.map")});
+    else if (!m20Chosen(p)) out.push({a: "m20-open", v: M.short.length >= 2 ? "compare" : "map", l: t(M.short.length >= 2 ? "c20.chip.compare" : "c20.chip.short", {n: M.short.length})});
+  }
+  out.push({a: "c20-say", v: t("c20.chip.never.say"), l: t("c20.chip.never"), fill: true});
+  out.push({a: "c20-say", v: t("c20.chip.next.say"), l: t("c20.chip.next")});
+  return out.map(c => `<button class="btn xs c20-chip" data-a="${c.a}" ${c.a === "c20-say" ? `data-t="${esc(c.v)}" ${c.fill ? 'data-fill="1"' : ""}` : `data-v="${esc(c.v)}"`} ${busy && c.a === "c20-say" && !c.fill ? "disabled" : ""}>${esc(c.l)}</button>`).join("");
+}
+function c20CardHTML(p){
+  const d = pickDeck(p); if (!d.length) return "";
+  const c = d[0];
+  return `<section class="c20-ask" aria-label="${esc(t("c20.ask.t"))}" data-anchor="c20-ask"><div class="small muted c20-askh">${ic("pick")} ${esc(t("c20.ask.t"))}${d.length > 1 ? " · " + esc(t("c20.ask.more", {n: d.length - 1})) : ""}</div>${pickCardHTML(p, c, "chat")}</section>`;
+}
+function c20DecidedHTML(p){
+  const dec = factsActive(p, ["decision"]), log = pickRead(p).log.filter(e => str(e.answer).trim() && !e.assumed), D = m20Decision(p);
+  const rows = dec.map(e => { const rt = /^route:/.test(str(e.src && e.src.ref)) ? m20Route(p, str(e.src.ref).slice(6)) : null;
+    return `<div class="item">${stSlot("ok")}<div class="body"><span class="small">${rt ? `<b>${esc(t("c20.dec.route", {x: rt.id + " · " + rt.name}))}</b> · ` : ""}${esc(factText(e))}</span><span class="small muted">${esc(e.id)} · ${esc(factSrcLabel(e))} · ${esc(fmtDate(e.at))}</span></div></div>`; }).join("");
+  const picks = log.slice(-40).reverse().map(e => `<div class="item">${stSlot("ok")}<div class="body"><span class="small"><b>${esc(e.q)}</b> → ${esc(e.answer)}</span><span class="small muted">${esc(t(e.from === "second" ? "c20.dec.second" : "c20.dec.pick"))} · ${esc(fmtDate(e.at))}</span></div><div class="qacts"><button class="btn xs ghost" data-a="pk-change" data-id="${esc(e.id)}">${esc(t("int.change"))}</button></div></div>`).join("");
+  return `<section class="panel c20-dec" data-anchor="decided20"><h3>${esc(t("c20.dec.t", {n: dec.length + log.length}))}</h3><p class="small muted">${esc(t("c20.dec.sub"))}</p>
+    ${D ? "" : `<p class="small">${esc(t(stage20On(p) ? "c20.dec.noroute" : "c20.dec.noroute1"))}</p>`}
+    ${rows ? `<div class="list">${rows}</div>` : ""}${picks ? `<h4 class="small">${esc(t("c20.dec.picks", {n: log.length}))}</h4><div class="list">${picks}</div>` : ""}${!rows && !picks ? `<p class="small muted">${esc(t("c20.dec.none"))}</p>` : ""}</section>`;
+}
+function c20PlanHTML(p){
+  const cur = stage20Of(p), wait = stage20Waiting(p);
+  return `<section class="panel c20-plan" data-anchor="plan20"><h3>${esc(t("c20.plan.t"))}</h3><p class="small muted">${esc(t(stage20On(p) ? "c20.plan.sub" : "c20.plan.sub1"))}</p>
+    ${STAGE20.map(id => `<details class="c20-st" ${id === cur ? "open" : ""}><summary><b>${esc(t("st20.s." + id))}</b> ${stage20Done(p, id) ? `<span class="small" style="color:var(--ok)">✓ ${esc(t("st20.done"))}</span>` : id === cur ? `<span class="small">● ${esc(t("st20.here"))}</span>` : ""}</summary>${stage20RowsHTML(p, id)}</details>`).join("")}
+    ${wait ? `<p class="small muted">${esc(t("m20.wait", {n: wait}))}</p>` : ""}
+    <div class="row"><button class="btn xs" data-a="face20" data-v="pick">${ic("pick")}${esc(t("c20.plan.pick"))}</button></div></section>`;
+}
+function c20EventsHTML(p){
+  const own = m20EventsHTML(p), errs = ev20List().length;
+  return `<section class="panel c20-evs" data-anchor="events20"><h3>${esc(t("c20.ev.t"))}</h3>${own || `<p class="small muted">${esc(t("c20.ev.none"))}</p>`}${errs ? `<div class="row"><button class="btn xs" data-a="events-open">${esc(t("c20.ev.errs", {n: errs}))}</button></div>` : ""}</section>`;
+}
+function c20WsHTML(p){
+  const S = c20St(p), M = m20Read(p), tab = oneOf(S.tab, C20_TABS, "goal"), U = m20UI(p);
+  const lbl = {goal: t("g20.tab"), map: t("m20.tab", {n: M.routes.length}), decided: t("c20.tab.decided"), plan: t("c20.tab.plan"), events: t("c20.tab.events")};
+  let body = "";
+  if (tab === "goal") body = goal20HTML(p);
+  else if (tab === "map"){ if (!U){ UI.m20 = {pid: p.id, f: {rules: true, today: false, free: false}, sort: "fit", more: {}, v: "map", id: null}; }
+    const V = m20UI(p); body = V.v === "card" ? m20CardHTML(p, V.id) : V.v === "compare" ? m20CompareHTML(p) : V.v === "take" ? m20TakeHTML(p, V.id) : m20MapHTML(p);
+    if (V.v !== "map") body = `<div class="row"><button class="btn xs ghost" data-a="m20-open" data-v="map">← ${esc(t("c20.ws.back"))}</button></div>` + body; }
+  else if (tab === "decided") body = c20DecidedHTML(p) + `<section class="panel">${factsBodyHTML(p)}</section>`;
+  else if (tab === "plan") body = c20PlanHTML(p);
+  else body = c20EventsHTML(p);
+  return `<aside class="c20-ws ${S.side === "ws" ? "on" : ""}" aria-label="${esc(t("c20.ws"))}"><nav class="row c20-tabs" role="tablist" aria-label="${esc(t("c20.ws"))}">${C20_TABS.map(k => `<button class="btn xs ${k === tab ? "primary" : "ghost"}" role="tab" aria-selected="${k === tab}" data-a="c20-tab" data-v="${k}">${esc(lbl[k])}</button>`).join("")}</nav><div class="c20-wsb m20-body">${body}</div></aside>`;
+}
+function c20HTML(p){
+  v200cCss();
+  const C = c20Read(p), S = c20St(p), busy = AI.running.has(akey("chat20", p.id));
+  const empty = !C.msgs.length ? `<div class="c20-m pt"><div class="c20-who">PT</div><div class="c20-b">${esc(t(str(goal20Read(p).f.outcome).trim() ? "c20.hello.back" : "c20.hello"))}</div></div>` : "";
+  const log = `<div class="c20-log" role="log" aria-live="polite" aria-label="${esc(t("c20.log.t"))}" tabindex="0">${empty}${C.msgs.map(m => c20MsgHTML(p, m)).join("")}${busyHTML("chat20")}</div>`;
+  const form = `<form class="c20-say" data-form="c20-say"><label class="sr20" for="c20-in">${esc(t("c20.ph"))}</label><textarea id="c20-in" rows="2" placeholder="${esc(t("c20.ph"))}">${esc(UI.qDraft["c20-in"] || "")}</textarea><div class="row">${pickMic("c20-in")}<button class="btn primary" type="submit" ${busy ? "disabled" : ""}>${esc(t("c20.send"))}</button></div></form><p class="small muted c20-hint">${esc(t("c20.hint"))}</p>`;
+  const conv = `<section class="c20-conv ${S.side === "ws" ? "" : "on"}" aria-label="${esc(t("c20.conv"))}">${log}${c20CardHTML(p)}<div class="row c20-chips" role="group" aria-label="${esc(t("c20.chips"))}">${c20Chips(p)}</div>${form}</section>`;
+  const sw = `<div class="seg c20-sw" role="group" aria-label="${esc(t("c20.ws"))}"><button class="${S.side !== "ws" ? "on" : ""}" data-a="c20-side" data-v="chat" aria-pressed="${S.side !== "ws"}">${esc(t("c20.conv"))}</button><button class="${S.side === "ws" ? "on" : ""}" data-a="c20-side" data-v="ws" aria-pressed="${S.side === "ws"}">${esc(t("c20.ws"))}</button></div>`;
+  let nx = ""; try{ nx = nx20HTML(p); }catch(e){ onAppError(e && e.message, "chat:next"); }
+  return `<div class="c20" data-page="chat20" data-anchor="page-chat20"><header class="c20-top">${stage20StripHTML(p)}${nx}</header>${sw}<div class="c20-grid">${conv}${c20WsHTML(p)}</div></div>`;
+}
+
+/* ---------- 5. Pick, improved: the order holds, the decided list comes from the same book ---------- */
+/** before the route is decided, the Picks page leads to the decision (the details wait): goal card → map → shortlist → compare */
+function c20PickDecideHTML(p){
+  if (!stage20Early(p) || (UI.pgInPage && pgCur(p) !== "picks")) return "";
+  const M = m20Read(p), G = goal20Read(p), nx = stage20Next(p);
+  const top = m20Sorted(p, M.routes.filter(r => m20Status(p, r) !== "blocked" && !M.rej[r.id])).slice(0, 3);
+  const rows = top.map(r => `<div class="item"><div class="body"><b class="small">${esc(r.id + " · " + r.name)}</b><span class="small">${esc(r.line)}</span><span class="row small">${m20Badge(m20Status(p, r))}${m20Fit(r.fitN)}</span></div><div class="qacts"><button class="btn xs ${M.short.includes(r.id) ? "primary" : ""}" data-a="m20-short" data-id="${esc(r.id)}" aria-pressed="${M.short.includes(r.id)}">${esc(M.short.includes(r.id) ? t("c20.pk.shorted") : t("c20.pk.short"))}</button><button class="btn xs ghost" data-a="m20-open" data-v="card" data-id="${esc(r.id)}">${esc(t("c20.pk.card"))}</button></div></div>`).join("");
+  const wait = stage20Waiting(p);
+  return `<section class="panel c20-pkdec" data-anchor="pick-decide"><div class="small muted">${esc(t("c20.pk.k"))}</div><h3>${esc(t(!M.routes.length ? "c20.pk.h.map" : M.short.length >= 2 ? "c20.pk.h.cmp" : "c20.pk.h.short"))}</h3>
+    <p class="small">${esc(t("c20.pk.sub"))}${wait ? " " + esc(t("m20.wait", {n: wait})) : ""}</p>${stage20StripHTML(p)}
+    ${rows ? `<div class="list">${rows}</div>` : ""}
+    <div class="row">${nx ? `<button class="btn sm primary" data-a="${esc(nx.a)}" data-v="${esc(nx.v || "map")}">${ic("arrow")}${esc(nx.label)}</button>` : ""}<button class="btn sm ghost" data-a="m20-open" data-v="map">${ic("layers")}${esc(t("m20.bar", {n: M.routes.length}))}</button>${str(G.f.outcome).trim() ? "" : `<button class="btn sm ghost" data-a="m20-open" data-v="goal">${esc(t("g20.tab"))}</button>`}</div></section>`;
+}
+{ const orig = modePick; modePick = function(p){ const h = orig(p); let d = ""; try{ d = c20PickDecideHTML(p); }catch(e){ onAppError(e && e.message, "pick:decide"); } return d ? h.replace('<div class="pk-deck" id="pk-deck" data-anchor="pk-deck">', d + '<div class="pk-deck" id="pk-deck" data-anchor="pk-deck">') : h; }; }
+/* the Decisions page of Pick lists the same book the chat's Decided tab does */
+{ const orig = rowsViewHTML; rowsViewHTML = function(p){ const h = orig(p); let d = ""; try{ d = c20DecidedHTML(p); }catch(e){ onAppError(e && e.message, "rows:decided"); } return h.replace('</header>', '</header>' + d); }; }
+/* an answer given in either face is a new fact that may break the chosen route (the Route alert watches it) */
+{ const orig = pickAnswer; pickAnswer = function(p, cid, o = {}){
+    const e = orig.apply(this, arguments);
+    try{ if (e && p && m20Chosen(p) && str(e.answer).trim() && !o.assumed) m20WatchSoon(p, {kind: "fact", text: str(e.q) + " → " + str(e.answer), ref: "pick:" + e.id}); }catch(x){ onAppError(x && x.message, "pick:watch"); }
+    return e; }; }
+
+/* ---------- 6. the move to 2.0 (once per project; restore point first; additive; never across projects) ---------- */
+function m200Lvl(kind){ return {none: 1, prompt: 1, workflow: 2, agent: 3, multi: 4}[str(kind)] || 2; }
+function m200Has(p, ref){ return factsRead(p).entries.some(e => e.src && e.src.ref === ref) || factsRead(p).props.some(x => x.src && x.src.ref === ref); }
+/** the project's own rules (its constraints, what is not in this version, its constitution) as facts-book entries; never another project's */
+function m200Rules(p){
+  const ns = p.northStar || {}, out = [], lbl = t("c20.mig.label");
+  factSentences(ns.constraints).forEach((s, i) => out.push({kind: FACT_NEG.test(s) ? "never" : "must", words: s, src: {k: "ns", ref: "ns:" + (i + 1), label: lbl}}));
+  arr(p.outOfScope).forEach((x, i) => { if (str(x).trim()) out.push({kind: "never", words: str(x), short: t("c20.mig.oos", {x: factNorm(x)}), src: {k: "oos", ref: "oos:" + (i + 1), label: lbl}}); });
+  arr(p.constitution).forEach((x, i) => { if (str(x).trim()) out.push({kind: FACT_NEG.test(str(x)) ? "never" : "must", words: str(x), src: {k: "const", ref: "const:" + (i + 1), label: lbl}}); });
+  let n = 0;
+  for (const o of out){ if (m200Has(p, o.src.ref) || factsActive(p).some(e => askSim(factText(e), o.short || o.words) >= 0.8)) continue; const e = factsAdd(p, Object.assign({by: "pt"}, o)); if (e){ e.m200 = true; n++; } }
+  return n;
+}
+/** the 1.x design options become routes on the map ("from your earlier design, not re-checked"); a choice you confirmed is the chosen route */
+function m200Routes(p){
+  const a = p.arch || {}, opts = arr(a.options).filter(o => o && str(o.name).trim()); if (!opts.length) return {n: 0, chosen: false};
+  const M = m20Of(p); let n = 0;
+  for (const o of opts){
+    if (M.routes.some(r => r.from === "arch:" + o.id)) continue;
+    const r = m20Norm({name: o.name, line: str(o.summary), lvl: m200Lvl(o.kind), status: "work", fitN: 3, evidence: t("c20.mig.evidence"), conf: "low", how: o.kind === "none" ? "buy" : "build"}, {lens: "", round: 0});
+    if (!r) continue; r.id = "R" + M.nextR++; r.from = "arch:" + o.id; r.old = true; r.breaks = []; M.routes.push(r); n++;
+  }
+  let chosen = false;
+  const ch = a.chosen && !a.chosenAssumed ? M.routes.find(r => r.from === "arch:" + a.chosen) : null;
+  if (ch && !M.chosen){
+    const nm = (opts.find(o => o.id === a.chosen) || {}).name || ch.name;
+    const e = m200Has(p, "route:" + ch.id) ? null : factsAdd(p, {kind: "decision", words: t("c20.mig.dec", {x: nm}), src: {k: "dec", ref: "route:" + ch.id, label: t("c20.mig.label")}, by: "you"});
+    M.decs.push({id: uid("rd"), at: now(), route: ch.id, name: ch.name, why: t("c20.mig.decwhy"), compared: [], rejected: [], trip: [], switchCost: "", higher: "", fact: e ? e.id : "", status: "active", fields: ["outcome", "whom", "success"], m200: true});
+    M.chosen = ch.id; M.neutral = m20Refs(p); M.tags = {}; chosen = true;
+  }
+  if (n) m20Event(p, "lib", t("c20.mig.ev", {n}), {add: M.routes.filter(r => r.old).map(r => r.id)});
+  return {n, chosen: chosen || !!(M.chosen && M.routes.some(r => r.id === M.chosen))};
+}
+/** the new order only where it is safe: a decided route, or no detail work yet (a project mid-way keeps its order and is told how to switch) */
+function m200Order(p, chosen){
+  if (stage20On(p)) return "on";
+  const details = arr(p.requirements).length + arr(p.assumptions).length + arr(p.risks).length + arr(p.tests).length + arr(p.pkg && p.pkg.sections).length;
+  if (chosen || !details){ p.order20 = true; return chosen ? "decided" : "early"; }
+  return "kept";
+}
+function m200Run(p, raw){
+  if (!p || p.m200) return null;
+  const rp = addRestore(p, {kind: "migrate", label: t("c20.mig.rp"), source: raw || null}) || arr(p.restore).slice(-1)[0] || null;   // the same content as the last restore point: that one is labelled "Before 2.0" too
+  const rec = {v: 1, at: now(), rp: rp ? rp.id : "", from: {mode: str(p.mode), before: str(p.modeBefore160)}, rules: 0, routes: 0, order: "", errs: []};
+  const step = (name, fn) => { try{ fn(); }catch(e){ rec.errs.push(name); onAppError(e && e.message, "m200:" + name); } };
+  step("mode", () => { if (!MODES.includes(p.mode)){ if (p.mode) p.modeBefore200 = p.mode; p.mode = "pick"; } });
+  step("goal", () => { goal20Of(p); });
+  step("rules", () => { rec.rules = m200Rules(p); });
+  let chosen = false;
+  step("routes", () => { const R = m200Routes(p); rec.routes = R.n; chosen = R.chosen; });
+  step("order", () => { rec.order = m200Order(p, chosen); });
+  step("chat", () => { c20Of(p); if (!c20Read(p).msgs.some(m => m.m200)) c20Add(p, {by: "sys", m200: true, text: t("c20.mig.msg." + (rec.order || "kept"), {r: rec.rules, n: rec.routes})}); });
+  p.m200 = rec;
+  touch(p);
+  return rec;
+}
+function m200All(){
+  if (!WS || !Array.isArray(WS.projects)) return 0;
+  let n = 0;
+  for (const p of WS.projects){ if (p.m200) continue; try{ if (m200Run(p, M200.raw && M200.raw.get(p.id))) n++; }catch(e){ onAppError(e && e.message, "m200"); } }
+  return n;
+}
+{ const orig = openWorkspace; openWorkspace = async function(id){
+    M200.raw = new Map(); let r;
+    try{ r = await orig.apply(this, arguments); }
+    finally{ try{ if (UI.wsReady && !UI.fatal && WS.id === id && WS._set) M200.ran = {ws: id, n: m200All()}; }catch(e){ onAppError(e && e.message, "m200:all"); } M200.raw = null; }
+    if (M200.ran && M200.ran.n) render();
+    return r; }; }
+
+/* ---------- 7. actions ---------- */
+Object.assign(ACTIONS, {
+  "face20": (el) => face20Set(curP(), str(el.dataset.v)),
+  "mode": (el) => face20Set(curP(), str(el.dataset.v)),   // the 1.x name still works (palette, old links): only the two faces exist
+  "c20-tab": (el) => { const p = curP(); if (!p) return; const v = oneOf(str(el.dataset.v), C20_TABS, "goal"); if (v === "map" || v === "goal"){ m20Open(p, v); return; } const S = c20St(p); S.tab = v; S.side = "ws"; render(); },
+  "c20-side": (el) => { const p = curP(); if (!p) return; c20St(p).side = el.dataset.v === "ws" ? "ws" : "chat"; render(); },
+  "c20-say": (el) => { const p = curP(); if (!p) return; const v = str(el.dataset.t); if (el.dataset.fill){ UI.qDraft["c20-in"] = v; render(); focusSoon("c20-in"); return; } c20Send(p, v); },
+  "c20-focus": (el) => { const p = curP(); if (!p) return; const S = c20St(p); S.side = "chat"; render(); if (el.dataset.v === "card"){ const x = document.querySelector(".c20-ask"); if (x){ x.scrollIntoView({block: "nearest"}); const b = x.querySelector("button[data-a]"); if (b) b.focus(); } } else focusSoon("c20-in"); },
+  "c20-retry": (el) => { const p = curP(); if (!p) return; const m = c20Read(p).msgs.find(x => x.id === el.dataset.id); if (m) c20Send(p, m.text); },
+  "c20-fedit": (el) => { const p = curP(); if (!p) return; factsOpen(p); UI.factsEdit = el.dataset.id; render(); focusSoon("fe-" + el.dataset.id); },
+  "c20-ipt": (el) => { const p = curP(); if (!p) return; const m = c20Read(p).msgs.find(x => x.id === el.dataset.id), you = m && c20Read(p).msgs.find(x => x.id === m.to); UI.modal = {kind: "toolreport", where: t("m.chat"), pre: you ? str(you.text) + "\n\n" : ""}; render(); focusSoon("tr-in"); },
+  "c20-istool": (el) => { const p = curP(); if (p) c20ToolFile(p, el.dataset.id); }
+});
+["face20", "mode", "c20-tab", "c20-side", "c20-focus", "c20-fedit", "c20-ipt"].forEach(a => ACT_NO.add(a));
+FORMS["c20-say"] = f => { const p = curP(); if (!p) return; const el = f.querySelector("#c20-in"), v = str(el && el.value).trim(); if (!v){ toast(t("c20.need"), "err"); focusSoon("c20-in"); return; } delete UI.qDraft["c20-in"]; if (el) el.value = ""; c20Send(p, v); };
+document.addEventListener("input", e => { const el = e.target; if (el && el.id === "c20-in") UI.qDraft["c20-in"] = el.value; });
+document.addEventListener("keydown", e => { const el = e.target; if (el && el.id === "c20-in" && e.key === "Enter" && (e.metaKey || e.ctrlKey) && !e.isComposing){ e.preventDefault(); const f = el.closest("form"); if (f && FORMS["c20-say"]) FORMS["c20-say"](f); } });
+
+/* ---------- 8. the look (text first; one family with the map's cards; 24 px targets; no sideways scroll on a phone) ---------- */
+const V200C_CSS = `
+.face20 button{min-height:30px}
+.face20 button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.c20{display:flex;flex-direction:column;gap:10px;min-width:0}
+.c20-top{display:flex;flex-direction:column;gap:4px;min-width:0}
+.c20-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:14px;align-items:start;min-width:0}
+.c20-conv,.c20-ws{display:flex;flex-direction:column;gap:10px;min-width:0}
+.c20-ws{position:sticky;top:8px;max-height:calc(100vh - 120px);overflow:auto;border-left:1px solid var(--line);padding-left:12px}
+.c20-log{display:flex;flex-direction:column;gap:10px;max-height:min(62vh,760px);overflow-y:auto;overflow-x:hidden;padding:4px 2px}
+.c20-m{display:flex;flex-direction:column;gap:4px;max-width:100%;min-width:0}
+.c20-m.you{align-items:flex-end}
+.c20-m .c20-who{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.c20-m .c20-b{border:1px solid var(--line);border-radius:12px;padding:9px 12px;background:var(--bg-2);overflow-wrap:break-word;max-width:min(100%,46em);white-space:pre-wrap}
+.c20-m.pt .c20-b{white-space:normal}
+.c20-m.you .c20-b{background:var(--accent-soft);border-color:var(--accent)}
+.c20-m.sys .c20-b{background:transparent;border-style:dashed}
+.c20-note{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font-size:12.5px;border-left:3px solid var(--ok);padding:3px 8px;max-width:100%}
+.c20-note .rc20-ok,.c20-note>span:first-child{display:inline-flex;gap:4px;align-items:center;font-weight:600;color:var(--ok)}
+.c20-note.known{border-left-color:var(--muted)}.c20-note.known>span:first-child{color:var(--muted)}
+.c20-note.about{border-left-color:var(--warn)}.c20-note.about>span:first-child{color:var(--warn)}
+.c20-note.off{opacity:.6;text-decoration:line-through}
+.c20-nw{overflow-wrap:break-word;min-width:0}
+.c20-ask{border:1px solid var(--accent);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.c20-ask .pk-card{margin:0;border:0;box-shadow:none;padding:4px}
+.c20-chips{gap:6px;flex-wrap:wrap}
+.c20-chip{min-height:30px}
+.c20-say{display:flex;flex-direction:column;gap:6px}
+.c20-say textarea{width:100%;min-height:3.2em;resize:vertical}
+.c20-say .row{justify-content:flex-end}
+.c20-tabs{gap:4px;flex-wrap:wrap}
+.c20-tabs .btn{min-height:28px}
+.c20-wsb{display:flex;flex-direction:column;gap:10px;min-width:0}
+.c20-sw{display:none}
+.c20-st summary{cursor:pointer;min-height:24px}
+.c20-pkdec{border:1px solid var(--accent)}
+.c20-dec h4{margin:8px 0 2px}
+@media (max-width:1000px){.c20-grid{grid-template-columns:minmax(0,1fr)}.c20-sw{display:flex;align-self:flex-start}.c20-conv:not(.on),.c20-ws:not(.on){display:none}.c20-ws{position:static;max-height:none;border-left:0;padding-left:0}.c20-log{max-height:none}}
+`;
+function v200cCss(){ try{ if (document.getElementById("v200c-css")) return; const s = document.createElement("style"); s.id = "v200c-css"; s.textContent = V200C_CSS; (document.head || document.documentElement).appendChild(s); }catch(e){ console.warn("2.0 chat: style", e); } }   // ok:catch without the extra style the chat still works (plain layout)
+v200cCss();
 
 boot();
 

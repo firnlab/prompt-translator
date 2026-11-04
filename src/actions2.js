@@ -11,7 +11,7 @@ function confirmItem(p, ref){
   unflag(p, ref);
   logAct(p, t("act.confirmed1", {r: ref}), {kind: "confirm"});
 }
-const HEAVY = ["compile","review","run-tests","improve","architecture","fix-all","fix-all-findings","seal-recheck","express-draft","express-next","update-prepare","update-deploy","pilot-run","health-run","build-job","collect","collect-all"];
+const HEAVY = ["compile","review","run-tests","improve","architecture","fix-all","fix-all-findings","seal-recheck","update-prepare","update-deploy","pilot-run","health-run","build-job","collect","collect-all"];
 /** "What Claude is doing": a short preview before anything heavy */
 function withPreview(name, el, run){
   if (WS.settings.skipPreview && WS.settings.skipPreview[name]) return run();
@@ -72,7 +72,6 @@ async function rdFix(p, fix, ref, arg){
 Object.assign(ACTIONS, {
   "goto": el => { const p = curP(); if (!p){ return; } const ref = el.dataset.ref || null; setPhase(el.dataset.ph, {id: ref}); if (ref) UI.open.add(ref); pulseFocus(); render(); if (el.dataset.scroll) setTimeout(() => { const x = document.getElementById(el.dataset.scroll); if (x) x.scrollIntoView({behavior: "smooth", block: "start"}); }, 60); },
   "phase": el => { if (el.dataset.ph === "log"){ UI.phase = "log"; render(); return; } setPhase(el.dataset.ph); },
-  "mode": el => { const p = curP(); const v = el.dataset.v; if (projMode(p) === v) return; UI.prevMode = projMode(p); UI.backMode = null; p.mode = v; UI.selPart = null; UI.cmap = null; touch(p); pulseFocus(); render(); toast(t("mode.switched", {m: t("m." + v), w: whereLabel(p)}), "ok"); },
   "set-guided": el => { WS.settings.guided = el.dataset.v === "1"; saveWs(); render(); },
   "set-layout": el => { WS.settings.layout = el.dataset.v; saveWs(); render(); },
   "panel": el => { const v = el.dataset.v; if (UI.drawer && UI.panelTab === v){ UI.drawer = false; } else { UI.drawer = true; UI.panelTab = v; } render(); if (UI.drawer && v === "guide") focusSoon("guide-in"); },
@@ -92,7 +91,6 @@ Object.assign(ACTIONS, {
   "clearsel": () => { UI.selPart = null; pulseFocus(); render(); },
   "map-zoom": el => { UI.mapZoom = clamp(Math.round(((UI.mapZoom || 1) + num(el.dataset.v) * .15) * 100) / 100, .55, 1.6); render(); },
   "map-full": () => { UI.modal = {kind: "map", wide: true}; render(); },
-  "cmap": el => { const p = curP(); const v = el.dataset.v; if (!v){ UI.cmap = null; render(); return; } let refs = []; if (v.startsWith("fl:")){ const b = v.slice(3); refs = arr(p.flags).filter(f => (f.because || "?") === b).map(f => f.ref); } else if (v.startsWith("ib:")){ const it = p.inbox.find(x => x.id === v.slice(3)); refs = arr(it && it.refs); } UI.cmap = {id: v, refs, parts: null}; render(); },
   "ask-section": el => { UI.askSec = UI.askSec && UI.askSec.k === el.dataset.k ? null : {k: el.dataset.k}; render(); focusSoon("ask-sec-in"); },
   "ask-section-close": () => { UI.askSec = null; render(); },
   "ask-section-send": async el => { const q = ($("#ask-sec-in") || {}).value || ""; if (!q.trim()) return; UI.askSec = {k: el.dataset.k, q}; render(); const a = await aiAskSection(curP(), el.dataset.k, q); if (UI.askSec && UI.askSec.k === el.dataset.k){ UI.askSec.answer = a || ""; render(); } },
@@ -100,9 +98,6 @@ Object.assign(ACTIONS, {
   "card-open": el => { UI.cardOpen.add(el.dataset.ph); render(); },
   "card-close": el => { const p = curP(); p.cards = p.cards || {}; p.cards[el.dataset.ph] = true; UI.cardOpen.delete(el.dataset.ph); touch(p); render(); },
   "top": () => { const m = $(".main"); if (m) m.scrollTo({top: 0, behavior: "smooth"}); window.scrollTo({top: 0}); },
-  "express-draft": el => withPreview("express-draft", el, () => aiExpressDraft(curP())),
-  "express-next": el => withPreview("express-next", el, () => aiExpressNext(curP())),
-  "goto-steps": el => { const p = curP(); UI.prevMode = projMode(p); p.mode = "steps"; setPhase(el.dataset.ph); pulseFocus(); touch(p); render(); },
   "update-affected": () => aiUpdateAffected(curP()),
   "flags-show": () => { UI.modal = {kind: "flags"}; render(); },
   "early-check": el => aiEarlyCheck(curP(), el.dataset.v),
@@ -166,7 +161,7 @@ Object.assign(ACTIONS, {
   "start-mode": el => { UI.startMode = el.dataset.v; render(); },
   "fu-dismiss": () => { WS.settings.firstUseDone = true; saveWs(); render(); },
   "guide-run": async el => { const p = curP(); const a = stepMainAction(el.dataset.ph); if (a === "und-all"){ await actGroup(async () => { for (const k of ["whys","jtbd","walkthrough"]) await aiUnderstand(p, k); }); return; } if (a === "und-premortem"){ await aiUnderstand(p, "premortem"); return; } if (a === "run-tests"){ return actGroup(async () => { if (!p.tests.length) await aiTests(p); return aiRunTests(p, {trials: 2}); }); } const fn = ACTIONS[a]; if (fn) fn(el); },
-  "guide-act": el => { const id = el.dataset.id; if (id.startsWith("goto:")){ setPhase(id.slice(5)); return; } if (id === "fix-all"){ ACTIONS["finish-open"](); return; } const map = {"early-check": () => aiEarlyCheck(curP(), curP().focus.ph === "arch" ? "arch" : "require"), "express-draft": () => aiExpressDraft(curP())}; withPreview(id, el, () => (map[id] ? map[id]() : ACTIONS[id] && ACTIONS[id](el))); },
+  "guide-act": el => { const id = el.dataset.id; if (id.startsWith("goto:")){ setPhase(id.slice(5)); return; } if (id === "fix-all"){ ACTIONS["finish-open"](); return; } const map = {"early-check": () => aiEarlyCheck(curP(), curP().focus.ph === "arch" ? "arch" : "require")}; withPreview(id, el, () => (map[id] ? map[id]() : ACTIONS[id] && ACTIONS[id](el))); },   // ok:move the person clicked the guide's step
   "copy-upgrade": () => copyText(upgradePrompt()),
   "dim-na": el => { const p = curP(); const id = el.dataset.ref.split(":")[1]; const d = DIMS.find(x => x.id === id); promptBox(t("rd.f.na"), {ph: t("rd.f.naph", {d: d ? L(d) : id}), yes: t("rd.f.na")}, v => { if (!str(v).trim()){ toast(t("acc.need"), "err"); return; } p.dims[id] = {status: "na", summary: str(v).trim()}; logAct(p, t("act.na", {d: d ? L(d) : id}), {step: "interview"}); touch(p); }); },
   "runner-check": async () => { try{ const r = await Runner.ensure(); toast(r && r.id ? t("about.runnerok", {id: r.id}) : t("about.runnermissing", {id: Runner.id()}), r && r.id ? "ok" : "err"); }catch(e){ toast(mcpErrText(e), "err"); } render(); },
@@ -188,8 +183,6 @@ Object.assign(FORMS, {
   "start": () => { const raw = ($("#start-in").value || "").trim(); const name = ($("#np-name").value || "").trim(); if (!raw && !name){ toast(t("start.need"), "err"); focusSoon("start-in"); return; } const mode = UI.startMode || WS.settings.defaultMode || "steps"; const p = newProject(name || suggestName(raw), {raw, mode}); UI.startMode = null; UI.startText = ""; UI.startName = ""; if (mode === "express") setTimeout(() => focusSoon("raw"), 40); toast(t("start.made", {m: t("m." + mode)}), "ok"); },
   "existing": async () => { const txt = ($("#ex-in").value || "").trim(); const files = arr(UI.exFiles); const all = [txt, ...files.map(f => `<file name="${f.name}">\n${f.text}\n</file>`)].filter(Boolean).join("\n\n"); if (!all.trim()){ toast(t("ex.need"), "err"); return; } const p = newProject(t("ex.newname"), {raw: all, mode: WS.settings.defaultMode, kind: "existing"}); UI.exFiles = null; UI.exText = ""; UI.startKind = "new"; await aiExisting(p, all); },
   "guide": async () => { const p = curP(); const q = ($("#guide-in").value || "").trim(); if (!q) return; $("#guide-in").value = ""; const r = await aiGuide(p, q); if (r){ if (p){ p.guide = arr(p.guide); p.guide.push(r); if (p.guide.length > 40) p.guide = p.guide.slice(-40); logAct(p, t("act.guide", {q: trunc(q, 60)}), {kind: "guide"}); touch(p); } else { UI.guideWs = arr(UI.guideWs); UI.guideWs.push(r); } render(); } },
-  "express-change": async () => { const p = curP(); const q = ($("#xp-in").value || "").trim(); if (!q) return; UI.drawer = true; UI.panelTab = "guide"; const r = await aiGuide(p, q); if (r){ p.guide = arr(p.guide); p.guide.push(r); touch(p); render(); } },
-  "cmap-ask": async () => { const p = curP(); const q = ($("#cm-in").value || "").trim(); if (!q) return; const r = await aiImpactParts(p, q); if (r){ UI.cmap = Object.assign({id: "q", q}, r); render(); } },
   "change-request": async () => { const p = curP(); const v = ($("#cr-in").value || "").trim(); if (!v) return; const it = {id: uid("ib"), src: "yours", title: trunc(v, 140), body: v, on: true, at: now(), k: "change"}; p.inbox.push(it); touch(p); render(); const r = await aiImpactParts(p, v); if (r){ it.refs = r.refs; touch(p); render(); } },
   "report-paste": () => { const p = curP(); const o = parseReport(($("#rep-in").value || "")); if (!o){ toast(t("rel.pasteerr"), "err"); return; } p.report = {at: now(), raw: o, check: checkReport(p, o), via: "paste", draft: (p.brief && p.brief.draft) || p.versionNo}; touch(p); render(); },
   "tool-report": () => { const v = ($("#tr-in").value || "").trim(); if (!v) return; const x = {id: uid("tf"), text: v, where: UI.modal.where || "", at: now(), ws: WS.name, status: "open", version: PT_VERSION}; Store.put("toolfeedback/" + x.id, x); WS.toolfb = [x, ...arr(WS.toolfb)]; UI.modal = null; render(); toast(t("tfb.sent"), "ok"); },

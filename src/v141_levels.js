@@ -277,7 +277,6 @@ Object.assign(ACTIONS, {
 });
 { const orig = ACTIONS["palette"]; if (orig) ACTIONS["palette"] = (el, e) => { WS.settings.palUses = num(WS.settings.palUses, 0) + 1; return orig(el, e); }; }
 /* Learning: Express is off by default for new projects (you can still pick it) */
-{ const orig = newProject; newProject = function(name, o = {}){ if (!o.mode && levelOf(null) === "learn" && (WS.settings.defaultMode || "") === "express") o = Object.assign({}, o, {mode: "steps"}); return orig(name, o); }; }
 
 /* the raw editor keeps what you type through re-renders (it is not a 1.3 draft: it always starts from the current brief) */
 document.addEventListener("input", e => { if (e.target && e.target.id === "rb-in"){ if (UI.rawText == null){ const p = curP(); if (p) UI.rawBase = hashStr(rawBrief(p)); } UI.rawText = e.target.value; } });   // the first keystroke starts from the brief on screen

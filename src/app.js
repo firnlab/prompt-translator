@@ -327,7 +327,7 @@ function lockNow(){ UI.unlocked = false; UI.lockFor = null; UI.pinForgot = null;
 
 /* ---------- projects ---------- */
 function newProject(name, {raw = "", mode = "", kind = "new"} = {}){
-  const p = blankProject(name); p.mode = mode || WS.settings.defaultMode || "steps"; p.kind = kind;
+  const p = blankProject(name); p.mode = MODES.includes(mode) ? mode : projMode(null); p.kind = kind;
   if (raw) p.intake.raw = raw;
   WS.projects.unshift(p); logAct(p, t("act.created"), {step:"capture", important:true}); touch(p);
   UI.view = "project"; UI.pid = p.id; UI.phase = "capture"; UI.prevMode = null; UI.selPart = null; UI.cmap = null; UI.itemBox = null; p.focus = {ph:"capture", id:null}; render();
