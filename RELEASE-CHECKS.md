@@ -334,3 +334,63 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   list, so PT read the header only and found no dates. It now waits for "Expires"/"No expiration" (four reads at most). The real
   `get_page_text` shape (name, "Never used •", "Expires on …", "Delete" on separate lines) is in `e2e1100_hands.py`; the mock's
   `early` text plays the header-first page; planted bug "the key check stops at the header, before the list".
+
+## 2.0.0 Part A — the foundation (src/v200_facts.js, src/v200_events.js, src/strings26.js, test/e2e200_foundation.py)
+- What changes for the owner: each project has a facts book (never / must / fact / decided / tool rule, in his words, with source, date
+  and status; More ⋯ and the page bar open it); PT reads his rules first in every step of that project and checks its proposals against
+  them; what he answered is not asked again; two entries that contradict each other are shown side by side; nothing of one project
+  reaches another; every answer shows "✓ Saved: … → where" and one Next is always visible; errors stay as cards in Events until he
+  dismisses them; examples never ask; the text gets the room; plain words.
+- Data for Parts B–E: `p.ledger = {v, entries, props, conflicts, known, blocked}`; an entry is `{id: "F<n>" (nextId), kind: never|must|fact|
+  decision|tool, words (the owner's), short (PT's form), kw, src: {k: you|ns|oos|const|note|qa|pick|dec|profile, ref, label}, at, by: you|pt,
+  status: active|replaced|withdrawn, replacedBy, hist}`. Functions to reuse: `factsActive(p, kinds)`, `factsAdd(p, {...})` (the caller opens
+  the action), `factsBodyHTML(p)` (the panel without the page: the later "Decided" tab), `factsConflictSoon(p, ids)`, `askOnceRun(p, items,
+  {drop, where})` (ask once for any new question source), `askMatch`, `exAsks` / `exSplitAsk` (examples never ask), `rcpt20(p, what, where)`
+  (the receipt), `nx20HTML(p)` (the Next bar), `ev20Add` / `ev20AI` (an error card), `EX_TASKS` (prompts that get the examples rule).
+- Cause 77 (owner, 2 Nov 2026, "we never log in to Google or Samsung — second time I have to tell this"): the owner's rule lived as text
+  in notes, answers or constraints; `projectContext` drops low-priority parts first when over budget, and many steps ask it for a subset
+  (`only`) without those parts, so a later step could propose exactly what he had ruled out. Now: `<your_rules>` (never / must) and
+  `<your_facts>` go right after the task line of every `buildPrompt` with `proj`, whole, outside `projectContext` (its budget and `only`
+  never see them); runAI checks every JSON answer of such a prompt: key words of a never in a sentence that is not a negation (of a must in
+  one that is) → one quick-tier confirm → one repair through runAI's check path → what still breaks a rule is left out (recorded in the
+  book) or, for a pick option, shown greyed "Blocked by your rule" and cannot be taken (no ★). Check: e2e200 A2 (planted never + tempting
+  answer); planted bugs: rules left out, cut by the budget, another project's rules, no negation check, no repair, a blocked option taken,
+  a ★ on it.
+- Cause 78 (owner, 2 Nov, "we already answered this or similar before"): each question source deduplicated only against itself (the
+  interview against interview answers, Pick against picks) and never against the facts the owner gave. Now one pool (`askPool`: interview
+  answers, picks, decisions, active facts) for picks and interview questions: bigram similarity ≥ 0.8 = known, 0.4–0.8 or a fact's key
+  words = one quick-tier check, the known ones are dropped and shown "Already known: … (change)". Check: e2e200 A3; planted bugs.
+- Cause 79 (owner, "projects dont get other porjects rules, never"): the workspace profile (`user_profile`, partly made from insights across
+  projects) went into every project prompt, and the 1.8 cone starred and pre-labelled "you chose this last time" from other tools. Now the
+  profile is in no project prompt (an entry enters a project only through "Copy into this project" in its facts book) and the cone has no
+  ★ or line from other tools (`conePolicy` removed; e2e180_cone part 5 now checks the opposite of 1.8, by the owner's decision). Check:
+  e2e200 A5; planted bugs "the profile goes into project prompts again", "the cone stars your choice on another tool again".
+  Left as it was (ask the owner): a check row's ★ "you chose this last time" from another tool (1.8 checks, v180_checks.js) is still a ★, not applied.
+- Cause 80 (owner, "why didn't it change so I see it's done … what is next"; "it brought me to one I already answered"): answers changed data
+  with no visible end state, and the examples loop looked for the next unjudged example only after the current one, so after the last one it
+  stayed on a judged example. Now `rcpt20` after interview answers, picks, cone answers, notes, the facts book and the project's text forms
+  ("✓ Saved: … → where", only when the form changed something); `nx20HTML` in the page bar's nav (one per screen, also where Pick hides the
+  bar); the loop goes to any unjudged example and says when all are judged. Check: e2e200 A6; planted bugs.
+- Cause 81 (owner, 3 Nov, "an error popped up bottom right – what was the issue"): errors were a toast that vanished and an in-memory list.
+  Now onAppError and every failed AI step (runAI: no runtime, no readable answer, an upstream code) become an error card (`WS.settings.events`,
+  newest first, at most 20, quoted text replaced by "…", so no project text is kept) in Events (status bar chip, Settings › PT health, a click
+  on the error message), with what happened, what PT did, what you can do and the technical detail, until dismissed; "Report to Improve PT"
+  is pre-filled with the technical detail. Messages shown this session are listed but never stored (they may hold project words). Check:
+  e2e200 A7; planted bugs "an error is not kept", "an error card keeps the project's text", "Report to Improve PT starts empty".
+- Cause 82 (owner, "'Reply with (a) or (b)' – why a question in an example?"): no example prompt forbade questions and nothing checked the
+  results. Now the examples rule goes into loop-show, loop-rule, pick-next/refresh/second and arch-stories (`EX_TASKS`), and runAI checks the
+  example fields (question marks, "reply with", (a)/(b), which / do you and their German and Chinese forms): asked again once, then the
+  question moves out into `toolAsks`, shown labelled "The tool would ask: …". Check: e2e200 A8; planted bug.
+- Cause 83 (owner, "text so squeezed … should use the whole page"): `.chips{max-width:45%}` and `.qacts{max-width:46%}` reserved almost half
+  of a row for buttons. Now both take only what they need (`flex:0 1 auto`, at most 100 %) and a queue row's text keeps at least 18em
+  before its buttons move under it. Check: e2e200 A9 (text ≥ 60 % of a row whose buttons sit beside it); planted bug.
+- Cause 84 (owner, "what should I write as 'validated'?", "right sizing … should be clear", "'Fix it together with me' makes no sense"):
+  process words on the surface. Now "Not in this version", "How much should run by itself?", "PT drafts a fix, you pick what to keep" (the
+  draft starts at once; the proposal box ticks each field) and yes / no / not sure for assumptions, in three languages. Check: e2e200 A10
+  (no old word in any string but the changelog); planted bug.
+- The 1.2.1 report "Add requirement — nothing happens": not reproducible in today's code (Design page › all details › Requirements adds R<n>
+  and puts the cursor in its title); e2e200 A11 proves it.
+- Found while building: a `// …` comment put before the last statement of a block (`}catch(e){ errs = []; }   // … weak = errs.length > 0; } }`)
+  swallowed it and the file still parsed; the cause-64 check needs a second statement after the comment. `static_checks.js` now also flags a
+  comment followed by one assignment and a closing brace; planted in `check_the_checks.py`.
+- runAI's `check` may now be async (`await check(out)`): the rules check confirms a code hit with one quick-tier call inside it.

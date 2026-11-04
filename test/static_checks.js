@@ -77,6 +77,8 @@ for (const m of code.matchAll(/const orig = ACTIONS\[["']([a-z0-9-]+)["']\]/g)) 
 for (const f of codeFiles) src(f).split('\n').forEach((line, i) => {
   if (/ok:comment/.test(line)) return;
   if (/\/\/[^"`'\n]*;\s+[a-zA-Z_$][\w$.]*\s*(\+=|-=|=(?![=>]))[^;\n]*;/.test(line)) H('comment', `${f}:${i + 1} statements after a // comment never run: ${line.trim().slice(0, 120)}`);
+  // 2.0 (found while building Part A): a comment put before the last statement of a block, "// note weak = x; } }", swallows it too
+  else if (/\/\/[^"`'\n]*?\s[a-zA-Z_$][\w$.]*\s*(\+=|-=|=(?![=>]))\s*[^;\n]*;\s*\}/.test(line)) H('comment', `${f}:${i + 1} a statement after a // comment never runs: ${line.trim().slice(0, 120)}`);
 });
 /* cause 59 (1.7.1): a workspace (a person) found or named by a fixed name in the code breaks when names change (the public-repo name swap did) */
 for (const f of codeFiles) src(f).split('\n').forEach((line, i) => {

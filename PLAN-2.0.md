@@ -13,7 +13,7 @@ All waves below ship together as 2.0.0: no owner preview try; Claude tests the p
 ## Parts (built in this order, one branch release/2.0.0)
 | Part | Contents | State |
 |---|---|---|
-| A Foundation | facts book per project; rules channel never cut + output check; ask once; contradiction check; cross-project leaks closed; one Next + "✓ done"; error cards kept; no questions in examples; layout width; plain words; "Add requirement" bug | in progress |
+| A Foundation | facts book per project; rules channel never cut + output check; ask once; contradiction check; cross-project leaks closed; one Next + "✓ done"; error cards kept; no questions in examples; layout width; plain words; "Add requirement" bug | built (RELEASE-CHECKS § 2.0.0 Part A) |
 | B Solution map | order goal → map → decide → details; live map (28 fields, not-yet lane); coverage engine (6 angles, rounds, red-team, saturation note); shortlist/compare/Prove it/Take this; tripwires + route alert; proven routes from other projects (template only) | open |
 | C Two modes | Chat with structure (new) + Pick (improved); delete Steps/Blueprint/Journey/Swimlanes/Express; additive migration with "Before 2.0" restore point; acceptance: RC replay | open |
 | D Hands and loop | hands: per-project site list, forms and non-final clicks, final-button stop; morning check; prompt tests; Improve-PT loop (read, fix, "fixed in"); metrics | open |
@@ -31,14 +31,14 @@ All waves below ship together as 2.0.0: no owner preview try; Claude tests the p
 - db: one 194 KB document write 1.2 s / read 0.35 s; 60 sequential small writes 21 s (bundle writes)
 
 ## Part A items
-- [ ] A1 facts book (`p.ledger`): kinds never / must / fact / decision / tool; owner's words + source + date; add, edit, withdraw; proposal of entries from existing project data, confirmed in one batch
-- [ ] A2 rules channel: `<your_rules>` first in every project prompt, never shortened, included under `only`; output check (code keywords + quick-tier) on proposals before they are shown
-- [ ] A3 ask once: questions matched against answered questions and the facts book before they are shown
-- [ ] A4 contradiction check when a fact-book entry is added
-- [ ] A5 cross-project: workspace profile out of project prompts (copy into a project on request); cone "you chose this last time" removed
-- [ ] A6 one Next + "✓ done" receipts after answers and text entries
-- [ ] A7 errors: kept (technical text only, no project text), shown as cards in an Events list, readable by Claude
-- [ ] A8 examples never ask (prompt rule + code check, regenerate or move the question out)
-- [ ] A9 layout: text column first, action columns no fixed share
-- [ ] A10 plain words: out of scope, right-sizing, fix together, assumption statuses
-- [ ] A11 "Add requirement does nothing" (1.2.1 report): reproduce or close
+- [x] A1 facts book (`p.ledger`): kinds never / must / fact / decision / tool; owner's words + source + date; add, edit, withdraw; proposal of entries from existing project data, confirmed in one batch
+- [x] A2 rules channel: `<your_rules>` first in every project prompt, never shortened, included under `only`; output check (code keywords + quick-tier) on proposals before they are shown
+- [x] A3 ask once: questions matched against answered questions and the facts book before they are shown
+- [x] A4 contradiction check when a fact-book entry is added
+- [x] A5 cross-project: workspace profile out of project prompts (copy into a project on request); cone "you chose this last time" removed
+- [x] A6 one Next + "✓ done" receipts after answers and text entries
+- [x] A7 errors: kept (technical text only, no project text), shown as cards in an Events list, readable by Claude
+- [x] A8 examples never ask (prompt rule + code check, regenerate or move the question out)
+- [x] A9 layout: text column first, action columns no fixed share
+- [x] A10 plain words: out of scope, right-sizing, fix together, assumption statuses
+- [x] A11 "Add requirement does nothing" (1.2.1 report): reproduce or close

@@ -10,6 +10,7 @@ APP = "\nfunction __zz{n}(p, x){{ {body} }}\n"
 M = [
     ("a comment that swallows the rest of a line (parse error)", "v150_pick.js", "sub", ("saveWs(); toast(t(good", "saveWs();   // note toast(t(good"), "parse", True),
     ("a comment that swallows statements (still parses, cause 62)", "v14_finish.js", "sub", ("{rounds: FIX_CAP, quiet: true}); sum.fixed += s.fixed;", "{rounds: FIX_CAP, quiet: true});   // the cap sum.fixed += s.fixed;"), "comment", True),
+    ("a comment that swallows the last statement of a block (2.0)", "core.js", "sub", ("}catch(e){ errs = []; } weak = errs.length > 0; } }", "}catch(e){ errs = []; }   // a check may ask weak = errs.length > 0; } }"), "comment", True),
     ("squeezed text: overflow-wrap:anywhere",          "styles.css", "append", ".zz{overflow-wrap:anywhere}", "layout", True),
     ("menus cut off: no top-layer menus",              "v141_ui.js", "sub", ("function menuFloat(", "function menuFloatOff("), "layout", True),
     ("leftover 'Sie': a string key defined twice",     "strings7.js", "dupline", '"it.inpanel":', "names", True),
