@@ -565,7 +565,7 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   Now every report sent (header, rail, an error card, the chat's one tap) is also kept in `WS.settings.ipt20` (open), on a version change
   the ids listed for it in `IMPROVE_FIXED` become "fixed in <version>" and one card says so once (Got it). Check: e2e200_loop L3;
   planted bugs "a report is not kept", "fixed reports are announced on every open".
-- Metrics (design §9, local only): questions PT showed (askOnceRun: items minus held back), asked twice and held back, rule breaks
+- Metrics (design §9; kept in WS.settings.met20, saved with the workspace and part of "Export my data", never in a prompt): questions PT showed (askOnceRun: items minus held back), asked twice and held back, rule breaks
   caught and repaired (factsGuardHits with a hit), routes on the map, goal → decision (first confirmed goal field or the project's start
   → the active decision); never in a prompt, report or export. Check: e2e200_loop L4; planted bug "asked-twice questions are not counted".
 - Found while building: (1) a `<rules>` tag named in the prompt's prose before the block made the mock read the prose as the block (a

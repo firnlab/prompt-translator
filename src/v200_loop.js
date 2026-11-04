@@ -7,7 +7,7 @@
    2. Improve PT (WS.settings.ipt20): every report sent through "Improve PT" (header, rail, an error card, the chat's one tap) is kept in the
       workspace settings with its status (open / fixed in <version>). On a version change PT marks the reports whose ids are listed for that
       version in IMPROVE_FIXED as fixed and tells the owner once (a card in Settings › PT health and on the cockpit).
-   3. Metrics (WS.settings.met20, never sent anywhere — no prompt, report or export reads them): per project the questions PT showed, the
+   3. Metrics (WS.settings.met20, never sent to Claude — no prompt or report reads them; saved with the workspace, so they are in "Export my data"): per project the questions PT showed, the
       questions it held back because they were answered before, the rule breaks it caught and repaired, the routes on the map, the time
       from the goal to the route decision; Settings › Metrics. */
 const PT20_MAX = 5, PT20_RUNS = 5, PT20_PKG = 60000;

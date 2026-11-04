@@ -20,7 +20,7 @@ Versions before 1.8 were published from the private archive repository (see RELE
 - Morning check (first open of the day): pull requests, key dates, the release, and the routes' tripwires and “not possible yet” lines
 - Prompt tests: up to five test inputs in one call, checked against your musts and nevers, cost shown first
 - Improve PT keeps your reports and tells you once when one is fixed
-- Settings › Metrics (stays on your device) and a Setup tab with click-by-click guides: GitHub App, GitHub connector, auto-merge for Dependabot only, a cloud scheduled task, computer use, and the helper programs Filesystem, Git, Fetch and Blender — you install them, PT takes over
+- Settings › Metrics (kept in your workspace, never in a prompt) and a Setup tab with click-by-click guides: GitHub App, GitHub connector, auto-merge for Dependabot only, a cloud scheduled task, computer use, and the helper programs Filesystem, Git, Fetch and Blender — you install them, PT takes over
 
 ### Changed
 
