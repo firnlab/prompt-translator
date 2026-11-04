@@ -276,28 +276,6 @@ Object.assign(ACTIONS, {
 Object.assign(CHANGES, { "rv-tick": el => { const r = UI.review; if (!r) return; const x = r.items[num(el.dataset.i, -1)]; if (x){ x.on = el.checked; render(); } } });
 document.addEventListener("input", e => { const el = e.target; if (el.matches && el.matches("[data-rvedit]") && UI.review){ const [i, f] = el.dataset.rvedit.split(":"); const x = UI.review.items[num(i, -1)]; if (x){ x.edit[f] = el.value; } } });
 
-/* ---------- 1.3 quick mode: accept all, fold, keyboard ---------- */
-Object.assign(ACTIONS, {
-  "xp-more": () => { UI.xMore = true; render(); },
-  "confirm-all-as": () => { const p = curP(); const list = assumedItems(p).filter(i => i.kind !== "assumption"); if (!list.length) return; snapshot(p, t("xp.acceptall", {n: list.length})); probSnap(p); for (const i of list){ confirmItem(p, i.ref); markRef(p, i.ref, "confirmed"); } touch(p); render(); toastUndo(t("xp.accepted", {n: list.length})); afterChange(p); },
-  "xp-fold": el => { UI.xOpen = UI.xOpen || new Set(); const ph = el.dataset.ph; if (UI.xOpen.has(ph)) UI.xOpen.delete(ph); else UI.xOpen.add(ph); render(); }
-});
-document.addEventListener("keydown", e => {
-  if (e.isComposing || e.keyCode === 229 || e.metaKey || e.ctrlKey || e.altKey) return;
-  if (!UI.unlocked || UI.lockFor) return;
-  const p = UI.view === "project" ? curP() : null; if (!p || projMode(p) !== "express" || UI.modal || UI.palette || UI.capture) return;
-  const a = document.activeElement; if (a && a.matches && a.matches("input,textarea,select,button,a,summary,[contenteditable]")) return;   // a focused control handles its own keys
-  const list = arr(UI.xList); if (!list.length) return;
-  const k = e.key.toLowerCase(); let i = Math.max(0, list.indexOf(UI.xSel));
-  if (k === "arrowdown" || k === "j"){ e.preventDefault(); i = UI.xSel ? Math.min(list.length - 1, i + 1) : 0; }
-  else if (k === "arrowup" || k === "k"){ e.preventDefault(); i = Math.max(0, i - 1); }
-  else if (k === "enter" && UI.xSel){ e.preventDefault(); const it = itemByRef(p, UI.xSel); if (it && it.st === "as" && !["intake","nsdraft","pq"].includes(it.kind)){ if (it.kind === "assumption") ACTIONS["as-validate"]({dataset: {id: it.obj.id}}); else ACTIONS["item-confirm"]({dataset: {ref: it.ref}}); } else if (it && it.flag) ACTIONS["item-unflag"]({dataset: {ref: it.ref}}); return; }
-  else if (k === "e" && UI.xSel){ e.preventDefault(); ACTIONS["item-edit"]({dataset: {ref: UI.xSel}}); return; }
-  else if (k === "r" && UI.xSel){ e.preventDefault(); ACTIONS["item-tool"]({dataset: {ref: UI.xSel, k: "refine"}}); return; }
-  else return;
-  UI.xSel = list[i]; UI.open.add(UI.xSel); render();
-  const el = document.getElementById("ir-" + UI.xSel); if (el) el.scrollIntoView({block: "nearest"});
-});
 
 /* ---------- 1.3 notes panel actions (C1) ---------- */
 function dockSave(){ Store.lsSet("dock", {open: !!UI.drawer && (UI.panelTab || "notes") === "notes", w: num(UI.dockW, 360)}); }

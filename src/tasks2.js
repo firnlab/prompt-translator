@@ -109,7 +109,7 @@ function applyItemProposal(p, ref, prop, scope){
 }
 
 /* ---------- the Guide: knows the screen, answers, and can act (with a restore point first) ---------- */
-const GUIDE_ACTIONS = ["clarify","interview","requirements","architecture","compile","review","gen-tests","run-tests","improve","trace","update-affected","fix-all","early-check","express-draft"];
+const GUIDE_ACTIONS = ["clarify","interview","requirements","architecture","compile","review","gen-tests","run-tests","improve","trace","update-affected","fix-all","early-check"];
 async function aiGuide(p, question){
   const screen = p ? phName(UI.phase) : t("nav." + UI.view);
   const prompt = buildPrompt("guide", {proj: p || null, role: "You are the built-in guide of Prompt Translator. You know the tool and the person's current screen. Explain simply, show what is done and what is left, and offer at most three concrete next actions the tool can run.", rules: null, userLang: "viewer",
@@ -128,53 +128,6 @@ async function aiAskSection(p, section, question){
   return r ? str(r.answer) : null;
 }
 
-/* ---------- Express: describe once, Claude drafts, you confirm ---------- */
-async function aiExpressDraft(p){
-  if (!str(p.intake.raw).trim()){ toast(t("cap.needraw"), "err"); return; }
-  UI.express = {step: 1, of: 4};
-  render();
-  await aiClarify(p);
-  if (p.nsDraft){ p.northStar = Object.assign({}, p.northStar, p.nsDraft); p.nsDraft = null; p.nsAssumed = true; }
-  UI.express = {step: 2, of: 4}; render();
-  const dimsDesc = DIMS.map(d => "- " + d.id + ": " + d.ai).join("\n");
-  const prompt = buildPrompt("express", {proj: p, rules: ["elicit","assume","golden","simple"], platform: true, context: projectContext(p),
-    body: `Draft the first steps of this project in one pass so the person only has to confirm or correct. Everything you write is a draft marked "assumed".
-1. Understanding: root need (5 whys condensed), job to be done, a short day-in-the-life walkthrough with times, and 4 pre-mortem failure reasons with likelihood, impact (1-5) and mitigation.
-2. First questions: the 8-12 questions that matter most for this project across these dimensions, each with 2-5 answer options, your recommended option index, and your best-guess answer.
-Dimensions:\n${dimsDesc}
-3. A status per dimension (assumed or unknown) with a one-sentence summary.
-4. The assumptions you are making (category value|usability|viability|feasibility|gtm|legal; impact and risk 1-5).`,
-    schema: `{"rootNeed":"…","jtbd":"When …, I want to …, so I can …","walkthrough":[{"time":"07:00","step":"…"}],"premortem":[{"text":"…","likelihood":3,"impact":4,"mitigation":"…"}],"questions":[{"dim":"look","q":"…","options":["…"],"recommended":0,"answer":"best guess"}],"dims":[{"id":"purpose","status":"assumed","summary":"…"}],"assumptions":[{"text":"…","category":"feasibility","impact":4,"risk":3}]}`});
-  const r = await runAI("express", t("xp.drafting"), prompt, {pid: p && p.id, step: "express", validate: o => arr(o.questions).length > 0});
-  if (!r){ UI.express = null; render(); return; }
-  snapshot(p, t("rp.before", {x: t("m.express")}));
-  const u = p.understand;
-  u.rootNeed = str(r.rootNeed) || u.rootNeed; u.jtbd = str(r.jtbd) || u.jtbd;
-  u.walkSteps = arr(r.walkthrough).map(s => ({time: str(s.time), step: str(s.step)})); u.walkthrough = u.walkSteps.map(s => s.time + " " + s.step).join("\n");
-  u.premortem = arr(r.premortem).map(f => ({text: str(f.text), likelihood: clamp(num(f.likelihood, 3), 1, 5), impact: clamp(num(f.impact, 3), 1, 5), mitigation: str(f.mitigation)}));
-  for (const f of u.premortem) if (!p.risks.some(x => x.text === f.text)) p.risks.push({id: uid("rk"), text: f.text, likelihood: f.likelihood, impact: f.impact, mitigation: f.mitigation, status: "open", source: "premortem"});
-  for (const q of arr(r.questions)) p.qa.push({id: uid("qa"), dim: DIMS.some(d => d.id === q.dim) ? q.dim : "scope", q: str(q.q), answer: str(q.answer), options: arr(q.options).map(str), recommended: num(q.recommended, -1), st: "assumed", at: now()});
-  for (const d of arr(r.dims)) if (DIMS.some(x => x.id === d.id) && !((p.dims[d.id] || {}).status === "confirmed")) p.dims[d.id] = {status: oneOf(d.status, ["assumed","unknown"], "assumed"), summary: str(d.summary)};
-  for (const a of arr(r.assumptions)){ const txt = str(a.text); if (txt && !p.assumptions.some(x => x.text === txt)) p.assumptions.push({id: uid("as"), text: txt, category: oneOf(a.category, ACAT, "feasibility"), impact: clamp(num(a.impact, 3), 1, 5), risk: clamp(num(a.risk, 3), 1, 5), status: "untested", test: ""}); }
-  touch(p);
-  UI.express = {step: 3, of: 4}; render();
-  await aiRequirements(p, {assumed: true});
-  UI.express = null;
-  if (PHASE_IDS.indexOf(p.phase) < PHASE_IDS.indexOf("require")) p.phase = "require";
-  p.focus = {ph: "require", id: null};
-  logAct(p, t("act.express"), {step: "require", important: true});
-  touch(p); render();
-}
-/* Express "Draft next step": runs the main AI of the next step */
-async function aiExpressNext(p){
-  const nx = PHASE_IDS[PHASE_IDS.indexOf(p.phase) + 1];
-  if (nx === "arch"){ await aiArchitecture(p); if (p.arch.recommended && !p.arch.chosen){ p.arch.chosen = p.arch.recommended; p.arch.chosenAssumed = true; } }
-  else if (nx === "build") await aiCompile(p);
-  else if (nx === "review") await aiReview(p, LENSES.map(l => l.id));
-  else if (nx === "test"){ if (!p.tests.length) await aiTests(p); await aiRunTests(p, {trials: TRIALS}); }
-  else { setPhase(nx); return; }
-  if (nx){ p.phase = nx; p.focus = {ph: nx, id: null}; touch(p); render(); }
-}
 
 /* ---------- fixes from the readiness list ---------- */
 async function aiLintFix(p){

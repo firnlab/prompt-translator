@@ -66,7 +66,7 @@ html:lang(zh) h1,html:lang(zh) h2,html:lang(zh) h3,html:lang(zh) h4{line-height:
 html:lang(zh) .app *{letter-spacing:0!important}
 html:lang(zh) i,html:lang(zh) em{font-style:normal}
 /* small labels: sentence case, no spaced capitals (the mission-control style is gone) */
-.nav-label,.ns-k,.ns-title,.qcard .qd,.briefing h3,.nextbar .lbl,.tbl th,.pkg-h .dest,.pkg-col .lang,.sglabel,.amap .q,.fs-label,.station .here,.brand-sub,.crumb,.gwt b{text-transform:none;letter-spacing:0}
+.nav-label,.ns-k,.ns-title,.qcard .qd,.briefing h3,.nextbar .lbl,.tbl th,.pkg-h .dest,.pkg-col .lang,.amap .q,.fs-label,.station .here,.brand-sub,.crumb,.gwt b{text-transform:none;letter-spacing:0}
 .nav-label{font-size:12px;font-weight:600;color:var(--muted);padding:16px 12px 6px}
 .ns-k{font-size:12px;font-weight:600}
 .ns-title{font-family:var(--f-body);font-size:13px;font-weight:700;color:var(--accent)}
@@ -112,10 +112,10 @@ body{background:var(--bg)}
 .pnav.on .ic{background:var(--accent-soft)}
 
 /* ---------- surfaces: white rounded cards, soft lines, soft shadows ---------- */
-.panel,.pcard,.qcard,.card,.excard,.optcard,.xcard,.pkg-sec,.list,.ilist,.qlist,.maplist,.rpage,.lock-card,.finish .dcard,.pk-top,.northstar,.stepcard,.gatecard,.tbl-wrap,.lanes,.mapwrap,.diagram,.amap,.empty-state,.lockbox,.pg-block,.tile,.mcard,.chk,.msg,.note,.rp,.stbox,.ts,.dial,.four div,.sumgrid>div,.fex,.exrow,.pcard2,.vtn,.dim,.buildmap .bm{border-radius:var(--r)}
+.panel,.pcard,.qcard,.card,.excard,.optcard,.pkg-sec,.list,.ilist,.qlist,.maplist,.rpage,.lock-card,.finish .dcard,.pk-top,.northstar,.stepcard,.gatecard,.tbl-wrap,.lanes,.mapwrap,.diagram,.amap,.empty-state,.lockbox,.pg-block,.tile,.mcard,.chk,.msg,.note,.rp,.stbox,.ts,.dial,.four div,.sumgrid>div,.fex,.exrow,.pcard2,.vtn,.dim,.buildmap .bm{border-radius:var(--r)}
 .list,.ilist,.qlist,.maplist{border-radius:16px}
 .note,.chk,.msg,.rp,.stbox,.ts,.dial,.four div,.sumgrid>div,.fex,.exrow,.pcard2,.vtn,.dim,.buildmap .bm,.tile,.mcard{border-radius:16px}
-.panel,.pcard,.qcard,.card,.excard,.optcard,.xcard,.pkg-sec,.northstar,.pk-top,.rpage,.finish .dcard{background:var(--surface);border-color:var(--line);box-shadow:var(--shadow-sm)}
+.panel,.pcard,.qcard,.card,.excard,.optcard,.pkg-sec,.northstar,.pk-top,.rpage,.finish .dcard{background:var(--surface);border-color:var(--line);box-shadow:var(--shadow-sm)}
 .panel{padding:18px 20px}
 .panel.flat{box-shadow:none}
 .qcard,.excard,.finish .dcard{background:var(--surface)}
@@ -147,11 +147,10 @@ body{background:var(--bg)}
 .pk-k{border-radius:8px;color:var(--accent)}
 label.chk{border:0;background:none;padding:0;border-radius:0;flex-direction:row;align-items:flex-start;gap:9px}
 label.chk.small{gap:7px}
-.opt,.dopt,.cbtn,.lpart,.bp-node,.modebtn,.sp-st,.stagebar .stg,.ws-opt,.pal-item,.ph{border-radius:var(--r-sm)}
+.opt,.dopt,.bp-node,.modebtn,.sp-st,.stagebar .stg,.ws-opt,.pal-item,.ph{border-radius:var(--r-sm)}
 .sp-st{border-radius:var(--r-pill)}
 .opt{background:var(--surface)}
-.bubble{border-radius:18px}
-.bubble.you{border-color:transparent}
+
 .chip.model{border-color:var(--line-2);color:var(--accent)}
 .pg-block{background:var(--surface-2);border-color:var(--line)}
 .pg-did,.pg-you,.pg-nx{border-left-width:4px}
@@ -241,7 +240,7 @@ label.fld{color:var(--fg-2);font-weight:500}
 .sslot.pill18 svg{width:16px;height:16px;flex:none}
 /* the status is a word now, so a narrow queue row (1024 with the inspector) puts the actions on the next line instead of squeezing the text (hunt 13, cause 68) */
 .qrow{flex-wrap:wrap}
-.qrow>.qbody{flex:1 1 12em}
+.qrow>.qbody{flex:1 1 max(18em,60%);min-width:min(18em,100%)}   /* 2.0 (A9): the text keeps at least 18em and 60 % of the row; the buttons move under it before it is squeezed (Part D: a 564 px row gave the text 46 %) */
 .qrow>.qacts{margin-left:auto}
 @media (min-width:821px){.tsgrid{grid-template-columns:repeat(auto-fit,minmax(11em,1fr))}}   /* the three tool states: two per line when the step column is narrow (same hunt) */
 .sslot.pill18 .ssw{white-space:nowrap}

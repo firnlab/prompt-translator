@@ -28,6 +28,8 @@ def click(pg, sel):
     # 1.4.1: rarely used project actions live in the header's More menu; open it like a person would
     if loc.count() and not loc.is_visible(): pg.evaluate("(s) => { const e = document.querySelector(s); const d = e && e.closest('details'); if (d) d.open = true; }", sel)
     loc.click(); pg.wait_for_timeout(120)
+def step(ph):   # 2.0 Part C: the Steps view is gone; a step opens inside its page's details (the way the page bar and "all details" reach it)
+    return f"(() => {{ UI.home = false; pgShowPhase(curP(), '{ph}'); setPhase('{ph}'); render(); }})()"
 def idle(pg, ms=20000): pg.wait_for_function("AI.running.size === 0", timeout=ms); pg.wait_for_timeout(150)
 def new_ctx(b, w=1440, h=950, scheme="dark"):
     ctx = b.new_context(viewport={"width": w, "height": h}, color_scheme=scheme)
@@ -70,7 +72,7 @@ with sync_playwright() as p:
 
     print("2 drafts are never lost")
     ctx = new_ctx(b); pg = open_page(ctx)
-    pg.evaluate(f"openProject('{PID}')"); pg.wait_for_timeout(300); pg.evaluate("setPhase('interview')"); pg.wait_for_timeout(300)
+    pg.evaluate(f"openProject('{PID}')"); pg.wait_for_timeout(300); pg.evaluate(step('interview')); pg.wait_for_timeout(300)
     click(pg, "[data-a=qa-add]"); pg.fill("#pr-in", "Clocks need a separate shot list")
     pg.evaluate("render()"); pg.evaluate("render()"); pg.wait_for_timeout(100)
     check(pg.input_value("#pr-in") == "Clocks need a separate shot list", "typed text survives background re-renders")
@@ -85,7 +87,7 @@ with sync_playwright() as p:
     pg.reload(); pg.wait_for_timeout(900)
     if pg.locator(".rail").count() == 0: pg.locator(f'.ws-opt[data-id="{_ws_order()[0]}"]').click()
     pg.wait_for_selector(".rail"); pg.wait_for_timeout(400)
-    pg.evaluate(f"openProject('{PID}')"); pg.wait_for_timeout(300); pg.evaluate("setPhase('interview')"); pg.wait_for_timeout(300)
+    pg.evaluate(f"openProject('{PID}')"); pg.wait_for_timeout(300); pg.evaluate(step('interview')); pg.wait_for_timeout(300)
     click(pg, "[data-a=qa-add]")
     check(pg.input_value("#pr-in") == "Clocks need a separate shot list", "the draft survives a reload")
     click(pg, ".modal [data-discard]"); pg.wait_for_timeout(150); click(pg, "[data-a=qa-add]")
@@ -101,16 +103,17 @@ with sync_playwright() as p:
     print("3 item actions: Edit · Refine… · More, marks, re-check")
     ctx = new_ctx(b); pg = open_page(ctx)
     pg.evaluate(f"openProject('{PID}')"); pg.wait_for_timeout(300)
-    pg.evaluate("UI.home=false; render()"); click(pg, "[data-a=mode][data-v=express]"); pg.wait_for_timeout(400)
+    # 2.0 Part C: Express is gone; the item actions are checked on the Requirements step (Design page details), where the same rows live
+    pg.evaluate(step('require')); pg.wait_for_timeout(400)
     old_btns = pg.evaluate("[...document.querySelectorAll('[data-a=item-tool]')].map(b => b.dataset.k).filter(k => ['fix','adjust','change','add'].includes(k)).length")
     check(old_btns == 0, "no Fix / Adjust / Change / Add buttons any more")
     ref = pg.evaluate("allItems(curP()).find(i => i.kind === 'req').ref")
-    pg.evaluate(f"UI.xOpen = new Set(['require']); UI.open.add('{ref}'); render()"); pg.wait_for_timeout(200)
+    pg.evaluate(f"UI.open.add('{ref}'); render()"); pg.wait_for_timeout(200)
     row = "#ir-" + ref.replace(":", "\\:")
-    check(pg.locator(f"{row} [data-a=item-edit]").count() == 1 and pg.locator(f"{row} [data-a=item-tool][data-k=refine]").count() == 1 and pg.locator(f"{row} details.more").count() == 1, "each item shows Edit, Refine… and More")
-    click(pg, f"{row} [data-a=item-edit]")
-    ta = pg.locator(f"{row} .editbox textarea").first; ta.fill(ta.input_value() + " (edited)"); pg.wait_for_timeout(1500)
-    click(pg, f"{row} [data-a=item-edit-done]")
+    # on the step the item's fields are open for typing (Express's compact row needed an Edit button first)
+    check(pg.locator(f"{row} textarea[data-bind]").count() >= 1 and pg.locator(f"{row} [data-a=item-tool][data-k=refine]").count() == 1 and pg.locator(f"{row} details.more").count() == 1, "each item can be typed in and shows Refine… and More")
+    ta = pg.locator(f"{row} textarea[data-bind$='.then']").first; ta.fill(ta.input_value() + " (edited)"); pg.wait_for_timeout(1500)
+    pg.evaluate("render()"); pg.wait_for_timeout(200)
     check(pg.evaluate(f"(curP().marks['{ref}'] || {{}}).w") == "edited", "typing in Edit marks the item Edited by you")
     check(pg.locator(f"{row} .chip.mk-edited").count() == 1, "the mark is visible on the item")
     click(pg, f"{row} [data-a=item-tool][data-k=refine]"); pg.fill("#it-in", "make it stricter"); click(pg, f"{row} [data-a=item-send]"); idle(pg)
@@ -141,13 +144,13 @@ with sync_playwright() as p:
     pg.evaluate(f"flag(curP(), '{ref}', 'test'); resetBase(curP()); render()"); pg.wait_for_timeout(200)
     pg.evaluate(f"ACTIONS['item-unflag']({{dataset:{{ref:'{ref}'}}}})"); pg.wait_for_timeout(300)
     check(pg.locator(".rcbar").count() == 1 and "1 solved" in pg.locator(".rcbar").inner_text(), "after a change the bar says how many problems it solved: " + (pg.locator(".rcbar").inner_text()[:80] if pg.locator(".rcbar").count() else "-"))
-    pg.screenshot(path=str(SHOTS / "03-express.png"), full_page=False)
+    pg.screenshot(path=str(SHOTS / "03-items.png"), full_page=False)
     ctx.close()
 
     print("4 new items on top")
     ctx = new_ctx(b); pg = open_page(ctx)
     pg.evaluate(f"openProject('{PID}')"); pg.wait_for_timeout(300)
-    pg.evaluate("UI.home=false; render()"); click(pg, "[data-a=mode][data-v=steps]"); pg.evaluate("setPhase('require')"); pg.wait_for_timeout(300)
+    pg.evaluate(step('require')); pg.wait_for_timeout(300)
     n0 = pg.evaluate("curP().requirements.length")
     click(pg, "[data-a=add-req]"); pg.wait_for_timeout(500)
     newid = pg.evaluate("curP().requirements[curP().requirements.length-1].id")
@@ -155,7 +158,7 @@ with sync_playwright() as p:
     check(first == "ir-req:" + newid, "the new requirement is shown first: " + first)
     check(pg.locator(f"#ir-req\\:{newid} .chip.new").count() == 1, "it is marked New")
     check(pg.evaluate("document.activeElement && document.activeElement.closest('[id^=\"ir-req:\"]') && document.activeElement.closest('[id^=\"ir-req:\"]').id") == "ir-req:" + newid, "its first field gets the cursor")
-    pg.evaluate("setPhase('arch')"); pg.wait_for_timeout(200); pg.evaluate("setPhase('require')"); pg.wait_for_timeout(300)
+    pg.evaluate(step('arch')); pg.wait_for_timeout(200); pg.evaluate(step('require')); pg.wait_for_timeout(300)
     first2 = pg.evaluate("document.querySelector('[id^=\"ir-req:\"]').id")
     check(first2 != "ir-req:" + newid, "after leaving the step it moves to its normal place")
     ctx.close()
@@ -178,29 +181,7 @@ with sync_playwright() as p:
     pg.screenshot(path=str(SHOTS / "05-verify.png"))
     ctx.close()
 
-    print("6 quick mode")
-    ctx = new_ctx(b); pg = open_page(ctx)
-    pg.evaluate(f"openProject('{PID}')"); pg.wait_for_timeout(300); pg.evaluate("UI.home=false; render()"); click(pg, "[data-a=mode][data-v=express]"); pg.wait_for_timeout(400)
-    h = pg.evaluate("document.querySelector('.main').scrollHeight")
-    check(h < 6000, "quick mode is much shorter (was ~13,000 px): %d px" % h)
-    check(pg.locator("#xc-need").count() == 1 and pg.evaluate("document.querySelector('.xcard').id") == "xc-need", "Needs you comes first")
-    check(pg.evaluate("document.querySelector('form[data-form=express-change]').getBoundingClientRect().top") < 900, "the change box is visible without scrolling")
-    pg.locator("body").click(position={"x": 700, "y": 5}); pg.keyboard.press("j"); pg.wait_for_timeout(200)
-    sel = pg.evaluate("UI.xSel")
-    check(bool(sel), "↓/J selects the first item that needs you")
-    if sel and pg.evaluate(f"(itemByRef(curP(), '{sel}') || {{}}).st") == "as":
-        pg.keyboard.press("Enter"); pg.wait_for_timeout(300)
-        check(pg.evaluate(f"(itemByRef(curP(), '{sel}') || {{}}).st") != "as", "Enter confirms it")
-    a = pg.evaluate("assumedItems(curP()).filter(i => i.kind !== 'assumption').length")
-    if a:
-        click(pg, "[data-a=confirm-all-as]"); pg.wait_for_timeout(300)
-        check(pg.evaluate("assumedItems(curP()).filter(i => i.kind !== 'assumption').length") == 0, "Accept all recommended confirms all %d that one click can settle" % a)
-    pg.evaluate("UI.xMore = true; render()"); pg.wait_for_timeout(200)
-    check(pg.locator("#xc-need [data-a=as-validate]").count() >= 1 or pg.evaluate("assumedItems(curP()).length") == 0, "assumptions offer Mark validated instead of a Confirm that does nothing")
-    ok = pg.evaluate("document.body.dispatchEvent(new KeyboardEvent('keydown', {key:'j', isComposing:true, bubbles:true}))")
-    check(True, "keys are ignored while typing with an IME (guard in place)")
-    ctx.close()
-
+    # 6 quick mode (Express: the short list, J/K and Enter, "Accept all recommended"): removed with Express in 2.0 Part C; nothing left to check
     print("7 notes panel")
     ctx = new_ctx(b); pg = open_page(ctx)
     check(pg.locator("[data-a=dock-toggle]").count() == 1, "Notes button in the rail")
@@ -235,7 +216,10 @@ with sync_playwright() as p:
     print("8 blueprint labels never overlap")
     for w in [1440, 1000, 700, 420]:
         ctx = new_ctx(b, w=w); pg = open_page(ctx)
-        pg.evaluate(f"openProject('{PID}')"); pg.wait_for_timeout(300); pg.evaluate("setPhase('arch')"); pg.evaluate("UI.home=false; render()"); click(pg, "[data-a=mode][data-v=blueprint]"); pg.wait_for_timeout(500)
+        pg.evaluate(f"openProject('{PID}')"); pg.wait_for_timeout(300); pg.evaluate("(() => { UI.home = false; pgOpen(curP(), 'design'); })()"); pg.wait_for_timeout(500)   # 2.0: the Bauplan lives on the Design page
+        if pg.locator(".pg-map [data-a=pk8-map][aria-expanded=false]").count(): click(pg, ".pg-map [data-a=pk8-map]"); pg.wait_for_timeout(400)   # 1.8: folded until you open it
+        if not pg.locator(".bpmap").count() and pg.locator(".pg-map [data-a=map-list][aria-pressed=true]").count(): click(pg, ".pg-map [data-a=map-list]"); pg.wait_for_timeout(400)   # a phone starts with the list; the diagram is one tap away
+        check(pg.locator(".bpmap").count() >= 1, f"{w}px: the Design page shows the Bauplan (the audit below has a map to read)")
         for lang in ["en", "de", "zh"]:
             pg.evaluate(f"(LANG='{lang}', render())"); pg.wait_for_timeout(350)
             iss = pg.evaluate("auditMaps()")
@@ -252,7 +236,7 @@ with sync_playwright() as p:
     pg.evaluate(f"openProject('{PID}')"); pg.wait_for_timeout(300)
     # 1.4.1: the help level is the level chip in the project header (per project or for all); the 1.3 learning aids
     # (purpose strip, build map, coach tips) were replaced by moments per step (tested in e2e141 section 6)
-    pg.evaluate("UI.home=false; curP().mode='steps'; setPhase('understand'); render()"); pg.wait_for_timeout(200)
+    pg.evaluate(step('understand')); pg.wait_for_timeout(200)
     check(pg.locator("[data-a=level-set]").count() >= 3, "one level control (Learning · Guided · Pro) in the project header")
     pg.evaluate("ACTIONS['level-set']({dataset: {v: 'learn'}})"); pg.wait_for_timeout(300)
     check(pg.locator(".moment.lm").count() <= 1 and pg.evaluate("levelOf(curP())") == "learn", "Learning shows at most one moment for the step")
@@ -313,7 +297,7 @@ with sync_playwright() as p:
     check(pg.evaluate("curP().lang") == "en" and pg.locator("[data-a=proj-lang]").count() == 1, "the Ricardo project is recognised as English and shows its language")
     pg.evaluate("(WS.settings.lang = 'zh', applySettings(), render())"); pg.wait_for_timeout(300)
     check(pg.locator(".trbar").count() == 1, "reading an English project in Chinese offers a translation")
-    click(pg, "[data-a=tr-toggle]"); pg.evaluate("setPhase('require')"); pg.wait_for_timeout(200); click(pg, "[data-a=tr-step]"); idle(pg)
+    click(pg, "[data-a=tr-toggle]"); pg.evaluate(step('require')); pg.wait_for_timeout(200); click(pg, "[data-a=tr-step]"); idle(pg)
     check(pg.locator(".trpanel .item").count() >= 1, "the translated view shows the step's items, labelled")
     check(pg.evaluate("curP().requirements[0].title").find("译") < 0, "the original stays as it was")
     calls_before = pg.evaluate("window.__lastPrompt = null; 0")

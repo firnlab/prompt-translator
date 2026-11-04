@@ -83,7 +83,10 @@ with sync_playwright() as pw:
     check("…but the Pick deck shows at most one kit card at a time", ev(pg, "pickQueueCards(curP()).filter(c => /^kit-/.test(c.kind)).length") <= 1)
     pg.locator(".pg-track, .pg-bar").first.wait_for(timeout=3000)
     ev(pg, "pgOpen(curP(), 'design')"); pg.wait_for_timeout(300)
-    check("the Design page lists every open kit decision", ev(pg, "document.querySelectorAll('.pg[data-page=design] .pg-kits .pg-row').length") == nk, ev(pg, "document.querySelectorAll('.pg[data-page=design] .pg-kits .pg-row').length"))
+    # 2.0 Part C (hunt 12): a kit question already in "What you decide" is drawn once, there, and the kits block leaves it out — so the
+    # Design page as a whole lists every open kit decision exactly once (before 2.0 all of them stood in the kits block)
+    kr = ev(pg, "(() => { const ks = queueOf(curP()).filter(x => /^kit-/.test(x.kind)).map(x => x.key); return ks.map(k => document.querySelectorAll('.pg[data-page=design] [id=\"pq-' + k + '\"]').length); })()")
+    check("the Design page lists every open kit decision (each once)", len(kr) == nk and all(c == 1 for c in kr), kr)
     r = ev(pg, "(async () => { const x = queueOf(curP()).find(x => x.kind === 'kit-storage'); if (!x) return 'none'; const o = PK8_QO(curP(), x); const r = await qDo(curP(), x, o.findIndex(y => y.star)); render(); return r; })()")   # 1.8: where data lives is "your call first"; the ★ is read before it is hidden
     pg.wait_for_timeout(200)
     check("a kit decision taken on the page shows as decided with Change", ev(pg, "(() => { const L = kitDecidedList(curP()); return L.length === 1 && L[0].key === 'storage' && !!document.querySelector('.pg-kits .item [data-a=q-goto][data-ref=\"kit:storage\"]'); })()"), ev(pg, "kitDecidedList(curP())"))
@@ -153,6 +156,10 @@ with sync_playwright() as pw:
     check("'Accept the risk' records the decision and keeps the case in the list", ev(pg, "curP().redteam.cases.filter(c => c.status === 'accepted').length === 1 && document.querySelectorAll('.pg-rt .item').length === 6"))
 
     print("12 the tappable mock")
+    # 2.0 Part B (cause 85): a 2.0 project asks its details (the mock question is a "require" item) only once a route is taken, so the
+    # project takes one on the map first, the 2.0 way (a full round with the mock runtime, then Take this)
+    ev(pg, "(async () => { const p = curP(); await m20Round(p, {kind: 'full'}); const r = m20Read(p).routes.find(r => m20Status(p, r) !== 'blocked' && m20Status(p, r) !== 'notyet'); if (r){ actOpen(p, 'take'); m20Take(p, r.id, {why: 'test'}); actClose(p.id); } touch(p); render(); })()"); idle(pg); pg.wait_for_timeout(300)
+    check("…the project took a route on the map (details are asked after the decision)", ev(pg, "!!m20Chosen(curP()) && !stage20Early(curP())"))
     ev(pg, "(() => { const p = curP(); p.mock = null; if (!p.requirements.length) p.requirements.push({id: 'R1', title: 'Shows the board', given: 'ideas exist', when: 'the page opens', then: 'the board lists them with scores', priority: 'must'}); touch(p); pgOpen(p, 'try'); })()"); pg.wait_for_timeout(200)
     check("the Try page offers the mock once there are requirements", ev(pg, "!!document.querySelector('.pg-mock [data-a=mock]')"))
     ev(pg, "aiMock(curP())"); idle(pg); pg.wait_for_timeout(300)

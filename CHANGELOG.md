@@ -5,6 +5,45 @@ notes PT shows in "What's new" (`CHANGELOG` in `src/views_run.js`, the `cl.<vers
 (published date and release notes). Do not edit it by hand: `python3 tools/changelog.py` writes it, `--check` says when it is stale.
 Versions before 1.8 were published from the private archive repository (see RELEASES-ARCHIVE.md).
 
+## 2.0.0 — 2026-11-04
+
+Release notes: 2.0.0: two faces of one project, Chat with structure and Pick (Steps, Blueprint, Journey, Swimlanes and Express removed; their content stays readable). The solution map: goal first, every route from simple to frontier including the not-yet-possible ones, decide, then details; coverage rounds and a red-team round. Each project's rules never cut from its prompt; nothing crosses between projects. PT's hands per project with a site list and a contract card, stopping before every final button; typing into forms is off (the platform does not grant form_input from a cloud publish). Morning check, prompt tests, Improve-PT loop, metrics kept in the workspace, Setup guides for the GitHub App, connector and the helpers Filesystem, Git, Fetch and Blender.
+
+### Added
+
+- Chat with structure: talk freely, and PT files what it learns into the project's facts book with a “✓ filed” note; a question answered in Chat counts as answered in Pick
+- The solution map: first the goal, then every route PT can find — from simple to frontier, including the ones not possible yet, with why and how they could become possible — then you decide, and only then the details; the map stays live while the project grows
+- Coverage rounds: “Show all routes” searches from six angles, a red-team round looks for what is missing, and PT says how sure it is that nothing big is left
+- Routes that worked in your other projects appear on the map next to the others, re-checked against this project and without that project's rules
+- Route alert: when a new fact, a failed test or a morning-check finding breaks a chosen route, PT tells you once
+- A facts book per project: your nevers, musts, facts and decisions in your own words; your rules go into every prompt, are never shortened, and every answer is checked against them
+- Ask once: PT never asks a question you already answered or that your facts book already answers
+- PT's hands per project: a list of sites per project, real clicks (typing into forms stays off for now: the platform does not yet grant it to PT, so you fill in the fields), a card that says what, where, why and whether it can be undone; PT stops before every final button (merge, send, delete, pay, publish) and never types or reads a key or password
+- Morning check (first open of the day): pull requests, key dates, the release, and the routes' tripwires and “not possible yet” lines
+- Prompt tests: up to five test inputs in one call, checked against your musts and nevers, cost shown first
+- Improve PT keeps your reports and tells you once when one is fixed
+- Settings › Metrics (kept in your workspace, never in a prompt) and a Setup tab with click-by-click guides: GitHub App, GitHub connector, auto-merge for Dependabot only, a cloud scheduled task, computer use, and the helper programs Filesystem, Git, Fetch and Blender — you install them, PT takes over
+
+### Changed
+
+- Only two modes now, Chat with structure and Pick, as two faces of one project: switching never loses or doubles anything
+- Every project moves to 2.0 on first open: first a “Before 2.0” restore point, then its rules, out-of-scope items and earlier design choices go into its facts book and map; nothing is deleted, and each project gets only its own content
+- Pick waits with detail questions until a route is decided
+- Your workspace profile no longer goes into project prompts; “Copy into this project” does it when you want
+- Wider text column, plainer words
+
+### Fixed
+
+- Your rules could be cut from a long project prompt, so PT could suggest something you had ruled out; they are now never cut
+- “You chose this last time” carried another tool's choice into this one; removed
+- Undo after PT's automatic trial could undo your own next click too
+- The Design page showed the open kit questions twice
+- Examples no longer ask you questions
+
+### Removed
+
+- The modes Steps, Blueprint, Journey, Swimlanes and Express; their content stays in your projects and is now read by Chat and Pick
+
 ## 1.10.0 — 2026-11-03
 
 Release notes: 1.10.0: PT's hands (Settings › PT health, in the Claude desktop app). PT opens GitHub in the app's built-in browser with the owner's own login, reads it and takes the owner to the right spot: open pull requests with their titles, this version's release, the end date of each fine-grained key (marked within 30 days), and “Take me there” to a pull request's merge button and to each line of the key renewal card. It never clicks, types or handles keys; github.com only; owner only. Tried live by the owner twice: GitHub's real pages fixed two readings (labels before #N; the key list loads after the header).

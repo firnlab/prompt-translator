@@ -13,10 +13,10 @@ TEST_HTML = ROOT / "test" / f"index12b-{__import__('os').getpid()}.html"; TEST_H
 MOCK = (ROOT / "test/mock.js").read_text()
 ONLY = sys.argv[1] if len(sys.argv) > 1 else "all"
 
-errors, fails = [], []
+errors, fails, oks = [], [], []
 def check(cond, msg):
     if not cond: fails.append(msg); print("  FAIL:", msg)
-    else: print("  ok:", msg)
+    else: oks.append(msg); print("  ok:", msg)
 def wait_idle(pg, ms=15000):
     pg.wait_for_timeout(150)
     if pg.evaluate("!!(typeof UI !== 'undefined' && UI.modal && UI.modal.kind === 'cost')"): pg.locator("[data-a=cost-go][data-v=noask]").click(); pg.wait_for_timeout(200)
@@ -26,6 +26,10 @@ def click(pg, sel, nth=0, force=False):
     # 1.6.0: the mode bar offers Pick and read-only maps; the older views these flows test are reached by setting the mode directly
     m = re.match(r"\[data-a=mode\]\[data-v=(\w+)\]$", sel)
     if m: pg.evaluate("(v) => { ACTIONS['mode']({dataset: {v}}); render(); }", m.group(1)); pg.wait_for_timeout(150); return
+    # 2.0 Part C: the Steps view is gone; a step is reached the way a person does it now — its page in the page bar, "all details",
+    # then the step's tab inside the details (the same [data-a=goto][data-ph=…] button the Steps spine had)
+    m = re.match(r"\[data-a=goto\]\[data-ph=(\w+)\]$", sel)
+    if m and not pg.locator(sel).first.is_visible(): goto_step(pg, m.group(1))
     if pg.evaluate("!!(typeof UI !== 'undefined' && UI.modal && UI.modal.kind === 'cost')"): pg.locator("[data-a=cost-go][data-v=noask]").click(); pg.wait_for_timeout(200); wait_idle(pg)
     loc = pg.locator(sel).nth(nth)
     # 1.4.1: rarely used project actions live in the header's More menu; open it like a person would
@@ -40,6 +44,15 @@ def click(pg, sel, nth=0, force=False):
         raise
     pg.wait_for_timeout(90)
     if pg.evaluate("!!(typeof UI !== 'undefined' && UI.modal && UI.modal.kind === 'cost')"): pg.locator("[data-a=cost-go][data-v=noask]").click(); pg.wait_for_timeout(200)
+def goto_step(pg, ph):
+    """open the page of step ph and its details through the page bar, like a person (2.0: pages only)"""
+    pid = pg.evaluate("(ph) => PG_OF_PHASE[ph] || ''", ph)
+    if not pid: return
+    if pg.evaluate("UI.home || UI.view !== 'project'"): pg.evaluate("() => { UI.view = 'project'; UI.home = false; render(); }"); pg.wait_for_timeout(150)
+    if not pg.locator(f".pg[data-page={pid}]").count():
+        pg.locator(f"[data-a=pg-open][data-v={pid}]").first.click(); pg.wait_for_timeout(200)
+    d = pg.locator(f".pg[data-page={pid}] .pg-details:not(.open) [data-a=pg-details]")
+    if d.count(): d.first.click(); pg.wait_for_timeout(200)
 def go_preview(pg):
     if pg.locator("[data-a=preview-go]").count(): click(pg, "[data-a=preview-go]")
 def raw_keys(pg):
@@ -76,30 +89,30 @@ with sync_playwright() as p:
     pg.screenshot(path=str(SHOTS / "01-cockpit.png"), full_page=True)
     click(pg, ".pcard >> text=Old v1 project"); pg.wait_for_timeout(300)
     check(pg.locator(".modebar, .modeseg, .pg-bar").count() >= 1, "mode bar or (1.7) page bar on migrated project")
-    for m in ["steps","blueprint","journey","swimlanes","express"]:
-        click(pg, f"[data-a=mode][data-v={m}]"); pg.wait_for_timeout(250)
-        check(pg.locator(".main").count() == 1 and not [e for e in errors if "pageerror" in e], f"mode {m} renders on migrated project")
-    click(pg, "[data-a=mode][data-v=steps]")
+    # 2.0 Part C: the five 1.x views are gone (their checks "mode … renders" with them); a stored 1.x view opens as Pick, on the pages
+    check(pg.evaluate("projMode(curP())") == "pick" and pg.locator(".main").count() == 1 and not [e for e in errors if "pageerror" in e], "the migrated project (stored view from 1.x) opens in Pick")
     click(pg, "[data-a=goto][data-ph=review]"); pg.wait_for_timeout(200)
     check(pg.evaluate("curP().findings.filter(f => f.legacy && f.status === 'done').length") == 1, "1.4: a v1 'fixed' finding with nothing to check stays done (legacy)")
 
     print("2 new project from the start page")
     click(pg, "[data-a=nav][data-v=cockpit]")
     pg.fill("#start-in", "I want an agent that looks for, categorises, ranks and lists high reward, low effort business ideas that can run fully digitally and automated.")
-    click(pg, "[data-a=start-mode][data-v=steps]")
+    click(pg, "[data-a=start-mode][data-v=pick]")   # 2.0: Pick or Chat with structure; the steps are a page's details
     click(pg, "form[data-form=start] button[type=submit]"); pg.wait_for_timeout(300)
+    goto_step(pg, "capture")
     check("I want an agent" in pg.locator("#raw").input_value(), "Start filled Capture")
     check(pg.locator("[data-a=clarify]").count() >= 1, "Clarify waits for a click")
     click(pg, "[data-a=clarify]"); wait_idle(pg)
     click(pg, "[data-a=ns-accept]")
     check("ranked weekly list" in pg.locator(".northstar").inner_text(), "north star filled")
+    goto_step(pg, "capture")   # 2.0 (pages): with the north star set, the project moves on to the Picks page; the Capture step is in the Idea page's details
     check(pg.locator("#audience").count() == 1, "Capture asks who will use it (D8)")
     click(pg, "[data-a=aud-set][data-k=customers][data-v=false]"); click(pg, "[data-a=aud-set][data-k=eu][data-v=true]")
     check(pg.evaluate("curP().audience.eu") is True, "audience saved")
     pg.screenshot(path=str(SHOTS / "02-capture.png"), full_page=True)
 
     print("3 understand + first questions")
-    click(pg, ".controw.top [data-a=goto]", nth=0)  # continue
+    click(pg, "[data-a=goto][data-ph=understand]")  # continue (2.0: the next step's tab in the page's details)
     pg.wait_for_timeout(200)
     for k in ["whys","jtbd","walkthrough","premortem"]:
         click(pg, f"[data-a=understand][data-kind={k}]"); wait_idle(pg)
@@ -284,13 +297,11 @@ with sync_playwright() as p:
     print("11 modes keep the place, guided, layout")
     click(pg, "[data-a=goto][data-ph=require]"); pg.wait_for_timeout(200)
     click(pg, "[data-a=item-open][data-ref='req:R1']") if pg.locator("[data-a=item-open][data-ref='req:R1']").count() else None
-    for m in ["blueprint","journey","swimlanes","express","steps"]:
-        click(pg, f"[data-a=mode][data-v={m}]"); pg.wait_for_timeout(300)
-        check(pg.locator(".toast >> text=Same place").count() >= 1, f"switch to {m} keeps the place")
-        pg.screenshot(path=str(SHOTS / f"11-mode-{m}.png"), full_page=True)
-    # 1.4.1: the level is chosen in the project header; Guided shows the guide strip
+    # 2.0 Part C: switching between the five 1.x views ("keeps the place") and Guided's guide strip are gone with those views;
+    # what stays: the step opened inside its page keeps its place when the project is opened again
     pg.evaluate("ACTIONS['level-set']({dataset: {v: 'guided'}})"); pg.wait_for_timeout(200)
-    check(pg.locator(".gstrip").count() == 1, "guided view shows the guide strip")
+    pg.evaluate(f"openProject(curP().id)"); pg.wait_for_timeout(300); goto_step(pg, "require")
+    check(pg.evaluate("pgCur(curP())") == "design" and pg.locator(".pg[data-page=design] .pg-details.open").count() == 1, "the step's page and its details open again where you were")
     # 1.4: the map-as-home layout and the mini-map are replaced by the overview
     pg.screenshot(path=str(SHOTS / "11-guided-map.png"), full_page=True)
     pg.evaluate("ACTIONS['level-set']({dataset: {v: 'pro'}})"); pg.wait_for_timeout(200)
@@ -315,7 +326,7 @@ with sync_playwright() as p:
             rk = raw_keys(pg); check(not rk, f"{lang} {v}: no raw keys {rk[:5]}")
         click(pg, ".rail [data-a=open-project]"); pg.wait_for_timeout(250)
         for ph in ["capture","understand","interview","require","arch","build","review","test","launch","release","operate"]:
-            click(pg, f".spine2 [data-a=goto][data-ph={ph}]"); pg.wait_for_timeout(120)
+            click(pg, f"[data-a=goto][data-ph={ph}]"); pg.wait_for_timeout(120)
             rk = raw_keys(pg); check(not rk, f"{lang} {ph}: no raw keys {rk[:5]}")
             if lang == "de": check("ß" not in pg.evaluate("document.body.innerText"), f"de {ph}: no ß")
         if lang == "zh": pg.screenshot(path=str(SHOTS / "12-zh.png"), full_page=True)
@@ -345,9 +356,9 @@ with sync_playwright() as p:
 
     print("14 narrow width")
     pg.set_viewport_size({"width": 420, "height": 900}); pg.wait_for_timeout(300)
-    for m in ["journey","steps","blueprint","swimlanes","express"]:
-        click(pg, f"[data-a=mode][data-v={m}]"); pg.wait_for_timeout(200)
-        o = overflow(pg); check(o <= 0, f"no sideways scroll at 420px in {m} ({o}px)")
+    for pgid in ["idea", "picks", "try", "design", "review", "build", "run"]:   # 2.0: the pages (the 1.x views are gone)
+        pg.evaluate(f"(() => {{ UI.view = 'project'; UI.home = false; pgOpen(curP(), '{pgid}'); render(); }})()"); pg.wait_for_timeout(200)
+        o = overflow(pg); check(o <= 0, f"no sideways scroll at 420px on the {pgid} page ({o}px)")
 
     print("15 reload keeps everything")
     pg.reload(); pg.wait_for_selector(".app", timeout=8000); pg.wait_for_timeout(500)
@@ -400,3 +411,4 @@ with sync_playwright() as p:
 
 print("\nERRORS:", len(errors)); [print(" ", e) for e in errors[:30]]
 print("FAILS:", len(fails)); [print(" ", f) for f in fails]
+print("ok:", len(oks), "failed:", len(fails), "page errors:", len(errors))   # 2.0 gate: the standard summary line (check_the_pick.py reads it)

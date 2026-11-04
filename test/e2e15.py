@@ -135,9 +135,9 @@ with sync_playwright() as pw:
 
     print("6 queue, side panel, go-to, counts")
     c = ev(pg, "pickRead(curP()).cards.find(c => !c.parked)")
-    ev(pg, "(() => { curP().mode = 'steps'; UI.home = true; render(); })()")
+    ev(pg, "(() => { UI.home = true; render(); })()")
     check("the overview lists the pick, and its one-click options work from there", ev(pg, "(ref) => !!document.querySelector('.qrow [data-ref=\"' + ref + '\"]')", "pick:" + c["id"]))
-    ev(pg, "(ref) => { UI.home = false; render(); goRef(ref); }", "pick:" + c["id"]); pg.wait_for_timeout(1500)
+    ev(pg, "(ref) => { UI.home = false; pgOpen(curP(), 'review'); goRef(ref); }", "pick:" + c["id"]); pg.wait_for_timeout(1500)
     check("go-to from another view opens the pick in the side panel", ev(pg, "(ref) => UI.inspRef === ref && !!document.querySelector('.insp .pk-card')", "pick:" + c["id"]))
     check("the pick is on the screen once (no duplicate ids)", ev(pg, "(() => { const c = {}; for (const e of document.querySelectorAll('[id]')) c[e.id] = (c[e.id] || 0) + 1; return !Object.values(c).some(n => n > 1); })()"))
     check("one count: Finish button = queue", ev(pg, "(() => { const c = queueCounts(curP()); return c.block + c.should === queueOf(curP()).filter(youOpen).length; })()"))
@@ -145,7 +145,7 @@ with sync_playwright() as pw:
     check("names, never raw ids, in the Done list and labels", ev(pg, "(() => { const r = 'pick:' + pickRead(curP()).log[0].cid; return !/pk-/.test(refLabel(curP(), r)); })()"))
 
     print("7 try it")
-    ev(pg, "(() => { curP().mode = 'pick'; UI.home = false; UI.drawer = false; render(); })()")
+    ev(pg, "(() => { curP().mode = 'pick'; UI.home = false; UI.drawer = false; UI.pg = null; render(); })()")   # 2.0: the go-to above opened the Review page; the page of the next step again
     rd = ev(pg, "pickReady(curP())")
     check("ready-to-try shows what is missing", len(rd) >= 4, rd)
     # make it ready: idea, result, measure, no hard picks open

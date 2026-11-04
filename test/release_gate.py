@@ -42,12 +42,18 @@ CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("flows 1.9 scan", "python3 test/e2e190_scan.py", True, 15),   # self-scan (names only, propose only), the 4×4 interview, "What changed" per version
     ("flows 1.9.1 judge", "python3 test/e2e191_judge.py", True, 15),   # the independent judge (gate row, job after build/update, commit first, hard floors, release gate, block card, kit run) and the second-lab row (key only in GitHub, PART R, reviews)
     ("flows 1.10 hands", "python3 test/e2e1100_hands.py", True, 15),   # PT's hands: the desktop app's browser (checks, take me there, the guard: no click, no typing, github.com only, keys dropped)
+    ("flows 2.0 foundation", "python3 test/e2e200_foundation.py", True, 15),   # 2.0 Part A: facts book, rules channel + output check, ask once, contradictions, no cross-project rules, receipts + one Next, error cards, examples never ask, layout, plain words, Add requirement
+    ("flows 2.0 map", "python3 test/e2e200_map.py", True, 15),   # 2.0 Part B: the new order (stage model), goal card, solution map + coverage engine (6 lenses, red team, saturation), your rules greyed, shortlist/compare/Prove it/Take this, goal diff, route alert, map chat, proven routes (templates only)
+    ("flows 2.0 modes", "python3 test/e2e200_modes.py", True, 25),   # 2.0 Part C: two faces (Pick, Chat with structure) of one ledger, the 1.x modes gone, the move to 2.0 (Before 2.0, additive, once, per project), the RC replay
+    ("flows 2.0 hands", "python3 test/e2e200_hands.py", True, 15),   # 2.0 Part D: PT's hands per project (site list, plan first, action contract, forms and non-final clicks, the final-button stop, keys never typed, the guard)
+    ("flows 2.0 loop", "python3 test/e2e200_loop.py", True, 20),   # 2.0 Parts D/E: morning check, prompt tests, Improve-PT loop, metrics, helpers (detection, Needs <program>, file save), guides, CAPABILITIES-2.0.json
     ("pseudo-localisation", "python3 test/pseudo19.py", True, 10),   # 1.9.2: every text from the strings, the L() objects or the data; no raw key, no cut label, no sideways scrolling with ~40 % longer text at 1440 and 390 px
     ("changelog", "python3 test/changelog_test.py && python3 tools/changelog.py --check", True, 2),   # CHANGELOG.md is generated and up to date   # update all of your tools to a kit: card = GO, one at a time, two greens, stop on red, others prepared   # R1b: the built file in plain Chromium reads an export, read-only, writes nothing
     ("hunt",           "python3 test/hunt.py", True, 25),
     ("hunt 2",         "python3 test/hunt2.py", True, 20),
     ("check the hunt", "python3 test/check_the_hunts.py", False, 70),   # each hunt-2 check turns red when its bug is put back
-    ("check the Pick tests","python3 test/check_the_pick.py", False, 110),   # each planted Pick bug turns its test red (1.9: +12 care bugs, about 3–4 min each)
+    ("check the Pick tests","python3 test/check_the_pick.py --part=1/2", False, 110),   # 2.0: in halves, the whole run took longer than 110 min
+    ("check the Pick tests 2","python3 test/check_the_pick.py --part=2/2", False, 110),   # each planted Pick bug turns its test red (1.9: +12 care bugs, about 3–4 min each)
     ("layout",         "python3 test/layout141.py", False, 15),
     ("migration 1.4.1","python3 test/migrate141.py", False, 10),
     ("migration 1.4",  "python3 test/migrate14.py", False, 10),

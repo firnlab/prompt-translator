@@ -182,7 +182,7 @@ async function aiTrialRun(p){
   const sm = trialSummary(p);
   logClimb(p, "trial", "R2 · " + s.short, sm.rate >= 90 ? "R2" : dial(p, "rung"), t("eng.trial.log", {a: sm.pass, b: sm.n}));
   logAct(p, t("act.trial", {a: sm.pass, b: sm.n}), {step: "arch", important: true});
-  engineRecompute(p); touch(p); render();
+  engineRecompute(p); touch(p); actClose(p.id); render();   // 2.0 Part D (hunt 5): the trial is one finished step, never part of the next click
 }
 
 /* ---------- mini-test: two settings × 5 cases × 3 tries ---------- */

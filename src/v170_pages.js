@@ -10,7 +10,7 @@ const PG_OF_PHASE = {}; for (const [pg, phs] of Object.entries(PG_PHASES)) for (
 /* a step ref the old screens use → the page it lives on */
 const PG_OF_REF = {goal: "idea", "#pk-deck": "picks", "#pk-research": "picks", "#pk-summary": "picks", "#pk-try": "try", arch: "design", review: "review", test: "review", build: "build", release: "run", run: "run"};
 const PG_ICON = {idea: "target", picks: "list", try: "play", design: "layers", review: "shield", build: "bolt", run: "heart"};
-function pgOn(p){ return !!p && projMode(p) === "pick" && !(UI.map && UI.map.pid === p.id); }
+function pgOn(p){ return !!p && MODES.includes(projMode(p)); }   // 2.0: the pages are the structure of both faces (Pick and Chat with structure)
 /** the station of the one next step */
 function pgNextPage(s){ const nx = s.next || {}; return nx.a === "pk-try" ? "try" : nx.a === "pk-gaps" ? "picks" : PG_OF_REF[nx.ref] || (nx.ref === "goal" ? "idea" : "run"); }
 /** the track: done stations stay filled, exactly one station is current (the one of the next step), the rest is to do */
@@ -28,27 +28,43 @@ function pgOpen(p, id, {flash = null} = {}){
   if (!PG_PAGES.includes(id)) return;
   pushNav();
   if (UI.finish && UI.finish.pid === p.id && (UI.finish.step === "decide" || UI.finish.step === "done")) UI.finishPaused = UI.finish;
-  UI.pg = {pid: p.id, id}; UI.home = false; UI.finish = null; UI.nav = null; UI.map = null;
-  if (projMode(p) !== "pick"){ p.mode = "pick"; UI.backMode = null; touch(p); }
+  UI.pg = {pid: p.id, id}; UI.home = false; UI.finish = null; UI.nav = null;
   if (flash){ UI.flashRef = flash; UI.navRef = flash; UI.navTry = 0; }
   render(); const m = document.querySelector(".main"); if (m) m.scrollTop = 0;
 }
-ACTIONS["pg-open"] = el => { const p = curP(); if (p) pgOpen(p, str(el.dataset.v), {flash: el.dataset.ref || null}); };
-ACTIONS["pg-step"] = el => { const p = curP(); if (!p) return; const i = PG_PAGES.indexOf(pgCur(p)) + num(el.dataset.d); if (PG_PAGES[i]) pgOpen(p, PG_PAGES[i]); };
-ACTIONS["pg-details"] = el => { UI.pgDetails = UI.pgDetails || {}; const k = str(el.dataset.v); UI.pgDetails[k] = !UI.pgDetails[k]; render(); };
+/* 2.0 gate (cause 98): with the Steps view gone, a page's open details are the only way into a step. Their render moved the cursor
+   to the page's step without setPhase, so reaching a step that way was not a visit: no automatic step (the frontier scan at the
+   interview, the engine suggestion and the trial at the architecture), no "step done" restore point, the project's phase not moved on.
+   A person's click that opens a page with its details, or the details themselves, now visits that step like its tab does. */
+function pgVisit(p, id){
+  const phs = PG_PHASES[id] || [], key = "pg:" + p.id + ":" + id;
+  if (!phs.length || !(UI.pgDetails && UI.pgDetails[key]) || pgCur(p) !== id) return false;
+  const ph = phs.includes(p.focus.ph) ? p.focus.ph : phs[0];
+  if (ph === UI.phase) return false;
+  setPhase(ph, {keepScroll: true}); return true;
+}
+ACTIONS["pg-open"] = el => { const p = curP(); if (!p) return; pgOpen(p, str(el.dataset.v), {flash: el.dataset.ref || null}); pgVisit(p, str(el.dataset.v)); };
+ACTIONS["pg-step"] = el => { const p = curP(); if (!p) return; const i = PG_PAGES.indexOf(pgCur(p)) + num(el.dataset.d); if (PG_PAGES[i]){ pgOpen(p, PG_PAGES[i]); pgVisit(p, PG_PAGES[i]); } };
+ACTIONS["pg-details"] = el => { UI.pgDetails = UI.pgDetails || {}; const k = str(el.dataset.v); UI.pgDetails[k] = !UI.pgDetails[k];
+  const p = curP(), m = /^pg:([^:]+):(\w+)$/.exec(k);
+  if (UI.pgDetails[k] && p && m && m[1] === p.id && pgVisit(p, m[2])) return;
+  render(); };
 for (const a of ["pg-open", "pg-step", "pg-details"]) ACT_NO.add(a);
 /* a step ref from a page opens the page it lives on; an item ref opens its page with the details open and the item in view */
 function pgShowPhase(p, ph){ const id = PG_OF_PHASE[ph]; if (!id) return false; UI.pg = {pid: p.id, id}; UI.pgDetails = UI.pgDetails || {}; UI.pgDetails["pg:" + p.id + ":" + id] = true; return true; }
 { const orig = goRef; goRef = function(ref, o = {}){
     const p = curP();
     if (p && pgOn(p) && !UI.finish && PG_OF_REF[ref]){ const id = PG_OF_REF[ref]; pgOpen(p, id); const ph = ref.startsWith("#") ? "" : refPhase(p, ref); if (ph && PG_PHASES[id].includes(ph)){ p.focus = {ph, id: null}; UI.phase = ph; pgShowPhase(p, ph); }   // ok:field  focus is the existing cursor field
-      UI.flashRef = ref; UI.navRef = ref; UI.navTry = 0; render(); return; }
-    const was = p && projMode(p) === "pick";
+      UI.flashRef = ref; UI.navRef = ref; UI.navTry = 0;
+      if (o && Array.isArray(o.list) && o.list.length){ const i = o.list.indexOf(ref); UI.nav = {list: o.list, i: Math.max(0, i), pid: p.id}; }   // 2.0 gate (cause 101): the walk through a list ("1 of N", next, Back) on the pages too; pgOpen had cleared it
+      render(); return; }
+    const was = p && pgOn(p);
     const r = orig(ref, o);
-    if (p && was && projMode(p) === "pick" && UI.view === "project" && !UI.home && ref && /:/.test(ref)){ const ph = refPhase(p, ref); if (pgShowPhase(p, ph)){ UI.flashRef = UI.flashRef || ref; UI.navRef = UI.flashRef; render(); } }
+    if (p && was && pgOn(p) && UI.view === "project" && !UI.home && ref && /:/.test(ref)){ const ph = refPhase(p, ref); if (pgShowPhase(p, ph)){ UI.flashRef = UI.flashRef || ref; UI.navRef = UI.flashRef; render(); } }
     return r; }; }
 /* a step button inside a page stays on the page: the details open on that step */
-{ const orig = ACTIONS["goto"]; ACTIONS["goto"] = function(el){ const p = curP(); const ph = el && el.dataset ? el.dataset.ph : ""; if (p && pgOn(p) && !UI.home && PG_OF_PHASE[ph] && PHASE_IDS.includes(ph)){ p.focus = {ph, id: null}; UI.phase = ph; pgShowPhase(p, ph); if (typeof resetBase === "function") resetBase(p); render(); return; } return orig.apply(this, arguments); }; }   // ok:field  focus is the existing cursor field (DIFF_SKIP)
+/* 2.0 gate (cause 98): a step's tab is a visit (automatic steps, step done), as the Steps view's was */
+{ const orig = ACTIONS["goto"]; ACTIONS["goto"] = function(el){ const p = curP(); const ph = el && el.dataset ? el.dataset.ph : ""; if (p && pgOn(p) && !UI.home && PG_OF_PHASE[ph] && PHASE_IDS.includes(ph)){ pgShowPhase(p, ph); if (UI.phase === ph){ p.focus = {ph, id: null}; render(); return; } setPhase(ph, {keepScroll: true}); return; } return orig.apply(this, arguments); }; }   // ok:field  focus is the existing cursor field (DIFF_SKIP)
 { const orig = openProject; openProject = function(id, phase){ if (UI.pg && UI.pg.pid !== id) UI.pg = null; const r = orig(id, phase); const p = curP(); if (p && p.id === id && phase && pgOn(p) && PG_OF_PHASE[phase] && !window.__ptNoHome){ UI.pg = {pid: id, id: PG_OF_PHASE[phase]}; } return r; }; }
 
 /* ---------- the queue, per page ---------- */
@@ -187,7 +203,7 @@ function pgBody(p, id){
 /* the kit decisions on the Design page: decided ones as one line each, open ones one row each, the rest as what PT assumes */
 function pgKitsBlock(p){
   if (typeof kitDecidedList !== "function") return "";
-  const dec = kitDecidedList(p), open = pgQueue(p, "design").filter(x => /^kit-/.test(x.kind)), asm = typeof kitAssumed === "function" ? kitAssumed(p) : [];
+  const shown = new Set(pgYou(p, "design").slice(0, 8).map(x => x.key)), dec = kitDecidedList(p), open = pgQueue(p, "design").filter(x => /^kit-/.test(x.kind) && !shown.has(x.key)), asm = typeof kitAssumed === "function" ? kitAssumed(p) : [];
   if (!dec.length && !open.length && !asm.length) return "";
   return `<section class="panel pg-kits" data-anchor="kits"><div class="row"><h3 style="flex:1 1 12em">${esc(t("pg.kits"))}</h3><span class="small muted">${esc(t("pg.kits.sub"))}</span></div>
     ${dec.length ? `<div class="list">${dec.map(d => `<div class="item">${stSlot("ok")}<div class="body"><span class="small"><b>${esc(d.q)}</b> → ${esc(d.a)}</span>${d.by === "you" ? "" : `<span class="small muted">${esc(t("pg.kits.bypt"))}</span>`}</div><button class="btn xs ghost" data-a="q-goto" data-ref="${esc(d.ref)}">${esc(t("btn.change"))}</button></div>`).join("")}</div>` : ""}
@@ -222,8 +238,7 @@ function pageHTML(p, id){
     const id = pgCur(p); UI.pgInPage = true;
     try{ return pageHTML(p, id); } finally{ UI.pgInPage = false; } }; }
 /* the old stage bar and the mode bar leave the main path: the page bar carries the cover and the seven pages */
-{ const orig = stageBar; stageBar = function(p){ return projMode(p) === "pick" ? "" : orig(p); }; }
-{ const orig = modeBar; modeBar = function(p){ return projMode(p) === "pick" ? "" : orig(p); }; }
+{ const orig = stageBar; stageBar = function(p){ return pgOn(p) ? "" : orig(p); }; }
 /* the cover shows the page bar too */
 { const orig = statusLine; statusLine = function(p){ return projMode(p) === "pick" && UI.home ? pgBar(p) + orig(p) : orig(p); }; }
 

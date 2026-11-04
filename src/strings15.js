@@ -141,8 +141,6 @@ Object.assign(STR, {
 "cone.pre.sentence":["From your sentence: “{x}”","Aus deinem Satz: «{x}»","来自你的句子：「{x}」"],
 "cone.pre.earlier":["Your earlier decision: {x}","Dein früherer Entscheid: {x}","你之前的决定：{x}"],
 "cone.pre.assumed":["{x} (your sentence does not say it; one tap settles it)","{x} (dein Satz sagt es nicht; ein Tipp klärt es)","{x}（你的句子没有说明，点一下就能确定）"],
-"cone.pre.policy":["You chose {x} last time (on “{y}”); still your call.","Letztes Mal hast du {x} gewählt (bei «{y}»); du entscheidest trotzdem neu.","你上次选了「{x}」（在「{y}」）；这次仍由你决定。"],
-"cone.pol.why":["you chose this last time (on “{x}”)","das hast du letztes Mal gewählt (bei «{x}»)","你上次选了这个（在「{x}」）"],
 "cone.cuts":["cuts {n}","streicht {n}","去掉 {n} 种"],
 "cone.known.cust":["customers or the public","Kunden oder die Öffentlichkeit","客户或公众"],
 "cone.known.nocust":["no customers","keine Kunden","没有客户"],

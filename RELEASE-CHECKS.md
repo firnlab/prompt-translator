@@ -334,3 +334,336 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   list, so PT read the header only and found no dates. It now waits for "Expires"/"No expiration" (four reads at most). The real
   `get_page_text` shape (name, "Never used •", "Expires on …", "Delete" on separate lines) is in `e2e1100_hands.py`; the mock's
   `early` text plays the header-first page; planted bug "the key check stops at the header, before the list".
+
+## 2.0.0 Part A — the foundation (src/v200_facts.js, src/v200_events.js, src/strings26.js, test/e2e200_foundation.py)
+- What changes for the owner: each project has a facts book (never / must / fact / decided / tool rule, in his words, with source, date
+  and status; More ⋯ and the page bar open it); PT reads his rules first in every step of that project and checks its proposals against
+  them; what he answered is not asked again; two entries that contradict each other are shown side by side; nothing of one project
+  reaches another; every answer shows "✓ Saved: … → where" and one Next is always visible; errors stay as cards in Events until he
+  dismisses them; examples never ask; the text gets the room; plain words.
+- Data for Parts B–E: `p.ledger = {v, entries, props, conflicts, known, blocked}`; an entry is `{id: "F<n>" (nextId), kind: never|must|fact|
+  decision|tool, words (the owner's), short (PT's form), kw, src: {k: you|ns|oos|const|note|qa|pick|dec|profile, ref, label}, at, by: you|pt,
+  status: active|replaced|withdrawn, replacedBy, hist}`. Functions to reuse: `factsActive(p, kinds)`, `factsAdd(p, {...})` (the caller opens
+  the action), `factsBodyHTML(p)` (the panel without the page: the later "Decided" tab), `factsConflictSoon(p, ids)`, `askOnceRun(p, items,
+  {drop, where})` (ask once for any new question source), `askMatch`, `exAsks` / `exSplitAsk` (examples never ask), `rcpt20(p, what, where)`
+  (the receipt), `nx20HTML(p)` (the Next bar), `ev20Add` / `ev20AI` (an error card), `EX_TASKS` (prompts that get the examples rule).
+- Cause 77 (owner, 2 Nov 2026, "we never log in to Google or Samsung — second time I have to tell this"): the owner's rule lived as text
+  in notes, answers or constraints; `projectContext` drops low-priority parts first when over budget, and many steps ask it for a subset
+  (`only`) without those parts, so a later step could propose exactly what he had ruled out. Now: `<your_rules>` (never / must) and
+  `<your_facts>` go right after the task line of every `buildPrompt` with `proj`, whole, outside `projectContext` (its budget and `only`
+  never see them); runAI checks every JSON answer of such a prompt: key words of a never in a sentence that is not a negation (of a must in
+  one that is) → one quick-tier confirm → one repair through runAI's check path → what still breaks a rule is left out (recorded in the
+  book) or, for a pick option, shown greyed "Blocked by your rule" and cannot be taken (no ★). Check: e2e200 A2 (planted never + tempting
+  answer); planted bugs: rules left out, cut by the budget, another project's rules, no negation check, no repair, a blocked option taken,
+  a ★ on it.
+- Cause 78 (owner, 2 Nov, "we already answered this or similar before"): each question source deduplicated only against itself (the
+  interview against interview answers, Pick against picks) and never against the facts the owner gave. Now one pool (`askPool`: interview
+  answers, picks, decisions, active facts) for picks and interview questions: bigram similarity ≥ 0.8 = known, 0.4–0.8 or a fact's key
+  words = one quick-tier check, the known ones are dropped and shown "Already known: … (change)". Check: e2e200 A3; planted bugs.
+- Cause 79 (owner, "projects dont get other porjects rules, never"): the workspace profile (`user_profile`, partly made from insights across
+  projects) went into every project prompt, and the 1.8 cone starred and pre-labelled "you chose this last time" from other tools. Now the
+  profile is in no project prompt (an entry enters a project only through "Copy into this project" in its facts book) and the cone has no
+  ★ or line from other tools (`conePolicy` removed; e2e180_cone part 5 now checks the opposite of 1.8, by the owner's decision). Check:
+  e2e200 A5; planted bugs "the profile goes into project prompts again", "the cone stars your choice on another tool again".
+  Left as it was (ask the owner): a check row's ★ "you chose this last time" from another tool (1.8 checks, v180_checks.js) is still a ★, not applied.
+- Cause 80 (owner, "why didn't it change so I see it's done … what is next"; "it brought me to one I already answered"): answers changed data
+  with no visible end state, and the examples loop looked for the next unjudged example only after the current one, so after the last one it
+  stayed on a judged example. Now `rcpt20` after interview answers, picks, cone answers, notes, the facts book and the project's text forms
+  ("✓ Saved: … → where", only when the form changed something); `nx20HTML` in the page bar's nav (one per screen, also where Pick hides the
+  bar); the loop goes to any unjudged example and says when all are judged. Check: e2e200 A6; planted bugs.
+- Cause 81 (owner, 3 Nov, "an error popped up bottom right – what was the issue"): errors were a toast that vanished and an in-memory list.
+  Now onAppError and every failed AI step (runAI: no runtime, no readable answer, an upstream code) become an error card (`WS.settings.events`,
+  newest first, at most 20, quoted text replaced by "…", so no project text is kept) in Events (status bar chip, Settings › PT health, a click
+  on the error message), with what happened, what PT did, what you can do and the technical detail, until dismissed; "Report to Improve PT"
+  is pre-filled with the technical detail. Messages shown this session are listed but never stored (they may hold project words). Check:
+  e2e200 A7; planted bugs "an error is not kept", "an error card keeps the project's text", "Report to Improve PT starts empty".
+- Cause 82 (owner, "'Reply with (a) or (b)' – why a question in an example?"): no example prompt forbade questions and nothing checked the
+  results. Now the examples rule goes into loop-show, loop-rule, pick-next/refresh/second and arch-stories (`EX_TASKS`), and runAI checks the
+  example fields (question marks, "reply with", (a)/(b), which / do you and their German and Chinese forms): asked again once, then the
+  question moves out into `toolAsks`, shown labelled "The tool would ask: …". Check: e2e200 A8; planted bug.
+- Cause 83 (owner, "text so squeezed … should use the whole page"): `.chips{max-width:45%}` and `.qacts{max-width:46%}` reserved almost half
+  of a row for buttons. Now both take only what they need (`flex:0 1 auto`, at most 100 %) and a queue row's text keeps at least 18em
+  before its buttons move under it. Check: e2e200 A9 (text ≥ 60 % of a row whose buttons sit beside it); planted bug.
+- Cause 84 (owner, "what should I write as 'validated'?", "right sizing … should be clear", "'Fix it together with me' makes no sense"):
+  process words on the surface. Now "Not in this version", "How much should run by itself?", "PT drafts a fix, you pick what to keep" (the
+  draft starts at once; the proposal box ticks each field) and yes / no / not sure for assumptions, in three languages. Check: e2e200 A10
+  (no old word in any string but the changelog); planted bug.
+- The 1.2.1 report "Add requirement — nothing happens": not reproducible in today's code (Design page › all details › Requirements adds R<n>
+  and puts the cursor in its title); e2e200 A11 proves it.
+- Found while building: a `// …` comment put before the last statement of a block (`}catch(e){ errs = []; }   // … weak = errs.length > 0; } }`)
+  swallowed it and the file still parsed; the cause-64 check needs a second statement after the comment. `static_checks.js` now also flags a
+  comment followed by one assignment and a closing brace; planted in `check_the_checks.py`.
+- runAI's `check` may now be async (`await check(out)`): the rules check confirms a code hit with one quick-tier call inside it.
+
+## 2.0.0 Part B — the solution map and the new order (src/v200_stage.js, src/v200_map.js, src/strings27.js, test/e2e200_map.py)
+- What changes for the owner: a project made with 2.0 goes Goal → Map → Decide → Details → Build → Check → Launch → Operate. The goal card
+  (what, for whom, a real moment, success sign, where, budget; your rules from the facts book; "PT's guess" until you say ✓ That's it)
+  comes first; then one tap shows all routes on one map (Simple → Medium → Complex → Frontier, plus Not possible yet), searched from six
+  angles with a red team and an on-screen record of how far PT searched; you shortlist (☆, up to 3), say ✕ Not for me with a reason,
+  compare, Prove it, Take this (decision record with tripwires, restore point first); only then PT asks the details of that route. A new
+  fact, a failed test or a serious review problem that breaks the route raises a Route alert. Routes that worked in another project
+  (after its launch) stand on the map with "Worked before", as templates only.
+- Data for Parts C–E: `p.order20` (true for projects made with 2.0; a stored project without the flag gets false: Part C's migration sets
+  it), `p.goal20 = {v, f: {outcome, whom, situation, success, where, budget}, by: {field: you|pt}, noNevers, skip, hist, pend}`,
+  `p.map20 = {routes, notyet, rounds, cells, short, rej, chosen, decs, alerts, events, neutral, tags, libChecked, looked, satAt, nextR,
+  nextN}` (one project field, so a change is one write of its parts), `WS.settings.lib20` (the template library). Functions to reuse:
+  the stage model `STAGE20`, `STAGE20_PHASES`, `stage20On/Of/Rows/Done/Next/Early/Decided/Waiting`, `stage20StripHTML`, `stage20RowsHTML`;
+  the map `m20Read`, `m20Chosen`, `m20Decision`, `m20Status`, `m20Round(p, {kind, lenses, red, focus, everything, question})`, `m20Chip`,
+  `m20Short`, `m20Reject`, `m20Prove`, `m20Take`, `m20WatchSoon(p, {kind, text, ref})` (any new source of facts that may break the route),
+  `m20Carry` (what carries over), `m20Open(p, view, id)` and the views `m20MapHTML`, `m20CardHTML`, `m20CompareHTML`, `goal20HTML`.
+- Cause 85 (owner, 2–3 Nov 2026, "it asks me about assumptions and requirements of something I have not chosen"; "a later fact broke the
+  solution after much work"): the twelve phases put assumptions and requirements before the architecture choice, so PT asked details of a
+  route that was not chosen and nothing tied the details to a route. Now (2.0 projects) the detail items (phases assume and require) wait
+  in the queue until a route is taken (kept, counted on the map: "Detail questions wait …"), the pick and interview prompts carry the
+  route-splitting rule before the decision and `<chosen_route>` after it, and the details made before the decision are route-neutral
+  (they carry over), the ones after it route-bound. Check: e2e200 B1, B5; planted bugs "detail questions are asked before the route is
+  chosen", "the pick prompt asks details before the decision", "every detail counts as route-bound".
+- Cause 86 (owner, "Claude says that's all, but there is more"): one call listed the options, collapsed onto the typical answers and stopped
+  when the list looked complete; nothing re-tested what it said. Now six fixed lenses are six calls (each asks for unusual answers with how
+  typical each is), merged by code (bigram similarity ≥ 0.8; 0.4–0.8 one quick-tier check), a red-team call adds missing routes, explains
+  empty grid cells ("where it runs × how") and breaks routes (a correction on the route and a map event), and the saturation record is on
+  screen; "searched to saturation" only after two quiet rounds in a row with every cell covered or explained, and the button stays. At most
+  two calls at a time, the cost named first for every multi-call action, calls only on a tap. Check: e2e200 B3, B8; planted bugs (lenses
+  run at once, one call for every angle, no unusual answers, no merge, no correction, saturation after one round, cost not named).
+- Cause 87 (owner, "show me all … don't hide what breaks my rule, but don't offer it"): a route that breaks a never was either dropped by the
+  Part A output check (repaired away) or shown like the others. Now the map's calls are exempt from the repair (`map-` in v200_facts.js),
+  each route is checked against the active never / must entries by code plus one quick-tier confirm (`factsGuardHits`), and a breaking route
+  is "Blocked by your rule: …", greyed, hidden by the default filter with its count, never shortlisted or taken; a never added later greys
+  it at once. Check: e2e200 B4; planted bugs "a route that breaks your never is not greyed", "the map shows rule-breaking routes by default".
+- Cause 88 (owner, "PT also shows previous solutions that worked … projects dont get other projects rules, never"): a worked solution could
+  only come over as a whole project copy or a preference. Now a route enters `WS.settings.lib20` only after its project launched
+  (doRelease, or a launched project's map), with allow-listed fields (family, rung, generic pattern, where, how, actor kinds, recipe,
+  measured outcome, date); any text holding a key word of one of that project's facts-book entries, a capitalised name from its goal card
+  or its name is left out. On another map it is a route like the others ("Worked before · live since …"), re-checked against that
+  project's rules. Check: e2e200 B9 (a planted never "We never upload the photos to Dropbox" reaches neither the library nor a prompt of
+  the other project); planted bugs "a proven route carries its project's rule words", "a route enters the library before its project
+  launched".
+- Cause 89 (Part A left it to the owner's rule): a 1.8 check row's ★ was "you chose this last time" from another tool of the workspace —
+  a carry-over of another project's choice as a suggestion. Removed (`chkPrev` gone, `chkStar` is PT's own); e2e180_checks part 2 now
+  checks the opposite of 1.8. Planted bug "the checks ★ carries your choice on another tool again".
+- Decided (Part B): the route alert's detection is code for your rules and one quick-tier call per action for facts, failed tests and
+  serious (critical/high) review findings against the chosen route's load-bearing assumptions and tripwires; web truth (prices, terms) is
+  not fetched by the map (sample calls cannot browse): every field says "PT's reasoning, not checked" unless the call knew better.
+  The "Not possible yet" watch line is shown, but nothing watches it on a schedule yet (Part D's morning check is the place).
+- Found while building: a comment put before a call at the end of a line (`… ));   // note STAGE20_HELD.set(p, n);`) swallowed the call
+  and the file still parsed (cause 62 again, this time a call, not an assignment); the waiting-details count stayed empty. static_checks.js
+  now also flags a `// comment` followed by `name.method(…);` at the end of a line; planted in check_the_checks.py.
+- check_the_pick.py must start from a tree whose own test is green: a planted-bug run on a red baseline reads every bug as "caught".
+
+## 2.0.0 Part C — two modes, one ledger (src/v200_modes.js, src/strings28.js, test/e2e200_modes.py)
+- What changes for the owner: every project has a switch "Chat with structure · Pick" (status line, also on the cover). Chat: he types
+  freely; PT answers in a sentence or four and files what he said into the facts book ("✓ Noted as never: “…”" with ✎ and Take back;
+  "Already in your facts book" when it is there), keeps the goal card, the map, Decided, Plan and Events beside the conversation
+  (on a phone: one tap between conversation and workspace), shows the one Next and a few chips; a question PT asks is a pick card
+  in the chat (tap an answer). Pick: the same cards, pages and facts book; before the route is decided its Picks page leads to the
+  route (goal → map → shortlist → compare) and the details wait. Steps, Blueprint, Journey, Swimlanes and Express are gone (their
+  data stays; the Design page keeps the parts map). On first open in 2.0 each project gets a restore point "Before 2.0", then its
+  own 1.x rules go into its facts book and its 1.x design options onto its map; a confirmed design choice is the chosen route.
+- Data for Parts D–E: `MODES = ["pick", "chat"]` (`projMode` reads any other stored value as Pick); `p.chat20 = {v, n, msgs: [{id: c<n>,
+  at, by: you|pt|sys, text, filed: [F…], known: [F…], goal: [field], card: pick card id, dropped, cut: {n, rule, id}, about: tool|pt|both,
+  next, fail, to}]}` (at most 160, this project only); `p.m200 = {v, at, rp, from: {mode, before}, rules, routes, order: decided|early|
+  kept|on, errs, prints: {field: hash}, changed: []}` (a new project: `{fresh: true}`); `p.modeBefore200`; routes moved from 1.x carry
+  `from: "arch:<option id>", old: true`; facts filed by the chat have `src: {k: "chat", ref: "chat:<msg id>"}`, moved 1.x rules `src.k
+  ns|oos|const` with `m200: true`. Functions to reuse: `face20Set(p, v)`, `c20Show(p)`, `c20St(p)` (UI: tab goal|map|decided|plan|events,
+  side chat|ws), `c20Send(p, text)` / `c20Apply(p, msg, r)` (any new talking source: one call, filed, guarded), `c20File(p, text, list,
+  ref)` (file a list of {kind, said, norm} with the quote and the duplicate checks), `c20CodeFile(text)`, `c20Guard(p, text)` (the reply's
+  last rule check), `c20DecidedHTML(p)` (one Decided list for both faces), `c20PickDecideHTML(p)`, `m200Run(p, raw)` / `m200All()`
+  (idempotent), `m200Prints` / `m200Changed`.
+- Cause 90 (owner, 3–4 Nov 2026, "scrap all modes … make a new mode Chat with structure that can do all we want"): six ways of working
+  over one item model; what he said outside the Pick deck (notes, the Express box, the change map) was not filed anywhere binding, and
+  the switchers multiplied the places to look. Now two faces of one ledger: the chat files every message into the facts book (the
+  quote must be in the message — a made-up quote is sent back once; a never / must is also filed by code, so a failed call loses no
+  rule), feedback about PT is never filed (Improve PT offered), a chat question is a pick card through ask once, and the Decided list
+  is one function for both faces. Check: e2e200_modes C1–C3; planted bugs "the chat files nothing into the facts book", "the chat files
+  feedback about PT into the project", "a never is lost when the chat call fails", "a chat answer that breaks your rule is shown", "the
+  chat asks details before the decision", "a question in the chat is asked again", "Pick's Decisions page and the chat's Decided tab
+  differ", "an answer after the decision is not watched by the Route alert", "the old modes are back".
+- Cause 91 (Part A's output check on a free text): a chat reply is one string, so Part A's check could only record a rule break in it
+  (a top-level string is kept, not dropped). Now `c20Guard` leaves out each sentence that still breaks a confirmed rule after the one
+  repair and says so ("Left out of PT's answer …"); the whole reply is replaced when nothing is left. Check: e2e200_modes C2 (TEMPT).
+- Cause 92 (the move to 2.0, owner rules "restore points only the owner deletes", "projects don't get other projects' rules, never"):
+  a move that rewrites data cannot be checked and a move that runs twice adds everything twice. Now `m200Run`: restore point first
+  (the stored copy; an existing "Before 2.0" point is reused, none is ever deleted), then additive steps reading only that project
+  (rules from its constraints, not-in-this-version, constitution; routes from its design options; the decision as a facts-book entry
+  src dec ref route:R…; `order20 = true` only when decided or without detail work — a project mid-way keeps its order and is told how
+  to switch), a hash of every field it had before (`prints`) and the fields that changed (`changed`, must be empty), once per project
+  (`p.m200`; run again = the same: duplicates by ref and by similarity). Check: e2e200_modes C4 and R; planted bugs "the move makes no
+  restore point first", "the move twice adds the rules twice", "the move brings another project's rules", "the move changes a field
+  the project had", "a confirmed 1.x choice is not the chosen route after the move".
+- RC replay (acceptance, e2e200_modes R, green on work/backup-140, work/backup-141 and the made-up bundle): every project of both
+  workspaces is moved, then: nothing lost (the hash per field, and no count lower than in "Before 2.0"), rules never cut (every never /
+  must whole in the prompt with a 2 000-character context budget and in every chat prompt), no cross-project content (no other
+  project's rule in its book, map, chat or prompt; a never said in one project's chat reaches no other), no repeated questions (each
+  question it answered before, asked again in the chat, is dropped), the order (route-splitting before the decision, `<chosen_route>`
+  after, details waiting), the same ledger in both faces (facts book ids, Decided list), and opening again moves nothing twice.
+- Found while building: (1) the 1.6 one-time move recorded `projMode(p)` as the earlier view; with the 1.x views gone that read "pick",
+  so the view a project had was lost — it now keeps the stored value. (2) normalizeProject's one-level fill copied a new project's keys
+  into a stored record (`m200` gained `fresh: true`, the move looked undone and the record changed on every reload) — the stored record
+  is kept as it was; hunt 4 (persist) caught it. (3) A `// comment` put before a closing brace made the file stop parsing; `build.py`
+  still wrote the file — only `node test/static_checks.js` (check 0) says so: run it after every build, as the rules say.
+  (4) The layout audit read screen-reader-only text (`.sr20`) as clipped and a button half under the main area's lower edge as covered
+  by the status bar; both are now skipped (layout141).
+- Tests moved with the views: tests that set `p.mode = "steps"` (or another 1.x view) to reach a step now open that step in its page's
+  details (`pgShowPhase` before `setPhase`; the page's render sets the cursor to its own steps); hunt 15 ("the Journey marker") is now
+  "the stage strip marks the one stage the project is at"; e2e141's learning-moment, guide-strip and stage-gate checks are gone (those
+  lived only in the 1.x step views; Pick and Chat with structure are their own guide); layout141 shows the chat and its workspace.
+- Found by the hunt once it visited the page details (both also on ab8ef98 with the same hunt): (5) the Design page drew the open kit
+  questions twice, in "What you decide" and in its kits block (two boxes with one id) — fixed, the kits block leaves out what is above;
+  (6) hunt 5: "Make about 30 variants" on the Review page's test details, followed by PT's automatic trial, cannot be undone back to the
+  exact engine state (the trial's engine climb is not part of the click's actions) — NOT fixed in Part C, fails identically on ab8ef98; fixed in Part D (cause 93).
+- Left out (not built, say so if asked): the workspace-level "reading hint" when the owner corrects "about the tool / about PT" (one tap
+  "No, it's about my tool" files it as a tool rule instead); sending feedback about PT to Improve PT by itself (one tap opens the report
+  with the words filled in); a resizable split between conversation and workspace (fixed 58/42, one column under 1000 px); the CSS of
+  the five removed views is left in styles.css (no screen uses it; removed in Part E). New projects still start in Pick (Settings › default: Pick or Chat).
+
+## 2.0.0 Part D — hands and loop (src/v200_hands.js, src/v200_loop.js, src/strings29.js, test/e2e200_hands.py, test/e2e200_loop.py)
+- What changes for the owner: each project has "PT's hands" (More ⋯; the route card links to it): a list of the project's sites (add,
+  remove; github.com stays read only), "Ask PT's hands" (his words → PT writes the steps before any page opens), a card that shows what,
+  where, why, whether it can be undone and every step with whose it is, then Run: PT opens the page, types into fields, chooses options,
+  clicks ordinary buttons and stops one step before the final one ("Your click: Send" · Take me there). On his first open of a day the
+  cockpit shows one "Morning check" card. The facts book (and the test page) has "Prompt tests". Settings › PT health lists his Improve
+  PT reports with open / fixed in; Settings › Metrics shows how PT works for him.
+- Data for Part E and later: `p.hands20 = {sites: [host]}` (an action: Undo takes a site back), `p.hands20log` (a record, DIFF_SKIP:
+  {id, at, what, host, n, end: done|final|stopped, final}), `p.ptest20 = {inputs: [text], runs: [{id, at, v, n, pass, items: [{i, input,
+  src, ref, answer, rules: [{id, kind, rule, ok, code, why, judged}], pass, empty}]}]}` (a record, at most 5 runs), `WS.settings.morning20
+  = {day, at, lines: [{k, st: ok|new|warn|skip, text, pid}], prs: [n], kp, watch: {"pid:nyid": hash}, seen, calls}`, `WS.settings.ipt20 =
+  [{id, at, v, where, text, status: open|fixed, fixed}]`, `ipt20v`, `ipt20news`, `WS.settings.met20 = {pid: {asked, twice, repaired, hands,
+  ptests, goalAt}}`. Functions: `h20Call(p, tool, input)` (the only way for project hands), `h20Vet`, `h20Run`, `h20Go`, `h20Clear`,
+  `h20IsFinal`, `h20SecretField`, `h20SecretVal`, `h20SiteOk` / `h20WriteOk`, `mc20Run`, `mc20Since`, `pt20Run`, `pt20Inputs`, `ipt20Add`,
+  `ipt20Version`, `m20Metric(p, k, n)`, `IMPROVE_FIXED` (version → report ids; empty for 2.0.0 until the release fills it from the inbox).
+- Cause 93 (hunt 5, red since ab8ef98): PT's automatic steps (`autoEngine`: the trial 900 ms after a visit to Design, the engine
+  suggestion, the frontier scan) opened their action with `snapshot` and never closed it; the next click's `actOpen` closed it, so it
+  landed in the Undo history after the click had started, and "Undo everything the click set off" also took back the finished trial
+  (`engine.climb`, the loop's default state). Now `autoEngine` closes the project's action when each automatic step ends, and
+  `aiTrialRun` closes its own. Check: hunt 5 green on both data sets; e2e200_loop L7; planted bug "an automatic step leaves its action
+  open" in check_the_pick.py.
+- Cause 94 (owner, 3–4 Nov 2026: "real clicks and typing in forms are OK; final buttons — merge, send, delete, pay, publish — and
+  keys/passwords always stay mine"): 1.10's hands could only point (scroll, hover), so every form was the owner's; letting them click
+  without a rule would let one wrong label press a final button. Now (per project) a plan first (one call, before any page; page text
+  never adds a step), a contract card before Run, and two gates by code: at plan time a click whose label holds a final word (en/de/zh:
+  merge, send, submit, pay, buy, delete, publish, confirm, save, install, agree …) ends the steps and becomes "Your click"; on the page
+  `h20Clear` clears an element only the moment before its action (a click only on a non-final label, a fill only into a field that is not
+  a key / password / code / card / account / id field), and `h20Call` refuses a click or fill on anything not cleared, a click by
+  coordinates, key presses, typing by keys, other tools, sites off the project's list (github.com too), a key-shaped value, another login.
+  A click that leads to a page off the list stops the run. Check: e2e200_hands D1–D7 (49 checks); planted bugs: final-word check off, an
+  uncleared click, a password field typed, a key-shaped value typed, any site opened, github.com writable, steps run before the
+  contract, a click off the list goes on.
+- Cause 95 (Part B left it open: "the Not possible yet watch line is shown, but nothing watches it on a schedule"): the watch lines and
+  the tripwires were checked only when something happened inside PT. Now the morning check (owner, once a day on first open; the mock
+  keeps it off unless a test asks): the 1.10 GitHub checks (pull requests with what is new since the last check, key dates, the release;
+  outside the desktop app one line and no further try), per project the tripwires against what came in since the last check (facts,
+  failed tests, serious findings → `m20WatchSoon`, deduplicated by ref), the not-yet lines when PT's platform knowledge changed, and a
+  watched page (an https address in the watch line) read through the Fetch helper — a changed page is a map event and goes to the Route
+  alert. PT creates no scheduled task (the cloud guide is one tap away). Check: e2e200_loop L1; planted bugs "twice a day", "for another
+  login", "skips the tripwires", "a watched page that changed raises nothing".
+- Cause 96 (prompt tests): a test that sends the project's rules channel with the inputs tests PT's prompt, not the tool's, and a model
+  that answers and grades in one call tends to grade itself kindly. Now one quick-tier call (cost on the button) answers up to five inputs
+  following only the package and grades each never / must; no `<your_rules>` block goes in (raw `[[task:ptest-run]]` prompt, no project
+  marker), and code reads every answer for a never's key words in a non-negated sentence: such a hit fails the answer even when the call
+  says the rule holds. Check: e2e200_loop L2; planted bug "prompt tests trust the call over PT's word check".
+- Cause 97 (Improve PT): reports went to the `toolfeedback` collection with no status, so the owner never learned what an update fixed.
+  Now every report sent (header, rail, an error card, the chat's one tap) is also kept in `WS.settings.ipt20` (open), on a version change
+  the ids listed for it in `IMPROVE_FIXED` become "fixed in <version>" and one card says so once (Got it). Check: e2e200_loop L3;
+  planted bugs "a report is not kept", "fixed reports are announced on every open".
+- Metrics (design §9; kept in WS.settings.met20, saved with the workspace and part of "Export my data", never in a prompt): questions PT showed (askOnceRun: items minus held back), asked twice and held back, rule breaks
+  caught and repaired (factsGuardHits with a hit), routes on the map, goal → decision (first confirmed goal field or the project's start
+  → the active decision); never in a prompt or report (they are in the workspace export). Check: e2e200_loop L4; planted bug "asked-twice questions are not counted".
+- Found while building: (1) a `<rules>` tag named in the prompt's prose before the block made the mock read the prose as the block (a
+  real model would read either); the prose no longer names the tags. (2) A screen-reader-only label (`.sr20`, absolutely placed) in a
+  table header escaped the table's scroll box at 390 px and widened the page by 82 px; the header carries `aria-label` instead and the
+  scroll box is `position:relative`.
+- Left out (not built, say so if asked): a quick-tier second opinion on "is this button final" (the design's "plus a quick-tier check":
+  code only, conservative word list, and the guard refuses anything not cleared); typing into a field the page marks only by
+  `type=password` without a telling label (find answers role and name only; such fields are caught when their label says password /
+  code / key); the morning check's AI parts as their own cost line (they are the Route-alert quick calls PT makes anyway); a list of the
+  ids fixed in 2.0.0 (`IMPROVE_FIXED["2.0.0"]` is empty: the release fills it from the inbox).
+
+## 2.0.0 Part E — setup and helpers (src/v200_setup.js, src/strings29.js `su20.*`, CAPABILITIES-2.0.json, test/e2e200_loop.py L5–L6)
+- What changes for the owner: Settings › Setup lists one helper program per kind of job with its state on his Mac (Ready / Not checked
+  yet / Installed but tools are missing / Not installed / Only in the desktop app), what PT does with it, "Check it's there" and its
+  install guide; nine click-by-click guides (the Claude GitHub App for firnlab, the GitHub connector, auto-merge for Dependabot pull
+  requests only, the morning check as a cloud scheduled task, computer use in the desktop app, one per helper). A route card whose route
+  needs a helper says "Needs <program> on your Mac — Install guide" (or "ready", or "Excluded by your PT rule").
+- HELPERS20 (tool names from each program's own page, checked 4 Nov 2026; host server = the entry name in claude_desktop_config.json):
+  | kind | program | host server | tools PT calls | what PT does |
+  | files | Filesystem (MCP reference server) | host:filesystem | list_allowed_directories, list_directory, write_file | saves the prompt as a NEW file in the allowed folder after a contract (never overwrites; it has no delete) |
+  | code history | Git (MCP reference server) | host:git | git_status | morning check: changes not committed yet in the folder he names |
+  | web pages | Fetch (MCP reference server) | host:fetch | fetch | morning check: reads the pages the not-yet watch lines name |
+  | 3D | Blender MCP (community add-on, ahujasid/blender-mcp) | host:blender | execute_blender_code | "Check it's there" runs one read-only script (counts the scene's objects), shown first |
+  Never: Calendar, Contacts, Music, Photos, e-mail / Slack sorting or drafting (an excluded category on a route card is named, never
+  offered). Not declared in 2.0 (no program whose tools could be checked on its own official page, or PT already does the job):
+  terminal, databases (the SQLite / Postgres reference servers are archived), office documents, notes, other browsers (PT's hands are
+  the only browser), memory (the facts book), time.
+- Detection: `listTools()` never asks the viewer; a server the app runs lists with descriptions (or `authStatus: "connected"`), one only
+  declared in the page lists with empty descriptions → "Not checked yet"; "Check it's there" makes one read-only call where the helper
+  has one (Filesystem: list_allowed_directories; Git: git_status of the named folder); Blender's only tool runs code, so its check shows
+  the script and runs only after yes. `helper20Call` refuses any tool not declared for the helper, drops key-shaped answers, owner only.
+- CAPABILITIES-2.0.json (repo root, for the publish manifest): the 1.10 set plus `form_input` on host:claude_browser and one entry per
+  helper with only the tools PT calls; e2e200_loop L5 checks it against `HELPERS20` and `H20_TOOLS`. Planted bugs: "a helper declared
+  only in the page counts as ready", "a helper runs a tool that is not declared for it", "the Blender check runs its code without
+  showing it first", "the prompt file is written over an existing file", "a route that needs a helper does not say so".
+- Cleanup: the CSS of the five removed views (Steps `.steps2 .stepmain .spine2 .sgroup .sglabel`, Blueprint `.bp2 .bp-st .bp-label .lnk
+  .homeB`, Journey `.tiles .tnext`, Swimlanes `.lgrid .lh .ln .lc .lpart .cbtn`, Express `.xp .bubble .xcard .xnext`) is gone from
+  styles.css / styles18.css (57 selectors; each class checked unused in src/*.js, dynamic names included: `k-${kind}` stays, the
+  Design page's parts map uses it). What the Design page and the stage strip still use (`.bpmap .bp-node .mapwrap .station …`) stays.
+- Not testable here: the real helpers and the real desktop app (the mock answers in the shapes the programs' pages give); the live
+  preview is tried in the desktop app before main.
+- Found by the Part D regression on all three data sets (both also red on 2cb4f16): (3) e2e200_foundation A9 on work/backup-140 — a
+  queue row 564 px wide kept its buttons beside the text with the text at 46 % (the 18em floor fits, the 60 % rule does not); the text
+  now takes `max(18em, 60%)` before the buttons move under it. (4) e2e200_map B1 "an older project keeps its order" still read the
+  Part B rule; Part C's move puts an older project on the 2.0 order when it is decided or has no detail work (`p.m200.order`), so the
+  check now reads the move record (kept → old order; otherwise on).
+
+## 2.0.0 release gate (4 Nov 2026, part A: 7 red on bb3383f)
+- Cause 98 (flows 1.2): with the Steps view gone, a page's details are the only way into a step, and they never visited it: the pages'
+  `goto` override (since 1.7) and the details' render moved the cursor (`p.focus`, `UI.phase`) without `setPhase`, so no automatic step
+  ran (the frontier scan on reaching the interview, the engine suggestion and the trial on reaching the architecture), no "step done"
+  restore point was saved and the project's phase did not move on. Hidden in 1.7–1.9 because the 1.x views still called `setPhase`.
+  Now a step's tab is a visit (`setPhase`, as the Steps view's was), and a person's click that opens a page with its details open, or
+  the details themselves, visits that page's step (`pgVisit`). Check: e2e12_on14 part 3 ("frontier scan ran by itself"); planted bug
+  "a step's tab on a page is not a visit" in check_the_pick.py.
+- Cause 99 (flows 1.2, a page error): Part C removed `aiImpactParts` with the 1.x change map (and Part C's string clean-up `cm.thinking`),
+  but the Run page's change request ("Tell PT what to change", Operate) still calls it: the request was filed and then the page threw.
+  Restored (one quick call that lists the parts and items a change touches, as in 1.x). `static_checks.js` now flags a function the
+  release before had (`src_v180_backup`) that is gone while a caller is left (`[calls]`); planted in check_the_checks.py. e2e200_modes
+  no longer lists `aiImpactParts` / `cm.thinking` among the removed 1.x code (the change map's actions `cmap`, `cmap-ask` stay listed).
+- Cause 100 (flows 1.2): `pickDefaultsOnce` recorded the workspace's earlier default view only when it was in `MODES`; 2.0's `MODES`
+  holds Pick and Chat, so a workspace's 1.x default (Blueprint, Journey …) was recorded as "steps" (the record of what he had was
+  lost). The stored value is kept now. Check: e2e12_on14 part 1; planted bug in check_the_pick.py.
+- Cause 101 (flows 1.4): the walk through a list ("1 of N", next, Back — the queue's titles, "Walk through", Finish's list) never
+  showed on the pages: the pages' `goRef` opened the item's page through `pgOpen`, which clears `UI.nav`, and dropped the list. Now
+  the list is kept. Check: e2e14 part 7.
+- The release page of the version under test (flows 1.10 hands, flows 2.0 loop): the mock's GitHub had a fixed page for v1.10.0, so
+  from 2.0.0 on "Check this version's release" read "no release yet". The mock now adds the page of `PT_VERSION` once the page's
+  script has run (tests that need "not there yet" still delete it). No app change.
+- Tests that still drove what Parts B and C changed on purpose (ported, nothing weakened):
+  - flows 1.7 (e2e17): the mock question ("is this what you meant?") is a detail item (phase require); a 2.0 project asks details only
+    after its route is taken (cause 85), so part 12 now takes a route on the map first (a full round with the mock, then Take this)
+    and checks it. Part 5 counts each open kit decision once on the whole Design page (Part C, hunt 12: a kit question already in
+    "What you decide" is drawn there only); planted bug "the Design page draws a kit question twice" in check_the_pick.py.
+  - check the rows (e2e180_rows): since Part C's move touches every project at boot, the rows of the loaded projects are worked out
+    before the test takes its "before" picture, so the planted bug "working out the rows fills in the project" changed them unseen.
+    The fresh 1.7 copy the test makes now lacks `goal`, as two of the made-up 1.7 projects do; the planted bug is caught again.
+  - flows 1.2 / 1.3 / 1.4 (e2e12_on14, e2e13, e2e14): steps are reached the 2.0 way — the page in the page bar, "all details", the
+    step's tab (e2e12_on14 `goto_step`; e2e13 `step()`; e2e14 `pgShowPhase` before `setPhase`); the new project starts in Pick; the
+    Bauplan is checked on the Design page (opened, as it is folded since 1.8, and as a diagram at 420 px) and the check now fails when
+    there is no map to audit (before, `auditMaps()` on a page without a map passed); the cover's "everything" is opened before its
+    queue is used; Requirements rows are typed in directly (Express's Edit button is gone). e2e12_on14 now ends with the standard
+    summary line (check_the_pick.py can read it).
+  - e2e14 part 2 (update affected, on work/backup-140): Part A's rule check confirms every code hit through the mock, and the updated
+    items repeat their own wording, which names a never rule's key words, so every update was left out. The section is about the
+    update flow; the quick check answers "does not break" there (the rule check itself is e2e200_foundation A2).
+- Dropped with their feature (Part C removed it): e2e12_on14 "mode … renders" (×5), "switch to … keeps the place" (×5), "Guided shows
+  the guide strip", "no sideways scroll at 420 px in <view>" (now per page); e2e13 part 6 "quick mode" (Express: the short list, J/K,
+  Enter, "Accept all recommended").
+- 2.0.0 hunt check 28 (await race) went quietly empty: it looked for AI buttons on the step pages, which 2.0 removed, so it clicked
+  nothing, stayed green, and its planted bug was MISSED by check_the_hunts. Now it starts an answer in both faces (a chat message;
+  the first Pick-cover button that starts one) and fails when no answer starts at all, so it can never pass by doing nothing.
+- 2.0.0 e2e200_loop L4 still asserted the old metrics line ("never sent anywhere"), which the fact check had found untrue (the
+  data export carries the numbers). The test now asserts the corrected claim: never sent to Claude, part of the data export.
+- 2.0.0 preview publish refused form_input under host:claude_browser ("a cloud session or chat can't add the local tool …; publish
+  that change from a local session"). Typing into forms is therefore off (H20_TYPE = false): the plan clicks up to the first field,
+  that field and the rest are the owner's, the guard refuses form_input, the card and the changelog say so. CAPABILITIES-2.0.json
+  no longer lists form_input. e2e200_hands D0 checks the off state; the typing tests run with the switch on.
+- 2.0.0 PR: quick-gate red on a stale CHANGELOG.md. The releases.json notes go into CHANGELOG.md, so adding the release entry needs
+  `python3 tools/changelog.py` again before the commit (the local gate had run before the entry existed).

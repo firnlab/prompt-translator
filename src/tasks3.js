@@ -1,5 +1,6 @@
 /* ===================== 1.0: release, rollback, restore, updates, impact ===================== */
-/** which parts and items a described change would touch (change map) */
+/** which parts and items a described change would touch (the Run page's change request, "Tell PT what to change"; 2.0 gate, cause 99:
+    Part C removed it with the 1.x change map although the change request still calls it) */
 async function aiImpactParts(p, text){
   const prompt = buildPrompt("impact", {proj: p, rules: ["spec"], userLang: true, context: projectContext(p),
     body: `The person is considering this change: ${text}\nList exactly which items it would touch: component ids (component:c1), requirement ids (req:R2), test ids (test:T3) and package sections (section:<id>). Only list what really changes.\n<ids>components: ${arr(p.arch.components).map(c => c.id + "=" + c.name).join(", ")}; requirements: ${p.requirements.map(r => r.id).join(", ")}; tests: ${p.tests.map(x => x.id).join(", ")}; sections: ${arr(p.pkg.sections).map(s => s.id).join(", ")}</ids>`,

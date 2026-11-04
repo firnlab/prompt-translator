@@ -12,8 +12,7 @@
    4. PT's ★ is revealed only after the cards were looked at (each card in view, scrolled through) or on tap, with a hedged first-person
       reason and what would change PT's mind. No decoy cards: only what the inference named (or what you asked for) is shown.
    5. Shortcuts: D "pick then verify" (tap a card: PT asks only the cuts that could rule it out, and who it is for); E "say the ending" (your
-      words → the nearest kind, or a new kind marked unverified). Your earlier choices on other tools of this workspace pre-fill as ★
-      "you chose this last time" (policy rows), still asked.
+      words → the nearest kind, or a new kind marked unverified). (2.0: choices on other tools no longer pre-fill or star anything here.)
    6. The surviving kind defines the tool's check rows (its signals join chkSignals / chkOutward; "n checks to tap" on every card) and feeds
       the 1.8 start: research, risk, mock first, picks. Every answer and the kind itself are decision rows (ROW_SOURCES) with ids and events.
    7. Tools from 1.7: "re-run the cone once" (a few taps, pre-filled from what was decided; an answer that differs from an earlier decision
@@ -202,16 +201,8 @@ function coneConflict(c, d, v){
   if (k.why === "customers") return v !== "customers" ? k : null;
   return v === "customers" ? k : null;
 }
-/** your choice on your other tools in this workspace (the latest; the other workspace never counts here) */
-function conePolicy(p, d){
-  let best = null, n = 0;
-  for (const q of arr(WS && WS.projects)){
-    if (!q || !p || q.id === p.id) continue;
-    const a = q.cone && q.cone.ans && q.cone.ans[d]; if (!a || !CONE_OPTS[d].includes(a.v) || a.v === "unsure") continue;
-    n++; if (!best || str(a.at) > str(best.at)) best = {v: a.v, at: str(a.at), name: str(q.name)};
-  }
-  return best ? Object.assign(best, {n}) : null;
-}
+/* 2.0 (owner, 4 Nov 2026: "projects dont get other projects rules, never"): your choice on another tool no longer pre-fills or stars
+   a question here (it was "you chose this last time"); each tool's cone starts from its own sentence and its own decisions only. */
 function conePre(p, c, d){
   const k = c.known && c.known[d]; if (k && k.v) return {v: k.v, src: "earlier", label: coneKnownLabel(k)};
   const s = c.pre && c.pre[d];
@@ -459,9 +450,8 @@ function coneRowSrc(p, add){
   const A = coneAns(c), cur = coneCurDim(p);
   for (const d of CONE_DIMS){
     const a = A[d]; if (!a && cur !== d) continue;
-    const pol = conePolicy(p, d);
     add({src: "cone:" + d, ref: "cone:" + d, branch: "U", stage: d === "aud" ? 2 : 1, target: d === "aud" ? "audience" : "", question: t("cone.q." + d),
-      options: CONE_OPTS[d].map(v => ({label: t("cone.o." + d + "." + v), why: t("cone.rev." + d + "." + v)})), star: pol ? {label: t("cone.o." + d + "." + pol.v), why: t("cone.pol.why", {x: pol.name})} : null, hard: d === "aud",
+      options: CONE_OPTS[d].map(v => ({label: t("cone.o." + d + "." + v), why: t("cone.rev." + d + "." + v)})), star: null, hard: d === "aud",
       decided: !!a, val: a ? str(a.v) : "", chosen: a ? t("cone.o." + d + "." + a.v) : "", by: "owner", at: a ? str(a.at) : str(c.at)});
   }
   if (c.ending){ const fam = coneFam(c, c.ending.f), st = c.star && coneFam(c, c.star.f);
@@ -504,14 +494,13 @@ function coneDoneHTML(p, c){
   return `<div class="cone-done" aria-label="${esc(t("cone.done"))}">${L.map(d => `<span class="chip cone-a" data-d="${d}"><span>${esc(t("cone.qs." + d))}: <b>${esc(t("cone.o." + d + "." + A[d].v))}</b></span>${coneRevChip(d, A[d].v)}${coneActive(p) ? `<button class="iconbtn cone-x" data-a="cone-x" data-d="${d}" aria-label="${esc(t("cone.x", {x: t("cone.qs." + d)}))}" title="${esc(t("cone.x", {x: t("cone.qs." + d)}))}">${ic("x")}</button>` : ""}</span>`).join("")}</div>`;
 }
 function coneQHTML(p, c, d){
-  const pre = conePre(p, c, d), pol = conePolicy(p, d), fam = c.picked ? coneFam(c, c.picked.f) : null, fams = coneLiveFams(c);
+  const pre = conePre(p, c, d), fam = c.picked ? coneFam(c, c.picked.f) : null, fams = coneLiveFams(c);
   const why = fam ? t(d === "aud" ? "cone.why.vaud" : "cone.why.verify", {x: fam.title}) : d === "aud" ? t("cone.why.aud") : t("cone.why.cut", {n: Math.max(0, ...CONE_OPTS[d].map(v => coneCutsIf(c, d, v)))});
   const preLine = !pre ? "" : pre.src === "sentence" ? `<p class="small cone-pre">${esc(t("cone.pre.sentence", {x: pre.span}))}</p>` : pre.src === "earlier" ? `<p class="small cone-pre">${esc(t("cone.pre.earlier", {x: pre.label}))}</p>`
     : `<p class="small cone-pre"><span class="as18"><span class="as18-w">${esc(t("look.assume"))}</span> ${esc(t("cone.pre.assumed", {x: t("cone.o." + d + "." + pre.v)}))}</span></p>`;
-  const polLine = pol ? `<p class="small cone-pol">★ ${esc(t("cone.pre.policy", {x: t("cone.o." + d + "." + pol.v), y: pol.name}))}</p>` : "";
   const opts = CONE_OPTS[d].map(v => { const n = fams.length ? coneCutsIf(c, d, v) : 0;
-    return `<button class="btn cone-opt ${pre && pre.v === v ? "pre" : ""}" data-a="cone-ans" data-d="${d}" data-v="${v}"><span class="cone-ol">${pol && pol.v === v ? "★ " : ""}${esc(t("cone.o." + d + "." + v))}</span>${coneRevChip(d, v)}<span class="cone-revt">${esc(t("cone.rev." + d + "." + v))}</span>${n ? `<span class="cone-cutn">${esc(t("cone.cuts", {n}))}</span>` : ""}</button>`; }).join("");
-  return `<div class="cone-q" id="cone-q" data-anchor="cone:${d}" data-d="${d}"><h3>${esc(t("cone.q." + d))}</h3><p class="small muted">${esc(why)}</p>${preLine}${polLine}
+    return `<button class="btn cone-opt ${pre && pre.v === v ? "pre" : ""}" data-a="cone-ans" data-d="${d}" data-v="${v}"><span class="cone-ol">${esc(t("cone.o." + d + "." + v))}</span>${coneRevChip(d, v)}<span class="cone-revt">${esc(t("cone.rev." + d + "." + v))}</span>${n ? `<span class="cone-cutn">${esc(t("cone.cuts", {n}))}</span>` : ""}</button>`; }).join("");
+  return `<div class="cone-q" id="cone-q" data-anchor="cone:${d}" data-d="${d}"><h3>${esc(t("cone.q." + d))}</h3><p class="small muted">${esc(why)}</p>${preLine}
     <div class="cone-opts" role="group" aria-label="${esc(t("cone.q." + d))}">${opts}</div></div>`;
 }
 function coneConflictHTML(p, c){

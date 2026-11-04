@@ -22,8 +22,8 @@ def check(name, cond, info=""):
     _check0(name, cond, info); print(("ok    " if cond else "FAIL  ") + name + ("" if cond else "  → " + str(info)[:600]), flush=True)
 PHASES = ["capture", "understand", "interview", "assume", "require", "arch", "build", "review", "test", "launch", "release", "operate"]
 SCREENS = lambda pid: [f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{pid}'); UI.home=true; render(); }})()"] + \
-    [f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{pid}'); curP().mode='steps'; UI.home=false; setPhase('{ph}'); render(); }})()" for ph in PHASES] + \
-    [f"(() => {{ UI.modal=null; UI.review=null; openProject('{pid}'); UI.home=false; setPhase('require'); curP().mode='{m}'; render(); }})()" for m in ["blueprint", "journey", "swimlanes", "express", "pick"]] + \
+    [f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{pid}'); UI.home=false; pgShowPhase(curP(), '{ph}'); setPhase('{ph}'); render(); }})()" for ph in PHASES] + \
+    [f"(() => {{ UI.modal=null; UI.review=null; openProject('{pid}'); UI.home=false; setPhase('require'); face20Set(curP(), '{m}'); UI.home=false; render(); }})()" for m in ["pick", "chat"]] + \
     [f"(() => {{ UI.modal=null; UI.review=null; openProject('{pid}'); UI.home=false; curP().mode='pick'; window.__pickFixture(curP()); UI.pkCands = {str(c).lower()}; UI.pkDump = {str(c).lower()}; render(); }})()" for c in [False, True]]   # 1.5.0: every Pick screen, filled
 WHERE = "(() => (curP() ? curP().name.slice(0, 14) : '') + ' ' + (UI.home ? 'home' : curP().focus.ph + '/' + curP().mode))()"
 
@@ -135,7 +135,7 @@ with sync_playwright() as pw:
         pg.evaluate(f"(() => {{ LANG = '{scr}'; if (WS.settings) WS.settings.lang = '{scr}'; const p = WS.projects.find(x => x.id === '{PIDS[0]}'); p.lang = '{plang}'; window.__allPrompts = []; }})()")
         for js in SCREENS(PIDS[0])[1:9]:
             pg.evaluate(js); pg.wait_for_timeout(30)
-            pg.evaluate("""() => { const ai = Object.keys(ACTIONS).filter(k => /runAI|await ai[A-Z]/.test(String(ACTIONS[k])) && !/publish|release|runner|pilot|live|launch|delete|reset|import|export|engine|kp-|research|translate/.test(k));
+            pg.evaluate("""() => { const ai = Object.keys(ACTIONS).filter(k => /runAI|await ai[A-Z]|=> ai[A-Z]\\w*\\(curP\\(\\)/.test(String(ACTIONS[k])) && !/publish|release|runner|pilot|live|launch|delete|reset|import|export|engine|kp-|research|translate/.test(k));
                 const e = [...document.querySelectorAll('.app [data-a]')].find(e => e.offsetParent && !e.disabled && ai.includes(e.dataset.a)); if (e) e.click(); }""")
             pg.wait_for_timeout(200)
             if pg.evaluate("!!(UI.modal && UI.modal.kind === 'cost')"): pg.evaluate("ACTIONS['cost-go'] && ACTIONS['cost-go']({dataset: {v: 'once'}})")
@@ -174,27 +174,41 @@ with sync_playwright() as pw:
     race = []
     # #83 (1.7): opening the other project wakes its own automatic steps (screening, missing picks) — those are its own changes, not a race; off for this check
     pg.evaluate("WS.settings.autoJobs = false; window.__mockDelayMs = 600")   # the answer must arrive after the switch, on a loaded machine too
-    if len(PIDS) >= 2:
+    if len(PIDS) < 2: race.append(["setup", "", "fewer than 2 projects"])
+    else:
         A, B = PIDS[0], PIDS[1]
-        for ph in ["require", "assume", "test", "review"]:
-            pg.evaluate(f"(() => {{ UI.modal=null; openProject('{A}'); curP().mode='steps'; UI.home=false; setPhase('{ph}'); render(); }})()"); pg.wait_for_timeout(40)
+        # 2.0: the steps are gone; AI answers start in the two faces — a chat message, and the AI buttons of Pick
+        ran = 0
+        for face in ["chat", "pick"]:
+            pg.evaluate(f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{A}'); UI.home=false; face20Set(curP(), '{face}'); render(); }})()"); pg.wait_for_timeout(60)
             snapB = pg.evaluate(f"JSON.stringify(Object.assign({{}}, WS.projects.find(x => x.id === '{B}'), {{updatedAt: 0, _rev: 0, focus: 0, seenAt: 0, lastWhere: 0}}))")
-            started = pg.evaluate("""() => { const ai = Object.keys(ACTIONS).filter(k => /runAI|await ai[A-Z]/.test(String(ACTIONS[k])) && !/publish|release|runner|pilot|live|launch|delete|reset|import|export|engine|kp-|research/.test(k));
-                const e = [...document.querySelectorAll('.app [data-a]')].find(e => e.offsetParent && !e.disabled && ai.includes(e.dataset.a)); if (!e) return null; e.click(); return e.dataset.a; }""")
-            if not started: continue
+            if face == "chat":
+                started = pg.evaluate("""() => { const f = document.querySelector('form[data-form=c20-say]'), el = f && f.querySelector('#c20-in'); if (!el) return null;
+                    el.value = 'We need a weekly summary for the team.'; FORMS['c20-say'](f); return 'c20-say'; }""")
+            else:   # the Pick cover: try its buttons one by one (navigation and anything that cannot be undone left out) until one starts an AI answer
+                started = None
+                cands = pg.evaluate("""() => [...new Set([...document.querySelectorAll('.app [data-a]')].filter(e => e.offsetParent && !e.disabled).map(e => e.dataset.a))]""")
+                for a in cands:
+                    if DANGER.search(a) or re.search(r"^(nav|open-project|new-project|palette|dock-toggle|home|undo|face20|project-menu|keys|ws-menu|insp-toggle|panel|phase|stage|q-tab|goto-ref|q-goto|clamp-toggle)$|-open$|^edit-", a): continue
+                    pg.evaluate(f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{A}'); face20Set(curP(), 'pick'); render(); }})()")
+                    if pg.evaluate(f"""() => {{ const e = [...document.querySelectorAll('.app [data-a="{a}"]')].find(e => e.offsetParent && !e.disabled); if (!e) return false; e.click(); return AI.running.size > 0; }}"""):
+                        started = a; break
             pg.wait_for_timeout(10)
+            if not started or not pg.evaluate("AI.running.size > 0"):
+                race.append([face, started, "no AI answer started: the check would prove nothing"]); continue
+            ran += 1
             pg.evaluate(f"(() => {{ openProject('{B}'); UI.home = true; render(); }})()")
             if pg.evaluate("!!(UI.modal && UI.modal.kind === 'cost')"): pg.evaluate("ACTIONS['cost-go'] && ACTIONS['cost-go']({dataset: {v: 'once'}})")
             try: pg.wait_for_function("AI.running.size === 0", timeout=15000)
-            except Exception: race.append([ph, started, "still running"])
+            except Exception: race.append([face, started, "still running"])
             pg.wait_for_timeout(200)
             nowB = pg.evaluate(f"JSON.stringify(Object.assign({{}}, WS.projects.find(x => x.id === '{B}'), {{updatedAt: 0, _rev: 0, focus: 0, seenAt: 0, lastWhere: 0}}))")
-            if nowB != snapB: race.append([ph, started, "the other project changed"])
+            if nowB != snapB: race.append([face, started, "the other project changed"])
             pg.evaluate("UI.modal = null; UI.review = null; UI.finish = null")
     pg.evaluate("window.__mockDelayMs = 0")
     check("28 await race: an AI answer after a project switch lands in its own project", not race, race[:6])
     # 31 save failure is visible and retried; typed text stays
-    pg.evaluate(f"(() => {{ openProject('{PIDS[0]}'); UI.home = false; curP().mode = 'steps'; setPhase('capture'); render(); window.__mockFailSet = true; const p = curP(); p.zzSaveProbe = 'x'; touch(p); saveProject(p); }})()")
+    pg.evaluate(f"(() => {{ openProject('{PIDS[0]}'); UI.home = false; pgShowPhase(curP(), 'capture'); setPhase('capture'); render(); window.__mockFailSet = true; const p = curP(); p.zzSaveProbe = 'x'; touch(p); saveProject(p); }})()")
     pg.wait_for_timeout(4000)
     shown = pg.evaluate("(() => { const s = document.getElementById('savestate'); return {text: s ? s.innerText : '', retry: !!document.querySelector('[data-a=save-retry]'), toast: [...document.querySelectorAll('#toasts .toast')].map(t => t.textContent).join('|')}; })()")
     pg.evaluate("(() => { window.__mockFailSet = false; ACTIONS['save-retry'] && ACTIONS['save-retry'](); })()"); pg.wait_for_timeout(2500)

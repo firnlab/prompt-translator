@@ -380,7 +380,7 @@ async function runAI(key0, label, prompt, {json=true, step="default", images=nul
   if (typeof prompt === "string" && !prompt.startsWith("Ground rule:")) prompt = DATA_RULE + prompt;
   else if (Array.isArray(prompt) && prompt[0] && typeof prompt[0].content === "string" && !prompt[0].content.startsWith("Ground rule:")) prompt = [{...prompt[0], content: DATA_RULE + prompt[0].content}, ...prompt.slice(1)];
   const sample = await getSample();
-  if (!sample){ toast(t("ai.err.unavailable"), "err"); return null; }
+  if (!sample){ toast(t("ai.err.unavailable"), "err"); if (typeof ev20AI === "function") ev20AI("unavailable", step); return null; }
   if (AI.running.has(key)) return null;
   const ctl = new AbortController();
   const m = quick ? {tier:"quick", model:"", effort:""} : tier ? {tier, model:"", effort:""} : modelFor(step);
@@ -401,7 +401,7 @@ async function runAI(key0, label, prompt, {json=true, step="default", images=nul
       let out = null, weak = false, errs = [];
       try{
         if (json){ out = await sample.json(prompt, opts); weak = out == null || (validate && !validate(out));
-          if (!weak && check){ best = out; try{ errs = arr(check(out)).map(str).filter(Boolean); }catch(e){ errs = []; } weak = errs.length > 0; } }
+          if (!weak && check){ best = out; try{ errs = arr(await check(out)).map(str).filter(Boolean); }catch(e){ errs = []; } weak = errs.length > 0; } }   // 2.0: a check may ask (the rules check confirms a hit with one quick call)
         else { const r = await sample(prompt, opts); out = r.text; if (r.truncated) toast(t("ai.truncated"), "err"); weak = !str(out).trim(); }
       }catch(e){
         const code = e && e.code || "upstream_error";
@@ -421,7 +421,7 @@ async function runAI(key0, label, prompt, {json=true, step="default", images=nul
       let up = nextTier(curTier); if (up && avoidTier && up === avoidTier) up = nextTier(up);
       if (!up || tries >= 3){
         if (best != null){ AI.log.push({at: now(), step, tier: curTier, tries, usedBest: true}); if (typeof trayDone === "function") trayDone(key, job); const pp = pid && WS.projects ? WS.projects.find(x => x.id === pid) : null; if (pp && typeof actOpen === "function"){ actOpen(pp, label, {by: "pt"}); actCloseSoon(pp.id); } return best; }
-        toast(t("ai.err.json"), "err"); return null; }
+        toast(t("ai.err.json"), "err"); if (typeof ev20AI === "function") ev20AI("invalid_json", step); return null; }
       AI.log.push({at: now(), step, tier: curTier, escalated: up});
       toast(t("ai.escalate", {tier: t("tier." + up)}), "");
       curTier = up; job.text = "";
@@ -430,7 +430,7 @@ async function runAI(key0, label, prompt, {json=true, step="default", images=nul
     const code = e && e.code || "upstream_error";
     // a later try failed, but an earlier answer passed validate: that answer is used (the task's cleaner handles what its check found)
     if (best != null && code !== "cancelled"){ AI.log.push({at: now(), step, tier: curTier, tries, usedBest: true, code}); if (typeof trayDone === "function") trayDone(key, job); const pp = pid && WS.projects ? WS.projects.find(x => x.id === pid) : null; if (pp && typeof actOpen === "function"){ actOpen(pp, label, {by: "pt"}); actCloseSoon(pp.id); } return best; }
-    if (code !== "cancelled") toast(t(typeof navigator !== "undefined" && navigator.onLine === false ? "ai.err.net" : (AI_ERR[code] || "ai.err.upstream")), "err");
+    if (code !== "cancelled"){ const off = typeof navigator !== "undefined" && navigator.onLine === false; toast(t(off ? "ai.err.net" : (AI_ERR[code] || "ai.err.upstream")), "err"); if (typeof ev20AI === "function") ev20AI(off ? "offline" : code, step); }
     return null;
   }finally{
     AI.running.delete(key); render();
@@ -499,7 +499,8 @@ function projectContext(p, {full=false, max=CTX_MAX, only=null} = {}){
   // web findings are JSON-encoded (material, never instructions); findings that tried to instruct the AI are left out
   { const fs = p.pick ? arr(p.pick.findings).filter(f => f && f.screened && !f.flagged) : [], keep = fs.slice(-60), gone = fs.length - keep.length;   // only findings checked for planted instructions
     if (fs.length) P.push(ctxPart("pick_research", (gone ? "(" + gone + " older findings are not listed here)\n" : "") + keep.map(f => "- [" + f.kind + (f.part ? ": " + JSON.stringify(f.part) + " = " + f.status : "") + (f.date ? ", " + f.date : "") + "] " + JSON.stringify(str(f.text)) + (f.src ? " (" + JSON.stringify(str(f.src)) + ")" : "")).join("\n"), 2)); }
-  if (WS.profile && arr(WS.profile.entries).length) P.push(ctxPart("user_profile", "- " + WS.profile.entries.map(e => e.text).join("\n- "), 3));
+  // 2.0 (owner, 4 Nov 2026: "projects dont get other projects rules, never"): the workspace profile is no longer part of a project's prompts;
+  // an entry of it enters a project only as a visible copy in that project's facts book (v200_facts.js)
   let parts = P.filter(Boolean);
   if (only) parts = parts.filter(x => only.includes(x.tag));
   const total = () => parts.reduce((n, x) => n + x.body.length + x.tag.length * 2 + 8, 0);

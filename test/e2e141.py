@@ -29,7 +29,7 @@ with sync_playwright() as pw:
 
     # ---------- 2. the examples loop: show → react → rule → check, with keys, Undo, round size per level ----------
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
-    ev(pg, "UI.home=false; curP().mode='steps'; setPhase('capture')")
+    ev(pg, "UI.home=false; pgShowPhase(curP(), 'capture'); setPhase('capture'); render()")
     r = ev(pg, "({learn: loopSize(curP()), lv: levelOf(curP())})")
     check("loop: Learning round size 3 + 2", r["learn"] == [3, 2], r)
     ev(pg, "(() => { WS.settings.help = 'pro'; render(); })()")
@@ -77,7 +77,7 @@ with sync_playwright() as pw:
 
     # ---------- 3. the Examples board and "+ Add example" (four ways, one panel, key A) ----------
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
-    ev(pg, "UI.home=false; curP().mode='steps'; setPhase('capture')")
+    ev(pg, "UI.home=false; pgShowPhase(curP(), 'capture'); setPhase('capture'); render()")
     n0 = ev(pg, "goalOf(curP()).examples.length")
     pg.locator("#exboard [data-a=ex-addpanel]").first.click(); pg.wait_for_timeout(200)
     check("add: one panel with four ways", pg.locator(".modal [data-a=exa-way]").count() == 4)
@@ -106,7 +106,7 @@ with sync_playwright() as pw:
     check("board: filter Not good", pg.locator("#exboard .exrow").count() >= 1 and all(c == "v-bad" for c in ev(pg, "[...document.querySelectorAll('#exboard .exrow')].map(r => r.classList.contains('v-bad') ? 'v-bad' : 'x')")))
     # mark golden / never and make tests
     ev(pg, "(() => { const p = curP(); const e = goalOf(p).examples.find(x => x.verdict === 'bad'); e.never = true; touch(p); render(); })()")
-    ev(pg, "UI.home=false; setPhase('test')"); pg.wait_for_timeout(200)
+    ev(pg, "UI.home=false; pgShowPhase(curP(), 'test'); setPhase('test'); render()"); pg.wait_for_timeout(200)
     nt = ev(pg, "curP().tests.length")
     pg.locator("#extests [data-a=ex-tests]").click(); pg.wait_for_timeout(200)
     r = ev(pg, "(() => { const p = curP(); const ts = p.tests.filter(x => x.fromEx); return {n: p.tests.length, ex: ts.length, never: ts.filter(x => x.never).length, crit: ts.map(x => x.criteria.length)}; })()")
@@ -124,7 +124,7 @@ with sync_playwright() as pw:
 
     # ---------- 4. the frame: inspector, Why, revert to PT's version, status bar, keys, level chip ----------
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
-    ev(pg, "UI.home=false; curP().mode='steps'; setPhase('require')")
+    ev(pg, "UI.home=false; pgShowPhase(curP(), 'require'); setPhase('require'); render()")
     ref = ev(pg, "'req:' + curP().requirements[0].id")
     pg.locator(f"[data-a=insp-open][data-ref='{ref}']").first.click(); pg.wait_for_timeout(200)
     check("inspector: Details of the item", pg.locator(".drawer.insp .insp-title").count() == 1 and ev(pg, "UI.panelTab") == "details")
@@ -155,7 +155,7 @@ with sync_playwright() as pw:
 
     # ---------- 5. examples in every stage ----------
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
-    ev(pg, "UI.home=false; curP().mode='steps'; setPhase('understand')")
+    ev(pg, "UI.home=false; pgShowPhase(curP(), 'understand'); setPhase('understand'); render()")
     pg.locator("#problem [data-a=pc-make]").click(); idle(pg)
     check("problem cards: several ways to say the problem", pg.locator("#problem .pcard2").count() >= 3)
     g0 = ev(pg, "problemRead(curP()).cards.filter(c => c.verdict === 'good').length")
@@ -163,47 +163,38 @@ with sync_playwright() as pw:
     check("problem cards: your verdict is kept", ev(pg, "problemRead(curP()).cards.filter(c => c.verdict === 'good').length") == g0 + 1)
     pg.locator("[data-bind='p:problem.number']").fill("90"); pg.locator("[data-bind='p:problem.number']").press("Tab")
     pg.locator("[data-bind='p:problem.unit']").fill("minutes per week"); pg.locator("[data-bind='p:problem.unit']").press("Tab")
-    ev(pg, "UI.home=false; setPhase('operate')"); pg.wait_for_timeout(200)
+    ev(pg, "UI.home=false; pgShowPhase(curP(), 'operate'); setPhase('operate'); render()"); pg.wait_for_timeout(200)
     check("success number: the baseline comes back in Release & run", pg.locator("#success14 .snnum").first.inner_text().strip().startswith("90"))
     pg.locator("#sn-v").fill("20"); pg.locator("#success14 button[type=submit]").click(); pg.wait_for_timeout(200)
     check("success number: measured value logged", ev(pg, "problemRead(curP()).log.slice(-1)[0].v") == "20")
     pg.locator("#rl-in").fill("Title: Omega Seamaster 1962 — dial straight on\n---\nTitle: Swatch scratched"); pg.locator("#real14 [data-a=rl-add]").click(); pg.wait_for_timeout(200)
     check("real results: become examples on the board", ev(pg, "goalOf(curP()).examples.filter(e => e.src === 'real').length") >= 2)
-    ev(pg, "UI.home=false; setPhase('arch')"); pg.wait_for_timeout(200)
+    ev(pg, "UI.home=false; pgShowPhase(curP(), 'arch'); setPhase('arch'); render()"); pg.wait_for_timeout(200)
     check("design: options as cards with a choose button", pg.locator(".optcard").count() >= 2 and pg.locator(".optcard [data-a=arch-choose]").count() >= 1)
     if pg.locator("[data-a=ds-make]").count():
         pg.locator("[data-a=ds-make]").first.click(); idle(pg)
     check("design: a day using each option, the simplest included", pg.locator(".optcard .dayline").count() >= 2 and ev(pg, "curP().arch.options.some(o => o.simplest || o.kind === 'none')"))
     pg.screenshot(path=str(SHOTS / "design-days.png"))
     ev(pg, "(() => { const p = curP(); const g = goalOf(p); for (const e of g.examples.slice(0, 2)){ e.verdict = 'good'; e.input = e.input || 'Three photos of a watch'; } render(); })()")
-    ev(pg, "UI.home=false; setPhase('build')"); pg.wait_for_timeout(200)
+    ev(pg, "UI.home=false; pgShowPhase(curP(), 'build'); setPhase('build'); render()"); pg.wait_for_timeout(200)
     if pg.locator("#exrun [data-a=xr-run]").count():
         pg.locator("#exrun [data-a=xr-run]").click(); idle(pg, 30000)
     check("build: the brief tried on your example inputs, results to judge", ev(pg, "goalOf(curP()).examples.filter(e => e.src === 'run').length") >= 1)
     r = ev(pg, "(async () => { const p = curP(); p.pendingQs = []; p.dims = p.dims || {}; p.dims.look = {status: 'unknown', summary: ''}; p.qa = p.qa.filter(q => !/look/i.test(q.q)); await aiInterview(p); render(); return {wi: (p.pendingQs[0] || {}).wi, card: !!document.querySelector('.qcard.whatif')}; })()")
-    ev(pg, "UI.home=false; setPhase('interview')"); pg.wait_for_timeout(200)
+    ev(pg, "UI.home=false; pgShowPhase(curP(), 'interview'); setPhase('interview'); render()"); pg.wait_for_timeout(200)
     check("options: questions come as what-if cards", r["wi"] is True and pg.locator(".qcard.whatif").count() >= 1, r)
     ctx.close()
 
     # ---------- 6. the three levels ----------
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
-    ev(pg, "UI.home=false; curP().mode='steps'; setPhase('understand')")
-    check("learning: one moment at a time, attached to its step", pg.locator(".moment.lm").count() == 1 and pg.locator(".lm [data-a=lm-show]").count() == 1)
-    pg.locator(".lm [data-a=lm-show]").click(); pg.wait_for_timeout(300)
-    check("learning: Show me points at the control", pg.locator("#problem.flash").count() == 1)
-    pg.locator(".lm [data-a=lm-ok][data-sk]").click(); pg.wait_for_timeout(150)
-    r = ev(pg, "({lv: skillLv('problem'), ev: (WS.settings.skills.problem || {}).ev, moment: !!document.querySelector('.moment.lm')})")
-    check("learning: Got it counts as practice and the moment goes", r["ev"] >= 1 and not r["moment"], r)
+    # 2.0: the learning moments, the guide strip and the stage gate lived in the 1.x step views (Pick and Chat with structure are their own guide)
     ev(pg, "(() => { for (let i = 0; i < 4; i++) skillEvidence(curP(), 'judge'); })()")
     check("learning: practice fades the explanations (Practised)", ev(pg, "skillLv('judge')") == 2)
     ev(pg, "go('cockpit')"); pg.wait_for_timeout(200)
     check("learning: your skills are shown and correctable", pg.locator("#skills14 select[data-a-change=skill-set]").count() == 9)
     pg.locator("#skills14 select[data-id=risks]").select_option("3"); pg.wait_for_timeout(150)
     check("learning: a skill you set stays yours", ev(pg, "WS.settings.skills.risks.own && WS.settings.skills.risks.lv === 3"))
-    watch(pg); ev(pg, "UI.home=false; setPhase('capture')"); pg.wait_for_timeout(200)
-    check("learning/guided: one guide strip with one main button", pg.locator(".gstrip").count() == 1)
-    ev(pg, "UI.home=false; setPhase('understand')"); pg.wait_for_timeout(200)
-    check("learning: the stage gate has a checklist and a reflection", pg.locator(".gchk li").count() >= 3 and pg.locator(".reflect input").count() == 1)
+    watch(pg)
     # Guided: plan card per stage = Finish for that stage
     ev(pg, "(() => { WS.settings.help = 'guided'; UI.home = false; setPhase('require'); })()"); pg.wait_for_timeout(200)
     if pg.locator(".plancard").count():
@@ -215,15 +206,12 @@ with sync_playwright() as pw:
         r = ev(pg, "({stage: UI.finish && UI.finish.stage, groups: UI.finish && UI.finish.plan.groups.map(g => g.items.every(x => x.stage === 'design'))})")
         check("guided: the plan is Finish for one stage", r["stage"] == "design" and all(r["groups"]), r)
         ev(pg, "ACTIONS['finish-exit']()")
-    check("guided: explain once is offered", pg.locator(".gstrip [data-a=explain-once]").count() == 1)
-    pg.locator(".gstrip [data-a=explain-once]").click(); pg.wait_for_timeout(150)
-    check("guided: explain once shows the moment without changing the level", pg.locator(".moment.lm").count() == 1 and ev(pg, "levelOf(curP())") == "guided")
     # hard decisions look different and ask what matters
     r = ev(pg, "(() => { const p = curP(); p.nsAssumed = true; UI.finish = {pid: p.id, step: 'decide', list: [], i: 0}; UI.finish.list = finishDecisions(p).map(x => x.key); render(); return {hard: !!document.querySelector('.dcard.hard .hardq')}; })()")
     check("guided: hard decisions look different and ask a value question", r["hard"], r)
     ev(pg, "(() => { curP().nsAssumed = false; UI.finish = null; render(); })()")
     # Pro
-    ev(pg, "(() => { WS.settings.help = 'pro'; UI.home = true; UI.qView = 'table'; render(); })()"); pg.wait_for_timeout(200)
+    ev(pg, "(() => { WS.settings.help = 'pro'; UI.home = true; UI.qView = 'table'; UI.pgDetails = UI.pgDetails || {}; UI.pgDetails['home:' + curP().id] = true; render(); })()")   # 2.0: the overview is under the cover's "all" (the 1.x step views are gone); pg.wait_for_timeout(200)
     check("pro: the queue as a table", pg.locator(".qtable tbody tr").count() >= 3)
     pg.locator("[data-a=qt-all]").click(); pg.wait_for_timeout(150)
     check("pro: select all matching shows the bulk bar", pg.locator(".bulkbar [data-a=qt-do]").count() == 1)
@@ -238,13 +226,13 @@ with sync_playwright() as pw:
     pg.keyboard.down("Alt"); pg.wait_for_timeout(600)
     check("pro: holding Alt reveals the keys", ev(pg, "document.body.classList.contains('show-keys')"))
     pg.keyboard.up("Alt")
-    ev(pg, "UI.home=false; setPhase('build')"); pg.wait_for_timeout(200)
+    ev(pg, "UI.home=false; pgShowPhase(curP(), 'build'); setPhase('build'); render()"); pg.wait_for_timeout(200)
     if pg.locator("#rawbrief [data-a=rb-toggle]").count():
         pg.locator("#rawbrief [data-a=rb-toggle]").click(); pg.wait_for_timeout(150)
         txt = pg.locator("#rb-in").input_value()
         pg.locator("#rb-in").fill(txt.replace("\n", "\n(raw edit) ", 1)); pg.locator("#rawbrief [data-a=rb-apply]").click(); pg.wait_for_timeout(200)
         check("pro: raw brief editor applies as one change with a new draft", "(raw edit)" in ev(pg, "curP().pkg.sections.map(s => s.content).join('')"))
-    ev(pg, "UI.home=false; setPhase('test')"); pg.wait_for_timeout(200)
+    ev(pg, "UI.home=false; pgShowPhase(curP(), 'test'); setPhase('test'); render()"); pg.wait_for_timeout(200)
     check("pro: run comparison and error board", pg.locator("#protest").count() == 1)
     pg.locator("#protest [data-a=sec-tests]").click(); idle(pg)
     check("pro: security test preset", ev(pg, "curP().tests.filter(x => x.security).length") >= 3)
@@ -261,7 +249,7 @@ with sync_playwright() as pw:
 
     # ---------- 7. audit fixes ----------
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
-    r = ev(pg, "(() => { const p = curP(); p.problem = {situation: 'typed only this'}; UI.home = false; p.mode = 'steps'; setPhase('understand'); render(); setPhase('operate'); render(); return !!document.querySelector('.app'); })()")
+    r = ev(pg, "(() => { const p = curP(); p.problem = {situation: 'typed only this'}; UI.home = false; setPhase('understand'); render(); setPhase('operate'); render(); return !!document.querySelector('.app'); })()")
     check("audit: a partly filled problem section renders (Understand and Operate)", r and not errors, errors[:2])
     check("audit: frame words only as whole words (EN/DE/ZH)", ev(pg, """(() => { const W = [["When When a seller uploads","a seller uploads"],["whenever x","x"],["If, the photo","the photo"],["iframe loads","iframe loads"],["Fallstudien zeigen","Fallstudien zeigen"],["Falls nötig","nötig"],["Wenn wenn der Kunde","der Kunde"],["当用户上传照片时","用户上传照片"],["当前页面加载时","当前页面加载"],["当地时间","当地时间"],["如果没有照片","没有照片"],["sobald","sobald"]];
  const T = [["the resulting file is small","the resulting file is small"],["the results table lists","the results table lists"],["the result the result shows","shows"],["The result is that it works","it works"],["then the result: ok","ok"],["dann ist das Ergebnis: gut","gut"],["Dannenberg","Dannenberg"],["结果：包含","包含"],["结果显示","显示"],["thenceforth","thenceforth"]];
@@ -318,7 +306,7 @@ with sync_playwright() as pw:
     check("hunt: opening another project starts with a clean panel and filter", not r["ref"] and not r["f"] and not r["raw"], r)
     r = ev(pg, """(() => { WS.settings.help = 'pro'; openProject('p-mvf7qpwqud0aj'); UI.home = true; UI.qView = 'table'; UI.qTab = 'you'; render(); ACTIONS['qt-all'](); const nAll = Object.keys(UI.qSel2.keys).length; ACTIONS['q-tab']({dataset: {v: 'later'}}); return {nAll, after: Object.keys(UI.qSel2.keys).length, vis: qtVisibleSel(curP()).length}; })()""")
     check("hunt: switching tabs drops the bulk selection", r["nAll"] > 0 and r["after"] == 0 and r["vis"] == 0, r)
-    r = ev(pg, """(() => { const p = WS.projects.find(x => arr(x.pkg && x.pkg.sections).length > 1); openProject(p.id); p.mode = 'steps'; UI.home = false; setPhase('build'); ACTIONS['rb-toggle'](); render(); const s0 = p.pkg.sections[0]; s0.content = s0.content + ' (PT changed this)'; const el = document.getElementById('rb-in'); el.value = el.value.replace('=== ' + p.pkg.sections[1].id, 'X\\n=== ' + p.pkg.sections[1].id); ACTIONS['rb-apply'](); return {kept: /PT changed this/.test(p.pkg.sections[0].content), open: UI.rawOpen}; })()""")
+    r = ev(pg, """(() => { const p = WS.projects.find(x => arr(x.pkg && x.pkg.sections).length > 1); openProject(p.id); UI.home = false; pgShowPhase(p, 'build'); setPhase('build'); render(); ACTIONS['rb-toggle'](); render(); const s0 = p.pkg.sections[0]; s0.content = s0.content + ' (PT changed this)'; const el = document.getElementById('rb-in'); el.value = el.value.replace('=== ' + p.pkg.sections[1].id, 'X\\n=== ' + p.pkg.sections[1].id); ACTIONS['rb-apply'](); return {kept: /PT changed this/.test(p.pkg.sections[0].content), open: UI.rawOpen}; })()""")
     check("hunt: the raw editor never overwrites a newer brief", r["kept"] and r["open"], r)
     r = ev(pg, """(() => { const rows = [{id: 'T1', x: 'pass', y: 'pass'}, {id: 'T2', x: 'pass', y: 'fail'}]; return rows.sort((m, n) => (m.x === m.y) - (n.x === n.y))[0].id; })()""")
     check("hunt: run compare puts changed tests first", r == "T2", r)

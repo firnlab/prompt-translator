@@ -91,9 +91,7 @@ function popNav(){
 }
 window.addEventListener("popstate", () => { popNav(); });
 function navBar(p){
-  // 1.5.0: a jump out of a view (Pick, Blueprint …) to show an item always offers the way back
-  const bm = UI.backMode && UI.backMode.pid === p.id && projMode(p) !== UI.backMode.mode ? `<div class="navbar14" role="navigation"><button class="btn xs primary" data-a="mode-back">← ${esc(t("nav.backto", {m: t("m." + UI.backMode.mode)}))}</button></div>` : "";
-  return bm + navBar1(p);
+  return navBar1(p);   // 2.0: no jump out of a face any more (the 1.5 "back to …" bar is gone)
 }
 function navBar1(p){
   const fp = UI.finishPaused && UI.finishPaused.pid === p.id && !UI.finish ? `<div class="navbar14 finpause" role="navigation"><button class="btn xs primary" data-a="finish-resume">← ${esc(t("fin.resume", {i: num(UI.finishPaused.i, 0) + 1, n: arr(UI.finishPaused.list).length}))}</button></div>` : "";
@@ -178,8 +176,8 @@ function navFallback(ref){
   const p = curP(); UI.navTry = (UI.navTry || 0) + 1;
   // 1. the current view has no place for it: open the full step (Back returns to the view you were in)
   // 1.5.0: in Pick, an item the side panel can show opens there (you stay in Pick)
-  if (UI.navTry === 1 && p && projMode(p) === "pick"){ const r0 = ref.startsWith("#") ? null : ref; if (r0 && (itemExists(p, r0) || /^(ns|arch:choice|intake:|und:|fs:|pq:|crit:|engine:|pick:|proof:|audience)/.test(r0))){ UI.navRef = null; UI.navTry = 0; inspOpen(r0, "details"); return; } }
-  if (UI.navTry === 1 && p && !["steps", "journey"].includes(projMode(p))){ UI.prevMode = projMode(p); UI.backMode = {pid: p.id, mode: projMode(p)}; p.mode = "steps"; UI.flashRef = ref; setTimeout(render, 0); return; }   // after the current render has finished, so nothing undoes the jump
+  if (UI.navTry === 1 && p && MODES.includes(projMode(p))){ const r0 = ref.startsWith("#") ? null : ref; if (r0 && (itemExists(p, r0) || /^(ns|arch:choice|intake:|und:|fs:|pq:|crit:|engine:|pick:|proof:|audience)/.test(r0))){ UI.navRef = null; UI.navTry = 0; inspOpen(r0, "details"); return; } }
+  // 2.0: there is no Steps view to jump to any more; the pages (both faces) and the side panel show every item
   UI.navRef = null; UI.navTry = 0;
   // 2. no place in the step either: the inspector shows it, with its details and tools
   const r = ref.startsWith("#") ? null : ref;
@@ -189,4 +187,3 @@ function navFallback(ref){
   toast(t("nav.attop"), "");
 }
 
-ACTIONS["mode-back"] = () => { const p = curP(); if (!p || !UI.backMode) return; p.mode = UI.backMode.mode; UI.backMode = null; touch(p); render(); };

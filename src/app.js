@@ -1,7 +1,7 @@
 /* ===================== APP STATE ===================== */
 let META = {workspaces: [], last: null};
 let WS = {id:null, name:"", settings:{}, profile:{entries:[]}, projects:[], notes:[], patterns:[], research:[], jobs:[], insights:null, profileSuggestions:[]};
-const PT_VERSION = "1.10.0";
+const PT_VERSION = "2.0.0";
 /* ---------- version next to the name: "newest" check (shared doc app/version: read by everyone, written by the owner's page) ---------- */
 const APPV = {latest: PT_VERSION, newer: false, checked: false};
 function verCmp(a, b){ const x = String(a || "0").split(".").map(n => parseInt(n, 10) || 0), y = String(b || "0").split(".").map(n => parseInt(n, 10) || 0); for (let i = 0; i < 3; i++){ if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) - (y[i] || 0); } return 0; }
@@ -327,7 +327,7 @@ function lockNow(){ UI.unlocked = false; UI.lockFor = null; UI.pinForgot = null;
 
 /* ---------- projects ---------- */
 function newProject(name, {raw = "", mode = "", kind = "new"} = {}){
-  const p = blankProject(name); p.mode = mode || WS.settings.defaultMode || "steps"; p.kind = kind;
+  const p = blankProject(name); p.mode = MODES.includes(mode) ? mode : projMode(null); p.kind = kind;
   if (raw) p.intake.raw = raw;
   WS.projects.unshift(p); logAct(p, t("act.created"), {step:"capture", important:true}); touch(p);
   UI.view = "project"; UI.pid = p.id; UI.phase = "capture"; UI.prevMode = null; UI.selPart = null; UI.cmap = null; UI.itemBox = null; p.focus = {ph:"capture", id:null}; render();
@@ -445,9 +445,11 @@ function autoOK(){ return WS.settings.autoJobs !== false && usagePct() < (WS.set
 function autoEngine(p, ph){
   if (!autoOK()) return;
   const e = eng(p), at = PHASE_IDS.indexOf(ph);
-  if (at >= PHASE_IDS.indexOf("interview") && e.scan.state === "none" && str(p.intake.raw).trim() && e.autoScan !== false) setTimeout(() => frontierJob(p), 300);
-  if (at >= PHASE_IDS.indexOf("arch") && !e.suggestAt && arr(p.requirements).length) setTimeout(() => aiEngineSuggest(p), 600);
-  if (ph === "arch" && trialOn(p) && !arr(e.trial.runs).length && arr(p.requirements).length) setTimeout(() => aiTrialRun(p), 900);
+  /* 2.0 Part D (hunt 5): an automatic step closes its own action when it ends; left open, the next click closed it and its Undo took the step back too */
+  const own = fn => Promise.resolve().then(fn).catch(x => onAppError(x && x.message, "auto:" + ph)).finally(() => actClose(p.id));
+  if (at >= PHASE_IDS.indexOf("interview") && e.scan.state === "none" && str(p.intake.raw).trim() && e.autoScan !== false) setTimeout(() => own(() => frontierJob(p)), 300);
+  if (at >= PHASE_IDS.indexOf("arch") && !e.suggestAt && arr(p.requirements).length) setTimeout(() => own(() => aiEngineSuggest(p)), 600);
+  if (ph === "arch" && trialOn(p) && !arr(e.trial.runs).length && arr(p.requirements).length) setTimeout(() => own(() => aiTrialRun(p)), 900);
 }
 /* automatic online research at key steps (runs in the background, proposes, never applies) */
 const AUTO_RES = {understand: "res.auto.understand", arch: "res.auto.arch", build: "res.auto.build"};
