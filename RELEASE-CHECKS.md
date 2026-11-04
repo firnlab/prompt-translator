@@ -665,3 +665,5 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   that change from a local session"). Typing into forms is therefore off (H20_TYPE = false): the plan clicks up to the first field,
   that field and the rest are the owner's, the guard refuses form_input, the card and the changelog say so. CAPABILITIES-2.0.json
   no longer lists form_input. e2e200_hands D0 checks the off state; the typing tests run with the switch on.
+- 2.0.0 PR: quick-gate red on a stale CHANGELOG.md. The releases.json notes go into CHANGELOG.md, so adding the release entry needs
+  `python3 tools/changelog.py` again before the commit (the local gate had run before the entry existed).

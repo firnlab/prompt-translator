@@ -7,6 +7,8 @@ Versions before 1.8 were published from the private archive repository (see RELE
 
 ## 2.0.0 — 2026-11-04
 
+Release notes: 2.0.0: two faces of one project, Chat with structure and Pick (Steps, Blueprint, Journey, Swimlanes and Express removed; their content stays readable). The solution map: goal first, every route from simple to frontier including the not-yet-possible ones, decide, then details; coverage rounds and a red-team round. Each project's rules never cut from its prompt; nothing crosses between projects. PT's hands per project with a site list and a contract card, stopping before every final button; typing into forms is off (the platform does not grant form_input from a cloud publish). Morning check, prompt tests, Improve-PT loop, metrics kept in the workspace, Setup guides for the GitHub App, connector and the helpers Filesystem, Git, Fetch and Blender.
+
 ### Added
 
 - Chat with structure: talk freely, and PT files what it learns into the project's facts book with a “✓ filed” note; a question answered in Chat counts as answered in Pick
