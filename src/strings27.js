@@ -368,6 +368,7 @@ Object.assign(STR, {
 "m20.prove.v.unclear":["still unclear","noch unklar","仍不清楚"],
 "m20.prove.check":["To check it for real: {x}","So prüfst du es wirklich: {x}","实际验证方法：{x}"],
 "m20.prove.failed":["Prove it: “{x}” does not hold","Geprüft: „{x}“ stimmt nicht","验证：“{x}”不成立"],
+"m20.star.row":["PT's pick","Wahl von PT","PT 推荐"],
 "m20.star.t":["PT's view","Sicht von PT","PT 的看法"],
 "m20.star.me":["I'd pick this one: it fits your goal best for its cost and your time. What it loses: {x}. That would change my mind.","Ich würde diesen nehmen: er passt für Kosten und deine Zeit am besten zu deinem Ziel. Was er verliert: {x}. Das würde meine Meinung ändern.","我会选这条：按成本和你的时间算，它最符合目标。它的代价：{x}。这一点可能改变我的看法。"],
 "m20.star.other":["I'd pick {x}.","Ich würde {x} nehmen.","我会选 {x}。"],

@@ -116,7 +116,7 @@ const STAGE20_HELD = new WeakMap();   // project → how many detail items wait 
 { const orig = queueOf; queueOf = function(p){
     const q = orig(p);
     if (!stage20Early(p)) return q;
-    const keep = q.filter(x => !STAGE20_WAIT.includes(x.ph)); STAGE20_HELD.set(p, q.length - keep.length);
+    const keep = q.filter(x => x.kind === "pick" || !STAGE20_WAIT.includes(x.ph));   // a pick card was made under the route-splitting rule: it stays STAGE20_HELD.set(p, q.length - keep.length);
     return keep; }; }
 function stage20Waiting(p){ if (!stage20Early(p)) return 0; queueOf(p); return STAGE20_HELD.get(p) || 0; }
 

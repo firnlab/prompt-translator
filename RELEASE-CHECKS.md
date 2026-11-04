@@ -394,3 +394,54 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   swallowed it and the file still parsed; the cause-64 check needs a second statement after the comment. `static_checks.js` now also flags a
   comment followed by one assignment and a closing brace; planted in `check_the_checks.py`.
 - runAI's `check` may now be async (`await check(out)`): the rules check confirms a code hit with one quick-tier call inside it.
+
+## 2.0.0 Part B — the solution map and the new order (src/v200_stage.js, src/v200_map.js, src/strings27.js, test/e2e200_map.py)
+- What changes for the owner: a project made with 2.0 goes Goal → Map → Decide → Details → Build → Check → Launch → Operate. The goal card
+  (what, for whom, a real moment, success sign, where, budget; your rules from the facts book; "PT's guess" until you say ✓ That's it)
+  comes first; then one tap shows all routes on one map (Simple → Medium → Complex → Frontier, plus Not possible yet), searched from six
+  angles with a red team and an on-screen record of how far PT searched; you shortlist (☆, up to 3), say ✕ Not for me with a reason,
+  compare, Prove it, Take this (decision record with tripwires, restore point first); only then PT asks the details of that route. A new
+  fact, a failed test or a serious review problem that breaks the route raises a Route alert. Routes that worked in another project
+  (after its launch) stand on the map with "Worked before", as templates only.
+- Data for Parts C–E: `p.order20` (true for projects made with 2.0; a stored project without the flag gets false: Part C's migration sets
+  it), `p.goal20 = {v, f: {outcome, whom, situation, success, where, budget}, by: {field: you|pt}, noNevers, skip, hist, pend}`,
+  `p.map20 = {routes, notyet, rounds, cells, short, rej, chosen, decs, alerts, events, neutral, tags, libChecked, looked, satAt, nextR,
+  nextN}` (one project field, so a change is one write of its parts), `WS.settings.lib20` (the template library). Functions to reuse:
+  the stage model `STAGE20`, `STAGE20_PHASES`, `stage20On/Of/Rows/Done/Next/Early/Decided/Waiting`, `stage20StripHTML`, `stage20RowsHTML`;
+  the map `m20Read`, `m20Chosen`, `m20Decision`, `m20Status`, `m20Round(p, {kind, lenses, red, focus, everything, question})`, `m20Chip`,
+  `m20Short`, `m20Reject`, `m20Prove`, `m20Take`, `m20WatchSoon(p, {kind, text, ref})` (any new source of facts that may break the route),
+  `m20Carry` (what carries over), `m20Open(p, view, id)` and the views `m20MapHTML`, `m20CardHTML`, `m20CompareHTML`, `goal20HTML`.
+- Cause 85 (owner, 2–3 Nov 2026, "it asks me about assumptions and requirements of something I have not chosen"; "a later fact broke the
+  solution after much work"): the twelve phases put assumptions and requirements before the architecture choice, so PT asked details of a
+  route that was not chosen and nothing tied the details to a route. Now (2.0 projects) the detail items (phases assume and require) wait
+  in the queue until a route is taken (kept, counted on the map: "Detail questions wait …"), the pick and interview prompts carry the
+  route-splitting rule before the decision and `<chosen_route>` after it, and the details made before the decision are route-neutral
+  (they carry over), the ones after it route-bound. Check: e2e200 B1, B5; planted bugs "detail questions are asked before the route is
+  chosen", "the pick prompt asks details before the decision", "every detail counts as route-bound".
+- Cause 86 (owner, "Claude says that's all, but there is more"): one call listed the options, collapsed onto the typical answers and stopped
+  when the list looked complete; nothing re-tested what it said. Now six fixed lenses are six calls (each asks for unusual answers with how
+  typical each is), merged by code (bigram similarity ≥ 0.8; 0.4–0.8 one quick-tier check), a red-team call adds missing routes, explains
+  empty grid cells ("where it runs × how") and breaks routes (a correction on the route and a map event), and the saturation record is on
+  screen; "searched to saturation" only after two quiet rounds in a row with every cell covered or explained, and the button stays. At most
+  two calls at a time, the cost named first for every multi-call action, calls only on a tap. Check: e2e200 B3, B8; planted bugs (lenses
+  run at once, one call for every angle, no unusual answers, no merge, no correction, saturation after one round, cost not named).
+- Cause 87 (owner, "show me all … don't hide what breaks my rule, but don't offer it"): a route that breaks a never was either dropped by the
+  Part A output check (repaired away) or shown like the others. Now the map's calls are exempt from the repair (`map-` in v200_facts.js),
+  each route is checked against the active never / must entries by code plus one quick-tier confirm (`factsGuardHits`), and a breaking route
+  is "Blocked by your rule: …", greyed, hidden by the default filter with its count, never shortlisted or taken; a never added later greys
+  it at once. Check: e2e200 B4; planted bugs "a route that breaks your never is not greyed", "the map shows rule-breaking routes by default".
+- Cause 88 (owner, "PT also shows previous solutions that worked … projects dont get other projects rules, never"): a worked solution could
+  only come over as a whole project copy or a preference. Now a route enters `WS.settings.lib20` only after its project launched
+  (doRelease, or a launched project's map), with allow-listed fields (family, rung, generic pattern, where, how, actor kinds, recipe,
+  measured outcome, date); any text holding a key word of one of that project's facts-book entries, a capitalised name from its goal card
+  or its name is left out. On another map it is a route like the others ("Worked before · live since …"), re-checked against that
+  project's rules. Check: e2e200 B9 (a planted never "We never upload the photos to Dropbox" reaches neither the library nor a prompt of
+  the other project); planted bugs "a proven route carries its project's rule words", "a route enters the library before its project
+  launched".
+- Cause 89 (Part A left it to the owner's rule): a 1.8 check row's ★ was "you chose this last time" from another tool of the workspace —
+  a carry-over of another project's choice as a suggestion. Removed (`chkPrev` gone, `chkStar` is PT's own); e2e180_checks part 2 now
+  checks the opposite of 1.8. Planted bug "the checks ★ carries your choice on another tool again".
+- Decided (Part B): the route alert's detection is code for your rules and one quick-tier call per action for facts, failed tests and
+  serious (critical/high) review findings against the chosen route's load-bearing assumptions and tripwires; web truth (prices, terms) is
+  not fetched by the map (sample calls cannot browse): every field says "PT's reasoning, not checked" unless the call knew better.
+  The "Not possible yet" watch line is shown, but nothing watches it on a schedule yet (Part D's morning check is the place).

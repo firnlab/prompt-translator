@@ -393,6 +393,12 @@ function m20Refs(p){
   return [...arr(p.requirements).map(r => "req:" + r.id), ...arr(p.assumptions).map(a => "assumption:" + a.id), ...arr(p.risks).map(r => "risk:" + r.id), ...arr(p.qa).filter(q => str(q.answer).trim()).map(q => "qa:" + q.id),
     ...arr(p.pick && p.pick.log).map(e => "pe:" + e.id), ...arr(p.goal && p.goal.criteria).map(c => "crit:" + c.id)];
 }
+function m20RefLabel(p, ref){
+  const [k, id] = [str(ref).split(":")[0], str(ref).slice(str(ref).indexOf(":") + 1)];
+  if (k === "pe"){ const e = arr(p.pick && p.pick.log).find(x => x.id === id); return e ? str(e.q) + " → " + str(e.answer) : ref; }
+  if (k === "qa"){ const q = arr(p.qa).find(x => x.id === id); return q ? str(q.q) + " → " + str(q.answer) : ref; }
+  return refLabel(p, ref);
+}
 function m20Bound(p, ref){ const M = m20Read(p); if (M.tags[ref]) return M.tags[ref] !== "n"; return !M.neutral.includes(ref); }
 /** how much of the work carries over to another route: the goal, your facts and rules and every route-neutral detail */
 function m20Carry(p){
@@ -556,7 +562,7 @@ function m20RouteRow(p, r){
   const lbl = r.id + " · " + r.name;
   const rej = U.rej === r.id ? `<div class="m20-rejq" role="group" aria-label="${esc(t("m20.rej.q", {x: r.name}))}"><span class="small">${esc(t("m20.rej.q", {x: r.name}))}</span>${M20_REJ.map(k => `<button class="btn xs" data-a="m20-rejwhy" data-id="${esc(r.id)}" data-v="${k}">${esc(t("m20.rej." + k))}</button>`).join("")}<button class="btn xs ghost" data-a="m20-rej" data-id="${esc(r.id)}">${esc(t("btn.cancel"))}</button></div>` : "";
   return `<div class="m20-r st-${esc(st)} ${M.chosen === r.id ? "chosen" : ""} ${sl ? "short" : ""}" id="m20r-${esc(r.id)}" data-route="${esc(r.id)}" tabindex="-1">
-    <button class="m20-nm linkish" data-a="m20-open" data-v="card" data-id="${esc(r.id)}">${star && star.id === r.id ? `<span class="m20-star" title="${esc(t("m20.star.t"))}">★ </span>` : ""}${M.chosen === r.id ? `<span class="m20-chosen">${esc(t("m20.chosen"))} · </span>` : ""}${esc(lbl)}</button>
+    <button class="m20-nm linkish" data-a="m20-open" data-v="card" data-id="${esc(r.id)}">${star && star.id === r.id ? `<span class="m20-star" title="${esc(t("m20.star.t"))}">★ ${esc(t("m20.star.row"))} · </span>` : ""}${M.chosen === r.id ? `<span class="m20-chosen">${esc(t("m20.chosen"))} · </span>` : ""}${esc(lbl)}</button>
     <div class="m20-acts">${st === "blocked" ? "" : `<button class="iconbtn m20-sl" aria-pressed="${sl}" data-a="m20-short" data-id="${esc(r.id)}" title="${esc(t(sl ? "m20.short.off" : "m20.short.on"))}" aria-label="${esc(t(sl ? "m20.short.off" : "m20.short.on") + ": " + lbl)}">${sl ? "★" : "☆"}</button>`}<button class="iconbtn m20-x" data-a="m20-rej" data-id="${esc(r.id)}" title="${esc(t("m20.rej.t"))}" aria-label="${esc(t("m20.rej.t") + ": " + lbl)}">✕</button></div>
     <div class="m20-facts">${m20Badge(st)}${r.lib ? `<span class="m20-badge b-prev">${esc(t("m20.lib.badge", {d: str(r.libOut && r.libOut.since)}))}</span>` : ""}${arr(r.corr).length ? `<span class="m20-badge b-corr">${esc(t("m20.corrected"))}</span>` : ""}
       <span>${esc(t("m20.c.fit"))} ${m20Fit(r.fitN)}</span><span>${esc(t("m20.c.work"))} <b>${esc(m20Min(r.setupMin))}</b>${r.weeklyMin ? ` + <b>${esc(t("m20.minw", {n: r.weeklyMin}))}</b>` : ""}</span><span>${esc(t("m20.c.money"))} <b>${esc(str(r.money && r.money.monthly) || "?")}</b></span><span>${esc(t("m20.c.first"))} <b>${esc(r.first || "?")}</b></span></div>
@@ -634,7 +640,7 @@ function m20AlertHTML(p, a){
     ${a.repair ? `<div class="m20-repair"><b>${esc(t(a.repair.ok ? "m20.al.rep.ok" : "m20.al.rep.no"))}</b> ${esc(a.repair.text)}${arr(a.repair.steps).length ? `<ol class="small">${a.repair.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol>` : ""}${a.repair.cost ? `<p class="small">${esc(t("m20.al.rep.cost", {x: a.repair.cost}))}</p>` : ""}${a.repair.ok ? `<button class="btn xs primary" data-a="m20-al" data-id="${esc(a.id)}" data-v="repaired">${esc(t("m20.al.rep.use"))}</button>` : ""}</div>` : busyHTML("map-repair")}
     ${U.keep === a.id ? `<form class="stack" data-form="m20-keep" data-id="${esc(a.id)}"><label class="fld"><span>${esc(t("m20.al.keepwhy"))}</span><textarea id="m20-keep-${esc(a.id)}" rows="2">${esc(t("m20.al.keepsug"))}</textarea></label><div class="row"><button class="btn sm primary" type="submit">${esc(t("m20.al.keep"))}</button><button class="btn sm ghost" type="button" data-a="m20-keepq" data-id="">${esc(t("btn.cancel"))}</button></div></form>` : ""}
     ${["open", "later"].includes(a.status) ? `<div class="row m20-alopts">${aiBtn("m20-repair", t("m20.al.repair"), "M", {key: "map-repair", attrs: `data-id="${esc(a.id)}"`})}<button class="btn xs" data-a="m20-al" data-id="${esc(a.id)}" data-v="map">${esc(t("m20.al.map"))}</button><button class="btn xs" data-a="m20-keepq" data-id="${esc(a.id)}">${esc(t("m20.al.keep"))}</button>${a.status === "open" ? `<button class="btn xs ghost" data-a="m20-al" data-id="${esc(a.id)}" data-v="later">${esc(t("m20.al.lateri"))}</button>` : ""}</div>` : `<p class="small">${esc(t("m20.al.st." + a.status))}${a.reason ? " · “" + esc(a.reason) + "”" : ""}</p>`}
-    ${C.bound.length ? `<details class="small"><summary>${esc(t("m20.al.boundlist", {n: C.bound.length}))}</summary><ul>${C.bound.slice(0, 30).map(ref => `<li>${esc(refLabel(p, ref))} <button class="btn xs ghost" data-a="m20-tag" data-ref="${esc(ref)}">${esc(t("m20.al.neutral"))}</button></li>`).join("")}</ul></details>` : ""}</section>`;
+    ${C.bound.length ? `<details class="small"><summary>${esc(t("m20.al.boundlist", {n: C.bound.length}))}</summary><ul>${C.bound.slice(0, 30).map(ref => `<li>${esc(m20RefLabel(p, ref))} <button class="btn xs ghost" data-a="m20-tag" data-ref="${esc(ref)}">${esc(t("m20.al.neutral"))}</button></li>`).join("")}</ul></details>` : ""}</section>`;
 }
 function m20DecHTML(p){
   const D = m20Decision(p); if (!D) return "";
