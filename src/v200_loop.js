@@ -60,7 +60,7 @@ function pt20Inputs(p){
 function pt20InJSON(ins){ return ins.map((x, i) => ({i, text: x.text.slice(0, 2000)})); }   // ok:cut one test input stays short
 function pt20Prompt(pkg, ins, rules){
   return `[[task:ptest-run]]
-You test a finished prompt: the instructions of a person's Claude tool. For each input, first answer it exactly as the tool would, following ONLY <tool_prompt> (it is the tool's whole setup). Then check that answer against each of the person's rules in <rules> (NEVER: the answer must not do, propose or assume it; MUST: the answer must do it, where the input calls for it) and say for each whether the answer keeps it. Be strict; a rule the input does not touch is kept.
+You test a finished prompt: the instructions of a person's Claude tool. For each input, first answer it exactly as the tool would, following ONLY the tool prompt below (it is the tool's whole setup). Then check that answer against each of the person's rules listed at the end (NEVER: the answer must not do, propose or assume it; MUST: the answer must do it, where the input calls for it) and say for each whether the answer keeps it. Be strict; a rule the input does not touch is kept.
 <tool_prompt>
 ${pkg}
 </tool_prompt>
@@ -175,7 +175,7 @@ Object.assign(FORMS, {
 for (const k of ["ptest20", "hands20log"]) DIFF_SKIP.add(k);   // records, never part of an Undo
 
 const V200L_CSS = `
-.met20-wrap{overflow-x:auto;max-width:100%}
+.met20-wrap{overflow-x:auto;max-width:100%;position:relative}
 .met20-t{border-collapse:collapse;width:100%;font-size:14px}
 .met20-t th,.met20-t td{padding:4px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 .met20-t td.tnum{text-align:right}

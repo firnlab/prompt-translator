@@ -8026,7 +8026,7 @@ Object.assign(STR, {
 "mc20.keys.ok":["Key dates: none runs out within 30 days (keys read: {n})","Schlüssel-Daten: keiner läuft in 30 Tagen ab (gelesene Schlüssel: {n})","密钥日期：{n} 个密钥，30 天内都不会过期"],
 "mc20.keys.soon":["Renew soon: {x}","Bald erneuern: {x}","请尽快续期：{x}"],
 "mc20.app":["GitHub checks skipped: {x}","GitHub-Prüfungen übersprungen: {x}","已跳过 GitHub 检查：{x}"],
-"mc20.proj":["{x}: tripwires checked against {n} new items","{x}: Stolperdrähte gegen {n} neue Einträge geprüft","{x}：已对照 {n} 个新条目检查触发条件"],
+"mc20.proj":["{x}: tripwires checked · new items: {n}","{x}: Stolperdrähte geprüft · neue Einträge: {n}","{x}：已检查触发条件 · 新条目：{n}"],
 "mc20.watch.n":["watched pages: {n}, changed: {c}","beobachtete Seiten: {n}, geändert: {c}","监视的页面：{n}，有变化：{c}"],
 "mc20.watch.nofetch":["{n} “Not possible yet” lines (PT reads their pages once the Fetch helper is installed)","{n} Zeilen «Noch nicht möglich» (PT liest ihre Seiten, sobald das Fetch-Hilfsprogramm installiert ist)","{n} 条“暂不可行”条目（安装 Fetch 辅助程序后 PT 会读取其页面）"],
 "mc20.watch.changed":["changed: {x}","geändert: {x}","有变化：{x}"],
@@ -8103,7 +8103,10 @@ Object.assign(STR, {
 "su20.does.files":["Saves your tool's prompt as a new file in the folder you allowed (never overwrites, never deletes).","Speichert den Prompt deines Tools als neue Datei im erlaubten Ordner (überschreibt nie, löscht nie).","把你的工具提示词作为新文件保存到你允许的文件夹（从不覆盖，从不删除）。"],
 "su20.does.git":["Morning check: shows changes not yet committed in the folder you name below.","Morgen-Check: zeigt noch nicht festgehaltene Änderungen im unten genannten Ordner.","早间检查：显示你在下方指定的文件夹中尚未提交的更改。"],
 "su20.does.fetch":["Morning check: reads the pages your “Not possible yet” lines watch and tells you when one changed.","Morgen-Check: liest die Seiten, die deine Zeilen «Noch nicht möglich» beobachten, und sagt dir, wenn sich eine geändert hat.","早间检查：读取你的“暂不可行”条目所监视的页面，有变化时告诉你。"],
-"su20.does.blender":["Ready for 3D routes: PT checks it is there; building in Blender comes with a later update (every run will show its code first).","Bereit für 3D-Wege: PT prüft, ob es da ist; Bauen in Blender kommt mit einem späteren Update (jeder Lauf zeigt zuerst seinen Code).","为三维路线做好准备：PT 检查它是否存在；在 Blender 中构建将在后续更新中提供（每次运行都会先显示代码）。"],
+"su20.does.blender":["Ready for 3D routes: “Check it's there” runs one read-only script (it counts the scene's objects, shown to you first); building in Blender comes with a later update.","Bereit für 3D-Wege: «Prüfen, ob es da ist» führt ein Skript aus, das nur liest (es zählt die Objekte der Szene, zuerst gezeigt); Bauen in Blender kommt mit einem späteren Update.","为三维路线做好准备：“检查是否存在”会运行一个只读脚本（统计场景中的对象数量，会先展示给你）；在 Blender 中构建将在后续更新中提供。"],
+"su20.probe.ok":["answered","hat geantwortet","已响应"],
+"su20.probe.yes":["Run the check","Prüfung ausführen","运行检查"],
+"su20.probe.blender":["What: PT asks Blender how many objects the open scene has (the script only reads: import bpy; print(len(bpy.data.objects))). Where: Blender on your Mac. Why: to see the helper answers. Can it be undone: nothing changes. The app may ask you to allow it.","Was: PT fragt Blender, wie viele Objekte die offene Szene hat (das Skript liest nur: import bpy; print(len(bpy.data.objects))). Wo: Blender auf deinem Mac. Warum: um zu sehen, ob das Hilfsprogramm antwortet. Rückgängig: es ändert sich nichts. Die App fragt dich vielleicht um Erlaubnis.","做什么：PT 询问 Blender 当前场景中有多少个对象（脚本只读取：import bpy; print(len(bpy.data.objects))）。在哪里：你 Mac 上的 Blender。为什么：确认辅助程序能响应。能否撤销：不会改变任何东西。应用可能会请你允许。"],
 "su20.st.ready":["Ready","Bereit","就绪"],
 "su20.st.unchecked":["Not checked yet","Noch nicht geprüft","尚未检查"],
 "su20.st.old":["Installed, but tools are missing","Installiert, aber Werkzeuge fehlen","已安装，但缺少工具"],
@@ -29622,7 +29625,7 @@ function pt20Inputs(p){
 function pt20InJSON(ins){ return ins.map((x, i) => ({i, text: x.text.slice(0, 2000)})); }   // ok:cut one test input stays short
 function pt20Prompt(pkg, ins, rules){
   return `[[task:ptest-run]]
-You test a finished prompt: the instructions of a person's Claude tool. For each input, first answer it exactly as the tool would, following ONLY <tool_prompt> (it is the tool's whole setup). Then check that answer against each of the person's rules in <rules> (NEVER: the answer must not do, propose or assume it; MUST: the answer must do it, where the input calls for it) and say for each whether the answer keeps it. Be strict; a rule the input does not touch is kept.
+You test a finished prompt: the instructions of a person's Claude tool. For each input, first answer it exactly as the tool would, following ONLY the tool prompt below (it is the tool's whole setup). Then check that answer against each of the person's rules listed at the end (NEVER: the answer must not do, propose or assume it; MUST: the answer must do it, where the input calls for it) and say for each whether the answer keeps it. Be strict; a rule the input does not touch is kept.
 <tool_prompt>
 ${pkg}
 </tool_prompt>
@@ -29737,7 +29740,7 @@ Object.assign(FORMS, {
 for (const k of ["ptest20", "hands20log"]) DIFF_SKIP.add(k);   // records, never part of an Undo
 
 const V200L_CSS = `
-.met20-wrap{overflow-x:auto;max-width:100%}
+.met20-wrap{overflow-x:auto;max-width:100%;position:relative}
 .met20-t{border-collapse:collapse;width:100%;font-size:14px}
 .met20-t th,.met20-t td{padding:4px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 .met20-t td.tnum{text-align:right}
@@ -29768,13 +29771,13 @@ const HELPERS20 = [
     tools: ["list_allowed_directories", "list_directory", "write_file"], probe: "list_allowed_directories", needs: "Node.js",
     config: `"filesystem": {\n  "command": "npx",\n  "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/<you>/Documents/PT"]\n}`},
   {id: "git", cat: "code", prog: "Git", by: "Model Context Protocol (reference server)", src: "https://github.com/modelcontextprotocol/servers/tree/main/src/git", server: "host:git",
-    tools: ["git_status", "git_log"], probe: "", needs: "uv",
+    tools: ["git_status"], probe: "git_status", needs: "uv",
     config: `"git": {\n  "command": "uvx",\n  "args": ["mcp-server-git", "--repository", "/Users/<you>/path/to/repo"]\n}`},
   {id: "fetch", cat: "web", prog: "Fetch", by: "Model Context Protocol (reference server)", src: "https://github.com/modelcontextprotocol/servers/tree/main/src/fetch", server: "host:fetch",
     tools: ["fetch"], probe: "", needs: "uv",
     config: `"fetch": {\n  "command": "uvx",\n  "args": ["mcp-server-fetch"]\n}`},
   {id: "blender", cat: "3d", prog: "Blender MCP", by: "community add-on (ahujasid/blender-mcp, not by the Blender Foundation)", src: "https://github.com/ahujasid/blender-mcp", server: "host:blender",
-    tools: ["execute_blender_code"], probe: "", needs: "Blender, uv",
+    tools: ["execute_blender_code"], probe: "execute_blender_code", probeIn: {code: "import bpy\nprint(len(bpy.data.objects))"}, probeAsk: true, needs: "Blender, uv",
     config: `"blender": {\n  "command": "uvx",\n  "args": ["blender-mcp"]\n}`}
 ];
 const HELPERS20_OUT = ["calendar", "contacts", "music", "photos", "mailsort"];
@@ -29819,11 +29822,16 @@ function helper20Err(e){ const c = str(e && e.code); if (["server_not_connected"
 async function helper20Check(id){
   const h = helper20(id); if (!h || HELP20.busy) return;
   await helper20Detect();
-  if (h.probe && ["ready", "unchecked"].includes(HELP20.st[id])){
+  const probe = async () => {
     HELP20.busy = id; render();
-    try{ const txt = await helper20Call(id, h.probe, {}); HELP20.st[id] = "ready"; HELP20.note[id] = str(txt).split("\n").map(s => s.trim()).filter(s => s.startsWith("/")).slice(0, 3).join(", "); }
+    try{ const txt = await helper20Call(id, h.probe, id === "git" ? {repo_path: helper20Repo()} : h.probeIn || {}); HELP20.st[id] = "ready"; HELP20.note[id] = id === "files" ? str(txt).split("\n").map(s => s.trim()).filter(s => s.startsWith("/")).slice(0, 3).join(", ") : t("su20.probe.ok"); }
     catch(e){ HELP20.st[id] = "missing"; HELP20.note[id] = helper20Err(e); }
     finally{ HELP20.busy = ""; render(); }
+    toast(t("su20.st." + (HELP20.st[id] || "missing"), {x: h.prog}), HELP20.st[id] === "ready" ? "ok" : "");
+  };
+  if (h.probe && ["ready", "unchecked"].includes(HELP20.st[id]) && (id !== "git" || helper20Repo())){
+    if (h.probeAsk){ confirmBox(t("su20.check"), t("su20.probe." + id), t("su20.probe.yes"), () => { probe(); }); return; }   // a helper whose only tool runs code: what it runs is shown first
+    await probe(); return;
   }
   toast(t("su20.st." + (HELP20.st[id] || "missing"), {x: h.prog}), HELP20.st[id] === "ready" ? "ok" : "");
 }
@@ -29848,9 +29856,10 @@ async function helper20SavePrompt(p){
   }catch(e){ toast(helper20Err(e), "err"); }
   finally{ HELP20.busy = ""; render(); }
 }
+function helper20Repo(){ return str(WS && WS.settings && WS.settings.helpers20 && WS.settings.helpers20.repo).trim(); }
 /** Git (morning check): changes not yet committed in the folder you named */
 async function mc20HelperLines(line){
-  const repo = str(WS.settings.helpers20 && WS.settings.helpers20.repo).trim();
+  const repo = helper20Repo();
   if (!repo || !helper20Ready("git")) return;
   try{ const txt = str(await helper20Call("git", "git_status", {repo_path: repo}));
     const n = txt.split("\n").filter(l => /^\s*(modified:|new file:|deleted:|renamed:|both modified:)/.test(l)).length + (/Untracked files/.test(txt) ? 1 : 0);
@@ -29898,7 +29907,7 @@ function setup20HelperGuide(h){
   return setup20GuideHTML("h-" + h.id, steps, {}, extra);
 }
 function setup20HTML(){
-  if (!HELP20.tried && handsOk()) setTimeout(() => helper20Detect(), 0);
+  if (handsOk() && !HELP20.busy && (!HELP20.at || Date.now() - Date.parse(HELP20.at) > 30000)) setTimeout(() => helper20Detect(), 0);   // listTools never asks: looked up again when the tab opens after a while
   const ST = {ready: "ok", unchecked: "warn", old: "warn", missing: "", app: ""};
   const rows = HELPERS20.map(h => { const st = HELP20.st[h.id] || (HELP20.busy === "detect" ? "busy" : "missing");
     return `<tr data-helper="${esc(h.id)}" data-st="${esc(st)}"><th scope="row">${esc(t("su20.cat." + h.cat))}</th><td><b>${esc(h.prog)}</b><br><span class="small muted">${esc(h.by)}</span></td>
@@ -29907,7 +29916,7 @@ function setup20HTML(){
   const repo = str(WS.settings.helpers20 && WS.settings.helpers20.repo);
   return `<section class="panel su20" data-anchor="su20"><h3>${esc(t("su20.t"))}</h3><p class="small muted">${esc(t("su20.sub"))}</p>
     <p class="small muted">${esc(handsOk() ? t("su20.where") : t("hands.e.owner"))}</p>
-    <h4 id="su20-g-helpers">${esc(t("su20.helpers"))}</h4><div class="met20-wrap"><table class="met20-t su20-t"><thead><tr><th scope="col">${esc(t("su20.c.cat"))}</th><th scope="col">${esc(t("su20.c.prog"))}</th><th scope="col">${esc(t("su20.c.st"))}</th><th scope="col">${esc(t("su20.c.does"))}</th><th scope="col"><span class="sr20">${esc(t("su20.c.acts"))}</span></th></tr></thead><tbody>${rows}</tbody></table></div>
+    <h4 id="su20-g-helpers">${esc(t("su20.helpers"))}</h4><div class="met20-wrap"><table class="met20-t su20-t"><thead><tr><th scope="col">${esc(t("su20.c.cat"))}</th><th scope="col">${esc(t("su20.c.prog"))}</th><th scope="col">${esc(t("su20.c.st"))}</th><th scope="col">${esc(t("su20.c.does"))}</th><th scope="col" aria-label="${esc(t("su20.c.acts"))}"></th></tr></thead><tbody>${rows}</tbody></table></div>
     <p class="small muted">${esc(t("su20.out", {x: HELPERS20_OUT.map(k => t("su20.out." + k)).join(", ")}))} ${esc(t("su20.left"))}</p>
     <form class="row" data-form="su20-repo"><label class="fld" style="flex:1 1 18em"><span>${esc(t("su20.repo"))}</span><input type="text" id="su20-repo" value="${esc(repo)}" placeholder="/Users/you/code/prompt-translator" autocomplete="off"></label><button class="btn sm" type="submit">${esc(t("btn.save"))}</button></form>
     <h4>${esc(t("su20.guides"))}</h4><p class="small muted">${esc(t("su20.guides.sub"))}</p>

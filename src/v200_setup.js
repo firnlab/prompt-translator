@@ -15,13 +15,13 @@ const HELPERS20 = [
     tools: ["list_allowed_directories", "list_directory", "write_file"], probe: "list_allowed_directories", needs: "Node.js",
     config: `"filesystem": {\n  "command": "npx",\n  "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/<you>/Documents/PT"]\n}`},
   {id: "git", cat: "code", prog: "Git", by: "Model Context Protocol (reference server)", src: "https://github.com/modelcontextprotocol/servers/tree/main/src/git", server: "host:git",
-    tools: ["git_status", "git_log"], probe: "", needs: "uv",
+    tools: ["git_status"], probe: "git_status", needs: "uv",
     config: `"git": {\n  "command": "uvx",\n  "args": ["mcp-server-git", "--repository", "/Users/<you>/path/to/repo"]\n}`},
   {id: "fetch", cat: "web", prog: "Fetch", by: "Model Context Protocol (reference server)", src: "https://github.com/modelcontextprotocol/servers/tree/main/src/fetch", server: "host:fetch",
     tools: ["fetch"], probe: "", needs: "uv",
     config: `"fetch": {\n  "command": "uvx",\n  "args": ["mcp-server-fetch"]\n}`},
   {id: "blender", cat: "3d", prog: "Blender MCP", by: "community add-on (ahujasid/blender-mcp, not by the Blender Foundation)", src: "https://github.com/ahujasid/blender-mcp", server: "host:blender",
-    tools: ["execute_blender_code"], probe: "", needs: "Blender, uv",
+    tools: ["execute_blender_code"], probe: "execute_blender_code", probeIn: {code: "import bpy\nprint(len(bpy.data.objects))"}, probeAsk: true, needs: "Blender, uv",
     config: `"blender": {\n  "command": "uvx",\n  "args": ["blender-mcp"]\n}`}
 ];
 const HELPERS20_OUT = ["calendar", "contacts", "music", "photos", "mailsort"];
@@ -66,11 +66,16 @@ function helper20Err(e){ const c = str(e && e.code); if (["server_not_connected"
 async function helper20Check(id){
   const h = helper20(id); if (!h || HELP20.busy) return;
   await helper20Detect();
-  if (h.probe && ["ready", "unchecked"].includes(HELP20.st[id])){
+  const probe = async () => {
     HELP20.busy = id; render();
-    try{ const txt = await helper20Call(id, h.probe, {}); HELP20.st[id] = "ready"; HELP20.note[id] = str(txt).split("\n").map(s => s.trim()).filter(s => s.startsWith("/")).slice(0, 3).join(", "); }
+    try{ const txt = await helper20Call(id, h.probe, id === "git" ? {repo_path: helper20Repo()} : h.probeIn || {}); HELP20.st[id] = "ready"; HELP20.note[id] = id === "files" ? str(txt).split("\n").map(s => s.trim()).filter(s => s.startsWith("/")).slice(0, 3).join(", ") : t("su20.probe.ok"); }
     catch(e){ HELP20.st[id] = "missing"; HELP20.note[id] = helper20Err(e); }
     finally{ HELP20.busy = ""; render(); }
+    toast(t("su20.st." + (HELP20.st[id] || "missing"), {x: h.prog}), HELP20.st[id] === "ready" ? "ok" : "");
+  };
+  if (h.probe && ["ready", "unchecked"].includes(HELP20.st[id]) && (id !== "git" || helper20Repo())){
+    if (h.probeAsk){ confirmBox(t("su20.check"), t("su20.probe." + id), t("su20.probe.yes"), () => { probe(); }); return; }   // a helper whose only tool runs code: what it runs is shown first
+    await probe(); return;
   }
   toast(t("su20.st." + (HELP20.st[id] || "missing"), {x: h.prog}), HELP20.st[id] === "ready" ? "ok" : "");
 }
@@ -95,9 +100,10 @@ async function helper20SavePrompt(p){
   }catch(e){ toast(helper20Err(e), "err"); }
   finally{ HELP20.busy = ""; render(); }
 }
+function helper20Repo(){ return str(WS && WS.settings && WS.settings.helpers20 && WS.settings.helpers20.repo).trim(); }
 /** Git (morning check): changes not yet committed in the folder you named */
 async function mc20HelperLines(line){
-  const repo = str(WS.settings.helpers20 && WS.settings.helpers20.repo).trim();
+  const repo = helper20Repo();
   if (!repo || !helper20Ready("git")) return;
   try{ const txt = str(await helper20Call("git", "git_status", {repo_path: repo}));
     const n = txt.split("\n").filter(l => /^\s*(modified:|new file:|deleted:|renamed:|both modified:)/.test(l)).length + (/Untracked files/.test(txt) ? 1 : 0);
@@ -145,7 +151,7 @@ function setup20HelperGuide(h){
   return setup20GuideHTML("h-" + h.id, steps, {}, extra);
 }
 function setup20HTML(){
-  if (!HELP20.tried && handsOk()) setTimeout(() => helper20Detect(), 0);
+  if (handsOk() && !HELP20.busy && (!HELP20.at || Date.now() - Date.parse(HELP20.at) > 30000)) setTimeout(() => helper20Detect(), 0);   // listTools never asks: looked up again when the tab opens after a while
   const ST = {ready: "ok", unchecked: "warn", old: "warn", missing: "", app: ""};
   const rows = HELPERS20.map(h => { const st = HELP20.st[h.id] || (HELP20.busy === "detect" ? "busy" : "missing");
     return `<tr data-helper="${esc(h.id)}" data-st="${esc(st)}"><th scope="row">${esc(t("su20.cat." + h.cat))}</th><td><b>${esc(h.prog)}</b><br><span class="small muted">${esc(h.by)}</span></td>
@@ -154,7 +160,7 @@ function setup20HTML(){
   const repo = str(WS.settings.helpers20 && WS.settings.helpers20.repo);
   return `<section class="panel su20" data-anchor="su20"><h3>${esc(t("su20.t"))}</h3><p class="small muted">${esc(t("su20.sub"))}</p>
     <p class="small muted">${esc(handsOk() ? t("su20.where") : t("hands.e.owner"))}</p>
-    <h4 id="su20-g-helpers">${esc(t("su20.helpers"))}</h4><div class="met20-wrap"><table class="met20-t su20-t"><thead><tr><th scope="col">${esc(t("su20.c.cat"))}</th><th scope="col">${esc(t("su20.c.prog"))}</th><th scope="col">${esc(t("su20.c.st"))}</th><th scope="col">${esc(t("su20.c.does"))}</th><th scope="col"><span class="sr20">${esc(t("su20.c.acts"))}</span></th></tr></thead><tbody>${rows}</tbody></table></div>
+    <h4 id="su20-g-helpers">${esc(t("su20.helpers"))}</h4><div class="met20-wrap"><table class="met20-t su20-t"><thead><tr><th scope="col">${esc(t("su20.c.cat"))}</th><th scope="col">${esc(t("su20.c.prog"))}</th><th scope="col">${esc(t("su20.c.st"))}</th><th scope="col">${esc(t("su20.c.does"))}</th><th scope="col" aria-label="${esc(t("su20.c.acts"))}"></th></tr></thead><tbody>${rows}</tbody></table></div>
     <p class="small muted">${esc(t("su20.out", {x: HELPERS20_OUT.map(k => t("su20.out." + k)).join(", ")}))} ${esc(t("su20.left"))}</p>
     <form class="row" data-form="su20-repo"><label class="fld" style="flex:1 1 18em"><span>${esc(t("su20.repo"))}</span><input type="text" id="su20-repo" value="${esc(repo)}" placeholder="/Users/you/code/prompt-translator" autocomplete="off"></label><button class="btn sm" type="submit">${esc(t("btn.save"))}</button></form>
     <h4>${esc(t("su20.guides"))}</h4><p class="small muted">${esc(t("su20.guides.sub"))}</p>
