@@ -79,6 +79,8 @@ for (const f of codeFiles) src(f).split('\n').forEach((line, i) => {
   if (/\/\/[^"`'\n]*;\s+[a-zA-Z_$][\w$.]*\s*(\+=|-=|=(?![=>]))[^;\n]*;/.test(line)) H('comment', `${f}:${i + 1} statements after a // comment never run: ${line.trim().slice(0, 120)}`);
   // 2.0 (found while building Part A): a comment put before the last statement of a block, "// note weak = x; } }", swallows it too
   else if (/\/\/[^"`'\n]*?\s[a-zA-Z_$][\w$.]*\s*(\+=|-=|=(?![=>]))\s*[^;\n]*;\s*\}/.test(line)) H('comment', `${f}:${i + 1} a statement after a // comment never runs: ${line.trim().slice(0, 120)}`);
+  // 2.0 Part B (found while building): a call put after a comment at the end of a line, "// note M.set(p, n);", never runs either
+  else if (/(?:^|[\s;{})])\/\/ [^"`'\n]*\s[A-Za-z_$][\w$]*\.[A-Za-z_$][\w$]*\([^\n]*\);\s*$/.test(line)) H('comment', `${f}:${i + 1} a call after a // comment never runs: ${line.trim().slice(0, 120)}`);
 });
 /* cause 59 (1.7.1): a workspace (a person) found or named by a fixed name in the code breaks when names change (the public-repo name swap did) */
 for (const f of codeFiles) src(f).split('\n').forEach((line, i) => {

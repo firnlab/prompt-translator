@@ -330,6 +330,14 @@ with sync_playwright() as pw:
     check("the source project's rules stay out of this project's rules channel", OTHER_NEVER not in ev(pg, "buildPrompt('x-test', {proj: curP(), body: 'b', schema: '{}'})"))
     check("the Map row “proven routes checked” is green", [r for r in ev(pg, "stage20Rows(curP(), 'map')") if r["k"] == "proven"][0]["ok"])
 
+    # ---------- Stop ----------
+    print("Stop")
+    ev(pg, "m20Open(curP(), 'map'); window.__mapCalls = []; window.__mockDelayMs = 800"); r0 = len(M(pg)["rounds"])
+    click(pg, "[data-a=m20-ask][data-v=dig]"); click(pg, "#m20-cf-go"); pg.wait_for_timeout(250)
+    check("a running round shows its progress and a Stop button", ev(pg, "!!document.querySelector('.m20-busy [data-a=m20-stop]')") and "Calls done:" in main(pg))
+    click(pg, ".m20-busy [data-a=m20-stop]"); wait_ai(pg); ev(pg, "window.__mockDelayMs = undefined")
+    check("…Stop ends it: the calls not started yet never start, nothing half is written", "map-redteam" not in calls(pg) and len(M(pg)["rounds"]) == r0 and ev(pg, "!M20RUN.total && AI.running.size === 0"), [calls(pg), len(M(pg)["rounds"]), r0])
+
     # ---------- reload: everything kept, nothing called ----------
     print("reload")
     m_before = M(pg)

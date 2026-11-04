@@ -27674,7 +27674,8 @@ const STAGE20_HELD = new WeakMap();   // project → how many detail items wait 
 { const orig = queueOf; queueOf = function(p){
     const q = orig(p);
     if (!stage20Early(p)) return q;
-    const keep = q.filter(x => x.kind === "pick" || !STAGE20_WAIT.includes(x.ph));   // a pick card was made under the route-splitting rule: it stays STAGE20_HELD.set(p, q.length - keep.length);
+    // a pick card was made under the route-splitting rule: it stays
+    const keep = q.filter(x => x.kind === "pick" || !STAGE20_WAIT.includes(x.ph)); STAGE20_HELD.set(p, q.length - keep.length);
     return keep; }; }
 function stage20Waiting(p){ if (!stage20Early(p)) return 0; queueOf(p); return STAGE20_HELD.get(p) || 0; }
 
@@ -27746,7 +27747,7 @@ const M20_GOAL = ["outcome", "whom", "situation", "success", "where", "budget"];
 const M20_MAX = {routes: 60, notyet: 20, events: 40, rounds: 30, lib: 40, alerts: 20};
 const M20_DIG = [["buy", "frontier"], ["process", "inversion"], ["build", "hack"], ["inversion", "frontier"], ["hack", "buy"], ["process", "build"]];
 const M20_SEC = 22;   // seconds per default-tier lens call (measured: a 20-route map in 36 s; a lens asks for 4–6 routes)
-const M20RUN = {pid: null, done: 0, total: 0, keys: [], label: ""};
+const M20RUN = {pid: null, done: 0, total: 0, keys: [], label: "", stop: false};
 
 /* ---------- 0. the data ---------- */
 function m20Blank(){ return {v: 1, routes: [], notyet: [], rounds: [], cells: {}, short: [], rej: {}, chosen: null, decs: [], alerts: [], events: [], neutral: [], tags: {}, libChecked: false, looked: false, satAt: null, seenAt: null, nextR: 1, nextN: 1}; }
@@ -27951,7 +27952,7 @@ async function m20Merge(p, found, ny, {lens, round}){
 }
 async function m20Pool(jobs, n = 2){
   const out = new Array(jobs.length); let i = 0;
-  const lane = async () => { while (i < jobs.length){ const k = i++; try{ out[k] = await jobs[k](); }catch(e){ out[k] = null; onAppError(e && e.message, "map:call"); } M20RUN.done++; render(); } };
+  const lane = async () => { while (i < jobs.length && !M20RUN.stop){ const k = i++; try{ out[k] = await jobs[k](); }catch(e){ out[k] = null; onAppError(e && e.message, "map:call"); } M20RUN.done++; render(); } };
   await Promise.all(Array.from({length: Math.min(n, jobs.length)}, lane));
   return out;
 }
@@ -27967,11 +27968,11 @@ async function m20Round(p, {kind = "full", lenses = null, red = true, focus = nu
   const jobs = L.map(lens => async () => { const key = "map-lens-" + lens; keys.push(key);
     const r = await runAI(key, t("m20.busy.lens", {x: t("m20.lens." + lens)}), m20LensPrompt(p, lens, {extra: kind === "full" ? "" : `\n<round>This is round ${n}. Look for what the earlier rounds missed: unusual routes only, no variants of routes on the map.</round>`}), {pid: p.id, step: "arch", validate: o => o && Array.isArray(o.found)});
     return r ? {lens, r} : null; });
-  M20RUN.pid = p.id; M20RUN.done = 0; M20RUN.total = jobs.length + (red ? 1 : 0) + (question ? 1 : 0); M20RUN.keys = keys; M20RUN.label = t("m20.run.round", {n}); render();
+  M20RUN.stop = false; M20RUN.pid = p.id; M20RUN.done = 0; M20RUN.total = jobs.length + (red ? 1 : 0) + (question ? 1 : 0); M20RUN.keys = keys; M20RUN.label = t("m20.run.round", {n}); render();
   let res = [], redR = null;
   try{
     res = await m20Pool(jobs, 2);
-    if (red || question){ keys.push(question ? "map-ask" : "map-redteam");
+    if ((red || question) && !M20RUN.stop){ keys.push(question ? "map-ask" : "map-redteam");
       const q0 = pickLive(p, ws0); redR = q0 ? await runAI(question ? "map-ask" : "map-redteam", t(question ? "m20.busy.ask" : "m20.busy.red"), m20RedPrompt(q0, {focus, everything, question}), {pid: p.id, step: "review", tier: "complex", validate: o => o && Array.isArray(o.missing) && Array.isArray(o.breaks)}) : null;
       M20RUN.done++; render(); }
   }finally{ M20RUN.pid = null; M20RUN.total = 0; M20RUN.done = 0; M20RUN.keys = []; }
@@ -28519,7 +28520,7 @@ Object.assign(ACTIONS, {
     else if (/^chip:/.test(k)) m20Chip(p, k.slice(5));
     else if (/^prove:/.test(k)) m20Prove(p, k.slice(6));
     render(); },
-  "m20-stop": () => { for (const k of M20RUN.keys) stopAI(k); },
+  "m20-stop": () => { M20RUN.stop = true; for (const k of M20RUN.keys) stopAI(k); render(); },   // the calls not started yet never start
   "m20-short": (el) => { const p = curP(); if (!p) return; m20Short(p, el.dataset.id); touch(p); render(); },
   "m20-rej": (el) => { const p = curP(), U = p && m20UI(p); if (!U) return; U.rej = U.rej === el.dataset.id ? null : el.dataset.id; render(); },
   "m20-rejwhy": (el) => { const p = curP(), U = p && m20UI(p); if (!U) return; m20Reject(p, el.dataset.id, el.dataset.v); U.rej = null; touch(p); render(); },

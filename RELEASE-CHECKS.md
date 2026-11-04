@@ -445,3 +445,7 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   serious (critical/high) review findings against the chosen route's load-bearing assumptions and tripwires; web truth (prices, terms) is
   not fetched by the map (sample calls cannot browse): every field says "PT's reasoning, not checked" unless the call knew better.
   The "Not possible yet" watch line is shown, but nothing watches it on a schedule yet (Part D's morning check is the place).
+- Found while building: a comment put before a call at the end of a line (`… ));   // note STAGE20_HELD.set(p, n);`) swallowed the call
+  and the file still parsed (cause 62 again, this time a call, not an assignment); the waiting-details count stayed empty. static_checks.js
+  now also flags a `// comment` followed by `name.method(…);` at the end of a line; planted in check_the_checks.py.
+- check_the_pick.py must start from a tree whose own test is green: a planted-bug run on a red baseline reads every bug as "caught".
