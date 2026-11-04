@@ -176,7 +176,7 @@ with sync_playwright() as pw:
     ev(pg, "(() => { const p = curP(); m20MetOf(p.id).goalAt = '2026-11-01T09:30:00Z'; m20Of(p).decs.find(d => d.id === 'D801').at = '2026-11-01T10:00:00Z'; saveWs(); })()")
     settings(pg, "metrics"); mt = ev(pg, f"(document.querySelector('.met20 tr[data-pid=\"{pid}\"]') || {{}}).innerText || ''")
     check("L4 Settings › Metrics: the row shows asked, held back, repaired, routes, goal → decision", re.search(r"\b2\b.*\b1\b", mt) and "30 min" in mt and str(ev(pg, "m20Read(curP()).routes.length")) in mt, mt)
-    check("L4 …and says the numbers are never sent anywhere", "never sent anywhere" in main(pg))
+    check("L4 …and says the numbers are never sent to Claude and are part of the data export", "never sent to Claude" in main(pg) and "data export" in main(pg))   # 2.0 fact check: "never sent anywhere" was not true (the export carries them)
     allp = " ".join(ev(pg, "window.__allPrompts || []"))
     check("L4 no prompt ever carries the metrics", "met20" not in allp and '"twice"' not in allp and "goalAt" not in allp)
 

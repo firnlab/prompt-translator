@@ -659,3 +659,5 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
 - 2.0.0 hunt check 28 (await race) went quietly empty: it looked for AI buttons on the step pages, which 2.0 removed, so it clicked
   nothing, stayed green, and its planted bug was MISSED by check_the_hunts. Now it starts an answer in both faces (a chat message;
   the first Pick-cover button that starts one) and fails when no answer starts at all, so it can never pass by doing nothing.
+- 2.0.0 e2e200_loop L4 still asserted the old metrics line ("never sent anywhere"), which the fact check had found untrue (the
+  data export carries the numbers). The test now asserts the corrected claim: never sent to Claude, part of the data export.
