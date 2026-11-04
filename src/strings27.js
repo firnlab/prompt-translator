@@ -336,6 +336,8 @@ Object.assign(STR, {
 "m20.a.helper":["Your helper program","Dein Helferprogramm","你的辅助程序"],
 "m20.a.you":["You (final buttons and keys are always yours)","Du (letzte Knöpfe und Schlüssel sind immer deine)","你（最终按钮和密钥始终由你操作）"],
 "m20.a.others":["Other people","Andere Personen","其他人"],
+"m20.a.where":["Where this works","Wo das geht","适用范围"],
+"m20.a.desktop":["PT's hands and helper programs work only when you use PT in the Claude desktop app, and only for you, not for other people who use PT. Final buttons, keys and installing stay yours.","Die Hände von PT und Helferprogramme gehen nur, wenn du PT in der Claude-Desktop-App nutzt, und nur für dich, nicht für andere, die PT nutzen. Letzte Knöpfe, Schlüssel und Installationen bleiben bei dir.","PT 的“手”和辅助程序只在你使用 Claude 桌面应用中的 PT 时可用，而且只对你本人有效，其他使用 PT 的人不能用。最终按钮、密钥和安装始终由你操作。"],
 "m20.helper.perms":["asks for: {x}","fragt nach: {x}","需要权限：{x}"],
 "m20.work.v":["setup {a} · then {b}","Einrichtung {a} · danach {b}","设置 {a} · 之后 {b}"],
 "m20.money.once":["once {x}","einmalig {x}","一次性 {x}"],
