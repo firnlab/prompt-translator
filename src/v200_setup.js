@@ -148,7 +148,9 @@ function setup20HelperGuide(h){
   const k = "su20.h." + h.id + ".";
   const steps = [1, 2, 3, 4, 5].map(i => t(k + i)).filter(s => s && !s.startsWith("su20."));
   const extra = `<p class="small">${esc(t("su20.h.config"))}</p><pre class="su20-pre"><code>${esc(h.config)}</code></pre><p class="small muted">${esc(t("su20.h.name", {x: h.server.slice(5)}))} · ${esc(t("su20.h.remove"))}</p>`;
-  return setup20GuideHTML("h-" + h.id, steps, {}, extra);
+  // 2.0: an Intel Mac gets no ready-made build of "cryptography" from 49 on (PyPI, 4 Nov 2026), so uv tries to compile it and fails
+  const intel = /uv/.test(h.needs) ? `<p class="small">${esc(t("su20.h.intel"))}</p>` : "";
+  return setup20GuideHTML("h-" + h.id, steps, {}, extra + intel);
 }
 function setup20HTML(){
   if (handsOk() && !HELP20.busy && (!HELP20.at || Date.now() - Date.parse(HELP20.at) > 30000)) setTimeout(() => helper20Detect(), 0);   // listTools never asks: looked up again when the tab opens after a while
