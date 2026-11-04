@@ -27000,7 +27000,8 @@ for (const [k, where] of Object.entries(RC20_FORMS)){
     const e = exById(p, el.dataset.id), L = loopRead(p);
     if (!e || !e.verdict || (L.phase !== "react" && L.phase !== "check")) return r;
     const {list, i} = loopCur(p), cur = list[i];
-    if (cur && cur.verdict && !(e.verdict === "bad" && cur.id === e.id && !str(e.why).trim())){ const j = list.findIndex(x => !x.verdict); if (j >= 0 && j !== i){ loopOf(p).i = j; render(); } }
+    /* only in the teach round: in the check round the reveal (what PT's rules expected) stays on screen */
+    if (L.phase === "react" && cur && cur.verdict && !(e.verdict === "bad" && cur.id === e.id && !str(e.why).trim())){ const j = list.findIndex(x => !x.verdict); if (j >= 0 && j !== i){ loopOf(p).i = j; render(); } }
     const left = list.filter(x => !x.verdict).length;
     rcpt20(p, exTitle(e) + " → " + t(e.verdict === "good" ? "ex.v.good" : e.verdict === "bad" ? "ex.v.bad" : "ex.unsure"), left ? t("rc.w.ex.left", {n: left}) : t(L.phase === "react" ? "rc.w.ex.done" : "rc.w.ex.checked"));
     render(); return r; }; }
@@ -27100,6 +27101,7 @@ const V200_CSS = `
 .toast.toast-why{cursor:pointer}
 .toast.toast-why::after{content:" · " attr(data-why);text-decoration:underline;white-space:nowrap}
 .sp-facts.sel{box-shadow:inset 0 0 0 2px var(--accent)}
+.pg-bar .sp-facts{flex:0 0 auto;white-space:nowrap}
 `;
 function v200Css(){ try{ if (document.getElementById("v200-css")) return; const s = document.createElement("style"); s.id = "v200-css"; s.textContent = V200_CSS; (document.head || document.documentElement).appendChild(s); }catch(e){ console.warn("2.0: no styles", e); } }   // ok:catch without its sheet the page still works, plainer
 v200Css();

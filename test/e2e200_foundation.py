@@ -303,7 +303,8 @@ with sync_playwright() as pw:
     # ---------- A9 layout ----------
     print("A9 layout")
     ev(pg, "(() => { UI.home = true; render(); })()"); pg.wait_for_timeout(250)
-    S = ev(pg, "(() => { const q = document.querySelector('.qacts'), c = document.querySelector('.chips'), m = document.querySelector('.main-inner'); return {q: q ? getComputedStyle(q).maxWidth : 'none', c: c ? getComputedStyle(c).maxWidth : 'none', m: getComputedStyle(m).maxWidth}; })()")
+    S = ev(pg, """(() => { const rule = sel => { let v = ''; for (const sh of document.styleSheets){ let rs = []; try{ rs = [...sh.cssRules]; }catch(e){ continue; } for (const r of rs) if (r.selectorText === sel && r.style.maxWidth) v = r.style.maxWidth; } return v || 'none'; };
+        return {q: rule('.qacts'), c: rule('.chips'), m: getComputedStyle(document.querySelector('.main-inner')).maxWidth}; })()""")
     check("no fixed share for the action columns; the main column may use the full width", not S["q"].endswith("%") or S["q"] == "100%", S)
     check("…chips follow the text, the main column has no 1180 px cap", (not S["c"].endswith("%") or S["c"] == "100%") and (S["m"] == "none" or int(S["m"].replace("px", "") or 0) >= 1760), S)
     W = ev(pg, "[...document.querySelectorAll('.qrow')].slice(0, 8).map(r => { const b = r.querySelector('.qbody'), a = r.querySelector('.qacts'); if (!b) return 1; const same = a && Math.abs(a.getBoundingClientRect().top - b.getBoundingClientRect().top) < 4; return same ? b.getBoundingClientRect().width / r.getBoundingClientRect().width : 1; })")
