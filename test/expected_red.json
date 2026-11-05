@@ -1,0 +1,13 @@
+{
+"_about": "Checks that are red on purpose: each one proves a bug that a PLAN-2.1 item fixes. The suite prints them as 'red (expected …)' and stays green; once the fix lands the check turns green, the suite then fails with FLIP until its line here is removed (the lead flips it on purpose). Key = the check id printed by the suite.",
+"red": {
+  "S.invalid_json.once":      {"suite": "test/e2e210_platform.py", "item": "C2", "what": "an answer that is not JSON is asked again by itself (up to 3 calls, the last a tier up) for one message"},
+  "S.invalid_json.click":     {"suite": "test/e2e210_platform.py", "item": "C2", "what": "one click on Try again makes up to 3 calls"},
+  "S.empty_completion.once":  {"suite": "test/e2e210_platform.py", "item": "C2", "what": "an empty answer is asked again by itself (the docs: never resend unchanged, never retry from a loop)"},
+  "S.empty_completion.click": {"suite": "test/e2e210_platform.py", "item": "C2", "what": "one click on Try again makes up to 3 calls"},
+  "M.upstream_error.unclear": {"suite": "test/e2e210_platform.py", "item": "C4", "what": "an unclear runner start is shown as 'Could not start', which invites a second run"},
+  "D.deny.remembered":        {"suite": "test/e2e210_platform.py", "item": "D7", "what": "the morning check asks the denied browser permission again on the next day"},
+  "B.two_writers.kept":       {"suite": "test/e2e210_platform.py", "item": "B1", "what": "after a save conflict the queued save of this page overwrites the other page's change"},
+  "K.c20-retry.once":         {"suite": "test/e2e210_clicks.py",   "item": "C17", "what": "Try again in the chat adds your message a second time"}
+}
+}
