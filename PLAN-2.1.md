@@ -3,18 +3,23 @@
 Scope: every KEEP and CHANGE item of the master list below (round-3 result of the 4-round review, 5 Nov 2026).
 DEFER and DROP items stay out. Failing features ship switched off. One-GO release rule applies (CLAUDE.md).
 
-## Owner decisions not yet given: defaults taken until the owner says otherwise
-- b1 laptop tasks: ask before sign-up, delete, publish, pay (the recommended, stricter option; matches PLAN-2.0 rule).
-- b3 second owner's default face: unchanged (Pick). Her sharing level and kept workspace: untouched.
-- b4 morning check: owner-only, stated in her changelog.
-- b5 runner trigger: NOT touched (leave-untouched rule). A4 guard is done on PT's side only.
-- b6 tools repo plan, b8 separate GitHub identity, b2 license, b9 friend, b10 old copies: owner only, not done.
-- b7 auto-merge guide: kept but reworded to "you click merge"; never enables auto-merge.
-- b11 fetch allow-list: guide lists github.com, api.github.com and the official Anthropic/Claude sites; the owner edits his config.
-- b12 Sunday preparation: skips and says so while nothing is live (no extra usage).
-- b13 the 39 migrated items: moved back to "later", listed for the owner; nothing deleted.
-- b14 success numbers: PT asks per project; nothing invented.
-- b15 automatic repair: off.
+## Owner decisions (5 Nov 2026 21:49)
+- b1 laptop tasks: ask first before sign-up, delete, publish, pay.
+- b2 license: only if public code gains something on GitHub; it does not (the repo is already public; Actions, rulesets and secret scanning need no license) → no license.
+- b3 second owner: (a) answered "a" (to confirm: starting face); (b), (c) open.
+- b4 morning check: owner-only.
+- b5 runner task: the owner makes the two changes himself (remove the Docs connector; accept jobs only from PT) with click-by-click steps from Claude.
+- b6 tools repo: make it public, AFTER its build workflow is fixed (K3), so nothing unsafe goes public.
+- b7 Dependabot: "you click merge"; nothing merges by itself.
+- b8 separate GitHub identity: no change.
+- b9 reviewer: not on GitHub; the friend reviews inside the owner's Claude account.
+- b10 old copies and bloat: PT/Claude proposes the cleanup at the right time, based on industry practice (researched online), keeping what matters; the owner does it with one click (merge). Nothing deleted otherwise.
+- b11 fetch allow-list: the owner chooses the list; the guide asks for it.
+- b12 Sunday preparation: skip while nothing is live, and say so.
+- b13 the 39 migrated items: back to "later", one review list for the owner, nothing deleted.
+- b14 success numbers: PT asks per project, nothing invented.
+- b15 automatic repair: off; a "Try again" button instead.
+- Paused 5 Nov 21:48 by the owner before Wave 1 was merged: more changes to come; spend nothing until the revised plan is agreed.
 
 ## Waves (see the list for items)
 0 owner (GitHub clicks, decisions) · 1 gate proves things, then fast (J) · 2 repo safety PRs (K, I1, L) ·
