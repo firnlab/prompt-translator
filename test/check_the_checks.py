@@ -11,7 +11,7 @@ APP = "\nfunction __zz{n}(p, x){{ {body} }}\n"
 # (name, file, kind, change, expected tag, hard?)  kind: "append" adds text at the end, "sub" replaces the first match, "dupline" repeats the line that matches
 M = [
     ("a comment that swallows the rest of a line (parse error)", "v150_pick.js", "sub", ("saveWs(); toast(t(good", "saveWs();   // note toast(t(good"), "parse", True),
-    ("a comment that swallows statements (still parses, cause 62)", "v14_finish.js", "sub", ("{rounds: FIX_CAP, quiet: true}); sum.fixed += s.fixed;", "{rounds: FIX_CAP, quiet: true});   // the cap sum.fixed += s.fixed;"), "comment", True),
+    ("a comment that swallows statements (still parses, cause 64)", "v14_finish.js", "sub", ("{rounds: FIX_CAP, quiet: true}); sum.fixed += s.fixed;", "{rounds: FIX_CAP, quiet: true});   // the cap sum.fixed += s.fixed;"), "comment", True),
     ("a comment that swallows the last statement of a block (2.0)", "core.js", "sub", ("}catch(e){ errs = []; } weak = errs.length > 0; } }", "}catch(e){ errs = []; }   // a check may ask weak = errs.length > 0; } }"), "comment", True),
     ("a comment that swallows a call at the end of a line (2.0 Part B)", "v200_stage.js", "sub", ("STAGE20_WAIT.includes(x.ph)); STAGE20_HELD.set(p, q.length - keep.length);", "STAGE20_WAIT.includes(x.ph));   // it stays STAGE20_HELD.set(p, q.length - keep.length);"), "comment", True),
     ("squeezed text: overflow-wrap:anywhere",          "styles.css", "append", ".zz{overflow-wrap:anywhere}", "layout", True),
