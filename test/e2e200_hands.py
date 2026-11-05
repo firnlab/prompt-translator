@@ -17,13 +17,30 @@ Run: python3 test/e2e200_hands.py [work/backup-141 | test/fixtures/synthetic.jso
  D7 the route card names the project's sites for a route that uses PT's hands.
  three languages (no raw keys, no ß), 390 px without sideways scroll, no page errors."""
 import json, sys, pathlib, re
-BK = sys.argv[1] if len(sys.argv) > 1 else "work/backup-141"
+# 2.1 (J5): --only A3[,A5] runs the suite from its start through the last part named and stops there (each part builds on the
+# parts before it, so the earlier ones run as its setup); the planted-bug run (check_the_pick.py) uses it to run less per bug
+ONLY = set()
+for _i, _a in enumerate(sys.argv):
+    if _a == "--only" and _i + 1 < len(sys.argv): ONLY = set(sys.argv[_i + 1].split(","))
+    elif _a.startswith("--only="): ONLY = set(_a.split("=", 1)[1].split(","))
+ARGS = [a for a in sys.argv[1:] if not a.startswith("--") and not re.fullmatch(r"[A-Z0-9,]+", a)]
+BK = ARGS[0] if ARGS else "work/backup-141"
 sys.argv = [sys.argv[0], BK]
 __file__ = str(pathlib.Path(__file__).resolve().parent / "e2e14.py")
 exec(open(__file__).read().split("with sync_playwright() as pw:")[0])
 _check0 = check
 def check(name, cond, info=""):
     _check0(name, cond, info); print(("ok    " if cond else "FAIL  ") + name + ("" if cond else "  → " + str(info)[:600]), flush=True)
+SEEN = []
+def sec(title):   # 2.1 (J5): a part's heading; with --only, the run ends at the first part after the parts named
+    part = title.split()[0]
+    if ONLY and ONLY <= set(SEEN) and part not in ONLY:
+        print(f"--only {','.join(sorted(ONLY))}: stopped before “{title}”", flush=True)
+        try: (ROOT / "test" / PAGE).unlink()
+        except Exception: pass
+        print("ok:", len(oks), "failed:", len(fails), "page errors:", len(errors), flush=True)
+        sys.exit(1 if fails or errors else 0)
+    SEEN.append(part); print(title, flush=True)
 def ev(pg, js, *a): return pg.evaluate(js, *a)
 def calls(pg): return [c for c in ev(pg, "window.__mcp || []") if c.get("server") == "host:claude_browser"]
 def wait_idle(pg):
@@ -53,6 +70,7 @@ with sync_playwright() as pw:
     db0 = ev(pg, "JSON.stringify(curP().hands20 || null)")
 
     # ---------- D0 typing is off in 2.0.0 (form_input is not granted from a cloud publish): the fields are the owner's ----------
+    sec("D0 typing is off in 2.0.0 (form_input is not granted from a cloud publish): the fields are the owner's")
     P0 = ev(pg, """(() => h20Vet(curP(), {what: 'x', url: 'https://example.org/download', steps: [{do: 'click', target: 'Start'}, {do: 'type', target: 'First name', value: 'Alex'}, {do: 'click', target: 'Next'}, {do: 'choose', target: 'System', value: 'macOS'}], final: 'Send'}, 'w'))()""")
     check("D0 typing off: PT clicks up to the first field; that field and every later one are yours, no click after a field nobody filled", [s["target"] for s in P0["steps"]] == ["Start"] and P0["yours"] == ["First name", "System"] and P0.get("held") is True and P0["final"] == "Send", P0)
     g0 = ev(pg, "(async () => { try{ await h20Call(curP(), 'form_input', {ref: 'r', value: 'x'}); return 'ran'; }catch(e){ return e.code + ':' + (e.message || ''); } })()")
@@ -62,6 +80,7 @@ with sync_playwright() as pw:
     ev(pg, "(() => { H20.plan = null; H20_TYPE = true; render(); })()")   # the typing code stays: everything below tests it switched on
 
     # ---------- D1 the page and the sites ----------
+    sec("D1 the page and the sites")
     more = ev(pg, "MORE_ITEMS.some(x => x.a === 'h20-open')")
     ev(pg, "ACTIONS['h20-open']()"); pg.wait_for_timeout(200)
     v1 = view(pg)
@@ -81,6 +100,7 @@ with sync_playwright() as pw:
     check("D1 …subdomains count, look-alikes do not", ev(pg, "[h20SiteOk(curP(), 'https://www.example.org/a'), h20SiteOk(curP(), 'https://dl.example.org/'), h20SiteOk(curP(), 'https://example.org.evil.test/'), h20SiteOk(curP(), 'http://example.org/'), h20SiteOk(curP(), 'https://github.com/x'), h20WriteOk(curP(), 'https://github.com/x')]") == [True, True, False, False, True, False])
 
     # ---------- D2 the plan and the contract ----------
+    sec("D2 the plan and the contract")
     reset(pg); ev(pg, "window.__allPrompts = []")
     plan(pg)
     pr = ev(pg, "(window.__allPrompts || []).filter(x => x.includes('[[task:hands-plan]]'))")
@@ -96,6 +116,7 @@ with sync_playwright() as pw:
     check("D2 …after the tap the site is on the list and Run is on", ev(pg, "h20Read(curP()).sites") == ["example.org"] and not ev(pg, "document.querySelector('[data-a=h20-run]').disabled"))
 
     # ---------- D3 run ----------
+    sec("D3 run")
     pg.locator("[data-a=h20-run]").click(); wait_idle(pg)
     c = calls(pg); tools = [(x["tool"], x["input"].get("action", "")) for x in c]
     check("D3 Run opens the page of the plan", c and c[0]["tool"] in ("preview_start", "navigate") and c[0]["input"]["url"] == "https://example.org/download", c[:2])
@@ -116,6 +137,7 @@ with sync_playwright() as pw:
     check("D3 Take me there: opens the page, points at Send, no click", c and c[0]["tool"] == "navigate" and [x["input"].get("action") for x in c if x["tool"] == "computer"] == ["scroll_to", "hover"] and "the click is yours" in ev(pg, "document.body.innerText"), [x["tool"] for x in c])
 
     # ---------- D4 the final-button stop ----------
+    sec("D4 the final-button stop")
     for label in ("Delete account", "Jetzt bezahlen", "确认订单", "Publish", "Merge pull request", "Save changes", "Submit"):
         check(f"D4 a final word: “{label}”", ev(pg, f"h20IsFinal({json.dumps(label)})"))
     for label in ("Next", "Weiter", "下一步", "Show details", "Choose a plan"):
@@ -135,6 +157,7 @@ with sync_playwright() as pw:
     check("D4 a click that leads off the list: PT stops there, types nothing more", ev(pg, "H20.live.end") == "stopped" and not ev(pg, "window.__browser.filled.length") and "not on the list: PT stopped" in contract(pg), [ev(pg, "H20.live"), contract(pg)[-300:]])
 
     # ---------- D5 keys and passwords ----------
+    sec("D5 keys and passwords")
     KEY = "github_pat_11ABCDEFG0" + "x" * 60
     reset(pg); override(pg, {"what": "x", "url": "https://example.org/download", "why": "", "undo": "yes", "steps": [{"do": "type", "target": "Password", "value": "hunter2"}, {"do": "type", "target": "Token", "value": KEY}, {"do": "type", "target": "Notes", "value": KEY}, {"do": "type", "target": "First name", "value": "Alex"}], "final": "Send"})
     plan(pg); P = ev(pg, "H20.plan")
@@ -149,6 +172,7 @@ with sync_playwright() as pw:
     ev(pg, f"window.__browser.pages['https://example.org/download'] = {json.dumps(DL)}")
 
     # ---------- D6 the guard ----------
+    sec("D6 the guard")
     reset(pg)
     G = ev(pg, """(async () => { const p = curP(), out = {}; H20.url = 'https://example.org/download';
       const tries = {
@@ -173,11 +197,13 @@ with sync_playwright() as pw:
     ev(pg, "(() => { Store.isOwner = true; render(); })()")
 
     # ---------- D7 the route card ----------
+    sec("D7 the route card")
     card = ev(pg, """(() => { const p = curP(); const M = m20Of(p); const r = m20Norm({name: 'Hands route', line: 'PT fills the form', actors: {hands: 'PT opens the download page and fills it'}, status: 'today'}); r.id = 'R990'; M.routes.push(r);
        const h = m20CardHTML(p, 'R990'); M.routes = M.routes.filter(x => x.id !== 'R990'); return h; })()""")
     check("D7 a route with PT's hands names the project's sites on its card, with Manage", "data-h20-route" in card and "example.org" in card and 'data-a="h20-open"' in card, card[-400:])
 
     # ---------- languages, phone width, nothing secret stored ----------
+    sec("languages, phone width, nothing secret stored")
     reset(pg); plan(pg)
     for lang in ("de", "zh"):
         ev(pg, f"(() => {{ LANG = '{lang}'; applyLangAttr(); render(); }})()"); pg.wait_for_timeout(250)
@@ -191,6 +217,7 @@ with sync_playwright() as pw:
     check("nothing key-shaped is stored", KEY not in ev(pg, "JSON.stringify(window.__mockdb())"))
     check("no page errors", not errors, errors[:5])
     ctx.close(); b.close()
+if ONLY and not ONLY <= set(SEEN): fails.append("--only names a part this suite does not have: " + ",".join(sorted(ONLY - set(SEEN))))
 try: (ROOT / "test" / PAGE).unlink()
 except Exception: pass
 print("ok:", len(oks), "failed:", len(fails), "page errors:", len(errors))

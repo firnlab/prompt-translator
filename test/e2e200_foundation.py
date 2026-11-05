@@ -23,13 +23,30 @@ with the mock runtime. Run: python3 test/e2e200_foundation.py [work/backup-141 |
  A11 "Add requirement" (1.2.1 report): it adds a requirement and puts the cursor in it.
  three languages (no raw keys, no ß), 390 px without sideways scroll, no page errors."""
 import json, sys, pathlib, re
-BK = sys.argv[1] if len(sys.argv) > 1 else "work/backup-141"
+# 2.1 (J5): --only A3[,A5] runs the suite from its start through the last part named and stops there (each part builds on the
+# parts before it, so the earlier ones run as its setup); the planted-bug run (check_the_pick.py) uses it to run less per bug
+ONLY = set()
+for _i, _a in enumerate(sys.argv):
+    if _a == "--only" and _i + 1 < len(sys.argv): ONLY = set(sys.argv[_i + 1].split(","))
+    elif _a.startswith("--only="): ONLY = set(_a.split("=", 1)[1].split(","))
+ARGS = [a for a in sys.argv[1:] if not a.startswith("--") and not re.fullmatch(r"[A-Z0-9,]+", a)]
+BK = ARGS[0] if ARGS else "work/backup-141"
 sys.argv = [sys.argv[0], BK]
 __file__ = str(pathlib.Path(__file__).resolve().parent / "e2e14.py")
 exec(open(__file__).read().split("with sync_playwright() as pw:")[0])
 _check0 = check
 def check(name, cond, info=""):
     _check0(name, cond, info); print(("ok    " if cond else "FAIL  ") + name + ("" if cond else "  → " + str(info)[:600]), flush=True)
+SEEN = []
+def sec(title):   # 2.1 (J5): a part's heading; with --only, the run ends at the first part after the parts named
+    part = title.split()[0]
+    if ONLY and ONLY <= set(SEEN) and part not in ONLY:
+        print(f"--only {','.join(sorted(ONLY))}: stopped before “{title}”", flush=True)
+        try: (ROOT / "test" / PAGE).unlink()
+        except Exception: pass
+        print("ok:", len(oks), "failed:", len(fails), "page errors:", len(errors), flush=True)
+        sys.exit(1 if fails or errors else 0)
+    SEEN.append(part); print(title, flush=True)
 def ev(pg, js, *a): return pg.evaluate(js, *a)
 def wait_ai(pg, ms=20000):
     for _ in range(ms // 100):
@@ -60,7 +77,7 @@ with sync_playwright() as pw:
     pg.wait_for_timeout(500)
 
     # ---------- A1 the facts book ----------
-    print("A1 the facts book")
+    sec("A1 the facts book")
     check("More ⋯ has the facts book", ev(pg, "!!document.querySelector('.hdrmore [data-a=facts-open]')"))
     check("…and the page bar has it next to Decisions", ev(pg, "!!document.querySelector('.pg-bar .sp-facts[data-a=facts-open]') && !!document.querySelector('.pg-bar [data-a=rows-open]')"))
     pg.locator(".pg-bar .sp-facts").first.click(); pg.wait_for_timeout(250)
@@ -111,7 +128,7 @@ with sync_playwright() as pw:
               ev(pg, f"(() => {{ const q = WS.projects.find(x => x.id === '{other}'); return !factsRead(q).entries.length && !buildPrompt('x-test', {{proj: q, body: 'b', schema: '{{}}'}}).includes('<your_rules') && !buildPrompt('x-test', {{proj: q, body: 'b', schema: '{{}}'}}).includes('Google or Samsung'); }})()"))
 
     # ---------- A2 the rules channel ----------
-    print("A2 the rules channel")
+    sec("A2 the rules channel")
     P = ev(pg, "buildPrompt('x-test', {proj: curP(), context: projectContext(curP(), {only: ['north_star']}), body: 'b', schema: '{}'})")
     check("<your_rules> right after the task line, before everything else", P.startswith("[[task:x-test]]\n<your_rules project=") and P.find("<your_rules") < P.find("<best_practices") < P.find("<project>"), P[:200])
     check("…with `only`, the rules are there and whole", NEVER in P and "Must work without a login" in P and "[F1] NEVER" in P)
@@ -155,7 +172,7 @@ with sync_playwright() as pw:
     ev(pg, "(() => { delete window.__guardSays; FACT_GUARD.cache.clear(); pickOf(curP()).cards = []; window.__mockOverride = null; })()")
 
     # ---------- A3 ask once ----------
-    print("A3 ask once")
+    sec("A3 ask once")
     ev(pg, "(() => { const p = curP(); p.qa.push({id: 'qa-t200', dim: 'look', q: 'How should the weekly list look on screen?', answer: 'A ranked board with three columns', options: [], at: now(), st: 'ok'}); const k = pickOf(p); k.log.push({id: 'pe-t200', at: now(), by: 'you', q: 'Who reads the weekly list besides you?', answer: 'Only me', keys: ['A']}); touch(p); })()")
     ev(pg, "window.__allPrompts = []; window.__calls = []")
     ev(pg, "window.__mockOverride = (task, prompt) => task === 'pick-next' ? {cards: [{q: 'How should the weekly list look on screen?', why: 'x', target: 'decision', rec: 0, options: [{label: 'A board', text: 'x'}, {label: 'A list', text: 'y'}]}, {q: 'How often should it run on its own?', why: 'x', target: 'decision', rec: 0, options: [{label: 'Weekly', text: 'x'}, {label: 'Daily', text: 'y'}]}], enough: false} : null")
@@ -180,7 +197,7 @@ with sync_playwright() as pw:
     ev(pg, "(() => { delete window.__askOnce; window.__mockOverride = null; })()")
 
     # ---------- A4 contradictions ----------
-    print("A4 contradictions")
+    sec("A4 contradictions")
     ev(pg, "window.__mockOverride = (task, prompt) => { if (task !== 'facts-conflict') return null; const nw = JSON.parse(/<new>(.*?)<\\/new>/s.exec(prompt)[1]); return nw.some(x => /Google/.test(x.text)) ? {conflicts: [{a: 'F1', b: nw[0].id, why: 'One forbids a Google login, the other needs one.'}]} : {conflicts: []}; }")
     open_facts(pg)
     pg.select_option("#fa-kind", "must"); pg.fill("#fa-words", "Must sign in with the Google account to sync")
@@ -200,7 +217,7 @@ with sync_playwright() as pw:
     ev(pg, f"(() => {{ const e = factById(curP(), '{newid}'); e.status = 'withdrawn'; touch(curP()); window.__mockOverride = null; render(); }})()")
 
     # ---------- A5 cross-project ----------
-    print("A5 cross-project")
+    sec("A5 cross-project")
     ev(pg, "(() => { WS.profile = WS.profile || {entries: []}; WS.profile.entries.push({id: 'pf-t200', text: 'Prefers short answers in bullet points'}); window.__allPrompts = []; })()")
     ev(pg, "window.__mockOverride = (task, prompt) => task === 'pick-next' ? {cards: [], enough: true, enoughWhy: 'x'} : null")
     ev(pg, "aiPickNext(curP(), {n: 1})"); pg.wait_for_timeout(300); wait_ai(pg)
@@ -219,7 +236,7 @@ with sync_playwright() as pw:
     ev(pg, "window.__mockOverride = null")
 
     # ---------- A6 one Next and receipts ----------
-    print("A6 one Next and receipts")
+    sec("A6 one Next and receipts")
     ev(pg, "(() => { const p = curP(); p.pendingQs.push({id: 'q-t200', dim: 'look', text: 'Should the board show the price per idea?', options: ['Yes, next to the name', 'No'], recommended: 0, at: now()}); touch(p); ev20Keep = 0; })()".replace(" ev20Keep = 0;", ""))
     ev(pg, "ACTIONS['q-pick']({dataset: {q: 'q-t200', i: '0'}})"); pg.wait_for_timeout(200)
     ev(pg, "UI.home = true; render()"); pg.wait_for_timeout(200)
@@ -255,7 +272,7 @@ with sync_playwright() as pw:
     ev(pg, "(() => { UI.modal = null; render(); })()")
 
     # ---------- A7 errors ----------
-    print("A7 errors")
+    sec("A7 errors")
     ev(pg, "(() => { WS.settings.events = []; saveWs(); })()")
     ev(pg, "onAppError('Cannot read properties of undefined (reading \"We never log in to Google or Samsung accounts\")', 'v200_facts.js:12')"); pg.wait_for_timeout(700)
     E = ev(pg, "WS.settings.events")
@@ -283,7 +300,7 @@ with sync_playwright() as pw:
     ev(pg, "(() => { UI.modal = null; WS.settings.events = []; saveWs(); render(); })()")
 
     # ---------- A8 examples never ask ----------
-    print("A8 examples never ask")
+    sec("A8 examples never ask")
     ev(pg, "window.__allPrompts = []")
     ev(pg, "window.__mockOverride = (task, prompt) => task === 'loop-show' ? {examples: [{input: 'Order 12 from Anna', output: 'Your order 12 is ready.\\nReply with (a) pickup or (b) delivery?', aim: 'x'}]} : null")
     ev(pg, "(() => { const p = curP(); p.loopSize = {teach: 1, check: 1}; goalOf(p).examples.forEach(e => { if (!e.verdict) e.verdict = 'good'; }); loopStart(p); })()"); pg.wait_for_timeout(400); wait_ai(pg)
@@ -303,7 +320,7 @@ with sync_playwright() as pw:
     ev(pg, "(() => { pickOf(curP()).cards = []; window.__mockOverride = null; render(); })()")
 
     # ---------- A9 layout ----------
-    print("A9 layout")
+    sec("A9 layout")
     ev(pg, "(() => { UI.home = true; render(); })()"); pg.wait_for_timeout(250)
     S = ev(pg, """(() => { const rule = sel => { let v = ''; for (const sh of document.styleSheets){ let rs = []; try{ rs = [...sh.cssRules]; }catch(e){ continue; } for (const r of rs) if (r.selectorText === sel && r.style.maxWidth) v = r.style.maxWidth; } return v || 'none'; };
         return {q: rule('.qacts'), c: rule('.chips'), m: getComputedStyle(document.querySelector('.main-inner')).maxWidth}; })()""")
@@ -313,7 +330,7 @@ with sync_playwright() as pw:
     check("…text first: in a row the text gets at least 60 % (or the buttons wrap under it)", W and all(x >= 0.6 for x in W), W)
 
     # ---------- A10 plain words ----------
-    print("A10 plain words")
+    sec("A10 plain words")
     old = ev(pg, """(() => { const bad = [/Out of scope/i, /Right-sizing/i, /Fix it together with me/i, /\\bvalidated\\b/i, /Nicht im Umfang/, /Dimensionierung/, /Gemeinsam mit mir beheben/, /不在范围内/, /规模适配/, /和我一起修复/, /已证实/, /已证伪/];
         return Object.entries(STR).filter(([k, r]) => !/^cl\\./.test(k) && r.some(x => bad.some(b => b.test(x)))).map(([k]) => k); })()""")
     check("the old process words are gone from every string (three languages)", not old, old)
@@ -321,7 +338,7 @@ with sync_playwright() as pw:
     check("…Not in this version · How much should run by itself? · PT drafts a fix, you pick · yes / no / not sure", W10 == ["Not in this version", "How much should run by itself?", "PT drafts a fix, you pick what to keep", "yes, it holds", "no, it does not hold", "not sure, going ahead anyway"], W10)
 
     # ---------- A11 Add requirement ----------
-    print("A11 Add requirement")
+    sec("A11 Add requirement")
     R = ev(pg, """(async () => { const p = curP(), w = ms => new Promise(r => setTimeout(r, ms)); pgOpen(p, 'design'); await w(250);
         const d = document.querySelector('.pg-details [data-a=pg-details]'); if (d && d.getAttribute('aria-expanded') !== 'true') d.click(); await w(250);
         const tab = [...document.querySelectorAll('.pg-details [data-a=goto]')].find(b => b.dataset.ph === 'require'); if (tab) tab.click(); await w(350);
@@ -335,7 +352,7 @@ with sync_playwright() as pw:
     undo(pg)
 
     # ---------- languages, phone width ----------
-    print("languages, phone width")
+    sec("languages, phone width")
     open_facts(pg)
     for lang in ("de", "zh"):
         ev(pg, f"(() => {{ LANG = '{lang}'; applyLangAttr(); render(); }})()"); pg.wait_for_timeout(250)
@@ -351,6 +368,7 @@ with sync_playwright() as pw:
     ev(pg, "(() => { UI.modal = null; WS.settings.events = []; saveWs(); render(); })()")
     check("no page errors", not errors, errors[:5])
     ctx.close(); b.close()
+if ONLY and not ONLY <= set(SEEN): fails.append("--only names a part this suite does not have: " + ",".join(sorted(ONLY - set(SEEN))))
 try: (ROOT / "test" / PAGE).unlink()
 except Exception: pass
 print("ok:", len(oks), "failed:", len(fails), "page errors:", len(errors))

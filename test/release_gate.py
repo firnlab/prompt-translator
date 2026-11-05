@@ -1,15 +1,28 @@
 """Release gate: every check PT has, in one run, with one summary. Run before every publish of main:
     python3 test/release_gate.py            all checks (about 50 minutes; click-everything runs one browser per level side by side)
     python3 test/release_gate.py --quick    static + strings + unit + new-version flows + hunt (about 15-20 minutes)
+    --only=a,b / --skip=a,b                 a part of the gate (names as in CHECKS); its result is PARTIAL
+    --resume                                a check that was green with the same key (built file + its test files + helpers + data,
+                                            test/gate_keys.py) is not run again but reused; the planted-bug runs resume per bug
+    --label=A                               names this part's receipt (default: full / quick / part)
 Everything runs on COPIES of the data with the mock runtime (test/mock.js). It never touches the real artifacts.
-A check passes only when its exit code is 0 AND its summary shows no failure (old suites only print counts).
+A check passes only when its exit code is 0 AND its summary shows no failure (old suites only print counts) AND it ran at least its
+minimum number of checks (MIN_OK). A red suite runs once more only to tell FLAKY from red; planted-bug checks and data-safety checks
+never run again, and FLAKY blocks a publish just like red (it is logged in work/flaky-ledger.txt).
+2.1 (J7): every run writes a receipt (receipts/<version>/<label>.json, committed: commit, dirty, sha256 of the built file, per check
+the result, counts, seconds and key — no output, no data). The summary reads every receipt of the version: FULL only when every check
+of the gate is green in a receipt and all of them share one commit and one built file; otherwise PARTIAL with the reasons.
 See RELEASE-CHECKS.md for what each check covers and the steps after a release."""
-import subprocess, sys, re, time, pathlib
+import subprocess, sys, re, time, pathlib, json, signal
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "test"))
+import gate_keys as GK
 QUICK = "--quick" in sys.argv
+RESUME = "--resume" in sys.argv
 ONLY = next((x.split("=", 1)[1].split(",") for x in sys.argv if x.startswith("--only=")), None)   # run a part of the gate (names as in CHECKS)
 SKIP = next((x.split("=", 1)[1].split(",") for x in sys.argv if x.startswith("--skip=")), [])
-BAD = re.compile(r"failed:\s*[1-9]|FAILS:\s*[1-9]|ERRORS:\s*[1-9]|page errors:\s*[1-9]|ok, [1-9]\d* failed|MISSING\s+[1-9]|BAD\s+[1-9]|UNIQUE PROBLEMS:\s*[1-9]|[1-9]\d* hard|Traceback|Error: ")
+LABEL = next((x.split("=", 1)[1] for x in sys.argv if x.startswith("--label=")), None)
+BAD = re.compile(r"failed:\s*[1-9]|FAILS:\s*[1-9]|ERRORS:\s*[1-9]|page errors:\s*[1-9]|ok, [1-9]\d* failed|MISSING\s+[1-9]|MISSED\s+[1-9]|BAD\s+[1-9]|UNIQUE PROBLEMS:\s*[1-9]|[1-9]\d* hard|Traceback|Error: ")
 import os as _os
 SLOW = float(_os.environ.get("GATE_SLOW", "1"))   # time budgets × SLOW on a loaded machine (2 CPUs shared with builders); the checks themselves never change
 CHECKS = [  # (name, command, in quick run, minutes allowed)
@@ -17,6 +30,7 @@ CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("static checks",  "node test/static_checks.js", True, 2),
     ("tests parse",    "python3 -W error -m py_compile test/*.py tools/*.py", True, 2),   # 1.7: the test scripts are parsed like the sources
     ("check the checks","python3 test/check_the_checks.py", True, 3),   # known bugs put back into a copy: every one must be caught
+    ("the gate itself", "python3 test/gate_selftest.py", True, 3),   # 2.1: planted bugs need their own check, no retry of planted/data checks, minimum counts, receipts, FULL/PARTIAL, resume keys
     ("strings",        "node test/i18n14.js", True, 2),
     ("unit",           "node test/unit14.js", True, 5),
     ("flows 1.4.1",    "python3 test/e2e141.py", True, 20),
@@ -63,42 +77,109 @@ CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("flows 1.2",      "python3 test/e2e12_on14.py", False, 20),
     ("click everything", ["python3 test/monkey141.py learn", "python3 test/monkey141.py guided", "python3 test/monkey141.py pro"], False, 75),   # one browser per level, side by side
 ]
+if _os.environ.get("GATE_CHECKS"): CHECKS = [tuple(x) for x in json.loads(pathlib.Path(_os.environ["GATE_CHECKS"]).read_text())]   # test/gate_selftest.py only
+LEDGER = pathlib.Path(_os.environ.get("GATE_LEDGER") or ROOT / "work" / "flaky-ledger.txt")
 JOBS = int(next((x.split("=", 1)[1] for x in sys.argv if x.startswith("--jobs=")), "2"))   # 1.8: suites side by side (each run has its own page file)
 EXCLUSIVE = {"click everything"}   # already runs three browsers: alone, after the others
+# 2.1 (J9): never run again — a planted bug caught only on the second try, or a data-safety check that passes on the second try, is RED
+PLANTED = {"check the checks", "check the rows", "check the hunt", "check the Pick tests", "check the Pick tests 2"}
+NO_RETRY = {"build", "static checks", "tests parse", "strings", "unit", "changelog", "the gate itself"} | PLANTED
+DATA_SAFETY = {"migration 1.4.1", "migration 1.4", "flows 1.8 health"}   # whole suites about keeping the data (migration, restore check, export)
+# a failing line about keeping data (written over, lost, deleted, restore point, backup, a failed load) is never retried either
+DATA_RX = re.compile(r"(?i)writes? (nothing )?over|overwrit|never written|writes nothing|nothing (is )?lost|\blost\b|deleted|delete[sd]? |restore point|backup|failed load|fails to load|data safety|keeps? (every|all) |nothing (from|of) another")
+# 2.1 (J14): a suite that silently runs fewer checks is red. Minimum ok counts from the 2.0.0 gate on the real-data copy: small suites
+# (≤ 25 checks, fixed by their code) must keep every check; larger ones (some checks per project) may drop 10 %. Raise with new checks.
+_LAST = {"check the checks": 34, "the gate itself": 33, "unit": 14, "flows 1.4.1": 91, "flows 1.5 (Pick)": 57, "flows 1.5 review": 91, "Pick contract": 22,
+         "flows 1.6 (kit 1)": 127, "flows 1.7 (pages)": 91, "flows 1.7.1 (time, names)": 28, "flows 1.8 look": 98, "flows 1.8 rows": 58,
+         "flows 1.8 kits": 83, "flows 1.8 run": 109, "check the rows": 9, "flows 1.8 (checks)": 86, "flows 1.8 (deciding)": 71,
+         "flows 1.8 health": 98, "PT checks itself": 73, "flows 1.8 (the cone)": 84, "flows 1.9 care": 108, "PT outside claude.ai": 21,
+         "flows 1.9 fleet": 78, "flows 1.9 scan": 99, "flows 1.9.1 judge": 81, "flows 1.10 hands": 54, "flows 2.0 foundation": 82,
+         "flows 2.0 map": 122, "flows 2.0 modes": 170, "flows 2.0 hands": 52, "flows 2.0 loop": 81, "pseudo-localisation": 179, "hunt": 21,
+         "hunt 2": 10, "check the hunt": 10, "check the Pick tests": 100, "check the Pick tests 2": 100, "layout": 60, "migration 1.4.1": 14,
+         "migration 1.4": 15, "flows 1.4": 58, "flows 1.2": 161}
+MIN_OK = {n: (c if c <= 25 else int(c * 0.9)) for n, c in _LAST.items()}
+def ok_count(out):
+    """the number of checks a suite reports as passed (its last summary line), or None when it prints no count"""
+    pats = [r"\bok:\s*(\d+)\s+failed", r"(\d+) ok, \d+ failed", r"(\d+) of \d+ (?:known bugs caught|hunt checks)", r"planted [\w ]+bugs: \d+, caught (\d+)", r"planted row bugs: (\d+), MISSED 0"]
+    found = [(m.start(), int(m.group(1))) for p in pats for m in re.finditer(p, out)]
+    return max(found)[1] if found else None
+def fail_count(out):
+    m = [int(v) for g in re.findall(r"\bfailed:?\s*(\d+)|, (\d+) failed|MISSED (\d+)", out) for v in g if v]
+    return m[-1] if m else None
+
 import concurrent.futures as _cf, threading as _th
 _print_lock = _th.Lock()
+STATE = GK.load_state() if RESUME else {}
+def check_key(name, cmd):
+    if name == "build": return None
+    return GK.key(cmd, ROOT, wide=name in PLANTED or name in ("tests parse", "static checks", "the gate itself"), extra=["build.py"] if name in PLANTED else ())
 def run_check(name, cmd, mins):
     t0 = time.time()
+    k = check_key(name, cmd)
+    if RESUME and name in ("check the Pick tests", "check the Pick tests 2"): cmd = cmd + " --resume"   # resumes per planted bug
+    r = STATE.get(k) if (RESUME and k) else None
+    if r and r.get("result") == "PASS":
+        with _print_lock: print(f"REUSED {name} (key {k[:12]}, green {r.get('at', '')})", flush=True)
+        return dict(name=name, ok=True, result="REUSED", s=0, tail=[f"reused: green with the same key at {r.get('at', '')}"], key=k, ok_n=r.get("ok_n"), fail_n=0)
     with _print_lock: print(f"… {name}", flush=True)
     cmds = cmd if isinstance(cmd, list) else [cmd]
     def once(limit):
-        ps = [subprocess.Popen(c, shell=True, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) for c in cmds]
-        try:
-            outs = [x.communicate(timeout=max(1, limit))[0] for x in ps]
-            out = "\n".join(outs); return all(x.returncode == 0 for x in ps) and not BAD.search(out), out
-        except subprocess.TimeoutExpired:
-            for x in ps: x.kill()
-            return False, f"timed out after {mins} min"
-    ok, out = once(mins * 60 * SLOW - (time.time() - t0))
-    # a red suite runs once more: green the second time means FLAKY (recorded in the ledger and named in the summary, never silent)
+        ps = [subprocess.Popen(c, shell=True, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, start_new_session=True) for c in cmds]
+        outs, timed = [], False
+        for x in ps:
+            try: outs.append(x.communicate(timeout=max(1, limit - (time.time() - t_once)))[0])
+            except subprocess.TimeoutExpired:
+                timed = True
+                for y in ps:
+                    try: _os.killpg(y.pid, signal.SIGKILL)
+                    except Exception: pass
+                # 2.1 (J6): keep what it printed before the time ran out (the planted-bug runs keep their results in work/gate-state.jsonl)
+                try: outs.append(x.communicate(timeout=30)[0] or "")
+                except Exception: pass
+        out = "\n".join(o for o in outs if o)
+        if timed: return False, out + f"\ntimed out after {mins} min", True
+        return all(x.returncode == 0 for x in ps) and not BAD.search(out), out, False
+    t_once = time.time()
+    ok, out, timed = once(mins * 60 * SLOW)
+    n_ok = ok_count(out); why = ""
+    if ok and name in MIN_OK and (n_ok is None or n_ok < MIN_OK[name]):
+        ok = False; why = f"ran {n_ok if n_ok is not None else 'no counted'} checks, at least {MIN_OK[name]} expected (MIN_OK)"
+    # a red suite runs once more: green the second time means FLAKY (recorded in the ledger, named in the summary, and it blocks a publish)
     flaky = False
-    if not ok and name not in ("build", "static checks", "check the checks", "strings", "unit") and "timed out" not in out:
+    fails = [l.strip() for l in out.splitlines() if re.match(r"^\s*FAIL\b", l)]
+    no_retry = name in NO_RETRY or name in DATA_SAFETY or any(DATA_RX.search(l) for l in fails)
+    if not ok and not timed and not why and not no_retry:
         with _print_lock: print(f"   {name} red: running it once more to tell a flaky test from a real failure", flush=True)
-        ok2, out2 = once(mins * 60 * SLOW)
+        t_once = time.time()
+        ok2, out2, _ = once(mins * 60 * SLOW)
         if ok2:
-            flaky = True; ok = True
-            with open(ROOT / "work" / "flaky-ledger.txt", "a") as fl: fl.write(time.strftime("%Y-%m-%d %H:%M") + f"  {name}: red, then green\n" + "\n".join("   " + l for l in [l for l in out.strip().splitlines() if l.strip()][-8:]) + "\n")
+            flaky = True
+            LEDGER.parent.mkdir(parents=True, exist_ok=True)
+            with open(LEDGER, "a") as fl: fl.write(time.strftime("%Y-%m-%d %H:%M") + f"  {name}: red, then green\n" + "\n".join("   " + l for l in [l for l in out.strip().splitlines() if l.strip()][-8:]) + "\n")
+    elif not ok and no_retry and not timed and not why and name not in ("build",):
+        why = "not run again: " + ("a planted-bug check" if name in PLANTED else "a data-safety check" if (name in DATA_SAFETY or any(DATA_RX.search(l) for l in fails)) else "a check that cannot be flaky")
     tail = [l for l in out.strip().splitlines() if l.strip()][-6:]
-    if flaky: tail = tail + ["FLAKY: red on the first run, green on the second (see work/flaky-ledger.txt)"]
+    if why: tail = tail + [why]
+    if flaky: tail = tail + ["FLAKY: red on the first run, green on the second (see work/flaky-ledger.txt) — blocks a publish"]
+    result = "FLAKY" if flaky else "PASS" if ok else "FAIL"
     with _print_lock:
-        print(f"{'FLAKY' if flaky else 'PASS' if ok else 'FAIL'} {name} ({int(time.time() - t0)} s)", flush=True)
-        if not ok: print("   " + "\n   ".join(tail), flush=True)
-    return (name, ok, int(time.time() - t0), tail)
+        print(f"{result} {name} ({int(time.time() - t0)} s)", flush=True)
+        if result != "PASS": print("   " + "\n   ".join(tail), flush=True)
+    rec = dict(name=name, ok=ok and not flaky, result=result, s=int(time.time() - t0), tail=tail, key=k, ok_n=n_ok, fail_n=fail_count(out))
+    if k and result == "PASS": GK.save_state({"key": k, "kind": "gate", "name": name, "result": "PASS", "ok_n": n_ok})
+    return rec
+
+# ---------- run ----------
+T0 = time.time(); STARTED = time.strftime("%Y-%m-%dT%H:%M:%S")
+COMMIT, DIRTY = GK.commit_info()
 todo = [(n, c, m) for n, c, q, m in CHECKS if not (QUICK and not q) and not ((ONLY and n not in ONLY) or n in SKIP)]
+unknown = sorted(set(ONLY or []) - {n for n, *_ in CHECKS}) + sorted(set(SKIP) - {n for n, *_ in CHECKS})
+if unknown: print("unknown check names (see CHECKS):", ", ".join(unknown)); sys.exit(2)
 res = []
 if todo and todo[0][0] == "build":
     r = run_check(*todo[0]); res.append(r); todo = todo[1:]
-    if not r[1]: todo = []   # nothing else can run on a broken build
+    if not r["ok"]: todo = []   # nothing else can run on a broken build
+DIST_SHA = GK.sha_path(ROOT / "dist/prompt-translator.html")
 pool_items = [x for x in todo if x[0] not in EXCLUSIVE]
 with _cf.ThreadPoolExecutor(max_workers=max(1, JOBS)) as ex:
     futs = {ex.submit(run_check, *x): x[0] for x in pool_items}
@@ -106,7 +187,28 @@ with _cf.ThreadPoolExecutor(max_workers=max(1, JOBS)) as ex:
 res += [done[x[0]] for x in pool_items]
 for x in todo:
     if x[0] in EXCLUSIVE: res.append(run_check(*x))
-fl = [r[0] for r in res if r[3] and str(r[3][-1]).startswith("FLAKY")]
-print("\n== release gate:", ("GREEN" + (" with FLAKY: " + ", ".join(fl) if fl else "")) if all(r[1] for r in res) else "RED", f"({sum(r[1] for r in res)}/{len(res)} passed{', quick run' if QUICK else ''})")
-for name, ok, s, tail in res: print(f"  {'✓' if ok else '✗'} {name:18} {s:5d} s   {tail[-1][:110] if tail else ''}")
-sys.exit(0 if all(r[1] for r in res) else 1)
+
+# ---------- receipt (J7): data-free, committed ----------
+SCOPE = "QUICK" if QUICK else "PARTIAL" if (ONLY or SKIP) else "FULL"
+VERSION = GK.pt_version()
+label = re.sub(r"[^A-Za-z0-9._-]+", "-", LABEL or ("full" if SCOPE == "FULL" else SCOPE.lower() + "-" + time.strftime("%Y%m%d-%H%M%S")))
+receipt = {"version": VERSION, "label": label, "scope": SCOPE, "commit": COMMIT, "dirty": DIRTY, "dist_sha256": DIST_SHA,
+           "started": STARTED, "seconds": int(time.time() - T0), "args": [a for a in sys.argv[1:]],
+           "checks": [{"name": r["name"], "result": r["result"], "seconds": r["s"], "ok": r["ok_n"], "failed": r["fail_n"], "key": r["key"]} for r in res],
+           "flaky": [r["name"] for r in res if r["result"] == "FLAKY"]}
+RDIR = pathlib.Path(_os.environ.get("GATE_RECEIPTS") or ROOT / "receipts") / VERSION
+if "--no-receipt" not in sys.argv:
+    RDIR.mkdir(parents=True, exist_ok=True)
+    (RDIR / f"{label}.json").write_text(json.dumps(receipt, indent=1, ensure_ascii=False) + "\n")
+
+green = all(r["ok"] for r in res)
+fl = [r["name"] for r in res if r["result"] == "FLAKY"]
+print("\n== release gate:", ("GREEN" if green else "RED") + (" (FLAKY blocks a publish: " + ", ".join(fl) + ")" if fl else ""),
+      f"({sum(r['ok'] for r in res)}/{len(res)} passed) · this run: {SCOPE}{' (' + ' '.join(a for a in sys.argv[1:] if a.startswith(('--only', '--skip'))) + ')' if SCOPE == 'PARTIAL' else ''}")
+print(f"   commit {COMMIT[:12]}{' + uncommitted changes' if DIRTY else ''} · built file sha256 {DIST_SHA[:16]} · {int(time.time() - T0)} s")
+for r in res: print(f"  {'✓' if r['ok'] else '!' if r['result'] == 'FLAKY' else '✗'} {r['name']:18} {r['s']:5d} s   {r['tail'][-1][:110] if r['tail'] else ''}")
+if "--no-receipt" not in sys.argv:
+    word, why, cm = GK.overall(RDIR, [n for n, *_ in CHECKS])
+    print(f"\nreceipt: receipts/{VERSION}/{label}.json · all receipts of {VERSION}: {word}" + (f" on commit {cm[:12]}" if word == "FULL" else ""))
+    for w in why: print("   " + w)
+sys.exit(0 if green and not fl else 1)

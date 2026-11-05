@@ -25,13 +25,30 @@ Run: python3 test/e2e200_map.py [work/backup-141 | test/fixtures/synthetic.json]
     library nor another project's prompts; the route stands on the other map with "Worked before", re-checked there.
  three languages (no raw keys, no ß), 390 px without sideways scroll, targets ≥ 24 px, no page errors."""
 import json, sys, pathlib, re
-BK = sys.argv[1] if len(sys.argv) > 1 else "work/backup-141"
+# 2.1 (J5): --only A3[,A5] runs the suite from its start through the last part named and stops there (each part builds on the
+# parts before it, so the earlier ones run as its setup); the planted-bug run (check_the_pick.py) uses it to run less per bug
+ONLY = set()
+for _i, _a in enumerate(sys.argv):
+    if _a == "--only" and _i + 1 < len(sys.argv): ONLY = set(sys.argv[_i + 1].split(","))
+    elif _a.startswith("--only="): ONLY = set(_a.split("=", 1)[1].split(","))
+ARGS = [a for a in sys.argv[1:] if not a.startswith("--") and not re.fullmatch(r"[A-Z0-9,]+", a)]
+BK = ARGS[0] if ARGS else "work/backup-141"
 sys.argv = [sys.argv[0], BK]
 __file__ = str(pathlib.Path(__file__).resolve().parent / "e2e14.py")
 exec(open(__file__).read().split("with sync_playwright() as pw:")[0])
 _check0 = check
 def check(name, cond, info=""):
     _check0(name, cond, info); print(("ok    " if cond else "FAIL  ") + name + ("" if cond else "  → " + str(info)[:600]), flush=True)
+SEEN = []
+def sec(title):   # 2.1 (J5): a part's heading; with --only, the run ends at the first part after the parts named
+    part = title.split()[0]
+    if ONLY and ONLY <= set(SEEN) and part not in ONLY:
+        print(f"--only {','.join(sorted(ONLY))}: stopped before “{title}”", flush=True)
+        try: (ROOT / "test" / PAGE).unlink()
+        except Exception: pass
+        print("ok:", len(oks), "failed:", len(fails), "page errors:", len(errors), flush=True)
+        sys.exit(1 if fails or errors else 0)
+    SEEN.append(part); print(title, flush=True)
 def ev(pg, js, *a): return pg.evaluate(js, *a)
 def wait_ai(pg, ms=40000):
     for _ in range(ms // 100):
@@ -61,7 +78,7 @@ with sync_playwright() as pw:
     pg.wait_for_timeout(500)
 
     # ---------- B1 the new order ----------
-    print("B1 the new order")
+    sec("B1 the new order")
     S = ev(pg, "({st: STAGE20, on: stage20On(curP()), at: stage20Of(curP()), ph: ['capture','understand','interview','arch','assume','require','build','review','test','launch','release','operate'].map(stage20OfPhase)})")
     check("a 2.0 project has the eight stages Goal → Map → Decide → Details → Build → Check → Launch → Operate", S["st"] == ["goal", "map", "decide", "details", "build", "check", "launch", "operate"] and S["on"] and S["at"] == "goal", S)
     check("…mapped onto today's phases (capture+understand+interview → Goal, arch → Map, assume+require → Details, review+test → Check, launch+release → Launch)",
@@ -82,7 +99,7 @@ with sync_playwright() as pw:
     check("…the picks in the deck come first (here none); then one Next: check the goal card", not ev(pg, "pickDeck(curP()).length") and len(nx) == 1 and nx[0].startswith("m20-open:goal:") and "goal card" in nx[0], nx)
 
     # ---------- B2 the goal card ----------
-    print("B2 the goal card")
+    sec("B2 the goal card")
     click(pg, ".nx20-next [data-a=m20-open]")
     check("Next opens the goal card on the map page", ev(pg, "!!document.querySelector('.m20-view .g20')"))
     row = ev(pg, "document.querySelector('.g20-row[data-f=outcome]').innerText")
@@ -104,7 +121,7 @@ with sync_playwright() as pw:
     check("the Goal stage's rows are green", all(rows), rows)
 
     # ---------- B3 the map and the coverage engine ----------
-    print("B3 the map and the coverage engine")
+    sec("B3 the map and the coverage engine")
     click(pg, ".nx20-next [data-a=m20-open]")
     ev(pg, "window.__mapCalls = []; window.__inflightMax = 0; window.__allPrompts = []")
     click(pg, "[data-a=m20-ask][data-v=full]")
@@ -149,7 +166,7 @@ with sync_playwright() as pw:
     check("the Map stage's rows: six angles, not-yet lane, quiet round, cells, your rules, frontier", all(r["ok"] for r in ev(pg, "stage20Rows(curP(), 'map')")), ev(pg, "stage20Rows(curP(), 'map')"))
 
     # ---------- B4 your rules on the map ----------
-    print("B4 your rules on the map")
+    sec("B4 your rules on the map")
     g = rid(pg, "Google sign-in list app")
     st = ev(pg, f"m20Status(curP(), m20Route(curP(), '{g}'))")
     check("a route that breaks your never is Blocked by your rule", st == "blocked", st)
@@ -170,7 +187,7 @@ with sync_playwright() as pw:
     check("statuses by word and sign, never by colour alone", B and all(re.match(r"^[✓✎⚙◷⛔] ", x) or x.startswith("Worked") or x == "corrected" for x in B), B)
 
     # ---------- B5 deciding ----------
-    print("B5 deciding")
+    sec("B5 deciding")
     r1, r2_, r3, r4 = rid(pg, "Shared reminders list"), rid(pg, "Family list app"), rid(pg, "PT-built family list page"), rid(pg, "Shared note in the notes app")
     check("★ waits until you looked at a route", ev(pg, "m20Star(curP())") is None and "★" not in ev(pg, "[...document.querySelectorAll('.m20-r .m20-nm')].map(x => x.innerText).join('')"))
     for r in (r1, r2_, r3): click(pg, f"#m20r-{r} [data-a=m20-short]")
@@ -227,7 +244,7 @@ with sync_playwright() as pw:
     check("…the Next is the old spine's step again (no map Next)", ev(pg, "stage20Next(curP())") is None)
 
     # ---------- B6 a goal change shows its effect first ----------
-    print("B6 a goal change shows its effect first")
+    sec("B6 a goal change shows its effect first")
     ev(pg, "m20Open(curP(), 'goal')"); pg.wait_for_timeout(200)
     click(pg, "[data-a=g20-edit]")
     pg.fill("#g20-whom", "Mum, Dad, Grandma, Lea and our neighbour")
@@ -243,7 +260,7 @@ with sync_playwright() as pw:
     check("…the decision that depended on it is marked to re-check", ev(pg, "!!m20Decision(curP()).recheck"))
 
     # ---------- B7 tripwires and the Route alert ----------
-    print("B7 tripwires and the Route alert")
+    sec("B7 tripwires and the Route alert")
     ev(pg, "m20Open(curP(), 'map')")
     ev(pg, "(() => { const p = curP(); p.requirements.push({id: 'R2', title: 'Ticks by name', given: 'a', when: 'b', then: 'c', priority: 'must'}); touch(p); })()")
     c0 = ev(pg, "m20Carry(curP())")
@@ -287,7 +304,7 @@ with sync_playwright() as pw:
     check("Look at the map again: the best route that still stands is shortlisted; your route stays until you take another", len(m["short"]) == 1 and m["short"][0] != m["chosen"] and m["chosen"] == r1 and ev(pg, "!!document.querySelector('.m20-ladder')"), m["short"])
 
     # ---------- B8 map chat ----------
-    print("B8 map chat")
+    sec("B8 map chat")
     chips = ev(pg, "[...document.querySelectorAll('.m20-chips button')].map(b => b.innerText)")
     check("the chips: Missing any? · Higher ceiling? · Easier? · What breaks …? · Tell me everything you haven't shown", chips[:3] == ["Missing any?", "Higher ceiling?", "Easier?"] and chips[3].startswith("What breaks R") and chips[4] == "Tell me everything you haven't shown", chips)
     ev(pg, "window.__mapCalls = []; window.__allPrompts = []")
@@ -313,7 +330,7 @@ with sync_playwright() as pw:
     check("a question in your words: an answer plus a map diff card, never prose alone", [c for c in calls(pg) if c != "map-merge"] == ["map-ask"] and "Offline:" in df and "Offline list app" in df, df)
 
     # ---------- B9 proven routes from other projects ----------
-    print("B9 proven routes from other projects")
+    sec("B9 proven routes from other projects")
     src = ev(pg, f"""(() => {{ const q = blankProject('Holiday packing for Anna'); q.northStar.goal = 'Anna packs for the holiday without forgetting things'; WS.projects.push(q);
         factsAdd(q, {{kind: 'never', words: {json.dumps(OTHER_NEVER)}}}); factsAdd(q, {{kind: 'fact', words: 'Anna has a Fairphone'}});
         const M = m20Of(q); const r = m20Norm({{name: 'Packing list with Dropbox photos', fam: 'Existing apps', line: 'A shared list for Anna', lvl: 2, where: 'phone', how: 'combine', status: 'today', pattern: 'Shared checklist on phones', recipe: ['Create one shared checklist', 'Upload the photos to Dropbox', 'Remind Anna on Friday', 'Invite the others']}}, {{lens: 'buy', round: 1}});
@@ -334,7 +351,7 @@ with sync_playwright() as pw:
     check("the Map row “proven routes checked” is green", [r for r in ev(pg, "stage20Rows(curP(), 'map')") if r["k"] == "proven"][0]["ok"])
 
     # ---------- Stop ----------
-    print("Stop")
+    sec("Stop")
     ev(pg, "m20Open(curP(), 'map'); window.__mapCalls = []; window.__mockDelayMs = 800"); r0 = len(M(pg)["rounds"])
     click(pg, "[data-a=m20-ask][data-v=dig]"); click(pg, "#m20-cf-go"); pg.wait_for_timeout(250)
     check("a running round shows its progress and a Stop button", ev(pg, "!!document.querySelector('.m20-busy [data-a=m20-stop]')") and "Calls done:" in main(pg))
@@ -342,7 +359,7 @@ with sync_playwright() as pw:
     check("…Stop ends it: the calls not started yet never start, nothing half is written", "map-redteam" not in calls(pg) and len(M(pg)["rounds"]) == r0 and ev(pg, "!M20RUN.total && AI.running.size === 0"), [calls(pg), len(M(pg)["rounds"]), r0])
 
     # ---------- reload: everything kept, nothing called ----------
-    print("reload")
+    sec("reload")
     m_before = M(pg)
     ev(pg, "(async () => { flushSaves(); await storeIdle(5000); window.__mapCalls = []; await openWorkspace(WS.id); })()"); pg.wait_for_timeout(2500)
     ev(pg, f"(() => {{ openProject('{pid}'); m20Open(curP(), 'map'); }})()"); pg.wait_for_timeout(700)
@@ -351,7 +368,7 @@ with sync_playwright() as pw:
     check("…and opening it called nothing", not ev(pg, "(window.__mapCalls || []).length"))
 
     # ---------- languages, phone width, targets ----------
-    print("languages, phone width, targets")
+    sec("languages, phone width, targets")
     for v in ("map", "card", "compare", "goal"):
         ev(pg, f"m20Open(curP(), '{v}', m20Read(curP()).chosen)"); pg.wait_for_timeout(200)
         small = ev(pg, "[...document.querySelectorAll('.m20-view button, .m20-view select, .m20-view input:not([type=hidden])')].filter(e => e.offsetParent && e.getBoundingClientRect().height < 24).map(e => e.outerHTML.slice(0, 80))")
@@ -372,6 +389,7 @@ with sync_playwright() as pw:
         check(f"390 px: the {v} view has no sideways scroll", sx <= 2, sx)
     check("no page errors", not errors, errors[:5])
     ctx.close(); b.close()
+if ONLY and not ONLY <= set(SEEN): fails.append("--only names a part this suite does not have: " + ",".join(sorted(ONLY - set(SEEN))))
 try: (ROOT / "test" / PAGE).unlink()
 except Exception: pass
 print("ok:", len(oks), "failed:", len(fails), "page errors:", len(errors))
