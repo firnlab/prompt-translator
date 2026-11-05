@@ -492,3 +492,15 @@ M8. Remove features that are never used — RECOMMEND: DEFER — was: C5-12
 
 ---
 
+
+## Rabbit holes in chat (owner, 5 Nov 2026 22:00-22:31), results so far
+- Goal: PT makes real, running digital tools of any kind for a non-coder; PT does all it technically can, the owner is "the hands" only
+  where physics or his rules require it; when PT can't, it always searches for ways around and shows them ranked.
+- "Running" = does its job without the owner starting it, lives somewhere real, and PT can see whether it worked.
+- Tool kinds (23) x homes (artifact, scheduled task, GitHub Actions/Pages, free host, Mac, iPhone Shortcuts, paid APIs) x 8 dimensions
+  (trigger, data in, results out, identity/accounts, money, terms/law, maintenance, autonomy level 0-5) → one "tool card" per route.
+- 14 kinds of limits, all added. The way-around search for every blocked step, in order: official way at the same service → other
+  service → other home → other shape → smallest step for the owner's hands → "not yet possible" with a watch.
+- Terms/law (limit 3): PT checks and shows "allowed / grey / not allowed" plus the risk; the owner decides and may accept a route at
+  his own risk (owner decision). Ricardo: owner says there is no API, so the click route is accepted at the owner's own risk; PT shows
+  the risk on the tool card before each run (owner keeps final buttons).
