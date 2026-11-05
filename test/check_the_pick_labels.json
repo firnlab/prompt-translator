@@ -1,0 +1,50 @@
+{
+ "research questions keep people's names": {
+  "label": "names, e-mail, phone, AHV, IBAN, links, street and the project's name are removed"
+ },
+ "a hard pick's ★ is taken by 'take all ★'": {
+  "label": "1.8: a hard pick (or one that waits for your call) is never pre-selected and never taken by 'take al"
+ },
+ "a blog confirms what a platform can do": {
+  "label": "a blog never confirms what a platform cannot do (stays unknown)"
+ },
+ "Undo leaves a pick open and decided": {
+  "label": "Undo of a pick that PT touched afterwards: the pick is open or decided, never both"
+ },
+ "an AI answer that breaks a card rule is used without asking again": {
+  "label": "R28 a card the cleaner cannot repair is asked again with the problem named"
+ },
+ "research that never reports back keeps hard picks waiting": {
+  "label": "research that never reports back stops counting as running"
+ },
+ "\"I ran it\" marks the stand-ins as tested": {
+  "label": "R11 \"I ran it\" marks real parts tested, never stand-ins"
+ },
+ "a new platform keeps the old platform's parts": {
+  "label": "R4 picking the platform checks it right away (old parts gone)"
+ },
+ "Later in Finish and Later in Pick are two things": {
+  "label": "R8 a pick put off in Finish is parked in Pick"
+ },
+ "own words go into the prompt raw": {
+  "label": "own words that are clear become the answer, with the option they name"
+ },
+ "a run writes into a project that was deleted meanwhile": {
+  "label": "R15 a project deleted during a round is not brought back (not listed, not stored)"
+ },
+ "a background result joins the try's Undo": {
+  "label": "R6 a research result during a try is its own Undo step"
+ },
+ "a failed workspace load writes the workspace": {
+  "label": "R5 a failed load writes nothing over the workspace"
+ },
+ "a changed measure gets a new criterion id": {
+  "label": "R9 a changed measure keeps its criterion id with a new version"
+ },
+ "findings that instruct the AI reach the prompts": {
+  "label": "R26 a finding that tries to instruct the AI is left out of every prompt"
+ },
+ "the protections are approved in one click": {
+  "label": "R21 the designed protections are one item to check, never all in one click"
+ }
+}
