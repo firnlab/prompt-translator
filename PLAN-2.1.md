@@ -502,5 +502,18 @@ M8. Remove features that are never used — RECOMMEND: DEFER — was: C5-12
 - 14 kinds of limits, all added. The way-around search for every blocked step, in order: official way at the same service → other
   service → other home → other shape → smallest step for the owner's hands → "not yet possible" with a watch.
 - Terms/law (limit 3): PT checks and shows "allowed / grey / not allowed" plus the risk; the owner decides and may accept a route at
-  his own risk (owner decision). Ricardo: owner says there is no API, so the click route is accepted at the owner's own risk; PT shows
-  the risk on the tool card before each run (owner keeps final buttons).
+  his own risk (owner decision), bounded: only risks to the owner himself; buyers' data and messages to third parties are never
+  waivable; no generic "separate account" advice (Ricardo AGB restricts multiple accounts).
+- Ricardo (corrected after the 4-round red team of 5 Nov 22:51-23:45): the owner believes there is no API; Ricardo's official pages
+  show a partner API (partnership credentials, eligibility unknown) and a fixed-price seller feed (not auctions). Neither is verified
+  for a private seller relisting auctions. The owner's relisting project is auctions-only and on-command. Step 1 stays: one e-mail
+  to Ricardo (owner's hands) asking about auction republish for a private seller; the click route stays as "on your command: PT
+  prepares, you press relist", risks named before every run, dry run on one item, read-back check for duplicates.
+- Red-team results in /tmp/claude-0/-home-claude/7c3b61ed-ba30-5911-b48f-fdb261d43dba/scratchpad/rh/out/RT1-4.md (session scratch):
+  definition in levels (Usable / Running incl. on-command / Measured) with the target per project; tool card + 9 lines (needs Claude
+  to run, needs Mac on, PT can set up, who uses it, duplicate-run guard, attention per week, terms incl. multiple accounts, usage per
+  run, where data lives); kind 0 "Adopt"; homes with terms lines (GitHub Actions/Pages terms, 60-day disable on public repos,
+  Managed Agents on included Max/Ultra API credits after K3 for no-login jobs, Claude scheduled tasks local-only when they need the
+  Mac, Vercel Hobby non-commercial, Telegram blocked by the owner's 25 Oct rule); way-around search with step 0 Adopt and a usage
+  cap; budget gate (every AI call a cost-named button while over budget). Structure: Claude's "Lead + roles" is only a proposal; the
+  owner's own structure proposal has not been heard yet.
