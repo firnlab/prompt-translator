@@ -10,7 +10,7 @@ const PG_OF_PHASE = {}; for (const [pg, phs] of Object.entries(PG_PHASES)) for (
 /* a step ref the old screens use → the page it lives on */
 const PG_OF_REF = {goal: "idea", "#pk-deck": "picks", "#pk-research": "picks", "#pk-summary": "picks", "#pk-try": "try", arch: "design", review: "review", test: "review", build: "build", release: "run", run: "run"};
 const PG_ICON = {idea: "target", picks: "list", try: "play", design: "layers", review: "shield", build: "bolt", run: "heart"};
-function pgOn(p){ return !!p && MODES.includes(projMode(p)); }   // 2.0: the pages are the structure of both faces (Pick and Chat with structure)
+function pgOn(p){ return !!p && MODES.includes(projMode(p)); }   // 2.0: the pages are the structure of both faces (Pick Mode and Chat Mode)
 /** the station of the one next step */
 function pgNextPage(s){ const nx = s.next || {}; return nx.a === "pk-try" ? "try" : nx.a === "pk-gaps" ? "picks" : PG_OF_REF[nx.ref] || (nx.ref === "goal" ? "idea" : "run"); }
 /** the track: done stations stay filled, exactly one station is current (the one of the next step), the rest is to do */

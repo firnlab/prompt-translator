@@ -1,4 +1,4 @@
-"""1.5.0 Pick mode flows on a COPY of the real data with the mock runtime. Never touches real data.
+"""1.5.0 Pick Mode flows on a COPY of the real data with the mock runtime. Never touches real data.
 Covers: default view for new projects (both workspaces) and existing projects keep theirs, start, single / multi / "all of it",
 own words (clear and two readings), Later and Bring back, session summary, change a decision, second opinion, import,
 export, research job (findings + platform check), queue integration (counts, Finish, inspector, go-to), Undo per pick,

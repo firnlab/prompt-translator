@@ -10,6 +10,9 @@ Sprint goal: a safer PT and a test kit that cannot go quietly empty.
   four in the gate.
 - Sprint 2 (Ricardo relisting) off by the owner (D-2026-11-06-06).
 
+## Change before keep (owner, 6 Nov 18:01)
+- Pick → Pick Mode, Chat with structure → Chat Mode in every string (three languages), prompt, comment, test name and label; About rewritten (six paragraphs, accurate to 2.1: modes, what a project gets, promise and limits, AI steps and cost, web access and hands, data, reporting); 2.1.0 changelog gets a "Changed" block. Area tests green (modes 170, pseudo-localisation 179, 1.5 57, changelog 27). The built file changed, so the full gate runs again before the preview is republished.
+
 ## Gate and publish
 - Full gate GREEN, 54 of 54 checks, FULL on commit 6029de7 (built file sha256 e26ccc835b26953b…), receipt `receipts/2.1.0/full.json`.
 - Run as parts on the final code (one part per 2-hour window): hunt check 9 min (31/31), click everything 40 min, part A 28 min (50/50),

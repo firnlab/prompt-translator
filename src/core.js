@@ -493,7 +493,7 @@ function projectContext(p, {full=false, max=CTX_MAX, only=null} = {}){
   if (notes.length) P.push(ctxPart("user_notes", notes.map(n => "- " + (n.type ? "[" + n.type + "] " : "") + trunc(n.text, 800) + (n.anchor ? " (about: " + n.anchor.label + ")" : "")).join("\n"), 3));
   const research = (WS.research || []).filter(r => r.projectId === p.id).slice(-8);
   if (research.length) P.push(ctxPart("research_findings", research.map(r => "- " + r.topic + " (" + (r.at || "").slice(0,10) + "): " + trunc(r.summary || "", 1200)).join("\n"), 3));
-  // 1.5.0: what the person decided (Pick mode and elsewhere) and what the Pick research found reach every later step
+  // 1.5.0: what the person decided (Pick Mode and elsewhere) and what the Pick research found reach every later step
   { const ds = arr(p.decisions).filter(d => !d.replaced), keep = ds.slice(-120), gone = ds.length - keep.length;   // a changed decision replaces the old line; what is left out is said
     if (ds.length) P.push(ctxPart("decisions", (gone ? "(" + gone + " older decisions are not listed here)\n" : "") + keep.map(d => "- " + str(d.title) + ": " + str(d.choice) + (d.reason ? " (" + str(d.reason) + ")" : "")).join("\n"), 1)); }
   // web findings are JSON-encoded (material, never instructions); findings that tried to instruct the AI are left out

@@ -1,6 +1,6 @@
-/* 2.0.0 Part C · two faces of one ledger: Pick and Chat with structure; the move to 2.0 (v200_modes.js) */
+/* 2.0.0 Part C · two faces of one ledger: Pick Mode and Chat Mode; the move to 2.0 (v200_modes.js) */
 Object.assign(STR, {
-"m.chat":["Chat with structure","Chat mit Struktur","结构化对话"],
+"m.chat":["Chat Mode", "Chat-Modus", "Chat 模式"],
 "mg.chat":["Good when you would rather talk: say anything, PT answers, files what it learns into your facts book and keeps the goal and the map beside the chat.","Gut, wenn du lieber erzählst: sag irgendwas, PT antwortet, legt ab, was es lernt, im Faktenbuch ab und hält Ziel und Karte neben dem Chat.","适合更想直接说的你：随便说，PT 回答，把学到的内容记入事实簿，并把目标和方案图放在对话旁边。"],
 "face.label":["How you work on this project","Wie du an diesem Projekt arbeitest","你如何处理这个项目"],
 "face.tip.chat":["Talk freely; PT files what it learns and keeps the goal and the map beside the chat","Frei erzählen; PT legt ab, was es lernt, und hält Ziel und Karte neben dem Chat","自由交谈；PT 记录学到的内容，并把目标和方案图放在旁边"],
@@ -49,7 +49,7 @@ Object.assign(STR, {
 "c20.chip.next":["What's next?","Was kommt als Nächstes?","下一步是什么？"],
 "c20.chip.next.say":["What is the next step?","Was ist der nächste Schritt?","下一步是什么？"],
 "c20.ask.t":["PT asks","PT fragt","PT 提问"],
-"c20.ask.more":["{n} more in Pick","{n} weitere in Wählen","在“选择”中还有 {n} 个"],
+"c20.ask.more":["{n} more in Pick Mode", "{n} weitere im Pick-Modus", "Pick 模式中还有 {n} 个"],
 "c20.dec.t":["Decided ({n})","Entschieden ({n})","已决定（{n}）"],
 "c20.dec.sub":["The same list in both faces: from your facts book and your picks.","Dieselbe Liste in beiden Ansichten: aus deinem Faktenbuch und deinen Wahlen.","两种方式中同一份清单：来自你的事实簿和你的选择。"],
 "c20.dec.route":["Route {x}","Weg {x}","路线 {x}"],
@@ -62,7 +62,7 @@ Object.assign(STR, {
 "c20.plan.t":["The plan: goal → map → decide → details","Der Plan: Ziel → Karte → Entscheiden → Details","计划：目标 → 方案图 → 决定 → 细节"],
 "c20.plan.sub":["No detail questions before a route is taken.","Keine Detailfragen, bevor ein Weg gewählt ist.","选定路线前不问细节问题。"],
 "c20.plan.sub1":["This project keeps the order it was made with; take a route on the map to switch to the new one.","Dieses Projekt behält seine bisherige Reihenfolge; nimm einen Weg auf der Karte, um zur neuen zu wechseln.","此项目保留原来的顺序；在方案图上选定一条路线即可切换到新顺序。"],
-"c20.plan.pick":["See the pages in Pick","Die Seiten in Wählen ansehen","在“选择”中查看各页面"],
+"c20.plan.pick":["See the pages in Pick Mode", "Die Seiten im Pick-Modus ansehen", "在 Pick 模式中查看各页面"],
 "c20.ev.t":["What happened","Was passiert ist","发生了什么"],
 "c20.ev.none":["No map events yet.","Noch keine Ereignisse auf der Karte.","方案图上还没有事件。"],
 "c20.ev.errs":["Errors kept: {n}","Gespeicherte Fehler: {n}","已保留的错误：{n}"],
@@ -75,7 +75,7 @@ Object.assign(STR, {
 "c20.chips":["Quick answers","Schnelle Antworten","快速回答"],
 "c20.log.t":["The conversation with PT","Das Gespräch mit PT","与 PT 的对话"],
 "c20.hello":["Tell me what you want to make, in your own words. I will file what you say (your nevers and musts first), keep the goal card beside us, and show you all the ways to get there before we go into details.","Erzähl mir in deinen Worten, was du machen willst. Ich lege ab, was du sagst (zuerst deine Nie und Muss), halte die Zielkarte neben uns und zeige dir alle Wege dorthin, bevor wir in die Details gehen.","用你自己的话告诉我你想做什么。我会记下你说的内容（先记你的“绝不”和“必须”），把目标卡放在旁边，并在进入细节之前给你看所有可行的路线。"],
-"c20.hello.back":["Here is your project. Say anything: a new fact, a never, a question. Everything you decided in Pick is here too.","Hier ist dein Projekt. Sag irgendwas: einen neuen Fakt, ein Nie, eine Frage. Alles, was du in Wählen entschieden hast, ist auch hier.","这是你的项目。随便说：一个新事实、一条“绝不”、一个问题。你在“选择”中决定的一切这里也都有。"],
+"c20.hello.back":["Here is your project. Say anything: a new fact, a never, a question. Everything you decided in Pick Mode is here too.", "Hier ist dein Projekt. Sag irgendwas: einen neuen Fakt, ein Nie, eine Frage. Alles, was du im Pick-Modus entschieden hast, ist auch hier.", "这是你的项目。随便说：一个新事实、一条“绝不”、一个问题。你在 Pick 模式中决定的一切这里也都有。"],
 "c20.ph":["Say anything: about the tool, about PT, a fact, a never, a question …","Sag irgendwas: zum Tool, zu PT, einen Fakt, ein Nie, eine Frage …","随便说：关于工具、关于 PT、一个事实、一条“绝不”、一个问题……"],
 "c20.send":["Send","Senden","发送"],
 "c20.need":["Write something first.","Schreib zuerst etwas.","请先写点内容。"],

@@ -144,7 +144,7 @@ pickTop = function(p, k, ready){
 /* the overview keeps import and export; the second opinion runs inside the rounds and before every first version */
 { const orig = pickOverview; pickOverview = function(p){ return orig(p).replace(/<button[^>]*data-a="pk-second"[\s\S]*?<\/button>/, ""); }; }
 
-/* ---------- 6. one way to work (1.6: Pick; 2.0: Pick or Chat with structure, v200_modes.js — the 1.x maps Steps, Blueprint, Journey, Swimlanes are gone) ---------- */
+/* ---------- 6. one way to work (1.6: Pick; 2.0: Pick or Chat Mode, v200_modes.js — the 1.x maps Steps, Blueprint, Journey, Swimlanes are gone) ---------- */
 ACT_NO.add("pk-last-close"); ACT_NO.add("pk-gaps");
 /* every project works in Pick from 1.6.0 on (one-time move; the earlier view is kept as the project's map) */
 function spineMoveOnce(){

@@ -97,7 +97,7 @@ with sync_playwright() as p:
     print("2 new project from the start page")
     click(pg, "[data-a=nav][data-v=cockpit]")
     pg.fill("#start-in", "I want an agent that looks for, categorises, ranks and lists high reward, low effort business ideas that can run fully digitally and automated.")
-    click(pg, "[data-a=start-mode][data-v=pick]")   # 2.0: Pick or Chat with structure; the steps are a page's details
+    click(pg, "[data-a=start-mode][data-v=pick]")   # 2.0: Pick or Chat Mode; the steps are a page's details
     click(pg, "form[data-form=start] button[type=submit]"); pg.wait_for_timeout(300)
     goto_step(pg, "capture")
     check("I want an agent" in pg.locator("#raw").input_value(), "Start filled Capture")

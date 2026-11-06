@@ -465,7 +465,7 @@
   "label": "an answer after the decision goes through the Route alert's watch (a new fact source)"
  },
  "the old modes are back": {
-  "label": "only two faces exist: Pick and Chat with structure"
+  "label": "only two faces exist: Pick Mode and Chat Mode"
  },
  "the move makes no restore point first": {
   "label": "every project that existed before 2.0 was moved once, with its restore point “Before 2.0”"

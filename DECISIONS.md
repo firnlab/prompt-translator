@@ -7,3 +7,4 @@
 - D-2026-11-05-01 · owner · b1–b15 (see BACKLOG.md "Owner decisions (5 Nov 2026 21:49)") · PT 2.1 · active
 
 - D-2026-11-06-06 (owner, 05:20): Sprint 2 (Ricardo relisting) is off. The Ricardo tool is not finished; PT does not ask about it again until the owner brings it up. Now only the PT 2.1.0 update (all of sprint 1).
+- D-2026-11-06-07 (owner, 18:01): the two modes are named Pick Mode and Chat Mode everywhere (en: Pick Mode / Chat Mode, de: Pick-Modus / Chat-Modus, zh: Pick 模式 / Chat 模式); About rewritten to say accurately what PT is and does (what it is, the two modes, what every project gets, promise and limits, AI/cost/web/data, where to report). Ordered into the running sprint 1 before the keep click; 2.1.0 is rebuilt and the full gate runs again before the preview is republished.
