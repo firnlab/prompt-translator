@@ -218,6 +218,9 @@
  "automatic AI work goes on above the ceiling": {
   "label": "this month's counted AI calls reach the ceiling: autoOK() is false"
  },
+ "an AI step you start above the ceiling runs without asking": {
+  "label": "an AI step you start above the ceiling asks first, in the page (no browser dialog)"
+ },
  "push on leaves the old Sunday task running": {
   "label": "…the push task is paused, never deleted"
  },
@@ -269,6 +272,9 @@
  "the viewer outside claude.ai writes to the browser's storage": {
   "label": "nothing was written: no browser storage, cookie, IndexedDB, cache, fetch, XHR, beacon or socket"
  },
+ "PT outside claude.ai falls back to the editable local mode": {
+  "label": "PT outside claude.ai shows the read-only viewer, never the editable local mode"
+ },
  "a shortcut is offered for a step that changes something": {
   "label": "steps that only look and move around are on the allow-list; changing or publishing ones are not"
  },
@@ -304,5 +310,362 @@
  },
  "the judge gets the builder's report before it commits": {
   "label": "…its inputs: the acceptance lines, what was built, the brief; the builder's report only as a separat"
+ },
+ "the judge's verdict word alone makes it green": {
+  "label": "disagree: not green, the release of that draft is blocked, a block card names why"
+ },
+ "a line the judge could not verify counts as passed": {
+  "label": "missing: not green, the release of that draft is blocked, a block card names why"
+ },
+ "a failed independent check does not block the release": {
+  "label": "a new draft is not judged yet: the gate asks for it (blocking) with a button to run it"
+ },
+ "no runner blocks the release instead of a plain line": {
+  "label": "no runner: one plain line 'Not judged: no background runs here' that does not block, no button"
+ },
+ "the judge starts by itself with automatic work off": {
+  "label": "automatic work off (autoOK false): no judge starts by itself; the gate asks for your click"
+ },
+ "a preview copy starts the judge": {
+  "label": "the preview: no judge job from a result or a click (startJob refuses the kind there too)"
+ },
+ "the judge's block card can be taken by a ★ on its own": {
+  "label": "the block card: hard, tier block, yours, blocking, never taken by a ★ on its own; Make fixes (★) / C"
+ },
+ "a kit run is green without the judge's pass": {
+  "label": "the update is verified with two live checks, and the tool still runs: it waits for the judge"
+ },
+ "the second-lab row is applied without a key": {
+  "label": "the second-lab row without a key: one row that says why (the key lives only in GitHub), with nothing"
+ },
+ "a restore breaks on a tool that never had a judge record": {
+  "label": "a restore keeps the judge's records (like the build report), also for a tool that never had one"
+ },
+ "Settings asks for the second-lab key itself": {
+  "label": "Settings › General (kit defaults): 'Second-lab key: not added', how to add it in GitHub, and no fiel"
+ },
+ "PART R hands the second-lab key to the builder": {
+  "label": "applied: the brief (PART R) says the GitHub workflow runs the review after the pull request, the key"
+ },
+ "the second-lab provider list offers a lab the workflow cannot call": {
+  "label": "…only the providers the workflow's review script speaks (openai, google)"
+ },
+ "the second-lab week forgets the Claude weeks": {
+  "label": "…week 46 (even) is Google, week 45 (odd) a fresh Claude reviewer"
+ },
+ "the GitHub build issue drops the acceptance lines from tool.json": {
+  "label": "…the GitHub build issue: tool.json gets the acceptance lines (for the judge) and the lab2 row (for t"
+ },
+ "the rules channel is left out of project prompts": {
+  "label": "<your_rules> right after the task line, before everything else",
+  "part": "A2"
+ },
+ "the rules are left out when the project is long (the budget decides again)": {
+  "label": "…never shortened: the budget logic cuts the project but not the rules",
+  "part": "A2"
+ },
+ "another project's rules reach this project's prompt": {
+  "label": "entries belong to one project: the other project's book is empty and its prompts carry no rules",
+  "part": "A1"
+ },
+ "a sentence that keeps the rule reads as a break (no negation check)": {
+  "label": "a sentence that keeps the rule (a negation) is no hit: no confirm call, nothing asked again",
+  "part": "A2"
+ },
+ "a proposal that breaks a rule is not asked again": {
+  "label": "planted never + tempting answer: code hit, one quick confirm, then asked again once with the rule",
+  "part": "A2"
+ },
+ "an option blocked by a rule can still be taken": {
+  "label": "…and it cannot be taken",
+  "part": "A2"
+ },
+ "PT's ★ points at an option blocked by a rule": {
+  "label": "…still breaking after the repair: the option stays, greyed, marked with the rule; the ★ is not on it",
+  "part": "A2"
+ },
+ "an answered question is asked again (ask once off)": {
+  "label": "a pick that repeats an interview answer is not asked; a new one is",
+  "part": "A3"
+ },
+ "an unclear question is never checked against the facts": {
+  "label": "an unclear question gets one quick check; a fact answers it, so it is not asked",
+  "part": "A3"
+ },
+ "a contradiction between two entries is not shown": {
+  "label": "a contradicting entry: one quick check, both shown quoted",
+  "part": "A4"
+ },
+ "the workspace profile goes into project prompts again": {
+  "label": "the workspace profile is in no project prompt",
+  "part": "A5"
+ },
+ "the cone stars your choice on another tool again": {
+  "label": "the cone: no ★ and no “last time” from another tool",
+  "part": "A5"
+ },
+ "an error is not kept": {
+  "label": "an error is kept in the workspace's storage, technical text only (the quoted project text is gone)",
+  "part": "A7"
+ },
+ "an error card keeps the project's text": {
+  "label": "an error is kept in the workspace's storage, technical text only (the quoted project text is gone)",
+  "part": "A7"
+ },
+ "Report to Improve PT starts empty": {
+  "label": "Report to Improve PT: the message starts with the technical detail, no project text",
+  "part": "A7"
+ },
+ "an example that asks passes the check": {
+  "label": "…a result that asks is asked again once",
+  "part": "A8"
+ },
+ "no receipt after an answer": {
+  "label": "…receipt: ✓ Saved: …",
+  "part": "A1"
+ },
+ "the examples loop goes back to a judged example": {
+  "label": "the examples loop: after the last one, it goes to the one still waiting, not to a judged one",
+  "part": "A6"
+ },
+ "two Next bars on a page (the bar outside the page bar's nav)": {
+  "label": "exactly one Next (one primary button) on the cover, the seven pages, Decisions and the facts book",
+  "part": "A6"
+ },
+ "the action column gets a fixed share of the row again": {
+  "label": "no fixed share for the action columns; the main column may use the full width",
+  "part": "A9"
+ },
+ "an old process word is back (Out of scope)": {
+  "label": "the old process words are gone from every string (three languages)",
+  "part": "A10"
+ },
+ "the chat files nothing into the facts book": {
+  "label": "the message is filed: the never in the person's own words, source: the chat"
+ },
+ "the chat files feedback about PT into the project": {
+  "label": "feedback about PT is never filed into the project; Improve PT is offered"
+ },
+ "a never is lost when the chat call fails (no filing by code)": {
+  "label": "when the call fails, a never is still filed by code and the chat says so (Try again offered)"
+ },
+ "a chat answer that breaks your rule is shown": {
+  "label": "an answer that still breaks your rule is left out and named (never shown as advice)"
+ },
+ "the chat asks details before the decision (no route-splitting rule)": {
+  "label": "…before the decision the route-splitting rule (no detail questions yet)"
+ },
+ "a question in the chat is asked again (no ask once)": {
+  "label": "a question already answered is not asked again (ask once: dropped, named in the chat)"
+ },
+ "Pick's Decisions page and the chat's Decided tab differ": {
+  "label": "…the same list in Pick's Decisions page and in the chat's Decided tab"
+ },
+ "the old modes are back": {
+  "label": "only two faces exist: Pick and Chat with structure"
+ },
+ "the move makes no restore point first": {
+  "label": "every project that existed before 2.0 was moved once, with its restore point “Before 2.0”"
+ },
+ "the move twice adds the rules twice (not idempotent)": {
+  "label": "run twice = the same result (no second entry, route or restore point)"
+ },
+ "the move brings another project's rules": {
+  "label": "…your 1.x rules go into the project's own facts book (a never stays a never; not-in-this-version is "
+ },
+ "the move changes a field the project had": {
+  "label": "…your 1.x rules go into the project's own facts book (a never stays a never; not-in-this-version is "
+ },
+ "a confirmed 1.x choice is not the chosen route after the move": {
+  "label": "…the 1.x design options are routes on its map; the confirmed choice is the chosen route; the face is"
+ },
+ "a route that breaks your never is not greyed": {
+  "label": "a route that breaks your never is Blocked by your rule",
+  "part": "B4"
+ },
+ "the map shows rule-breaking routes by default (filter off)": {
+  "label": "…hidden by the default filter “only routes that keep my rules”, with the hidden count",
+  "part": "B4"
+ },
+ "the lens calls run all at once": {
+  "label": "…at most two calls at a time",
+  "part": "B3"
+ },
+ "one call for every angle (no lenses)": {
+  "label": "then six lens calls and one red-team call",
+  "part": "B3"
+ },
+ "a lens no longer asks for unusual answers": {
+  "label": "…and asks for unusual answers (how typical each is, some below 0.2)",
+  "part": "B3"
+ },
+ "a route found twice is added twice (no merge)": {
+  "label": "Dig deeper: a new pair of angles; a route found again is merged (counted for both angles), not added",
+  "part": "B3"
+ },
+ "a red-team break is not recorded as a correction": {
+  "label": "a red-team break is a correction on the route, visible as a map event",
+  "part": "B3"
+ },
+ "the map claims saturation after one quiet round": {
+  "label": "…not saturated after one quiet round",
+  "part": "B3"
+ },
+ "a goal change applies before its effect on the map is shown": {
+  "label": "the diff comes first: routes that fit better / worse / no longer reach the goal, and your route",
+  "part": "B6"
+ },
+ "Take this without a restore point": {
+  "label": "…a restore point before the decision",
+  "part": "B5"
+ },
+ "the route decision is not in the facts book": {
+  "label": "…saved in the facts book as a decision",
+  "part": "B5"
+ },
+ "detail questions are asked before the route is chosen": {
+  "label": "…the detail items (assumptions, requirements) wait for the route; they are kept, only not asked",
+  "part": "B1"
+ },
+ "the pick prompt asks details before the decision (no route-splitting rule)": {
+  "label": "before the decision the pick prompt asks only route-splitting questions",
+  "part": "B1"
+ },
+ "an older project is moved to the new order without the migration": {
+  "label": "…a stored project without the flag reads as the old order until the move (normalizeProject gives ord",
+  "part": "B1"
+ },
+ "a new fact that breaks the chosen route raises no alert": {
+  "label": "a never added later greys the matching route at once, as a map event",
+  "part": "B4"
+ },
+ "every detail counts as route-bound (nothing carries over)": {
+  "label": "…what carries over counts the route-neutral work (goal, facts, details made before the decision) apa",
+  "part": "B7"
+ },
+ "a proven route carries its project's rule words into the library": {
+  "label": "…none of the source project's goal, rules, facts or names: the planted never cannot reach the librar",
+  "part": "B9"
+ },
+ "PT's ★ shows before you looked": {
+  "label": "★ waits until you looked at a route",
+  "part": "B5"
+ },
+ "the shortlist takes more than 3": {
+  "label": "…at most 3",
+  "part": "B5"
+ },
+ "the comparison marks the best only by colour": {
+  "label": "…the best value is marked in words, not only by colour",
+  "part": "B5"
+ },
+ "the comparison shows rows that are the same for all": {
+  "label": "…rows that are the same for all are folded, with how many",
+  "part": "B5"
+ },
+ "the checks ★ carries your choice on another tool again (e2e200_map's owner rule, tested in e2e180_checks)": {
+  "label": "on the next tool the row is still asked and the ★ is PT's own, not your choice on the other tool"
+ },
+ "PT's hands click a final button (no final-word check)": {
+  "label": "D2 …every step and whose it is; the final button is yours",
+  "part": "D2"
+ },
+ "the guard clicks an element nobody cleared": {
+  "label": "D6 the guard refuses uncleared clicks and fills, coordinates, key presses, other tools and sites, cl",
+  "part": "D6"
+ },
+ "PT types into a password or code field": {
+  "label": "D5 plan time: a password field, a key field and a key-shaped value become your typing",
+  "part": "D5"
+ },
+ "PT types a key-shaped value": {
+  "label": "D5 plan time: a password field, a key field and a key-shaped value become your typing",
+  "part": "D5"
+ },
+ "PT's hands open a site off the project's list": {
+  "label": "D1 …subdomains count, look-alikes do not",
+  "part": "D1"
+ },
+ "PT's hands click and type on github.com off the list": {
+  "label": "D1 …subdomains count, look-alikes do not",
+  "part": "D1"
+ },
+ "the steps run before the contract is shown": {
+  "label": "D2 …nothing reached the browser before Run",
+  "part": "D2"
+ },
+ "a click that leads off the list goes on": {
+  "label": "D4 a click that leads off the list: PT stops there, types nothing more",
+  "part": "D4"
+ },
+ "the morning check runs twice a day": {
+  "label": "L1 it ran by itself once the workspace opened, for today",
+  "part": "L1"
+ },
+ "the morning check runs for another login": {
+  "label": "L1 another login: not due, no card",
+  "part": "L1"
+ },
+ "the morning check skips the tripwires": {
+  "label": "L1 the tripwires are checked against what came in since the last check (the new fact) through m20Wat",
+  "part": "L1"
+ },
+ "a watched page that changed raises nothing": {
+  "label": "L1 a watched page that changed: named on the card and as a map event",
+  "part": "L1"
+ },
+ "prompt tests trust the call over PT's word check": {
+  "label": "L2 PT's word check fails an answer that breaks a never even when the call says it holds",
+  "part": "L2"
+ },
+ "an Improve PT report is not kept": {
+  "label": "L3 a report is kept in the workspace settings with status open",
+  "part": "L3"
+ },
+ "asked-twice questions are not counted": {
+  "label": "L4 questions asked and asked-twice held back are counted (one was known)",
+  "part": "L4"
+ },
+ "a helper declared only in the page counts as ready": {
+  "label": "L5 Setup lists one program per kind of job with its state from listTools: ready / not checked yet / ",
+  "part": "L5"
+ },
+ "a helper runs a tool that is not declared for it": {
+  "label": "L5 the guard: a tool not declared for a helper is refused before any call",
+  "part": "L5"
+ },
+ "the Blender check runs its code without showing it first": {
+  "label": "L5 a helper whose only tool runs code: its read-only script is shown first, nothing runs before yes",
+  "part": "L5"
+ },
+ "the prompt file is written over an existing file": {
+  "label": "L5 Save the prompt: the contract first (what, where, undo), a new name because the file exists, noth",
+  "part": "L5"
+ },
+ "a route that needs a helper does not say so": {
+  "label": "L5 the route card: a helper not ready says Needs <program> with the install guide",
+  "part": "L5"
+ },
+ "the workspace's 1.x default view is recorded as steps (cause 100)": {
+  "label": "Owner's default view for new projects is Pick (1.5.0); his projects from before keep Blueprint"
+ },
+ "the Design page draws a kit question twice (Part C, hunt 12)": {
+  "label": "the Design page lists every open kit decision (each once)"
+ },
+ "an automatic step leaves its action open (hunt 5, cause 93)": {
+  "label": "L7 the trial (an automatic step) closes its own action when it ends, so the next click's Undo never ",
+  "part": "L7"
+ },
+ "a button label is written in English in the code": {
+  "label": "notes: every text comes from the strings or the data"
+ },
+ "the Build page shows the vault lines in English only": {
+  "label": "station build: every text comes from the strings or the data"
+ },
+ "the notes page keeps its fixed filter column on a phone": {
+  "label": "390 px · notes: no sideways scrolling"
+ },
+ "a row of buttons in a top bar is as wide as its longest label": {
+  "label": "390 px · insights: no sideways scrolling"
  }
 }
