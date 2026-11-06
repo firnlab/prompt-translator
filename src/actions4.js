@@ -110,7 +110,7 @@ function toastUndo(msg, p = curP()){
   // nothing was changed by what just happened: an older action is not offered for Undo here
   if (Date.now() - new Date(a.at).getTime() > 4000) return;
   const host = document.getElementById("toasts"); const el = host && host.lastElementChild;
-  if (el){ const pid = p.id, id = a.id; const b = document.createElement("button"); b.className = "btn xs"; b.textContent = t("btn.undo1"); b.addEventListener("click", () => { const q = WS.projects.find(x => x.id === pid); if (q) undoAct(q, id); el.remove(); }); el.appendChild(document.createTextNode(" ")); el.appendChild(b); }
+  if (el){ const pid = p.id, id = a.id; const b = document.createElement("button"); b.className = "btn xs"; b.dataset.undo = id; b.textContent = t("btn.undo1"); b.addEventListener("click", () => { const q = WS.projects.find(x => x.id === pid); if (q) undoAct(q, id); el.remove(); }); el.appendChild(document.createTextNode(" ")); el.appendChild(b); }
 }
 Object.assign(ACTIONS, {
   "item-tool": el => { const k = ["fix","adjust","change","add","refine"].includes(el.dataset.k) ? "refine" : el.dataset.k; UI.editRef = null; UI.itemBox = {ref: el.dataset.ref, k, text: el.dataset.text || "", round: 0, notes: [], off: {}, edit: {}}; render(); focusSoon("it-in"); },

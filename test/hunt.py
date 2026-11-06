@@ -195,7 +195,7 @@ with sync_playwright() as pw:
                 settle(j0)
                 pg.wait_for_timeout(150)
                 # 6: a toast Undo must belong to a fresh action
-                tb = pg.evaluate("(() => { const b = [...document.querySelectorAll('#toasts .toast button')].find(x => /undo|rückg|撤销/i.test(x.textContent)); if (!b) return null; const a = lastAct(curP()); return a ? Date.now() - new Date(a.at).getTime() : -1; })()")
+                tb = pg.evaluate("(() => { const b = [...document.querySelectorAll('#toasts .toast button')].find(x => /undo|rückg|撤销/i.test(x.textContent)); if (!b) return null; const u = b.dataset.undo; if (!u) return -2; /* 2.1: an Undo names what it undoes (an action id or a rows event) */ const p = curP(); if (u.startsWith('rows:')) return 0; /* a rows step's Undo: the rows log is looked up by rowsUndo itself */ const a = arr(p.acts).find(x => x.id === u); return a ? Date.now() - new Date(a.at).getTime() : -1; })()")
                 if tb is not None and (tb < 0 or tb > 6000): toast_bad.append([a, tb])
                 if MUT == "6" and toast_bad: break   # J4: caught
                 pg.evaluate("UI.modal = null; UI.review = null; UI.finish = null; render()")
