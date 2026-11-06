@@ -45,7 +45,10 @@ M = [
     # 2.1 (A1, A14, B17): the safety layer must stay wired in
     ("the main page skips safeHTML (A1)", "views_shell.js", "sub", ('root.innerHTML = safeHTML(`<a class="skip"', 'root.innerHTML = (`<a class="skip"'), "safe", True),
     ("resolvePath walks into __proto__ again (A1, R1-1)", "app.js", "sub", ('if (segs.some(s => SAFE_BAD_KEYS.has(s.replace(/^#/, "")))) return null;', ''), "safe", True),
-    ("an import loop takes notes as they come (A1, B17)", "actions.js", "sub", ('const x = safeRecord(x0, "n", {imgs: true});', 'const x = x0;'), "safe", True),
+    ("an import loop takes records as they come (A1, B17)", "v210_safe.js", "sub", ('const chg = safeDeep(x0, {imgs: true}); const x = safeRecord(x0, prefix, {imgs: true}); if (!x) throw new Error("record");', 'const chg = 0; const x = x0;'), "safe", True),
+    ("the import forgets the from-a-backup mark (2.1, M3)", "v210_safe.js", "sub", ('p.imported = {at: now(), from: str(fname).slice(0, 80), relinked: false};', 'p.imported = null;'), "safe", True),
+    ("pause acts on a backup's trigger ids before re-link (2.1, M3)", "tasks3.js", "sub", ('if (importedLocked(p)){ toast(t("imp21.locked"), "err"); return; }   // 2.1', 'if (false){ toast(t("imp21.locked"), "err"); return; }   // 2.1'), "safe", True),
+    ("the morning check reads pages without the owner's click (2.1)", "v200_hands.js", "sub", ('if (fetchOk && p.watch20Ok && !importedLocked(p)) for (const n of M.notyet', 'if (fetchOk) for (const n of M.notyet'), "safe", True),
     ("an inline onerror handler in markup (A1)", "v200_map.js", "append", APP.format(n=37, body='return `<img src="/_blob/a" onerror="x()">`;'), "safe", True),
     # review items: the person must look at them, so they must show up
     ("silent failure: empty catch",                    "views13.js", "append", APP.format(n=6, body="try{ x(); }catch(e){}"), "catch", False),

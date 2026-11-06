@@ -95,8 +95,8 @@ function importBackup(d, fname){
     if (chg){ R.safe += chg; }
     if (oldId !== p.id) R.remap[oldId] = p.id;
     if (WS.projects.some(x => x.id === p.id) || R.projects.some(x => x.id === p.id)){ const nid = uid("p"); R.remap[p.id] = nid; p.id = nid; p.name += " " + t("proj.importsuffix"); }
-    p.versions = []; p.versionNo = 0;
-    p.imported = {at: now(), from: str(fname).slice(0, 80), relinked: false}; p.watch20Ok = false;   // ok:cut (a file name)
+    p.versions = []; p.versionNo = 0;   // ok:field (a fresh copy has no restore points yet)
+    p.imported = {at: now(), from: str(fname).slice(0, 80), relinked: false}; p.watch20Ok = false;   // ok:field ok:cut (the mark; a file name)
     R.projects.push(p);
   }
   for (const [key, prefix, list] of [["notes", "n", WS.notes], ["patterns", "pat", WS.patterns], ["research", "r", WS.research]]){

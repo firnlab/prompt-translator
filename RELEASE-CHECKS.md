@@ -649,6 +649,21 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   site when the owner opens the note). Import now clears image fields that point to another site; inline data: images and /_blob/
   stay. A first version also cleared every "src", which in PT is a source link: the export→import round trip caught it before
   release; "src"/"data" are now cleared only on an image file. Checks: e2e210_safe I.imgs, I.imgkeep, R.projects; planted bug.
+- Cause 105 (2.1, red team #1): the Design-page result mock (an iframe with `sandbox=""`) vanished on every render as soon as it
+  existed, because the new safety filter took PT's own frame for a foreign one. The filter now keeps exactly PT's two frame kinds
+  (`sandbox=""` and `sandbox="allow-scripts"`, never with `src`) and still fires on any frame with `src`. Checks: e2e210_safe F, H.fast.project
+  (measured on the input per phase).
+- Cause 106 (2.1, red team M1): 1–5 scales, fit and verdict criteria from an imported file were printed raw; markup in them reached
+  the page past the filter's fast path (entity-encoded scheme, fixed overlay, outside form or image, target=_top). `normalizeProject`
+  coerces them to numbers; the trapped fixture carries every class; every phase page is DOM-checked. Checks: e2e210_safe I.nums, I.phases.
+- Cause 107 (2.1, red team M2/M3; owner 7 Nov): an imported backup carried trigger and artifact ids, watch URLs and mock HTML from
+  elsewhere; pause, update, collect and the morning check acted on them after a confirm that showed no ids. Imported projects are
+  marked "from a backup" and locked until the owner re-links with one click that lists the ids; the morning check reads a project's
+  pages only after the owner's "Watch these" click. Checks: e2e210_safe J, e2e200_loop L1; planted bugs in check_the_checks.py.
+- Cause 108 (2.1, red team #6/#7/N6/N8/Q7): the import toast said "1 project imported" whatever happened; records with an existing
+  id were skipped silently; a bad record left a half-written import; settings never came back; no way back. The import checks the whole
+  file first, counts imported / skipped / made safe / settings, restores only the allowed settings, and offers Undo (confirm). Checks:
+  e2e210_safe R.toast, R.again, R.undo, J.allornothing, J.settings.
 - The release page of the version under test (flows 1.10 hands, flows 2.0 loop): the mock's GitHub had a fixed page for v1.10.0, so
   from 2.0.0 on "Check this version's release" read "no release yet". The mock now adds the page of `PT_VERSION` once the page's
   script has run (tests that need "not there yet" still delete it). No app change.

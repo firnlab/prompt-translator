@@ -93,7 +93,7 @@ DATA_SAFETY = {"migration 1.4.1", "migration 1.4", "flows 1.8 health"}   # whole
 DATA_RX = re.compile(r"(?i)writes? (nothing )?over|overwrit|never written|writes nothing|nothing (is )?lost|\blost\b|deleted|delete[sd]? |restore point|backup|failed load|fails to load|data safety|keeps? (every|all) |nothing (from|of) another")
 # 2.1 (J14): a suite that silently runs fewer checks is red. Minimum ok counts from the 2.0.0 gate on the real-data copy: small suites
 # (≤ 25 checks, fixed by their code) must keep every check; larger ones (some checks per project) may drop 10 %. Raise with new checks.
-_LAST = {"check the checks": 46, "the gate itself": 36, "unit": 14, "flows 1.4.1": 91, "flows 1.5 (Pick)": 57, "flows 1.5 review": 91, "Pick contract": 22,
+_LAST = {"check the checks": 49, "the gate itself": 36, "unit": 14, "flows 1.4.1": 91, "flows 1.5 (Pick)": 57, "flows 1.5 review": 91, "Pick contract": 22,
          "flows 1.6 (kit 1)": 127, "flows 1.7 (pages)": 91, "flows 1.7.1 (time, names)": 28, "flows 1.8 look": 98, "flows 1.8 rows": 58,
          "flows 1.8 kits": 83, "flows 1.8 run": 109, "check the rows": 9, "flows 1.8 (checks)": 86, "flows 1.8 (deciding)": 71,
          "flows 1.8 health": 98, "PT checks itself": 73, "flows 1.8 (the cone)": 84, "flows 1.9 care": 108, "PT outside claude.ai": 21,
