@@ -16,7 +16,10 @@ Sprint goal: a safer PT and a test kit that cannot go quietly empty.
   Pick part 1 37 min (104/104), then one `--resume` run 38 min (37 checks reused by key, Pick part 2 103/103 and the gate self-test ran again).
   Wall time of the final gate ≈ 2 h 30 min; a from-scratch full gate ≈ 2 h 35 min. Measured first here; the next sprint compares against it.
 - Fixed on the way: a receipt committed between parts counted as "a different commit" (receipts now carry the code tree, self-tested).
-- Preview publish and main publish: pending the owner's GO 2.1.0 and his keep click (two-GO rule).
+- GO 2.1.0 (owner, 6 Nov 17:35): preview published, version id 1793982956-0929 (previous 1793825785-5fb3), contract 0.2.88 unchanged,
+  manifest = CAPABILITIES-2.0.json (no form_input). Live body equals the built file (3 472 647 bytes inside the platform skeleton).
+  On the live file: smoke (0 errors), PT outside claude.ai (21 ok), pseudo-localisation (179 ok), 1.10 hands (54 ok), 2.0 hands (52 ok),
+  2.0 modes (170 ok), 2.1 safe (36 ok). Stopped here: main publishes after the owner's keep click.
 
 ## Retrospective (one line)
 The gate's own plumbing (labels, resume, receipts, time limits) took longer than the feature work; next sprint starts the long parts first and keeps the test kit frozen before the final gate.
