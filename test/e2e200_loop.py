@@ -175,7 +175,7 @@ with sync_playwright() as pw:
     check("L3 on a version change the listed report is marked fixed in this version", n == 1 and ev(pg, f"ipt20List().find(x => x.id === '{rid}').status") == "fixed" and ev(pg, f"ipt20List().find(x => x.id === '{rid}').fixed") == ev(pg, "PT_VERSION"))
     cockpit(pg)
     check("L3 …and the owner is told once (a card)", "fixes 1 of your Improve PT reports" in main(pg))
-    check("L3 …a second open says nothing again", ev(pg, "ipt20Version()") == 0)
+    check("L3 …a second open says nothing again", ev(pg, "ipt20Version()") == 0 and ev(pg, "WS.settings.ipt20v === PT_VERSION"), ev(pg, "WS.settings.ipt20v"))   # 2.1: the version is remembered (else every open runs the check and saves again)
     pg.locator("[data-a=ipt20-ok]").first.click(); pg.wait_for_timeout(200)
     check("L3 …Got it removes the card", "fixes 1 of your" not in main(pg))
     settings(pg, "health")

@@ -124,8 +124,11 @@ with sync_playwright() as p:
     check(pg.locator(".qcard .opt").count() >= 2, "change answer reopens original options")
     click(pg, ".qcard .opt", nth=1); click(pg, "[data-a=qa-save]")
     pg.screenshot(path=str(SHOTS / "03-interview.png"), full_page=True)
-    pg.wait_for_function("() => eng(curP()).scan.state === 'done'", timeout=10000)
-    check(pg.evaluate("eng(curP()).scan.result.verdict") == "partial", "frontier scan ran by itself in the background")
+    # 2.1 (cause 98): a scan that never starts (a tab that is not a visit) fails this check instead of crashing the suite
+    try: pg.wait_for_function("() => eng(curP()).scan.state === 'done'", timeout=10000); scanned = True
+    except Exception: scanned = False
+    check(scanned and pg.evaluate("eng(curP()).scan.result.verdict") == "partial", "frontier scan ran by itself in the background")
+    if not scanned: print(f"ok: {len(oks)} failed: {len(fails)} page errors: {len(errors)}"); sys.exit(1)
     click(pg, "[data-a=goto][data-ph=understand]"); pg.wait_for_timeout(200)
     check(pg.locator("text=Build only the missing part").count() >= 1, "scan verdict shown in Understand")
     check(pg.locator("text=Exploding Topics").count() >= 1, "existing products listed")

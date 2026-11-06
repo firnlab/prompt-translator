@@ -124,9 +124,12 @@ with sync_playwright() as pw:
     sec("B3 the map and the coverage engine")
     click(pg, ".nx20-next [data-a=m20-open]")
     ev(pg, "window.__mapCalls = []; window.__inflightMax = 0; window.__allPrompts = []")
-    click(pg, "[data-a=m20-ask][data-v=full]")
+    # 2.1: a search button that runs at once (no ask step, the planted bug) fails this check instead of crashing the suite
+    asks = pg.locator("[data-a=m20-ask][data-v=full]").count()
+    if asks: click(pg, "[data-a=m20-ask][data-v=full]")
     cf = ev(pg, "(document.querySelector('.m20-confirm') || {}).innerText || ''")
-    check("one tap names the cost first (Claude messages, minutes) and nothing runs yet", "about 7 Claude messages" in cf and "min" in cf and not calls(pg), cf)
+    check("one tap names the cost first (Claude messages, minutes) and nothing runs yet", asks > 0 and "about 7 Claude messages" in cf and "min" in cf and not calls(pg), cf if asks else "no ask step: the search button runs at once")
+    if not asks: print(f"ok: {len(oks)} failed: {len(fails)} page errors: {len(errors)}"); sys.exit(1)
     click(pg, "#m20-cf-go"); wait_ai(pg)
     C = calls(pg)
     check("then six lens calls and one red-team call", C.count("map-lens") == 6 and C.count("map-redteam") == 1, C)
@@ -335,7 +338,9 @@ with sync_playwright() as pw:
         factsAdd(q, {{kind: 'never', words: {json.dumps(OTHER_NEVER)}}}); factsAdd(q, {{kind: 'fact', words: 'Anna has a Fairphone'}});
         const M = m20Of(q); const r = m20Norm({{name: 'Packing list with Dropbox photos', fam: 'Existing apps', line: 'A shared list for Anna', lvl: 2, where: 'phone', how: 'combine', status: 'today', pattern: 'Shared checklist on phones', recipe: ['Create one shared checklist', 'Upload the photos to Dropbox', 'Remind Anna on Friday', 'Invite the others']}}, {{lens: 'buy', round: 1}});
         r.id = 'R1'; M.routes.push(r); M.chosen = 'R1'; M.decs.push({{id: 'd1', route: 'R1', status: 'active', trip: [], compared: [], rejected: []}}); touch(q); return q.id; }})()""")
-    check("a route enters the library only after its project reached Launch", ev(pg, f"m20LibAdd(WS.projects.find(x => x.id === '{src}'))") is None and not ev(pg, "m20LibList().length"))
+    # 2.1: with the launch guard gone (the planted bug) m20LibAdd throws on p.live — a thrown call is "it tried", a clean FAIL here
+    pre = ev(pg, f"(() => {{ try{{ return m20LibAdd(WS.projects.find(x => x.id === '{src}')) === null ? 'none' : 'added'; }}catch(e){{ return 'threw: ' + e.message; }} }})()")
+    check("a route enters the library only after its project reached Launch", pre == "none" and not ev(pg, "m20LibList().length"), pre)
     E = ev(pg, f"(() => {{ const q = WS.projects.find(x => x.id === '{src}'); q.live = {{v: 1, since: '2026-10-01T10:00:00Z'}}; return m20LibAdd(q); }})()")
     check("…then as a template with allow-listed fields only", E and set(E.keys()) == {"id", "src", "from", "fam", "lvl", "pattern", "where", "how", "actors", "recipe", "outcome", "at"} and set(E["outcome"].keys()) == {"since", "checks", "incidents"}, E)
     blob = json.dumps(ev(pg, "m20LibList()"))
