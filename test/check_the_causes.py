@@ -7,7 +7,7 @@ Data-free, well under 5 s. Run: python3 test/check_the_causes.py [--table] [--se
 """
 import json, pathlib, re, sys, copy
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-RUNNERS = ("test/check_the_checks.py", "test/check_the_pick.py", "test/check_the_hunts.py", "test/hunt2.py")
+RUNNERS = ("test/check_the_checks.py", "test/check_the_pick.py", "test/check_the_hunts.py", "test/hunt2.py", "test/hunt.py")
 
 def cause_ids(text):
     """the causes RELEASE-CHECKS.md defines: the table rows (| 12 | …) and the '- Cause 77' entries"""
@@ -39,6 +39,7 @@ def problems(causes, ids):
                 txt = read(f)
                 if txt is None: out.append(f"cause {i}: {kind} file {f} does not exist"); continue
                 if needle and needle not in txt: out.append(f"cause {i}: {kind} '{needle}' is not in {f} (renamed or removed?)")
+                if kind == "planted bug" and not needle.strip(): out.append(f"cause {i}: planted bug in {f} names no plant (an empty citation proves nothing; cite the mutation or the plant's name)")   # 2.1 (red team N3)
                 if kind == "planted bug" and f not in RUNNERS: out.append(f"cause {i}: planted bug cited in {f}, which runs no planted bugs")
     return out
 

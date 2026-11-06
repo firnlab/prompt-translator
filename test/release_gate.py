@@ -1,5 +1,5 @@
 """Release gate: every check PT has, in one run, with one summary. Run before every publish of main:
-    python3 test/release_gate.py            all checks (about 50 minutes; click-everything runs one browser per level side by side)
+    python3 test/release_gate.py            all checks (about 2 h 35 from scratch (measured 6 Nov 2026); --resume reuses green checks whose inputs did not change; click-everything runs one browser per level side by side)
     python3 test/release_gate.py --quick    static + strings + unit + new-version flows + hunt (about 15-20 minutes)
     --only=a,b / --skip=a,b                 a part of the gate (names as in CHECKS); its result is PARTIAL
     --resume                                a check that was green with the same key (built file + its test files + helpers + data,
@@ -26,7 +26,7 @@ BAD = re.compile(r"failed:\s*[1-9]|FAILS:\s*[1-9]|ERRORS:\s*[1-9]|page errors:\s
 import os as _os
 SLOW = float(_os.environ.get("GATE_SLOW", "1"))   # time budgets × SLOW on a loaded machine (2 CPUs shared with builders); the checks themselves never change
 CHECKS = [  # (name, command, in quick run, minutes allowed)
-    ("build",          "python3 build.py", True, 2),
+    ("build",          "python3 build.py && python3 build.py https://claude.ai/artifact/6rj1ZPyMB6GxKwAHsmndny", True, 2),   # 2.1: both built files (the care suite reads the preview file)
     ("static checks",  "node test/static_checks.js", True, 2),
     ("tests parse",    "python3 -W error -m py_compile test/*.py tools/*.py", True, 2),   # 1.7: the test scripts are parsed like the sources
     ("check the checks","python3 test/check_the_checks.py", True, 3),   # known bugs put back into a copy: every one must be caught
@@ -62,7 +62,7 @@ CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("flows 2.0 hands", "python3 test/e2e200_hands.py", True, 15),   # 2.0 Part D: PT's hands per project (site list, plan first, action contract, forms and non-final clicks, the final-button stop, keys never typed, the guard)
     ("flows 2.0 loop", "python3 test/e2e200_loop.py", True, 20),   # 2.0 Parts D/E: morning check, prompt tests, Improve-PT loop, metrics, helpers (detection, Needs <program>, file save), guides, CAPABILITIES-2.0.json
     ("flows 2.1 platform", "python3 test/e2e210_platform.py", True, 10),   # 2.1 J12/J13: PT against a platform-like mock (sample codes, mcp refusals, path grammar, access rules); expected reds listed in test/expected_red.json
-    ("flows 2.1 clicks", "python3 test/e2e210_clicks.py", True, 10),   # 2.1: one click = one call, Try again
+    ("flows 2.1 clicks", "python3 test/e2e210_clicks.py", True, 10),   # 2.1 J13: cancel, retry and delete clicks (C2 "one click = one call" is still open; its reds are in expected_red.json)
     ("flows 2.1 safe", "python3 test/e2e210_safe.py", True, 10),   # 2.1 A1/A14/B17: safeHTML, the booby-trapped import, export→import round trip, data-bind paths
     ("check the causes", "python3 test/check_the_causes.py", True, 1),   # 2.1 J3: every cause has a check that exists and (or a reason) a planted bug
     ("pseudo-localisation", "python3 test/pseudo19.py", True, 10),   # 1.9.2: every text from the strings, the L() objects or the data; no raw key, no cut label, no sideways scrolling with ~40 % longer text at 1440 and 390 px
@@ -93,15 +93,20 @@ DATA_SAFETY = {"migration 1.4.1", "migration 1.4", "flows 1.8 health"}   # whole
 DATA_RX = re.compile(r"(?i)writes? (nothing )?over|overwrit|never written|writes nothing|nothing (is )?lost|\blost\b|deleted|delete[sd]? |restore point|backup|failed load|fails to load|data safety|keeps? (every|all) |nothing (from|of) another")
 # 2.1 (J14): a suite that silently runs fewer checks is red. Minimum ok counts from the 2.0.0 gate on the real-data copy: small suites
 # (≤ 25 checks, fixed by their code) must keep every check; larger ones (some checks per project) may drop 10 %. Raise with new checks.
-_LAST = {"check the checks": 34, "the gate itself": 33, "unit": 14, "flows 1.4.1": 91, "flows 1.5 (Pick)": 57, "flows 1.5 review": 91, "Pick contract": 22,
+_LAST = {"check the checks": 46, "the gate itself": 36, "unit": 14, "flows 1.4.1": 91, "flows 1.5 (Pick)": 57, "flows 1.5 review": 91, "Pick contract": 22,
          "flows 1.6 (kit 1)": 127, "flows 1.7 (pages)": 91, "flows 1.7.1 (time, names)": 28, "flows 1.8 look": 98, "flows 1.8 rows": 58,
          "flows 1.8 kits": 83, "flows 1.8 run": 109, "check the rows": 9, "flows 1.8 (checks)": 86, "flows 1.8 (deciding)": 71,
          "flows 1.8 health": 98, "PT checks itself": 73, "flows 1.8 (the cone)": 84, "flows 1.9 care": 108, "PT outside claude.ai": 21,
          "flows 1.9 fleet": 78, "flows 1.9 scan": 99, "flows 1.9.1 judge": 81, "flows 1.10 hands": 54, "flows 2.0 foundation": 82,
-         "flows 2.0 map": 122, "flows 2.0 modes": 170, "flows 2.0 hands": 52, "flows 2.0 loop": 81, "pseudo-localisation": 179, "hunt": 21,
-         "hunt 2": 10, "check the hunt": 10, "check the Pick tests": 100, "check the Pick tests 2": 100, "layout": 60, "migration 1.4.1": 14,
-         "migration 1.4": 15, "flows 1.4": 58, "flows 1.2": 161}
+         "flows 2.0 map": 122, "flows 2.0 modes": 170, "flows 2.0 hands": 55, "flows 2.0 loop": 83, "pseudo-localisation": 179, "hunt": 21,
+         "hunt 2": 10, "check the hunt": 31, "check the Pick tests": 104, "check the Pick tests 2": 103, "layout": 60, "migration 1.4.1": 14,
+         "migration 1.4": 15, "flows 1.4": 58, "flows 1.2": 161,
+         "flows 2.1 platform": 52, "flows 2.1 clicks": 10, "flows 2.1 safe": 53, "changelog": 27}   # 2.1 (red team 4 #16): every counted suite is listed
 MIN_OK = {n: (c if c <= 25 else int(c * 0.9)) for n, c in _LAST.items()}
+# suites that print no ok-count by design (a build, a parser, a scan that prints only problems): the only ones allowed to miss MIN_OK
+NO_COUNT = {"build", "static checks", "tests parse", "strings", "check the causes", "smoke", "flows 1.3", "click everything"}
+_missing = [n for n, *_ in CHECKS if n not in MIN_OK and n not in NO_COUNT]
+if _missing and not _os.environ.get("GATE_CHECKS"): print("GATE SETUP RED: suites without a minimum count (add to _LAST or NO_COUNT): " + ", ".join(_missing)); sys.exit(2)
 def ok_count(out):
     """the number of checks a suite reports as passed (its last summary line), or None when it prints no count"""
     pats = [r"\bok:\s*(\d+)\s+failed", r"(\d+) ok, \d+ failed", r"(\d+) of \d+ (?:known bugs caught|hunt checks)", r"planted [\w ]+bugs: \d+, caught (\d+)", r"planted row bugs: (\d+), MISSED 0"]
@@ -199,7 +204,9 @@ label = re.sub(r"[^A-Za-z0-9._-]+", "-", LABEL or ("full" if SCOPE == "FULL" els
 receipt = {"version": VERSION, "label": label, "scope": SCOPE, "commit": COMMIT, "code_tree": GK.code_tree(COMMIT), "dirty": DIRTY, "dist_sha256": DIST_SHA,
            "started": STARTED, "seconds": int(time.time() - T0), "args": [a for a in sys.argv[1:]],
            "checks": [{"name": r["name"], "result": r["result"], "seconds": r["s"], "ok": r["ok_n"], "failed": r["fail_n"], "key": r["key"]} for r in res],
-           "flaky": [r["name"] for r in res if r["result"] == "FLAKY"]}
+           "flaky": [r["name"] for r in res if r["result"] == "FLAKY"],
+           "expected_red": (lambda f: len(json.loads(f.read_text()).get("red", [])) if f.exists() else 0)(ROOT / "test/expected_red.json"),   # 2.1 (#21): known reds the 2.1 suites accept, named here so a green gate never hides them
+           "preview_sha256": GK.sha_path(ROOT / "dist/prompt-translator-preview.html")}
 RDIR = pathlib.Path(_os.environ.get("GATE_RECEIPTS") or ROOT / "receipts") / VERSION
 if "--no-receipt" not in sys.argv:
     RDIR.mkdir(parents=True, exist_ok=True)
@@ -209,7 +216,7 @@ green = all(r["ok"] for r in res)
 fl = [r["name"] for r in res if r["result"] == "FLAKY"]
 print("\n== release gate:", ("GREEN" if green else "RED") + (" (FLAKY blocks a publish: " + ", ".join(fl) + ")" if fl else ""),
       f"({sum(r['ok'] for r in res)}/{len(res)} passed) · this run: {SCOPE}{' (' + ' '.join(a for a in sys.argv[1:] if a.startswith(('--only', '--skip'))) + ')' if SCOPE == 'PARTIAL' else ''}")
-print(f"   commit {COMMIT[:12]}{' + uncommitted changes' if DIRTY else ''} · built file sha256 {DIST_SHA[:16]} · {int(time.time() - T0)} s")
+print(f"   commit {COMMIT[:12]}{' + uncommitted changes' if DIRTY else ''} · built file sha256 {DIST_SHA[:16]} · {int(time.time() - T0)} s · known reds accepted by the 2.1 suites: {receipt['expected_red']} (test/expected_red.json)")
 for r in res: print(f"  {'✓' if r['ok'] else '!' if r['result'] == 'FLAKY' else '✗'} {r['name']:18} {r['s']:5d} s   {r['tail'][-1][:110] if r['tail'] else ''}")
 if "--no-receipt" not in sys.argv:
     word, why, cm = GK.overall(RDIR, [n for n, *_ in CHECKS])

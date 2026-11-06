@@ -38,8 +38,10 @@ def key(cmd, root=ROOT, dist=None, extra=(), wide=False):
     root = pathlib.Path(root)
     fs = files_of(cmd, root) + HELPERS + list(extra)
     if not any(re.match(r"^(test/fixtures/.+\.json|work/backup-\d+)$", f) for f in fs): fs += DEFAULT_DATA
+    # 2.1 (red team #17): fixtures, the expected-red list and the planted-bug labels are inputs of many suites and are always part of the key
+    fs += sorted(str(x.relative_to(root)) for x in list(root.glob("test/fixtures/*.json")) + list(root.glob("test/*.json")))
     if wide: fs += sorted(str(x.relative_to(root)) for x in list(root.glob("test/*.py")) + list(root.glob("test/*.js")))
-    parts = {"cmd": cmd if isinstance(cmd, str) else " && ".join(cmd), "dist": sha_path(dist or root / "dist/prompt-translator.html")}
+    parts = {"cmd": cmd if isinstance(cmd, str) else " && ".join(cmd), "dist": sha_path(dist or root / "dist/prompt-translator.html"), "preview": sha_path(root / "dist/prompt-translator-preview.html")}
     for f in dict.fromkeys(fs): parts[f] = sha_path(root / f)
     return sha_bytes(json.dumps(parts, sort_keys=True).encode())[:32]
 
@@ -64,7 +66,7 @@ def git(*a):
 
 def commit_info():
     """(commit, dirty): dirty when a tracked file differs from the commit (receipts/ itself does not count)"""
-    st = [l for l in git("status", "--porcelain", "--untracked-files=no").splitlines() if l.strip() and not l[3:].startswith("receipts/")]
+    st = [l for l in git("status", "--porcelain", "--untracked-files=all").splitlines() if l.strip() and not l[3:].startswith("receipts/") and re.match(r"^(src|test|tools|dist)/|^(build\.py|CAPABILITIES-2\.0\.json)$", l[3:])]   # 2.1 (#18): an untracked test or fixture file is dirty too
     return git("rev-parse", "HEAD") or "unknown", bool(st)
 
 def code_tree(commit="HEAD"):
