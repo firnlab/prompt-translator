@@ -525,3 +525,13 @@ M8. Remove features that are never used — RECOMMEND: DEFER — was: C5-12
 - Managed Agents: allowed as a home for jobs without the owner's logins, on the included API credits, with a spend cap, after K3.
 - Tool data in GitHub: a tool may keep its data in its own private repository in the owner's account (owner's decision per tool).
 - Kinds and homes: the whole range, from free to paid to self-built and everything in between; PT shows all options with cost.
+
+## Scrum for PT, KISS (owner + Claude in chat, 6 Nov 2026 04:00-04:06), for both: PT building tools and building PT
+- Roles (level 1): the owner decides what and in what order (his GO). PT does everything else and says when it is stuck or waiting
+  on the owner. No separate Scrum Master / Developers / Checker / Operator / Scout inside PT. Memory rule: PT always reads its own
+  record first (facts, decisions, tasks) before doing anything.
+- Events (level 2): sprint = a short fixed cycle that ends in something running (tools: one running increment; PT: one small
+  release with its full gate). Planning = the owner picks, PT shows the tool card with cost and risks, the owner says GO. Daily =
+  the morning check, one card incl. "waiting on you". Review = the owner tries the running thing (tool, or the preview), then
+  keep / change / drop. Retrospective = one short note: what failed, why, the one change. KISS: every event is one card or one
+  click; anything needing more than one card is split; one change per retrospective.
