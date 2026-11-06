@@ -461,6 +461,9 @@
  "Pick's Decisions page and the chat's Decided tab differ": {
   "label": "…the same list in Pick's Decisions page and in the chat's Decided tab"
  },
+ "an answer after the decision is not watched by the Route alert": {
+  "label": "an answer after the decision goes through the Route alert's watch (a new fact source)"
+ },
  "the old modes are back": {
   "label": "only two faces exist: Pick and Chat with structure"
  },
@@ -489,6 +492,10 @@
  },
  "the lens calls run all at once": {
   "label": "…at most two calls at a time",
+  "part": "B3"
+ },
+ "a multi-call search starts without naming its cost": {
+  "label": "one tap names the cost first (Claude messages, minutes) and nothing runs yet",
   "part": "B3"
  },
  "one call for every angle (no lenses)": {
@@ -545,6 +552,10 @@
  },
  "a proven route carries its project's rule words into the library": {
   "label": "…none of the source project's goal, rules, facts or names: the planted never cannot reach the librar",
+  "part": "B9"
+ },
+ "a route enters the library before its project launched": {
+  "label": "a route enters the library only after its project reached Launch",
   "part": "B9"
  },
  "PT's ★ shows before you looked": {
@@ -622,6 +633,10 @@
   "label": "L3 a report is kept in the workspace settings with status open",
   "part": "L3"
  },
+ "fixed reports are announced on every open": {
+  "label": "L3 …a second open says nothing again",
+  "part": "L3"
+ },
  "asked-twice questions are not counted": {
   "label": "L4 questions asked and asked-twice held back are counted (one was known)",
   "part": "L4"
@@ -645,6 +660,9 @@
  "a route that needs a helper does not say so": {
   "label": "L5 the route card: a helper not ready says Needs <program> with the install guide",
   "part": "L5"
+ },
+ "a step's tab on a page is not a visit: no automatic step (cause 98)": {
+  "label": "frontier scan ran by itself in the background"
  },
  "the workspace's 1.x default view is recorded as steps (cause 100)": {
   "label": "Owner's default view for new projects is Pick (1.5.0); his projects from before keep Blueprint"
