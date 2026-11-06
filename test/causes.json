@@ -104,6 +104,6 @@
     "101": {"cause": "The walk through a list never showed on the pages", "checks": ["test/e2e14.py :: 7. goRef navigator \"1 of N\" + Back"], "no_plant": "e2e14 runs on the real-data copy; no planted bug"},
     "102": {"cause": "Values from outside (import, AI) could carry unsafe ids, prototype keys or markup", "checks": ["test/e2e210_safe.py :: I.ids", "test/e2e210_safe.py :: I.norun", "test/e2e210_safe.py :: P.refuse", "test/static_checks.js :: H('safe'"], "planted": ["test/check_the_checks.py :: the main page skips safeHTML (A1)", "test/check_the_checks.py :: resolvePath walks into __proto__ again (A1, R1-1)", "test/check_the_checks.py :: an inline onerror handler in markup (A1)"]},
     "103": {"cause": "Imported notes kept outside image links (tracking pixels)", "checks": ["test/e2e210_safe.py :: I.imgs", "test/e2e210_safe.py :: R.projects"], "planted": ["test/check_the_checks.py :: an import loop takes notes as they come (A1, B17)"]},
-    "104": {"cause": "A jump to an item without a place on the page ended in a toast and nothing shown", "checks": ["test/hunt.py :: check(\"14 go-to"], "planted": ["test/hunt.py :: \"14\": "]}
+    "104": {"cause": "A jump to an item without a place on the page ended in a toast and nothing shown", "checks": ["test/hunt.py :: check(\"14 go-to"], "planted": ["test/check_the_hunts.py :: "]}
   }
 }
