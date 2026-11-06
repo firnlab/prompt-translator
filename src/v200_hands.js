@@ -19,10 +19,10 @@
 const H20_TOOLS = ["preview_start", "navigate", "get_page_text", "find", "computer", "form_input"];
 const H20_MOVES = ["scroll_to", "hover", "wait", "left_click"];
 const H20_DO = ["type", "choose", "click"];
-/* typing in forms (form_input) stays off in 2.0.0: the platform refuses to grant it to PT from a cloud publish ("publish that change
-   from a local session"). Until it is granted, every type/choose step is the owner's, and PT's hands stop before it (no click runs
-   after a field nobody filled yet). The typing code stays and is tested with this switched on. */
-let H20_TYPE = false;
+/* typing in forms (form_input): off in 2.0.0 (the platform refused it from a cloud publish), on from 2.1 (owner, 7 Nov 2026).
+   The guards stay whatever the switch says: only a field the owner cleared, never a key/password/code/card field or value, only sites
+   on the project's list, and PT stops before every final button. With the switch off every type/choose step is the owner's. */
+let H20_TYPE = true;
 const H20_MAX = {sites: 20, steps: 12, log: 30};
 /* a final button: what cannot be taken back or commits the owner (merge, send, delete, pay, publish, submit/confirm, save, install, agree …) */
 const H20_FINAL = /\b(merge|squash|rebase|send|submit|pay|payment|buy|order|purchase|check ?out|delete|remove|erase|publish|post|confirm|subscribe|sign ?up|register|transfer|deploy|release|save|install|accept|agree|authori[sz]e|approve|grant|revoke|close account|cancel (my )?(subscription|account)|unsubscribe|donate|book now|reserve)\b|senden|absenden|abschicken|einreichen|bezahlen|zahlen|kaufen|bestellen|löschen|entfernen|veröffentlichen|bestätigen|zusammenführen|speichern|abonnieren|registrieren|überweisen|installieren|akzeptieren|zustimmen|genehmigen|buchen|spenden|发送|提交|支付|付款|购买|下单|删除|移除|发布|确认|合并|保存|订阅|注册|转账|安装|接受|同意|授权|批准|预订|捐/i;
@@ -306,10 +306,13 @@ async function mc20Run(){
       const items = mc20Since(p, prev.at), seen = [];
       if (prev.kp && prev.kp !== KP_VERSION) for (const n of M.notyet.filter(n => ["platform", "model", "vendor"].includes(n.blocker)).slice(0, 4)) items.push({kind: "watch", text: t("mc20.kp.item", {x: n.name, w: n.watch || n.change}), ref: "morning:kp:" + KP_VERSION + ":" + n.id});
       let changed = 0, watched = 0;
-      if (fetchOk) for (const n of M.notyet.slice(0, 6)){
+      const watchUrls = M.notyet.slice(0, 6).map(n => (MC20_URL.exec(str(n.watch)) || MC20_URL.exec(str(n.evidence)) || [])[0]).filter(Boolean);
+      // 2.1 (owner, 7 Nov): PT reads a project's pages only after the owner's one "Watch these" click; until then the card lists them
+      if (fetchOk && watchUrls.length && !p.watch20Ok && !importedLocked(p)) line("watchask", t("mc20.watch.ask", {x: p.name, n: watchUrls.length, u: watchUrls.join(" ")}), "new", {pid: p.id, ask: true});
+      if (fetchOk && p.watch20Ok && !importedLocked(p)) for (const n of M.notyet.slice(0, 6)){
         const u = (MC20_URL.exec(str(n.watch)) || MC20_URL.exec(str(n.evidence)) || [])[0]; if (!u) continue;
         watched++;
-        try{ const txt = await helper20Call("fetch", "fetch", {url: u, max_length: 20000}); R.calls++;
+        try{ const txt = await Promise.race([helper20Call("fetch", "fetch", {url: u, max_length: 20000}), new Promise((_, rej) => setTimeout(() => rej({code: "timeout", message: "20 s"}), 20000))]); R.calls++;
           const k = p.id + ":" + n.id, hsh = hashStr(str(txt).replace(/\s+/g, " "));
           if (R.watch[k] && R.watch[k] !== hsh){ changed++; items.push({kind: "watch", text: t("mc20.watch.item", {x: n.name, u}), ref: "morning:" + day + ":" + n.id}); m20Event(p, "watch", t("mc20.watch.ev", {x: n.name})); touch(p); seen.push(n.name); }
           R.watch[k] = hsh; }
@@ -334,7 +337,7 @@ function mc20CardHTML(){
   const M = mc20Read(); if (!M || M.seen || M.day !== mc20Day()) return "";
   const IC20 = {ok: "✓", new: "●", warn: "!", skip: "–"};
   return `<section class="panel mc20" data-mc20="card" aria-labelledby="mc20-h"><h3 id="mc20-h">${ic("clock")} ${esc(t("mc20.t"))} <span class="small muted">· ${esc(fmtDate(M.at))}</span></h3>
-    <ul class="mc20-lines">${arr(M.lines).map(l => `<li class="mc20-l st-${esc(l.st)}" data-k="${esc(l.k)}"><span aria-hidden="true">${IC20[l.st] || "·"}</span> ${esc(l.text)}${l.pid && l.st === "new" ? ` <button class="btn xs ghost" data-a="open-project" data-id="${esc(l.pid)}">${esc(t("mc20.open"))}</button>` : ""}</li>`).join("")}</ul>
+    <ul class="mc20-lines">${arr(M.lines).map(l => `<li class="mc20-l st-${esc(l.st)}" data-k="${esc(l.k)}"><span aria-hidden="true">${IC20[l.st] || "·"}</span> ${esc(l.text)}${l.ask ? ` <button class="btn xs primary" data-a="watch20-ok" data-id="${esc(l.pid)}">${esc(t("mc20.watch.okbtn"))}</button>` : ""}${l.pid && l.st === "new" && !l.ask ? ` <button class="btn xs ghost" data-a="open-project" data-id="${esc(l.pid)}">${esc(t("mc20.open"))}</button>` : ""}</li>`).join("")}</ul>
     <p class="small muted">${esc(t("mc20.sub"))}</p>
     <div class="row"><button class="btn sm primary" data-a="mc20-seen">${ic("check")}${esc(t("mc20.seen"))}</button><button class="btn sm ghost" data-a="mc20-run">${esc(t("mc20.again"))}</button><button class="btn sm ghost" data-a="setup20-guide" data-g="cloud">${esc(t("mc20.cloud"))}</button></div></section>`;
 }

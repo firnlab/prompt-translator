@@ -897,7 +897,7 @@ const STR = {
 "data.cloud":["In your Claude account (follows you to any device)", "In deinem Claude-Konto (auf jedem Gerät verfügbar)", "在你的 Claude 账号中（任何设备均可访问）"],
 "data.local":["Only in this browser (open the tool in the Claude app to save to your account)","Nur in diesem Browser (Tool in der Claude-App öffnen, um im Konto zu speichern)","仅保存在此浏览器中（在 Claude 应用中打开本工具即可保存到账号）"],
 "data.backup":["Backup","Sicherung","备份"],
-"data.backup.sub":["Download this workspace as one file, or bring a backup back in. Importing adds; it never overwrites.","Diesen Arbeitsbereich als eine Datei herunterladen oder eine Sicherung zurückholen. Importieren ergänzt, überschreibt nie.","将此工作区下载为一个文件，或导入备份。导入只会添加内容，不会覆盖。"],
+"data.backup.sub":["Download this workspace as one file, or bring a backup back in. A backup restores projects, notes, patterns, research and these settings: language, theme, default mode, layout, weekly budget. Importing adds; what is already here is skipped and never overwritten. Imported projects run nothing until you re-link them.","Diesen Arbeitsbereich als eine Datei herunterladen oder eine Sicherung zurückholen. Eine Sicherung stellt Projekte, Notizen, Muster, Recherchen und diese Einstellungen wieder her: Sprache, Design, Standardmodus, Layout, Wochenbudget. Importieren ergänzt; was schon da ist, wird übersprungen und nie überschrieben. Importierte Projekte führen nichts aus, bis du sie neu verknüpfst.","将此工作区下载为一个文件，或导入备份。备份可恢复项目、笔记、模式、调研以及这些设置：语言、主题、默认模式、布局、每周预算。导入只会添加内容；已有的内容会被跳过，不会覆盖。导入的项目在你重新关联之前不会运行任何内容。"],
 "data.export":["Download backup","Sicherung herunterladen","下载备份"],
 "data.import":["Import backup","Sicherung importieren","导入备份"],
 "data.imported":["{n} projects imported","{n} Projekte importiert","已导入 {n} 个项目"],

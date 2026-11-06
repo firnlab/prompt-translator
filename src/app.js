@@ -82,6 +82,7 @@ function normalizeProject(p){
   eng(p);   // 1.2 engine fields (filled step by step; nothing is invented for older projects)
   if (!p.focus || !PHASE_IDS.includes(p.focus.ph)) p.focus = {ph: PHASE_IDS.includes(p.phase) ? p.phase : "capture", id: null};
   if (!PHASE_IDS.includes(p.phase)) p.phase = "capture";
+  safeNums(p);   // 2.1: numbers that pages print raw are numbers
   return p;
 }
 /* v1 → 1.0: nothing is dropped; new fields are derived from what exists */

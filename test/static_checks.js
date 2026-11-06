@@ -316,7 +316,11 @@ console.log(`static checks (baseline ${baseArg}${base ? '' : ' NOT READ'}): ${ha
     ['v190_care.js', /root\.innerHTML = safeHTML\(view19HTML\(\)\)/, 'the care page is put on screen without safeHTML'],
     ['app.js', /function resolvePath[\s\S]{0,160}SAFE_BAD_KEYS\.has/, 'resolvePath no longer refuses __proto__ / constructor / prototype'],
     ['app.js', /function normalizeProject\(p\)\{\s*safeDeep\(p\)/, 'normalizeProject no longer makes item ids safe'],
-    ['actions.js', /safeRecord\(p00, "p"[\s\S]*safeRecord\(x0, "n"[\s\S]*safeRecord\(x0, "pat"[\s\S]*safeRecord\(x0, "r"/, 'an import loop skips safeRecord']];
+    ['actions.js', /"import-ws": async el => \{[\s\S]{0,400}importBackup\(d, f\.name\)/, 'the import no longer goes through importBackup'],
+    ['v210_safe.js', /function importBackup[\s\S]*safeRecord\(p00, "p"[\s\S]*p\.imported = \{at: now\(\)[\s\S]*safeRecord\(x0, prefix[\s\S]*for \(const p of R\.projects\)\{ WS\.projects\.push/, 'the import no longer checks every record (safeRecord, the from-a-backup mark) before it writes'],
+    ['tasks3.js', /function setToolPaused\(p, paused\)\{\s*if \(importedLocked\(p\)\)/, 'pause/resume no longer refuses a backup\'s trigger ids before re-link'],
+    ['tasks2.js', /async function startJob[\s\S]{0,400}importedLocked\(lp\)/, 'jobs no longer refuse a backup\'s project before re-link'],
+    ['v200_hands.js', /p\.watch20Ok && !importedLocked\(p\)\) for \(const n of M\.notyet/, 'the morning check reads pages without the owner\'s "Watch these" click']];
   for (const [f, re, msg] of need) if (!re.test(src(f))) H('safe', `${f}: ${msg}`);
   for (const f of codeFiles.filter(f => f.endsWith('.js'))) src(f).split('\n').forEach((line, i) => { if (/\son[a-z]+="/.test(line) && /<[a-z]/.test(line) && !/ok:safe/.test(line)) H('safe', `${f}:${i + 1} an inline event handler in markup (safeHTML removes it): use a listener`); }); }
 console.log(`  raw values: hard in ${codeFiles.filter(f => RAW_HARD.some(r => r.test(f))).length} files (RAW_HARD), ${rawKnown} known raw selector ids left for Wave 3 (RAW_KNOWN)` + (rawStale.length ? `; stale entries to delete: ${rawStale.join(' | ')}` : ''));

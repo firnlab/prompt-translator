@@ -137,7 +137,7 @@ function renderInner(){
   afterRender();
 }
 function afterRender(){
-  for (const f of $$("iframe[data-srcdoc]")){ if (!f.dataset.done){ f.srcdoc = f.getAttribute("data-srcdoc"); f.dataset.done = "1"; } }
+  for (const f of $$("iframe.mock[data-srcdoc]")){ if (!f.dataset.done){ f.srcdoc = f.getAttribute("data-srcdoc"); f.dataset.done = "1"; } }
   setSave(saveState);
   if (typeof restoreDrafts === "function") restoreDrafts();
   drawMaps();

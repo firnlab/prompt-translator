@@ -136,7 +136,8 @@ Object.assign(ACTIONS, {
   "collect": el => withPreview("collect", el, () => collectJob([curP()])),
   "collect-all": el => withPreview("collect-all", el, () => collectJob(WS.projects.filter(p => p.live))),
   "health-all": () => healthAllTools(),
-  "pause-tool": () => { const p = curP(); const pause = !p.tool.paused; confirmBox(pause ? t("op.pause") : t("op.resume"), pause ? t("op.pauseq") : t("op.resumeq"), pause ? t("op.pause") : t("op.resume"), () => setToolPaused(p, pause)); },
+  "pause-tool": () => { const p = curP(); if (importedLocked(p)){ toast(t("imp21.locked"), "err"); return; } const pause = !p.tool.paused; const ids = arr(p.tool.triggers).map(x => x.id).join(", ");
+    confirmBox(pause ? t("op.pause") : t("op.resume"), (pause ? t("op.pauseq") : t("op.resumeq")) + (ids ? " " + t("op.pauseq.ids", {x: ids}) : ""), pause ? t("op.pause") : t("op.resume"), () => setToolPaused(p, pause)); },
   "inbox-toggle": el => { const p = curP(); const m = p.inbox.find(x => x.id === el.dataset.id); m.on = !m.on; touch(p); render(); },
   "inbox-done": el => { const p = curP(); const m = p.inbox.find(x => x.id === el.dataset.id); m.done = true; touch(p); render(); },
   "update-prepare": el => withPreview("update-prepare", el, () => aiPrepareUpdate(curP())),

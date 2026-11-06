@@ -1,26 +1,275 @@
 {
- "_about": "2.1 A1/A14/B17: a made-up backup with planted traps. Every value here is invented; no project data.",
- "app": "prompt-translator", "version": 1, "exportedAt": "2026-11-06T00:00:00.000Z",
+ "_about": "2.1 A1/A14/B17/M1/M2/M3: a made-up backup with planted traps. Every value here is invented; no project data. Traps: unsafe ids (array and object-held, numeric, deep), prototype keys, markup in number fields (fast-path classes: entity scheme, fixed overlay, outside form, outside image, target=_top), scripts in mock HTML, a watch URL, another workspace's trigger and artifact ids, a duplicate note, settings that must not cross.",
+ "app": "prompt-translator",
+ "version": 1,
+ "exportedAt": "2026-11-06T00:00:00.000Z",
  "projects": [
-  {"id": "pTRAP/restore/rTRAP", "name": "Trap project <img src=x onerror=\"window.__pwn='name'\">", "schema": 2, "phase": "understand",
-   "__proto__": {"pollutedTop": true},
+  {
+   "id": "pTRAP/restore/rTRAP",
+   "name": "Trap project <img src=x onerror=\"window.__pwn='name'\">",
+   "schema": 2,
+   "phase": "understand",
+   "__proto__": {
+    "pollutedTop": true
+   },
    "requirements": [
-     {"id": "a\" onmouseover=\"window.__pwn='attr'", "title": "req one", "given": "g", "when": "w", "then": "t", "st": "ok"},
-     {"id": "a.__proto__", "title": "req two", "st": "ok"},
-     {"id": "a", "title": "req three", "st": "ok"}
+    {
+     "id": "a\" onmouseover=\"window.__pwn='attr'",
+     "title": "req one",
+     "given": "g",
+     "when": "w",
+     "then": "t",
+     "st": "ok"
+    },
+    {
+     "id": "a.__proto__",
+     "title": "req two",
+     "st": "ok"
+    },
+    {
+     "id": "a",
+     "title": "req three",
+     "st": "ok"
+    }
    ],
    "risks": [
-     {"id": "rk1", "title": "risk", "likelihood": "<img src=x onerror=\"window.__pwn='num'\">", "impact": "<svg/onload=window.__pwn='svg'>"}
+    {
+     "id": "rk1",
+     "title": "risk",
+     "likelihood": "<img src=x onerror=\"window.__pwn='num'\">",
+     "impact": "<svg/onload=window.__pwn='svg'><img src=\"https://evil.invalid/px.gif\"><a href=\"https://evil.invalid\" target=\"_top\">x</a>"
+    }
    ],
-   "tests": [{"id": "t1", "title": "x", "input": "x", "criteria": ["c"], "constructor": {"prototype": {"pollutedDeep": true}}}],
-   "sources": [{"id": "s1", "url": "javascript:window.__pwn='link'", "title": "a link"}],
-   "examples": [{"id": "e1", "files": [{"id": "f1", "type": "image", "name": "pic", "thumb": "https://tracker.invalid/pixel.gif", "data": "//tracker.invalid/p2.gif"}]}]
+   "tests": [
+    {
+     "id": "t1",
+     "title": "x",
+     "input": "x",
+     "criteria": [
+      "c"
+     ],
+     "constructor": {
+      "prototype": {
+       "pollutedDeep": true
+      }
+     }
+    }
+   ],
+   "sources": [
+    {
+     "id": "s1",
+     "url": "javascript:window.__pwn='link'",
+     "title": "a link"
+    }
+   ],
+   "examples": [
+    {
+     "id": "e1",
+     "files": [
+      {
+       "id": "f1",
+       "type": "image",
+       "name": "pic",
+       "thumb": "https://tracker.invalid/pixel.gif",
+       "data": "//tracker.invalid/p2.gif"
+      }
+     ]
+    }
+   ],
+   "assumptions": [
+    {
+     "id": "as1",
+     "text": "an assumption",
+     "impact": "<a href=\"java&#115;cript:window.__pwn='ent'\">3</a>",
+     "risk": "<div style=\"position:fixed;inset:0;background:#fff\">Enter your PIN</div>",
+     "category": "user",
+     "status": "untested"
+    },
+    {
+     "id": 7,
+     "text": "numeric id",
+     "impact": 2,
+     "risk": "<form action=\"https://evil.invalid/p\"><button>go</button></form>",
+     "category": "user",
+     "status": "untested"
+    }
+   ],
+   "brief": {
+    "id": "../../meta",
+    "at": "2026-11-06T00:00:00.000Z"
+   },
+   "live": {
+    "id": "a/b",
+    "v": 1,
+    "since": "2026-11-06T00:00:00.000Z"
+   },
+   "tool": {
+    "artifacts": [
+     {
+      "id": "ARTIFACT-FROM-ELSEWHERE",
+      "url": "https://claude.ai/artifact/XXXXXXXXXXXXXXXXXXXXXX"
+     }
+    ],
+    "triggers": [
+     {
+      "id": "trig_01QoaJrEReBgg2BnQZ8pZpm3",
+      "name": "someone else's task"
+     }
+    ],
+    "paused": false
+   },
+   "arch": {
+    "mockupHtml": "<p>a mock</p><img src=\"https://tracker.invalid/mock.gif\"><script>window.__pwn='mock'</script>"
+   },
+   "mock": {
+    "html": "<button onclick=\"window.__pwn='mockbtn'\">x</button>",
+    "v": 1,
+    "at": "2026-11-06T00:00:00.000Z",
+    "status": "open"
+   },
+   "map20": {
+    "v": 1,
+    "routes": [],
+    "notyet": [
+     {
+      "id": "ny1",
+      "name": "a watched thing",
+      "blocker": "platform",
+      "watch": "https://evil.invalid/watch",
+      "evidence": ""
+     }
+    ],
+    "rounds": [],
+    "cells": {},
+    "short": [],
+    "rej": {},
+    "chosen": null,
+    "decs": [],
+    "alerts": [],
+    "events": [],
+    "neutral": [],
+    "tags": {}
+   },
+   "engine": {
+    "scan": {
+     "existing": [
+      {
+       "name": "x",
+       "url": "https://example.com",
+       "kind": "product",
+       "fit": "<img src=x onerror=\"window.__pwn='fit'\">",
+       "cost": "free",
+       "note": "n"
+      }
+     ]
+    }
+   },
+   "deep": {
+    "inner": {
+     "inner": {
+      "inner": {
+       "inner": {
+        "inner": {
+         "inner": {
+          "inner": {
+           "inner": {
+            "inner": {
+             "inner": {
+              "inner": {
+               "inner": {
+                "inner": {
+                 "inner": {
+                  "inner": {
+                   "inner": {
+                    "inner": {
+                     "inner": {
+                      "inner": {
+                       "inner": {
+                        "inner": {
+                         "inner": {
+                          "inner": {
+                           "inner": {
+                            "inner": {
+                             "inner": {
+                              "id": "deep/trap",
+                              "x": 1
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
   }
  ],
  "notes": [
-  {"id": "../nTRAP", "text": "a note", "image": "https://tracker.invalid/note.gif"},
-  {"id": "nOK", "text": "a fine note", "image": "data:image/png;base64,iVBORw0KGgo="}
+  {
+   "id": "../nTRAP",
+   "text": "a note",
+   "image": "https://tracker.invalid/note.gif"
+  },
+  {
+   "id": "nOK",
+   "text": "a fine note",
+   "image": "data:image/png;base64,iVBORw0KGgo="
+  },
+  {
+   "id": "nDUP",
+   "text": "a note that already exists here",
+   "projectId": "pTRAP/restore/rTRAP"
+  }
  ],
- "patterns": [{"id": "pat/../../meta", "name": "pattern"}],
- "research": [{"id": "r#1", "title": "research"}]
+ "patterns": [
+  {
+   "id": "pat/../../meta",
+   "name": "pattern"
+  }
+ ],
+ "research": [
+  {
+   "id": "r#1",
+   "title": "research"
+  }
+ ],
+ "workspace": {
+  "name": "elsewhere",
+  "settings": {
+   "lang": "de",
+   "theme": "dark",
+   "helpers20": [
+    {
+     "server": "evil"
+    }
+   ],
+   "ipt20": [
+    {
+     "id": "x"
+    }
+   ],
+   "weeklyBudget": 123,
+   "usage": {
+    "units": 9999
+   }
+  }
+ }
 }

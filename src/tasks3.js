@@ -160,6 +160,7 @@ async function healthAllTools(){
   render();
 }
 async function setToolPaused(p, paused){
+  if (importedLocked(p)){ toast(t("imp21.locked"), "err"); return; }   // 2.1: ids from a backup are not this workspace's until re-linked
   let done = 0;
   for (const x of arr(p.tool.triggers)){ try{ await Runner.setEnabled(x.id, !paused); done++; }catch(e){ toast(mcpErrText(e), "err"); } }
   if (done){ p.tool.paused = paused; logAct(p, paused ? t("act.paused") : t("act.resumed"), {important: true}); touch(p); render(); toast(paused ? t("op.paused") : t("op.resumed"), "ok"); }

@@ -82,7 +82,8 @@ function phOperate(p){
 function phOperate0(p){
   const tabs = ["inbox","update","health","watch"].map(x => `<button class="tab ${(UI.opTab || "inbox") === x ? "on" : ""}" data-a="tab" data-t="opTab" data-v="${x}">${esc(t("op.tab2." + x))}${x === "inbox" ? " · " + arr(p.inbox).filter(i => !i.done).length : ""}</button>`).join("");
   const trig = arr(p.tool.triggers);
-  const status = `<div class="row"><span class="dot ok"></span><b>${esc(t("op.livev", {v: p.live.v}))}</b><span class="small muted">${esc(t("op.since", {d: fmtDay(p.live.since)}))}</span><span style="flex:1"></span>${btn("health-run", t("hc.run"), {icon: "heart", cls: "sm"})}${btn("collect", t("op.collect"), {icon: "inbox", cls: "sm"})}${trig.length ? btn("pause-tool", p.tool.paused ? t("op.resume") : t("op.pause"), {icon: "pause", cls: "sm ghost"}) : ""}</div>`;
+  const fromBackup = importedLocked(p) ? `<div class="banner warnb"><span class="dot warn"></span><span>${esc(t("imp21.frombackup"))} · ${esc(t("imp21.locked"))}</span>${btn("relink-imported", t("imp21.relink"), {cls: "xs primary"})}</div>` : "";
+  const status = `${fromBackup}<div class="row"><span class="dot ok"></span><b>${esc(t("op.livev", {v: p.live.v}))}</b><span class="small muted">${esc(t("op.since", {d: fmtDay(p.live.since)}))}</span><span style="flex:1"></span>${btn("health-run", t("hc.run"), {icon: "heart", cls: "sm"})}${btn("collect", t("op.collect"), {icon: "inbox", cls: "sm"})}${trig.length ? btn("pause-tool", p.tool.paused ? t("op.resume") : t("op.pause"), {icon: "pause", cls: "sm ghost"}) : ""}</div>`;
   const tab = UI.opTab || "inbox";
   let body = "";
   if (tab === "inbox") body = opInbox(p) + opFeedback(p);

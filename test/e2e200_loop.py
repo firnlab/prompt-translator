@@ -101,8 +101,13 @@ with sync_playwright() as pw:
         window.__helperAnswer = (server, tool, input) => server === 'host:fetch' ? 'Contents of ' + input.url + ':\\nChangelog version ' + window.__pageV : null; })()""")
     ev(pg, "helper20Detect()"); wait_idle(pg)
     check("L5 the Fetch helper lists (listTools) as Ready", ev(pg, "HELP20.st.fetch") == "ready", ev(pg, "HELP20.st"))
+    # 2.1 (owner, 7 Nov): PT reads a project's pages only after the owner's "Watch these" click; before it, the card lists the pages
+    ev(pg, "window.__calls = []; mc20Run()"); wait_idle(pg)
+    tx0 = ev(pg, "document.querySelector('.mc20') ? document.querySelector('.mc20').textContent : ''")
+    check("L1 before the click: the card lists the pages PT would read, with a 'Watch these' button, and nothing was fetched", "https://example.org/changelog" in tx0 and ev(pg, "!!document.querySelector('.mc20 [data-a=watch20-ok]')") and not [c for c in host(pg) if c["server"] == "host:fetch"], tx0[:300])
     ev(pg, "(() => { const M = WS.settings.morning20; M.kp = 'kp-old'; })()")
-    ev(pg, "mc20Run()"); wait_idle(pg)
+    ev(pg, f"(() => {{ ACTIONS['watch20-ok']({{dataset: {{id: '{pid}'}}}}); }})()"); wait_idle(pg)
+    check("L1 the click turns the watch on for that project only", ev(pg, f"WS.projects.find(x => x.id === '{pid}').watch20Ok === true"))
     hc = [c for c in host(pg) if c["server"] == "host:fetch"]
     check("L1 a watch line with a page: read through the Fetch helper (its first reading is kept)", len(hc) == 1 and hc[0]["tool"] == "fetch" and hc[0]["input"]["url"] == "https://example.org/changelog" and ev(pg, f"!!WS.settings.morning20.watch['{pid}:N801']"), hc)
     al0 = ev(pg, f"m20Read(WS.projects.find(x => x.id === '{pid}')).alerts.length")
@@ -256,7 +261,7 @@ with sync_playwright() as pw:
     S = {s["server"]: s["tools"] for s in CAP["mcp"]["servers"]}
     H = ev(pg, "HELPERS20.map(h => [h.server, h.tools])")
     check("L5 CAPABILITIES-2.0.json lists every helper with exactly the tools PT calls", all(S.get(sv) == tl for sv, tl in H), [S, H])
-    check("L5 …and the app's browser with the hands' tools (form_input only while typing is on: off in 2.0.0, the platform does not grant it from a cloud publish)", S.get("host:claude_browser") == ev(pg, "H20_TOOLS.filter(x => H20_TYPE || x !== 'form_input')") and set(ev(pg, "HANDS_TOOLS.slice()")) <= set(S.get("host:claude_browser", [])), S.get("host:claude_browser"))
+    check("L5 …and the app's browser with the hands' tools (form_input included: typing is on from 2.1)", S.get("host:claude_browser") == ev(pg, "H20_TOOLS.filter(x => H20_TYPE || x !== 'form_input')") and set(ev(pg, "HANDS_TOOLS.slice()")) <= set(S.get("host:claude_browser", [])), S.get("host:claude_browser"))
     check("L5 …and keeps the existing entries", S.get("Claude Code Remote") == ["fire_trigger", "list_triggers", "update_trigger", "create_trigger"] and CAP.get("sample") == {"images": True} and len(CAP["db"]["rules"]) == 3)
 
     # ---------- L6 guides ----------

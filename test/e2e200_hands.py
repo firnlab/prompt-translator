@@ -69,15 +69,21 @@ with sync_playwright() as pw:
     ev(pg, f"window.__browser.pages['https://example.org/download'] = {json.dumps(DL)}")
     db0 = ev(pg, "JSON.stringify(curP().hands20 || null)")
 
-    # ---------- D0 typing is off in 2.0.0 (form_input is not granted from a cloud publish): the fields are the owner's ----------
-    sec("D0 typing is off in 2.0.0 (form_input is not granted from a cloud publish): the fields are the owner's")
+    # ---------- D0 typing is on from 2.1 (owner, 7 Nov 2026); the guards hold with the switch on and off ----------
+    sec("D0 typing is on from 2.1; the guards hold with the switch on and off")
+    check("D0 the switch is on in the built file", ev(pg, "H20_TYPE") is True)
     P0 = ev(pg, """(() => h20Vet(curP(), {what: 'x', url: 'https://example.org/download', steps: [{do: 'click', target: 'Start'}, {do: 'type', target: 'First name', value: 'Alex'}, {do: 'click', target: 'Next'}, {do: 'choose', target: 'System', value: 'macOS'}], final: 'Send'}, 'w'))()""")
-    check("D0 typing off: PT clicks up to the first field; that field and every later one are yours, no click after a field nobody filled", [s["target"] for s in P0["steps"]] == ["Start"] and P0["yours"] == ["First name", "System"] and P0.get("held") is True and P0["final"] == "Send", P0)
+    check("D0 typing on: the type and choose steps stay PT's, the final button stays the owner's", [s["target"] for s in P0["steps"]] == ["Start", "First name", "Next", "System"] and P0["yours"] == [] and not P0.get("held") and P0["final"] == "Send", P0)
     g0 = ev(pg, "(async () => { try{ await h20Call(curP(), 'form_input', {ref: 'r', value: 'x'}); return 'ran'; }catch(e){ return e.code + ':' + (e.message || ''); } })()")
-    check("D0 …and the guard refuses form_input while typing is off", g0 == "hands_guard:typing is off", g0)
+    check("D0 …and the guard refuses form_input on a field the owner did not clear", g0 == "hands_guard:field not cleared", g0)
+    ev(pg, "(() => { H20_TYPE = false; })()")
+    P1 = ev(pg, """(() => h20Vet(curP(), {what: 'x', url: 'https://example.org/download', steps: [{do: 'click', target: 'Start'}, {do: 'type', target: 'First name', value: 'Alex'}, {do: 'click', target: 'Next'}], final: 'Send'}, 'w'))()""")
+    check("D0 switch off: PT clicks up to the first field; that field and every later one are yours, no click after a field nobody filled", [s["target"] for s in P1["steps"]] == ["Start"] and P1["yours"] == ["First name"] and P1.get("held") is True, P1)
+    g1 = ev(pg, "(async () => { try{ await h20Call(curP(), 'form_input', {ref: 'r', value: 'x'}); return 'ran'; }catch(e){ return e.code + ':' + (e.message || ''); } })()")
+    check("D0 …and the guard refuses form_input while the switch is off", g1 == "hands_guard:typing is off", g1)
     ev(pg, "(() => { H20.plan = Object.assign(h20Vet(curP(), {what: 'x', url: 'https://example.org/download', steps: [{do: 'type', target: 'First name', value: 'Alex'}], final: 'Send'}, 'w'), {pid: curP().id}); UI.pg = null; ACTIONS['h20-open'](); })()"); pg.wait_for_timeout(200)
     check("D0 …and the card says so", "Typing into forms is off in this version" in view(pg), view(pg)[-500:])
-    ev(pg, "(() => { H20.plan = null; H20_TYPE = true; render(); })()")   # the typing code stays: everything below tests it switched on
+    ev(pg, "(() => { H20.plan = null; H20_TYPE = true; render(); })()")   # back on: everything below tests typing as shipped
 
     # ---------- D1 the page and the sites ----------
     sec("D1 the page and the sites")

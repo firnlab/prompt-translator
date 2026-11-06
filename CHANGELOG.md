@@ -10,13 +10,17 @@ Versions before 1.8 were published from the private archive repository (see RELE
 ### Changed
 
 - The two modes are now called Pick Mode and Chat Mode (before: Pick and Chat with structure), everywhere in PT
+- Typing into forms is on: PT fills only fields you cleared, never a key, password or card field, only on sites on your list, and stops before every final button
 - About: what PT is, the two modes, what every project gets, what PT can and cannot promise, how AI steps, costs, web access and your data are handled, and where to report
 
 ### Fixed
 
-- A backup file from somewhere else could carry hidden code or names that overwrite a restore point; imports now get safe names and the page removes anything that could run
-- Imported notes and example pictures could load images from other sites (which tells those sites when you look); those links are now removed at import, your own pictures stay
-- Links from outside can no longer run code
+- A backup file from somewhere else could carry hidden code or names that overwrite a restore point; imports now get safe ids (your names stay), the page removes anything that could run, and an import tells you what it changed and can be undone
+- Imported notes and example pictures could load images from other sites (which tells those sites when you look); pictures linked from other websites are now removed at import, pictures stored in PT stay
+- An imported project could switch scheduled tasks or watch pages under its old links; it now runs nothing until you re-link it with one click that shows the ids
+- The morning check reads a project's pages only after your one “Watch these” click; the pages are listed on the card
+- The result mock on the Design page was removed by the new safety filter as soon as it existed; PT's own frames stay
+- Numbers in imported files (likelihood, impact, fit) could carry markup; they are numbers now
 
 ## 2.0.0 — 2026-11-04
 
