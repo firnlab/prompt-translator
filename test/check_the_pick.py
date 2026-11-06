@@ -341,6 +341,8 @@ with tempfile.TemporaryDirectory() as td:
     tmp = pathlib.Path(td)
     for d in ("src", "test", "vault"): shutil.copytree(ROOT / d, tmp / d, ignore=shutil.ignore_patterns("*.html", "*.png", "shots*", "__pycache__"))   # 1.7: build.py reads vault/vault.json
     shutil.copy(ROOT / "build.py", tmp / "build.py"); (tmp / "dist").mkdir()
+    for f in ("CAPABILITIES-2.0.json", "releases.json", "RELEASE-CHECKS.md", "CHANGELOG.md"): shutil.copy(ROOT / f, tmp / f)   # 2.1: suites read these from the root too
+    shutil.copytree(ROOT / "tools", tmp / "tools", ignore=shutil.ignore_patterns("__pycache__"))
     os.symlink((ROOT / "work").resolve(), tmp / "work")
     def build():
         b = subprocess.run("python3 build.py", shell=True, cwd=tmp, capture_output=True, text=True)
