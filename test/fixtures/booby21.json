@@ -1,0 +1,26 @@
+{
+ "_about": "2.1 A1/A14/B17: a made-up backup with planted traps. Every value here is invented; no project data.",
+ "app": "prompt-translator", "version": 1, "exportedAt": "2026-11-06T00:00:00.000Z",
+ "projects": [
+  {"id": "pTRAP/restore/rTRAP", "name": "Trap project <img src=x onerror=\"window.__pwn='name'\">", "schema": 2, "phase": "understand",
+   "__proto__": {"pollutedTop": true},
+   "requirements": [
+     {"id": "a\" onmouseover=\"window.__pwn='attr'", "title": "req one", "given": "g", "when": "w", "then": "t", "st": "ok"},
+     {"id": "a.__proto__", "title": "req two", "st": "ok"},
+     {"id": "a", "title": "req three", "st": "ok"}
+   ],
+   "risks": [
+     {"id": "rk1", "title": "risk", "likelihood": "<img src=x onerror=\"window.__pwn='num'\">", "impact": "<svg/onload=window.__pwn='svg'>"}
+   ],
+   "tests": [{"id": "t1", "title": "x", "input": "x", "criteria": ["c"], "constructor": {"prototype": {"pollutedDeep": true}}}],
+   "sources": [{"id": "s1", "url": "javascript:window.__pwn='link'", "title": "a link"}],
+   "examples": [{"id": "e1", "files": [{"id": "f1", "type": "image", "name": "pic", "thumb": "https://tracker.invalid/pixel.gif", "data": "//tracker.invalid/p2.gif"}]}]
+  }
+ ],
+ "notes": [
+  {"id": "../nTRAP", "text": "a note", "image": "https://tracker.invalid/note.gif"},
+  {"id": "nOK", "text": "a fine note", "image": "data:image/png;base64,iVBORw0KGgo="}
+ ],
+ "patterns": [{"id": "pat/../../meta", "name": "pattern"}],
+ "research": [{"id": "r#1", "title": "research"}]
+}

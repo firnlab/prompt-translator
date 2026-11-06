@@ -269,10 +269,10 @@ const CHANGES = {
       const d = JSON.parse(await f.text());
       if (!d || d.app !== "prompt-translator") throw new Error("format");
       let n = 0;
-      for (const p0 of arr(d.projects)){ const p = normalizeProject(p0); if (WS.projects.some(x => x.id === p.id)){ p.id = uid("p"); p.name += " " + t("proj.importsuffix"); } p.versions = []; p.versionNo = 0; WS.projects.push(p); touch(p); if (arr(p.pkg.sections).length) saveVersion(p, t("ver.imported")); n++; }
-      for (const x of arr(d.notes)){ if (!WS.notes.some(y => y.id === x.id)){ WS.notes.push(x); saveNote(x); } }
-      for (const x of arr(d.patterns)){ if (!WS.patterns.some(y => y.id === x.id)){ WS.patterns.push(x); Store.put(wsPath() + "/patterns/" + x.id, x); } }
-      for (const x of arr(d.research)){ if (!WS.research.some(y => y.id === x.id)){ WS.research.push(x); Store.put(wsPath() + "/research/" + x.id, x); } }
+      for (const p00 of arr(d.projects)){ const p0 = safeRecord(p00, "p", {imgs: true}); if (!p0) continue; const p = normalizeProject(p0); if (WS.projects.some(x => x.id === p.id)){ p.id = uid("p"); p.name += " " + t("proj.importsuffix"); } p.versions = []; p.versionNo = 0; WS.projects.push(p); touch(p); if (arr(p.pkg.sections).length) saveVersion(p, t("ver.imported")); n++; }   // ok:field (import: a fresh version list, as before)
+      for (const x0 of arr(d.notes)){ const x = safeRecord(x0, "n", {imgs: true}); if (x && !WS.notes.some(y => y.id === x.id)){ WS.notes.push(x); saveNote(x); } }
+      for (const x0 of arr(d.patterns)){ const x = safeRecord(x0, "pat", {imgs: true}); if (x && !WS.patterns.some(y => y.id === x.id)){ WS.patterns.push(x); Store.put(wsPath() + "/patterns/" + x.id, x); } }
+      for (const x0 of arr(d.research)){ const x = safeRecord(x0, "r", {imgs: true}); if (x && !WS.research.some(y => y.id === x.id)){ WS.research.push(x); Store.put(wsPath() + "/research/" + x.id, x); } }
       render(); toast(t("data.imported", {n}), "ok");
     }catch(e){ toast(t("data.importerr"), "err"); }
     el.value = "";

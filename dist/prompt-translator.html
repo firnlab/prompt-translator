@@ -11301,6 +11301,7 @@ function guessContentLang(p){
   return de > en * 1.2 && de > 8 ? "de" : "en";
 }
 function normalizeProject(p){
+  safeDeep(p);   // 2.1 A1: unsafe item ids get fresh ones, prototype keys go
   const b = blankProject(p.name);
   const legacy = !p.schema || p.schema < 2;
   if (!p.lang) p.lang = guessContentLang(p) || (WS && WS.settings && WS.settings.lang) || LANG;   // 1.4: an empty project takes the workspace language
@@ -11597,10 +11598,11 @@ function logDecision(p, title, choice, reason){ p.decisions.push({id:uid("d"), a
 /* ---------- binding helpers ---------- */
 function resolvePath(root, path){
   const segs = path.split(".");
+  if (segs.some(s => SAFE_BAD_KEYS.has(s.replace(/^#/, "")))) return null;   // 2.1 A1: never walk into the prototype
   let o = root;
   for (let i = 0; i < segs.length - 1; i++){
     const s = segs[i];
-    if (s.startsWith("#")){ o = arr(o).find(x => x.id === s.slice(1)); } else { if (o[s] == null) o[s] = {}; o = o[s]; }
+    if (s.startsWith("#")){ o = arr(o).find(x => x.id === s.slice(1)); } else { if (!Object.prototype.hasOwnProperty.call(o, s) || o[s] == null) o[s] = {}; o = o[s]; }
     if (o == null) return null;
   }
   return {obj: o, key: segs[segs.length - 1]};
@@ -12302,7 +12304,7 @@ function renderInner(){
   if (UI.fatal){ root.innerHTML = `<div class="lock"><div class="lock-card stack"><b>${esc(t("fatal.t"))}</b><p class="small">${esc(t("fatal.p"))}</p><div class="row">${btn("retry-load", t("fatal.retry"), {icon: "arrow", cls: "primary"})}</div></div></div>`; return; }
   if (!UI.unlocked){ root.innerHTML = viewLock(); afterRender(); return; }
   const drawer = !!UI.drawer;
-  root.innerHTML = `<a class="skip" href="#main-inner">${esc(t("a11y.skip"))}</a><div class="app ${drawer ? "with-drawer" : ""} with-sbar" style="--dockw:${num(UI.dockW, 360)}px">${viewRail()}<main class="main" id="main"><div class="main-inner" id="main-inner" tabindex="-1">${previewBanner()}${typeof offlineBar === "function" ? offlineBar() : ""}${typeof pinResetBanner === "function" ? pinResetBanner() : ""}${UI.loading ? `<div class="busy"><span class="pulse"></span>${esc(t("boot.loading"))}</div>` : viewMain()}</div></main>${drawer ? viewInspector() : ""}${statusBar()}</div>${viewOverlays()}`;
+  root.innerHTML = safeHTML(`<a class="skip" href="#main-inner">${esc(t("a11y.skip"))}</a><div class="app ${drawer ? "with-drawer" : ""} with-sbar" style="--dockw:${num(UI.dockW, 360)}px">${viewRail()}<main class="main" id="main"><div class="main-inner" id="main-inner" tabindex="-1">${previewBanner()}${typeof offlineBar === "function" ? offlineBar() : ""}${typeof pinResetBanner === "function" ? pinResetBanner() : ""}${UI.loading ? `<div class="busy"><span class="pulse"></span>${esc(t("boot.loading"))}</div>` : viewMain()}</div></main>${drawer ? viewInspector() : ""}${statusBar()}</div>${viewOverlays()}`);
   const m2 = root.querySelector(".main"); if (m2) m2.scrollTop = scroll;
   const d2 = root.querySelector(".dr-body"); if (d2) d2.scrollTop = dscroll;
   const refocus = actId ? document.getElementById(actId) : actBind ? document.querySelector(`[data-bind="${CSS.escape(actBind)}"]`) : null;   // 1.3: bound fields without an id keep the cursor too
@@ -14060,10 +14062,10 @@ const CHANGES = {
       const d = JSON.parse(await f.text());
       if (!d || d.app !== "prompt-translator") throw new Error("format");
       let n = 0;
-      for (const p0 of arr(d.projects)){ const p = normalizeProject(p0); if (WS.projects.some(x => x.id === p.id)){ p.id = uid("p"); p.name += " " + t("proj.importsuffix"); } p.versions = []; p.versionNo = 0; WS.projects.push(p); touch(p); if (arr(p.pkg.sections).length) saveVersion(p, t("ver.imported")); n++; }
-      for (const x of arr(d.notes)){ if (!WS.notes.some(y => y.id === x.id)){ WS.notes.push(x); saveNote(x); } }
-      for (const x of arr(d.patterns)){ if (!WS.patterns.some(y => y.id === x.id)){ WS.patterns.push(x); Store.put(wsPath() + "/patterns/" + x.id, x); } }
-      for (const x of arr(d.research)){ if (!WS.research.some(y => y.id === x.id)){ WS.research.push(x); Store.put(wsPath() + "/research/" + x.id, x); } }
+      for (const p00 of arr(d.projects)){ const p0 = safeRecord(p00, "p", {imgs: true}); if (!p0) continue; const p = normalizeProject(p0); if (WS.projects.some(x => x.id === p.id)){ p.id = uid("p"); p.name += " " + t("proj.importsuffix"); } p.versions = []; p.versionNo = 0; WS.projects.push(p); touch(p); if (arr(p.pkg.sections).length) saveVersion(p, t("ver.imported")); n++; }   // ok:field (import: a fresh version list, as before)
+      for (const x0 of arr(d.notes)){ const x = safeRecord(x0, "n", {imgs: true}); if (x && !WS.notes.some(y => y.id === x.id)){ WS.notes.push(x); saveNote(x); } }
+      for (const x0 of arr(d.patterns)){ const x = safeRecord(x0, "pat", {imgs: true}); if (x && !WS.patterns.some(y => y.id === x.id)){ WS.patterns.push(x); Store.put(wsPath() + "/patterns/" + x.id, x); } }
+      for (const x0 of arr(d.research)){ const x = safeRecord(x0, "r", {imgs: true}); if (x && !WS.research.some(y => y.id === x.id)){ WS.research.push(x); Store.put(wsPath() + "/research/" + x.id, x); } }
       render(); toast(t("data.imported", {n}), "ok");
     }catch(e){ toast(t("data.importerr"), "err"); }
     el.value = "";
@@ -16958,7 +16960,7 @@ function exForget(p, id){
 }
 function loopCur(p){ const L = loopRead(p), ids = L.phase === "check" ? L.checkIds : L.ids; const list = ids.map(id => exById(p, id)).filter(Boolean); return {L, list, i: clamp(num(L.i, 0), 0, Math.max(0, list.length - 1))}; }
 function scrollToLoop(){ setTimeout(() => { const el = document.getElementById("loop"); const m = document.querySelector(".main"); if (el && m){ const d = el.getBoundingClientRect().top - m.getBoundingClientRect().top - 12; if (Math.abs(d) > 40) m.scrollTop += d; } }, 30); }
-function exMedia(e){ return arr(e.files).filter(f => f.type === "image").map(f => `<img class="exphoto" src="${esc(f.asset ? "/_blob/" + f.asset : f.data || f.thumb || "")}" alt="${esc(f.name)}" loading="lazy" onerror="if(this.dataset.t&&this.src!==this.dataset.t)this.src=this.dataset.t" data-t="${esc(f.thumb || "")}">`).join(""); }
+function exMedia(e){ return arr(e.files).filter(f => f.type === "image").map(f => `<img class="exphoto" src="${esc(f.asset ? "/_blob/" + f.asset : f.data || f.thumb || "")}" alt="${esc(f.name)}" loading="lazy" data-t="${esc(f.thumb || "")}">`).join(""); }   // ok:raw (data: or /_blob/ images; import clears outside links, 2.1 B17)
 /** one example, big, with the verdict control (used by the loop and the board's focus view) */
 function exCard(p, e, {reveal = false, keys = true} = {}){
   const why = `<label class="fld exwhy"><span>${esc(t(e.verdict === "bad" ? "goal.whybad" : e.verdict === "good" ? "goal.whygood" : "ex.whyany"))}</span>${bindInput("p:goal.examples.#" + e.id + ".why", e.why, {ph: t("goal.whyph")})}</label>`;
@@ -25156,7 +25158,7 @@ async function view19File(el){
   finally{ VIEW19.busy = false; }
   view19Render();
 }
-function view19Render(){ const root = document.getElementById("app"); if (root) root.innerHTML = view19HTML(); }
+function view19Render(){ const root = document.getElementById("app"); if (root) root.innerHTML = safeHTML(view19HTML()); }
 function view19Text(label, s){ s = str(s).trim(); return s ? `<div class="v19-f"><b class="small">${esc(label)}</b><p class="v19-pre">${esc(s)}</p></div>` : ""; }
 function view19Proj(p){
   const ns = p.northStar || {}, pick = (p.pick && Array.isArray(p.pick.log)) ? p.pick.log : [];
@@ -27530,7 +27532,7 @@ FORMS["facts-add"] = f => { const p = curP(); if (!p) return; const w = str((f.q
   const e = factsAdd(p, {kind: k, words: w}); if (!e) return; delete UI.qDraft["facts-add"];
   logAct(p, t("facts.added", {x: e.id}), {step: "interview"}); rcpt20(p, factText(e), t("rc.w.factsk", {k: factKindLabel(e.kind)}));
   touch(p); render(); factsConflictSoon(p, [e.id]); };
-FORMS["facts-edit"] = f => { const p = curP(), e = p && factById(p, f.dataset.id); if (!e) return; const w = factNorm((f.querySelector("#fe-" + e.id) || {}).value);
+FORMS["facts-edit"] = f => { const p = curP(), e = p && factById(p, f.dataset.id); if (!e) return; const w = factNorm((f.querySelector(`#fe-${CSS.escape(e.id)}`) || {}).value);
   if (!w){ toast(t("facts.need"), "err"); return; }
   if (w !== e.words){ e.hist = arr(e.hist); e.hist.push({at: now(), words: e.words, short: e.short}); if (factText(e) === e.words) e.short = w; e.words = w; e.kw = []; e.at = now(); }
   UI.factsEdit = null; rcpt20(p, factText(e), t("rc.w.facts")); touch(p); render(); factsConflictSoon(p, [e.id]); };
@@ -28678,7 +28680,7 @@ Object.assign(ACTIONS, {
 ["m20-open", "m20-goto", "m20-f", "m20-more", "m20-ask", "m20-cancel", "m20-stop", "m20-rej", "m20-keepq", "g20-edit", "m20-go", "m20-repair"].forEach(a => ACT_NO.add(a));
 Object.assign(CHANGES, { "m20-sort": (el) => { const p = curP(), U = p && m20UI(p); if (!U) return; U.sort = oneOf(el.value, ["fit", "cheap", "work", "fast", "high"], "fit"); render(); } });
 FORMS["m20-ask"] = f => { const p = curP(); if (!p) return; const q = str((f.querySelector("#m20-q") || {}).value).trim(); if (!q){ toast(t("m20.chat.need"), "err"); return; } delete UI.qDraft["m20-q"]; m20Chip(p, "ask", q); render(); };
-FORMS["m20-keep"] = f => { const p = curP(); if (!p) return; const id = f.dataset.id, w = str((f.querySelector("#m20-keep-" + id) || {}).value).trim(); if (!w){ toast(t("m20.al.keepneed"), "err"); return; } m20AlertSet(p, id, "kept", {reason: w}); const U = m20UI(p); if (U) U.keep = null; touch(p); render(); };
+FORMS["m20-keep"] = f => { const p = curP(); if (!p) return; const id = f.dataset.id, w = str((f.querySelector(`#m20-keep-${CSS.escape(id)}`) || {}).value).trim(); if (!w){ toast(t("m20.al.keepneed"), "err"); return; } m20AlertSet(p, id, "kept", {reason: w}); const U = m20UI(p); if (U) U.keep = null; touch(p); render(); };
 FORMS["m20-take"] = f => { const p = curP(); if (!p) return; const id = f.dataset.id, M = m20Read(p), v = s => str((f.querySelector(s) || {}).value);
   const rejWhy = {}; for (const o of M.short.filter(x => x !== id)) rejWhy[o] = v("#m20-rw-" + o);
   const D = m20Take(p, id, {why: v("#m20-why"), trip: v("#m20-trip").split("\n"), higher: v("#m20-higher"), rejWhy}); if (!D) return;
@@ -29958,6 +29960,74 @@ const V200E_CSS = `
 `;
 function v200eCss(){ try{ if (document.getElementById("v200e-css")) return; const s = document.createElement("style"); s.id = "v200e-css"; s.textContent = V200E_CSS; document.head.appendChild(s); }catch(e){ onAppError(e && e.message, "v200e:css"); } }
 v200eCss();
+
+/* 2.1 A1 / A14 / B17 — one safety layer for values that come from outside (an imported backup, AI output, a scan):
+   1. safe ids: every item id in a project, note, pattern or research entry is plain letters, digits, "_" or "-" (max 64).
+      Anything else ("." "/" "#" quotes, markup) gets a fresh id, so it can never become a storage path, a selector
+      or a data-bind path. Ids PT writes itself always pass (uid()).
+   2. no prototype keys: "__proto__", "constructor" and "prototype" are dropped from imported data and never walked by
+      a data-bind path.
+   3. safe HTML at the sink: before the page is put on screen, event-handler attributes, script-like tags and
+      script: / non-image data: links are removed. PT's own markup has none of these, so the fast path leaves it unchanged.
+   4. no outside images from imports: image fields that point to another site (tracking pixels) are cleared. */
+const SAFE_ID = /^[A-Za-z0-9_-]{1,64}$/;
+const SAFE_BAD_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+const SAFE_IMG_KEYS = new Set(["image", "thumb", "img", "photo"]);   // "src" and "data" only on an image file: elsewhere "src" is a source link (round trip, 2.1)
+function safeIdOk(v){ return typeof v === "string" ? SAFE_ID.test(v) : (typeof v === "number" && Number.isFinite(v)); }
+/** walk imported data: fix unsafe item ids, drop prototype keys and (imports only) outside image links. Returns how many things changed. */
+function safeDeep(o, {imgs = false} = {}, depth = 0){
+  if (!o || typeof o !== "object" || depth > 24) return 0;
+  let n = 0;
+  if (Array.isArray(o)){
+    for (const x of o){
+      if (x && typeof x === "object" && !Array.isArray(x) && Object.prototype.hasOwnProperty.call(x, "id") && x.id != null && !safeIdOk(x.id)){ x.id = uid("x"); n++; }
+      n += safeDeep(x, {imgs}, depth + 1);
+    }
+    return n;
+  }
+  for (const k of Object.keys(o)){
+    if (SAFE_BAD_KEYS.has(k)){ delete o[k]; n++; continue; }
+    const v = o[k];
+    if (imgs && (SAFE_IMG_KEYS.has(k) || ((k === "src" || k === "data") && o.type === "image")) && typeof v === "string" && /^[\s\x00-\x1f]*(https?:|\/\/|\\\\)/i.test(v)){ o[k] = ""; n++; continue; }
+    n += safeDeep(v, {imgs}, depth + 1);
+  }
+  return n;
+}
+/** an imported top-level record (project, note, pattern, research entry): its own id must be safe too */
+function safeRecord(x, prefix, opts){
+  if (!x || typeof x !== "object" || Array.isArray(x)) return null;
+  safeDeep(x, opts);
+  if (!safeIdOk(x.id) || typeof x.id !== "string") x.id = uid(prefix);
+  return x;
+}
+/** links PT puts in a page: https only (http for nothing, never script: or data:) */
+function safeUrl(u){ const s = String(u ?? "").trim(); return /^https:\/\//i.test(s) ? s : ""; }
+
+const SAFE_HTML_TRIGGER = /[\s\/"']on[a-z]+\s*=|script\s*(:|&)|<\s*\/?\s*(script|iframe|frame|object|embed|base|meta|link|style|template|noscript)\b|(href|src|action|formaction|xlink:href)\s*=\s*["']?[\s\x00-\x1f]*data\s*:(?!image\/(png|jpe?g|gif|webp)[;,])/i;
+const SAFE_HTML_DROP = "script,iframe,frame,frameset,object,embed,base,meta,link,style,template,noscript";
+/** clean a page's HTML before it goes on screen; PT's own markup takes the fast path and comes back unchanged */
+function safeHTML(html){
+  const s = String(html ?? "");
+  if (!SAFE_HTML_TRIGGER.test(s)) return s;
+  try{
+    const tpl = document.createElement("template"); tpl.innerHTML = s;   // ok:raw (a template is inert: nothing runs, nothing loads)
+    const f = tpl.content;
+    for (const el of f.querySelectorAll(SAFE_HTML_DROP)) el.remove();
+    for (const el of f.querySelectorAll("*")){
+      for (const a of Array.from(el.attributes)){
+        const nm = a.name.toLowerCase();
+        if (nm.startsWith("on")){ el.removeAttribute(a.name); continue; }
+        if (["href", "src", "action", "formaction", "xlink:href", "srcset", "poster", "background"].includes(nm)){
+          const v = a.value.replace(/[\x00-\x20]/g, "").toLowerCase();
+          if (/script:/.test(v) || (v.startsWith("data:") && !/^data:image\/(png|jpe?g|gif|webp)[;,]/.test(v))) el.removeAttribute(a.name);
+        }
+      }
+    }
+    return tpl.innerHTML;
+  }catch(e){ return esc(s); }
+}
+/* example photos fall back to their thumbnail without an inline handler (2.1: the page carries no on…= attributes) */
+document.addEventListener("error", e => { const im = e.target; if (im && im.classList && im.classList.contains("exphoto") && im.dataset.t && im.src !== im.dataset.t && !im.src.endsWith(im.dataset.t)) im.src = im.dataset.t; }, true);
 
 boot();
 

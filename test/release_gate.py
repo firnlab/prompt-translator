@@ -61,6 +61,10 @@ CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("flows 2.0 modes", "python3 test/e2e200_modes.py", True, 25),   # 2.0 Part C: two faces (Pick, Chat with structure) of one ledger, the 1.x modes gone, the move to 2.0 (Before 2.0, additive, once, per project), the RC replay
     ("flows 2.0 hands", "python3 test/e2e200_hands.py", True, 15),   # 2.0 Part D: PT's hands per project (site list, plan first, action contract, forms and non-final clicks, the final-button stop, keys never typed, the guard)
     ("flows 2.0 loop", "python3 test/e2e200_loop.py", True, 20),   # 2.0 Parts D/E: morning check, prompt tests, Improve-PT loop, metrics, helpers (detection, Needs <program>, file save), guides, CAPABILITIES-2.0.json
+    ("flows 2.1 platform", "python3 test/e2e210_platform.py", True, 10),   # 2.1 J12/J13: PT against a platform-like mock (sample codes, mcp refusals, path grammar, access rules); expected reds listed in test/expected_red.json
+    ("flows 2.1 clicks", "python3 test/e2e210_clicks.py", True, 10),   # 2.1: one click = one call, Try again
+    ("flows 2.1 safe", "python3 test/e2e210_safe.py", True, 10),   # 2.1 A1/A14/B17: safeHTML, the booby-trapped import, export→import round trip, data-bind paths
+    ("check the causes", "python3 test/check_the_causes.py", True, 1),   # 2.1 J3: every cause has a check that exists and (or a reason) a planted bug
     ("pseudo-localisation", "python3 test/pseudo19.py", True, 10),   # 1.9.2: every text from the strings, the L() objects or the data; no raw key, no cut label, no sideways scrolling with ~40 % longer text at 1440 and 390 px
     ("changelog", "python3 test/changelog_test.py && python3 tools/changelog.py --check", True, 2),   # CHANGELOG.md is generated and up to date   # update all of your tools to a kit: card = GO, one at a time, two greens, stop on red, others prepared   # R1b: the built file in plain Chromium reads an export, read-only, writes nothing
     ("hunt",           "python3 test/hunt.py", True, 25),

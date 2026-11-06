@@ -69,6 +69,7 @@ function guessContentLang(p){
   return de > en * 1.2 && de > 8 ? "de" : "en";
 }
 function normalizeProject(p){
+  safeDeep(p);   // 2.1 A1: unsafe item ids get fresh ones, prototype keys go
   const b = blankProject(p.name);
   const legacy = !p.schema || p.schema < 2;
   if (!p.lang) p.lang = guessContentLang(p) || (WS && WS.settings && WS.settings.lang) || LANG;   // 1.4: an empty project takes the workspace language
@@ -365,10 +366,11 @@ function logDecision(p, title, choice, reason){ p.decisions.push({id:uid("d"), a
 /* ---------- binding helpers ---------- */
 function resolvePath(root, path){
   const segs = path.split(".");
+  if (segs.some(s => SAFE_BAD_KEYS.has(s.replace(/^#/, "")))) return null;   // 2.1 A1: never walk into the prototype
   let o = root;
   for (let i = 0; i < segs.length - 1; i++){
     const s = segs[i];
-    if (s.startsWith("#")){ o = arr(o).find(x => x.id === s.slice(1)); } else { if (o[s] == null) o[s] = {}; o = o[s]; }
+    if (s.startsWith("#")){ o = arr(o).find(x => x.id === s.slice(1)); } else { if (!Object.prototype.hasOwnProperty.call(o, s) || o[s] == null) o[s] = {}; o = o[s]; }
     if (o == null) return null;
   }
   return {obj: o, key: segs[segs.length - 1]};

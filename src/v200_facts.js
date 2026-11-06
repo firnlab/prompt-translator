@@ -474,7 +474,7 @@ FORMS["facts-add"] = f => { const p = curP(); if (!p) return; const w = str((f.q
   const e = factsAdd(p, {kind: k, words: w}); if (!e) return; delete UI.qDraft["facts-add"];
   logAct(p, t("facts.added", {x: e.id}), {step: "interview"}); rcpt20(p, factText(e), t("rc.w.factsk", {k: factKindLabel(e.kind)}));
   touch(p); render(); factsConflictSoon(p, [e.id]); };
-FORMS["facts-edit"] = f => { const p = curP(), e = p && factById(p, f.dataset.id); if (!e) return; const w = factNorm((f.querySelector("#fe-" + e.id) || {}).value);
+FORMS["facts-edit"] = f => { const p = curP(), e = p && factById(p, f.dataset.id); if (!e) return; const w = factNorm((f.querySelector(`#fe-${CSS.escape(e.id)}`) || {}).value);
   if (!w){ toast(t("facts.need"), "err"); return; }
   if (w !== e.words){ e.hist = arr(e.hist); e.hist.push({at: now(), words: e.words, short: e.short}); if (factText(e) === e.words) e.short = w; e.words = w; e.kw = []; e.at = now(); }
   UI.factsEdit = null; rcpt20(p, factText(e), t("rc.w.facts")); touch(p); render(); factsConflictSoon(p, [e.id]); };

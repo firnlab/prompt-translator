@@ -182,7 +182,7 @@ const RAW_VETTED = {
   'v200_setup.js': ['href="${esc(links[i + 1])}"'],   // fixed https links of SU20_GUIDES
 };
 // real raw ids in selectors (R1-9): a quote or bracket in an id throws in the click handler. Wave 3 (A1) adds CSS.escape and deletes these.
-const RAW_KNOWN = {'v200_facts.js': ['"#fe-" + e.id'], 'v200_map.js': ['"#m20-keep-" + id']};
+const RAW_KNOWN = {};   // 2.1: the last two raw selector ids now go through CSS.escape
 const rawSinks = (() => {
   const close = (s, i, o, c) => { let d = 1; while (i < s.length && d){ if (s[i] === o) d++; else if (s[i] === c) d--; i++; } return d ? -1 : i; };
   const top = (e, ops) => { const out = []; let d = 0, q = null, last = 0;   // split at operators outside (), [], {}, strings and templates
@@ -310,6 +310,15 @@ for (const sheet of ['styles.css', 'styles18.css'].filter(f => fs.existsSync('sr
     if (/(^|[;{\s])flex\s*:\s*1\s*[;}]/.test(line) || /min-width\s*:\s*0\b/.test(line)) R('squeeze', sheet, i, line);
     if (/height\s*:\s*\d+px/.test(line) && /overflow\s*:\s*hidden/.test(line)) R('cut', sheet, i, line); }); }
 console.log(`static checks (baseline ${baseArg}${base ? '' : ' NOT READ'}): ${hard.length} hard, ${review.length} to review`);
+/* 2.1 A1 / A14 / B17: the safety layer stays wired in — the main page goes through safeHTML, a data-bind path never walks into the
+   prototype, and every imported record goes through safeRecord (unsafe ids, prototype keys, outside images) */
+{ const need = [['views_shell.js', /root\.innerHTML = safeHTML\(`<a class="skip"/, 'the main page is put on screen without safeHTML'],
+    ['v190_care.js', /root\.innerHTML = safeHTML\(view19HTML\(\)\)/, 'the care page is put on screen without safeHTML'],
+    ['app.js', /function resolvePath[\s\S]{0,160}SAFE_BAD_KEYS\.has/, 'resolvePath no longer refuses __proto__ / constructor / prototype'],
+    ['app.js', /function normalizeProject\(p\)\{\s*safeDeep\(p\)/, 'normalizeProject no longer makes item ids safe'],
+    ['actions.js', /safeRecord\(p00, "p"[\s\S]*safeRecord\(x0, "n"[\s\S]*safeRecord\(x0, "pat"[\s\S]*safeRecord\(x0, "r"/, 'an import loop skips safeRecord']];
+  for (const [f, re, msg] of need) if (!re.test(src(f))) H('safe', `${f}: ${msg}`);
+  for (const f of codeFiles.filter(f => f.endsWith('.js'))) src(f).split('\n').forEach((line, i) => { if (/\son[a-z]+="/.test(line) && /<[a-z]/.test(line) && !/ok:safe/.test(line)) H('safe', `${f}:${i + 1} an inline event handler in markup (safeHTML removes it): use a listener`); }); }
 console.log(`  raw values: hard in ${codeFiles.filter(f => RAW_HARD.some(r => r.test(f))).length} files (RAW_HARD), ${rawKnown} known raw selector ids left for Wave 3 (RAW_KNOWN)` + (rawStale.length ? `; stale entries to delete: ${rawStale.join(' | ')}` : ''));
 if (hard.length){ console.log('HARD'); hard.slice(0, 60).forEach(x => console.log('  ' + x)); }
 if (review.length){ console.log('REVIEW (look at each; add // ok:<check> when it is fine)'); review.slice(0, 120).forEach(x => console.log('  ' + x)); }

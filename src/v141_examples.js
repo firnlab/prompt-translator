@@ -157,7 +157,7 @@ function exForget(p, id){
 }
 function loopCur(p){ const L = loopRead(p), ids = L.phase === "check" ? L.checkIds : L.ids; const list = ids.map(id => exById(p, id)).filter(Boolean); return {L, list, i: clamp(num(L.i, 0), 0, Math.max(0, list.length - 1))}; }
 function scrollToLoop(){ setTimeout(() => { const el = document.getElementById("loop"); const m = document.querySelector(".main"); if (el && m){ const d = el.getBoundingClientRect().top - m.getBoundingClientRect().top - 12; if (Math.abs(d) > 40) m.scrollTop += d; } }, 30); }
-function exMedia(e){ return arr(e.files).filter(f => f.type === "image").map(f => `<img class="exphoto" src="${esc(f.asset ? "/_blob/" + f.asset : f.data || f.thumb || "")}" alt="${esc(f.name)}" loading="lazy" onerror="if(this.dataset.t&&this.src!==this.dataset.t)this.src=this.dataset.t" data-t="${esc(f.thumb || "")}">`).join(""); }
+function exMedia(e){ return arr(e.files).filter(f => f.type === "image").map(f => `<img class="exphoto" src="${esc(f.asset ? "/_blob/" + f.asset : f.data || f.thumb || "")}" alt="${esc(f.name)}" loading="lazy" data-t="${esc(f.thumb || "")}">`).join(""); }   // ok:raw (data: or /_blob/ images; import clears outside links, 2.1 B17)
 /** one example, big, with the verdict control (used by the loop and the board's focus view) */
 function exCard(p, e, {reveal = false, keys = true} = {}){
   const why = `<label class="fld exwhy"><span>${esc(t(e.verdict === "bad" ? "goal.whybad" : e.verdict === "good" ? "goal.whygood" : "ex.whyany"))}</span>${bindInput("p:goal.examples.#" + e.id + ".why", e.why, {ph: t("goal.whyph")})}</label>`;

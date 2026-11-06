@@ -633,6 +633,17 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
 - Cause 101 (flows 1.4): the walk through a list ("1 of N", next, Back — the queue's titles, "Walk through", Finish's list) never
   showed on the pages: the pages' `goRef` opened the item's page through `pgOpen`, which clears `UI.nav`, and dropped the list. Now
   the list is kept. Check: e2e14 part 7.
+- Cause 102 (2.1 A1, review R1-1/R1-3/R1-5/R1-9): values from outside were trusted. A crafted backup (or AI output) could carry an id
+  with "/" (written over another project's restore point), "." (a data-bind path into `__proto__`), quotes or markup (an attribute
+  break-out with an event handler), or markup in a number field shown raw. Now: `safeDeep`/`safeRecord` give every unsafe item id a
+  fresh one and drop prototype keys at import and in `normalizeProject`; `resolvePath` refuses `__proto__`/`constructor`/`prototype`
+  and steps only into own properties; the main page and the care page go through `safeHTML` (handlers, script-like tags, script: and
+  non-image data: links removed; PT's own markup takes the fast path unchanged); the last raw selector ids use `CSS.escape`; the one
+  inline `onerror` became a listener. Checks: e2e210_safe H/I/P; static `[safe]`; planted bugs in check_the_checks.py.
+- Cause 103 (2.1 B17, review R1-10): imported notes and example images kept outside image links (a tracking pixel that tells another
+  site when the owner opens the note). Import now clears image fields that point to another site; inline data: images and /_blob/
+  stay. A first version also cleared every "src", which in PT is a source link: the export→import round trip caught it before
+  release; "src"/"data" are now cleared only on an image file. Checks: e2e210_safe I.imgs, I.imgkeep, R.projects; planted bug.
 - The release page of the version under test (flows 1.10 hands, flows 2.0 loop): the mock's GitHub had a fixed page for v1.10.0, so
   from 2.0.0 on "Check this version's release" read "no release yet". The mock now adds the page of `PT_VERSION` once the page's
   script has run (tests that need "not there yet" still delete it). No app change.

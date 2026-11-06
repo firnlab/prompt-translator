@@ -42,6 +42,11 @@ M = [
     ("a raw id in a selector (J16, R1-9)", "v200_modes.js", "append", APP.format(n=34, body='return document.querySelector(`[data-id="${x.id}"]`);'), "raw", True),
     ("a raw id in a selector built with + (J16, R1-9)", "v200_stage.js", "append", APP.format(n=35, body='return p.querySelector("#st-" + x.id);'), "raw", True),
     ("a raw value in an old file's new line (J16: review until Wave 3)", "views13.js", "append", APP.format(n=36, body='return `<span class="x" title="${x.why}">x</span>`;'), "raw", False),
+    # 2.1 (A1, A14, B17): the safety layer must stay wired in
+    ("the main page skips safeHTML (A1)", "views_shell.js", "sub", ('root.innerHTML = safeHTML(`<a class="skip"', 'root.innerHTML = (`<a class="skip"'), "safe", True),
+    ("resolvePath walks into __proto__ again (A1, R1-1)", "app.js", "sub", ('if (segs.some(s => SAFE_BAD_KEYS.has(s.replace(/^#/, "")))) return null;', ''), "safe", True),
+    ("an import loop takes notes as they come (A1, B17)", "actions.js", "sub", ('const x = safeRecord(x0, "n", {imgs: true});', 'const x = x0;'), "safe", True),
+    ("an inline onerror handler in markup (A1)", "v200_map.js", "append", APP.format(n=37, body='return `<img src="/_blob/a" onerror="x()">`;'), "safe", True),
     # review items: the person must look at them, so they must show up
     ("silent failure: empty catch",                    "views13.js", "append", APP.format(n=6, body="try{ x(); }catch(e){}"), "catch", False),
     ("AI answer without a shape check",                "views13.js", "append", APP.format(n=7, body='return runAI("k", "l", "prompt", {json: true});'), "validate", False),

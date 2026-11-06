@@ -833,7 +833,7 @@ Object.assign(ACTIONS, {
 ["m20-open", "m20-goto", "m20-f", "m20-more", "m20-ask", "m20-cancel", "m20-stop", "m20-rej", "m20-keepq", "g20-edit", "m20-go", "m20-repair"].forEach(a => ACT_NO.add(a));
 Object.assign(CHANGES, { "m20-sort": (el) => { const p = curP(), U = p && m20UI(p); if (!U) return; U.sort = oneOf(el.value, ["fit", "cheap", "work", "fast", "high"], "fit"); render(); } });
 FORMS["m20-ask"] = f => { const p = curP(); if (!p) return; const q = str((f.querySelector("#m20-q") || {}).value).trim(); if (!q){ toast(t("m20.chat.need"), "err"); return; } delete UI.qDraft["m20-q"]; m20Chip(p, "ask", q); render(); };
-FORMS["m20-keep"] = f => { const p = curP(); if (!p) return; const id = f.dataset.id, w = str((f.querySelector("#m20-keep-" + id) || {}).value).trim(); if (!w){ toast(t("m20.al.keepneed"), "err"); return; } m20AlertSet(p, id, "kept", {reason: w}); const U = m20UI(p); if (U) U.keep = null; touch(p); render(); };
+FORMS["m20-keep"] = f => { const p = curP(); if (!p) return; const id = f.dataset.id, w = str((f.querySelector(`#m20-keep-${CSS.escape(id)}`) || {}).value).trim(); if (!w){ toast(t("m20.al.keepneed"), "err"); return; } m20AlertSet(p, id, "kept", {reason: w}); const U = m20UI(p); if (U) U.keep = null; touch(p); render(); };
 FORMS["m20-take"] = f => { const p = curP(); if (!p) return; const id = f.dataset.id, M = m20Read(p), v = s => str((f.querySelector(s) || {}).value);
   const rejWhy = {}; for (const o of M.short.filter(x => x !== id)) rejWhy[o] = v("#m20-rw-" + o);
   const D = m20Take(p, id, {why: v("#m20-why"), trip: v("#m20-trip").split("\n"), higher: v("#m20-higher"), rejWhy}); if (!D) return;
