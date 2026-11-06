@@ -517,3 +517,11 @@ M8. Remove features that are never used — RECOMMEND: DEFER — was: C5-12
   Mac, Vercel Hobby non-commercial, Telegram blocked by the owner's 25 Oct rule); way-around search with step 0 Adopt and a usage
   cap; budget gate (every AI call a cost-named button while over budget). Structure: Claude's "Lead + roles" is only a proposal; the
   owner's own structure proposal has not been heard yet.
+
+## Owner decisions (6 Nov 2026 03:56)
+- Structure: the owner wants the full Scrum structure as PT's way of working (to be worked out in chat).
+- Relisting project: on the owner's command only, never on a schedule.
+- Ricardo e-mail: the owner writes and sends it himself (no draft by PT).
+- Managed Agents: allowed as a home for jobs without the owner's logins, on the included API credits, with a spend cap, after K3.
+- Tool data in GitHub: a tool may keep its data in its own private repository in the owner's account (owner's decision per tool).
+- Kinds and homes: the whole range, from free to paid to self-built and everything in between; PT shows all options with cost.
