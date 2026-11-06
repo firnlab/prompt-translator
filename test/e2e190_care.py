@@ -289,9 +289,11 @@ with sync_playwright() as pw:
     # an AI step you start: asked once a day, in the page
     pg.keyboard.press("Shift")
     ev(pg, "(() => { window.__r19 = undefined; runAI('t19m1', 'manual', '[[task:ask]] one', {json: true, validate: () => true}).then(r => { window.__r19 = r == null ? 'null' : 'ok'; }); })()")
-    pg.wait_for_selector(".care19-ask", timeout=5000); pg.wait_for_timeout(250)
-    check("an AI step you start above the ceiling asks first, in the page (no browser dialog)", ev(pg, "!!document.querySelector('.care19-ask [role=alertdialog]') && document.activeElement && document.activeElement.dataset.c19 === 'no'"))
-    pg.locator(".care19-ask [data-c19=no]").click(); pg.wait_for_function("window.__r19 !== undefined", timeout=5000)
+    # 2.1: a page that never asks (the planted bug) must fail this check, not crash the suite
+    try: pg.wait_for_selector(".care19-ask", timeout=5000); pg.wait_for_timeout(250); asked = True
+    except Exception: asked = False
+    check("an AI step you start above the ceiling asks first, in the page (no browser dialog)", asked and ev(pg, "!!document.querySelector('.care19-ask [role=alertdialog]') && document.activeElement && document.activeElement.dataset.c19 === 'no'"), "it ran without asking" if not asked else "")
+    if asked: pg.locator(".care19-ask [data-c19=no]").click(); pg.wait_for_function("window.__r19 !== undefined", timeout=5000)
     check("…Not now: it does not run, and nothing is remembered", ev(pg, "window.__r19") == "null" and not ev(pg, "!!WS.settings.aiCeiling.okDay") and not ev(pg, "!!document.querySelector('.care19-ask')"))
     pg.keyboard.press("Shift"); c1 = ev(pg, "(window.__calls || []).length")
     ev(pg, "(() => { window.__r19 = undefined; runAI('t19m2', 'manual', '[[task:ask]] two', {json: true, validate: () => true}).then(r => { window.__r19 = r == null ? 'null' : 'ok'; }); })()")

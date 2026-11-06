@@ -56,7 +56,12 @@ with sync_playwright() as pw:
         p.on("console", lambda m: errors.append("console(plain): " + m.text[:300]) if m.type == "error" else None)
         p.on("dialog", lambda d: (errors.append("native dialog: " + d.message[:100]), d.dismiss()))
         p.on("request", lambda r: reqs.append(r.url))
-        p.goto(DIST.as_uri()); p.wait_for_selector(".v19", timeout=20000); p.wait_for_timeout(200)
+        p.goto(DIST.as_uri())
+        # 2.1: a build that falls back to the editable local mode (the planted bug) must fail a check, not crash the suite
+        try: p.wait_for_selector(".v19", timeout=20000); p.wait_for_timeout(200)
+        except Exception:
+            check("PT outside claude.ai shows the read-only viewer, never the editable local mode", False, ev(p, "document.body.className + ' ' + (document.querySelector('.app, .lock, .ws-opt') ? 'editable app on screen' : 'nothing on screen')"))
+            print(f"ok: {len(oks)} failed: {len(fails)} page errors: {len(errors)}"); sys.exit(1)
         return c, p, reqs
 
     print("1 the built file in plain Chromium, no runtime")

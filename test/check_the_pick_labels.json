@@ -44,7 +44,265 @@
  "findings that instruct the AI reach the prompts": {
   "label": "R26 a finding that tries to instruct the AI is left out of every prompt"
  },
+ "a storage decision made before its Undo step opens splits into two steps": {
+  "label": "one decision line, one Undo step"
+ },
+ "a tool without a page gets the page build steps": {
+  "label": "no page"
+ },
+ "a weekly tool gets the daily watchdog": {
+  "label": "weekly"
+ },
+ "a pasted company record is treated as an ordinary design": {
+  "label": "a master record is recognised"
+ },
+ "an employee tool forgets its company's rules": {
+  "label": "an employee's prompt inherits the company rules, its role and wall"
+ },
+ "a web app in a repository is treated as a plain page": {
+  "label": "a web app with payments"
+ },
+ "a published media tool is treated as private": {
+  "label": "published or sold"
+ },
+ "a customers' phone app is treated as private": {
+  "label": "push for customers"
+ },
+ "the budget throttles the automatic steps again": {
+  "label": "the budget never throttles: automatic steps stay on at 50,000 %"
+ },
+ "a missing result pick is not noticed": {
+  "label": "gaps: with idea and measure decided, the result pick is missing"
+ },
+ "PT's drafts ask once per item again": {
+  "label": "three PT-drafted criteria"
+ },
+ "what was recorded is not shown": {
+  "label": "own words: the card shows PT reading them with the text; afterwards the strip shows what was recorde"
+ },
  "the protections are approved in one click": {
   "label": "R21 the designed protections are one item to check, never all in one click"
+ },
+ "the Bauplan does nothing again (the Design page loses the map)": {
+  "label": "1.8: the Bauplan is folded by default, with one button to open it"
+ },
+ "kit decisions come all at once before the design": {
+  "label": "a new project without a design has no kit decision (its home is a page)"
+ },
+ "a stale fact is not flagged": {
+  "label": "a fact past its type's budget is flagged, a fresh one is not"
+ },
+ "a part that reads and acts is not flagged": {
+  "label": "the security card flags a part that reads outside content and acts outward"
+ },
+ "the mock runs unsandboxed": {
+  "label": "the mock renders in a sandboxed phone frame with its screens named"
+ },
+ "an undefended attack never reaches the queue": {
+  "label": "the undefended cases are proposals in the one queue (should, you)"
+ },
+ "Finish hides what it changed": {
+  "label": "the done screen lists the change with before→after"
+ },
+ "a private tool's check row is applied without a tap": {
+  "label": "…and every row is open: PT neither applies nor skips one by itself"
+ },
+ "a tool that acts outward runs its tests only 3 times": {
+  "label": "the tests row names 5 runs for a tool that acts outward and that all must pass"
+ },
+ "a fix proposed twice is tried again": {
+  "label": "…goes back to you with before"
+ },
+ "the fifth round leaves no residual risk": {
+  "label": "…and the fifth round writes the residual risk for you"
+ },
+ "a price past its budget is still used (one 90-day rule again)": {
+  "label": "prices 20 days, platform 45, law and policy 180, everything else 90"
+ },
+ "your call first shows the ★ before your call": {
+  "label": "before your call: no ★ on the card, no ★ in the lists, the card asks for your answer first"
+ },
+ "a first version needs the measure again": {
+  "label": "readiness: idea · result · no hard pick open · platform checked (no measure)"
+ },
+ "the picks come before the mock": {
+  "label": "questions first: for whom, what result, how measured, before any research (no AI call, no job)"
+ },
+ "a technical risk skips the quick try": {
+  "label": "a technical risk runs a quick try before the mock: a background job, at most 2 hours, that only trie"
+ },
+ "a round makes three cards again": {
+  "label": "3 a round asks for five cards"
+ },
+ "the four routes show before the price is read": {
+  "label": "the four routes wait for the price (none shown yet); the deck says the price comes first"
+ },
+ "the Bauplan opens by default": {
+  "label": "the Design page shows the Bauplan folded: a header and one button, no parts drawn"
+ },
+ "the cone is not the default start for a new tool": {
+  "label": "the start switch: kinds of tool first (chosen by default for a new tool), questions first, fast"
+ },
+ "the gallery shows kinds the inference never named (decoys)": {
+  "label": "no decoy cards: exactly the kinds the inference named, in its order"
+ },
+ "an answer cuts nothing in the gallery": {
+  "label": "an answer cuts what does not fit: the cut cards fold away (¼ s)"
+ },
+ "who it is for is not asked first": {
+  "label": "who it is for comes first: me / others / customers / me and others / not sure"
+ },
+ "cut cards vanish without a way back": {
+  "label": "…into “Removed (4)”; the gallery and the count shrink visibly"
+ },
+ "the cone shows PT's ★ before the cards were looked at": {
+  "label": "PT's ★ stays hidden while you have not looked at every card (no ★ card, the line says why, a tap sho"
+ },
+ "pick then verify asks every question": {
+  "label": "…then only the questions that could rule it out (fewer than all of them)"
+ },
+ "a 1.7 tool's earlier decision is replaced without a tap": {
+  "label": "an answer that differs from an earlier decision changes nothing by itself: keep or replace?"
+ },
+ "a cone answer is not a decision row": {
+  "label": "every answer is a decision row with its own id (U.<stage>.<n>), hard (who sees it), waiting for you"
+ },
+ "the kind's outward action does not reach the checks": {
+  "label": "a kind that acts outward makes the tests run 5 times even before its text says so"
+ },
+ "a scheduled task is created with notifications but without a new session per run": {
+  "label": "…each run in its own new session, notifications off (the service takes notifications only so; cause "
+ },
+ "any refusal of a new scheduled task is tried again": {
+  "label": "any other refusal: one try only, the message is shown, the switch stays off"
+ },
+ "a scheduled task created from PT gets no cloud environment": {
+  "label": "one click creates one scheduled task: Sundays 12:41 Zürich, asked for by you"
+ },
+ "a self-hosted pool is taken before a cloud environment": {
+  "label": "…the service asks for a cloud environment (a page has no session): PT takes a cloud one from its lis"
+ },
+ "the next tool starts after one green live check": {
+  "label": "two greens in a row: [ok, ok] green · [ok] red · [ok, fail] red · [fail, ok, ok] green · not verifie"
+ },
+ "the kit run goes on after a red": {
+  "label": "B's red stops the run: A done, B needs you, C waits"
+ },
+ "another person's tool is republished by the kit run": {
+  "label": "Health › My tools: 'n of your tools are behind kit 1.8.0' (A, B, C and D are yours and behind)"
+ },
+ "the kit run starts without its put-live card": {
+  "label": "the button opens one put-live card (nothing started yet)"
+ },
+ "a stored kit run does not go on when PT opens again": {
+  "label": "a stored run goes on after the next open: C (cut off before its job was made) starts once and gets d"
+ },
+ "a preview copy runs the kit update": {
+  "label": "…neither the action nor a direct start makes a run or a job"
+ },
+ "Cancel lets the waiting tools of the kit run start": {
+  "label": "…what is done stays done: A on kit 1.8.0; B and C never started (no job)"
+ },
+ "a full export is not recorded (the export reminder never goes away)": {
+  "label": "a full export that was handed over is recorded with its time (workspace level)"
+ },
+ "a failed download counts as a saved export": {
+  "label": "a download that fails records nothing; the line stays"
+ },
+ "the AI ceiling is proposed before February 2027": {
+  "label": "no proposal before 1 Feb 2027 (the note of 31 Jan has 90 days of counts too)"
+ },
+ "the AI ceiling is proposed with fewer than 60 days of counts": {
+  "label": "…with fewer than 60 days of counts it proposes no ceiling yet"
+ },
+ "automatic AI work goes on above the ceiling": {
+  "label": "this month's counted AI calls reach the ceiling: autoOK() is false"
+ },
+ "push on leaves the old Sunday task running": {
+  "label": "…the push task is paused, never deleted"
+ },
+ "the push task runs without the noteworthy-only rule": {
+  "label": "…its prompt has the noteworthy-only rule (failing live tool / open attack; routine runs say nothing "
+ },
+ "the key renewal shows before 4 Oct 2027": {
+  "label": "the Sunday before 4 Oct 2027: no key line"
+ },
+ "the key renewal leaves the build repository out of the pt-private key (cause 76)": {
+  "label": "…each key goes into prompt-translator and then into firnlab/tools (cause 76)"
+ },
+ "the build repository's key page ignores Settings › General (cause 76)": {
+  "label": "…another build repository in Settings › General: its name and its settings page"
+ },
+ "PT's hands may click (the guard lets a click through)": {
+  "label": "the guard refuses a click, typing, a key, a drag, a form, other tools and other sites"
+ },
+ "PT's hands go to any site": {
+  "label": "the guard refuses a click, typing, a key, a drag, a form, other tools and other sites"
+ },
+ "a key on the page is kept and shown": {
+  "label": "a key on the page: the step stops with its own line"
+ },
+ "PT reads GitHub once, before its list is there": {
+  "label": "…reads again while GitHub fills the list (two waits of 2 s, then found)"
+ },
+ "outside the desktop app PT shows only a generic error": {
+  "label": "server_not_connected: its own line (in the result, not only the section's note)"
+ },
+ "a closed tab ends the check instead of opening a new one": {
+  "label": "a closed tab: PT opens a new one and the check works"
+ },
+ "a label is taken for the pull request's title": {
+  "label": "…real list shape: the title, not a label, next to #21"
+ },
+ "a key date after 'Never used •' is not read": {
+  "label": "…real page shape: a date after 'Never used •' is read"
+ },
+ "the key check stops at the header, before the list": {
+  "label": "…waits past the header for the list, then reads both keys"
+ },
+ "another login may use the owner's browser": {
+  "label": "another login: no section, and the browser is refused"
+ },
+ "the server-backed key is recorded without a monthly limit": {
+  "label": "…without a limit nothing is recorded and it says why"
+ },
+ "the viewer outside claude.ai writes to the browser's storage": {
+  "label": "nothing was written: no browser storage, cookie, IndexedDB, cache, fetch, XHR, beacon or socket"
+ },
+ "a shortcut is offered for a step that changes something": {
+  "label": "steps that only look and move around are on the allow-list; changing or publishing ones are not"
+ },
+ "a sequence of only moving around is proposed": {
+  "label": "a sequence made only of moving around is ignored"
+ },
+ "a declined workflow comes back before its count doubles": {
+  "label": "a 'No' comes back only once its count has doubled"
+ },
+ "the self-scan runs before Saturday 22:00": {
+  "label": "Saturday 21:59 Zürich belongs to the week before; 22:00 starts this week's scan"
+ },
+ "a proposal becomes a shortcut by itself": {
+  "label": "all steps on the allow-list: Yes, No, Later"
+ },
+ "a risky change to a live tool goes ahead without the interview": {
+  "label": "a change to a shared live tool waits: no update prepared, no AI called for it"
+ },
+ "a small private change waits for the interview": {
+  "label": "a small private change (one fix) is prepared at once — no interview"
+ },
+ "a skipped interview area leaves no residual-risk row": {
+  "label": "a skipped area is a residual-risk row (Design, Edge cases), and a question left empty too (Product, "
+ },
+ "interview answers are not decision rows": {
+  "label": "every answer is a decision row asserted by you (3 in Product, 1 in Practical)"
+ },
+ "what changed is listed under the wrong version": {
+  "label": "v1.1 lists what changed since v1.0 in plain words: changed a"
+ },
+ "a private tool's independent check is on without a tap": {
+  "label": "…and Undo opens it again (the gate is off again)"
+ },
+ "the judge gets the builder's report before it commits": {
+  "label": "…its inputs: the acceptance lines, what was built, the brief; the builder's report only as a separat"
  }
 }
