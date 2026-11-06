@@ -5,6 +5,14 @@ notes PT shows in "What's new" (`CHANGELOG` in `src/views_run.js`, the `cl.<vers
 (published date and release notes). Do not edit it by hand: `python3 tools/changelog.py` writes it, `--check` says when it is stale.
 Versions before 1.8 were published from the private archive repository (see RELEASES-ARCHIVE.md).
 
+## 2.1.0 — 2026-11-06
+
+### Fixed
+
+- A backup file from somewhere else could carry hidden code or names that overwrite a restore point; imports now get safe names and the page removes anything that could run
+- Imported notes and example pictures could load images from other sites (which tells those sites when you look); those links are now removed at import, your own pictures stay
+- Links from outside can no longer run code
+
 ## 2.0.0 — 2026-11-04
 
 Release notes: 2.0.0: two faces of one project, Chat with structure and Pick (Steps, Blueprint, Journey, Swimlanes and Express removed; their content stays readable). The solution map: goal first, every route from simple to frontier including the not-yet-possible ones, decide, then details; coverage rounds and a red-team round. Each project's rules never cut from its prompt; nothing crosses between projects. PT's hands per project with a site list and a contract card, stopping before every final button; typing into forms is off (the platform does not grant form_input from a cloud publish). Morning check, prompt tests, Improve-PT loop, metrics kept in the workspace, Setup guides for the GitHub App, connector and the helpers Filesystem, Git, Fetch and Blender.

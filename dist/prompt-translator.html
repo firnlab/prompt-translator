@@ -15653,16 +15653,20 @@ function refEl(ref){
   for (const sel of [`[data-anchor~="${CSS.escape(ref)}"]`, `.irow [data-ref="${CSS.escape(ref)}"]`, `.item[data-ref="${CSS.escape(ref)}"]`]){ const e = [...host.querySelectorAll(sel)].find(vis); if (e) return e; }
   return null;
 }
+/* 2.1 C1 (known 1): every item the queue points to has a landing — the side panel shows it — so no jump ends in the "top of this step" toast alone */
+function navInQueue(p, r){ try{ return !!r && queueOf(p).some(x => x.ref === r); }catch(e){ return false; } }
 function navFallback(ref){
-  const p = curP(); UI.navTry = (UI.navTry || 0) + 1;
+  ref = str(ref); const p = curP(); UI.navTry = (UI.navTry || 0) + 1;
+  // 2.1 C1: a special anchor ("#loop", "#trace14" …) that the faces have no element for falls back as its item (loop, trace …)
+  if (ref.startsWith("#")){ const k = Object.keys(SPECIAL_ANCHOR).find(k => SPECIAL_ANCHOR[k][1] === ref.slice(1)); if (k && p && navInQueue(p, k)) ref = k; }
   // 1. the current view has no place for it: open the full step (Back returns to the view you were in)
   // 1.5.0: in Pick, an item the side panel can show opens there (you stay in Pick)
-  if (UI.navTry === 1 && p && MODES.includes(projMode(p))){ const r0 = ref.startsWith("#") ? null : ref; if (r0 && (itemExists(p, r0) || /^(ns|arch:choice|intake:|und:|fs:|pq:|crit:|engine:|pick:|proof:|audience)/.test(r0))){ UI.navRef = null; UI.navTry = 0; inspOpen(r0, "details"); return; } }
+  if (UI.navTry === 1 && p && MODES.includes(projMode(p))){ const r0 = ref.startsWith("#") ? null : ref; if (r0 && (itemExists(p, r0) || /^(ns|arch:choice|intake:|und:|fs:|pq:|crit:|engine:|pick:|proof:|audience)/.test(r0) || navInQueue(p, r0))){ UI.navRef = null; UI.navTry = 0; inspOpen(r0, "details"); return; } }
   // 2.0: there is no Steps view to jump to any more; the pages (both faces) and the side panel show every item
   UI.navRef = null; UI.navTry = 0;
   // 2. no place in the step either: the inspector shows it, with its details and tools
   const r = ref.startsWith("#") ? null : ref;
-  if (r && p && (itemExists(p, r) || /^(ns|arch:choice|intake:|und:|fs:|pq:|crit:|engine:|pick:|proof:)/.test(r))){ inspOpen(r, "details"); return; }
+  if (r && p && (itemExists(p, r) || /^(ns|arch:choice|intake:|und:|fs:|pq:|crit:|engine:|pick:|proof:)/.test(r) || navInQueue(p, r))){ inspOpen(r, "details"); return; }
   // 3. a whole section (review, test, build …): the step's top is the place
   const m = document.querySelector(".main"); if (m) m.scrollTo({top: 0, behavior: "smooth"});
   toast(t("nav.attop"), "");
@@ -16600,7 +16604,7 @@ function viewInspector(){
 }
 function inspRefNow(p){ const r = UI.inspRef; if (!r || !p) return null;
   // every item the queue can point to can be shown here: list items, criteria, concerns, open questions, gates
-  const ok = itemExists(p, r) || /^(ns|arch:choice|intake:|und:)/.test(r) || (r.startsWith("fs:") && activeForesight(p).some(f => f.id === r.slice(3))) || (typeof itemByRef === "function" && !!itemByRef(p, r)) || queueOf(p).some(x => x.ref === r);
+  const ok = itemExists(p, r) || /^(ns|arch:choice|intake:|und:)/.test(r) || (r.startsWith("fs:") && activeForesight(p).some(f => f.id === r.slice(3))) || (typeof itemByRef === "function" && !!itemByRef(p, r)) || queueOf(p).some(x => x.ref === r) || (typeof SPECIAL_ANCHOR === "object" && !!SPECIAL_ANCHOR[r] && !!SPECIAL_ANCHOR[r][0]);   // 2.1 C1: a section PT knows (scan, trace, audience …) has a landing here too
   return ok ? r : null; }
 function inspPick(p){
   const q = queueOf(p).filter(x => x.ph === p.focus.ph && /:/.test(x.ref)).slice(0, 8);
@@ -30005,8 +30009,8 @@ function safeRecord(x, prefix, opts){
 /** links PT puts in a page: https only (http for nothing, never script: or data:) */
 function safeUrl(u){ const s = String(u ?? "").trim(); return /^https:\/\//i.test(s) ? s : ""; }
 
-const SAFE_HTML_TRIGGER = /[\s\/"']on[a-z]+\s*=|script\s*(:|&)|<\s*\/?\s*(script|iframe|frame|object|embed|base|meta|link|style|template|noscript)\b|(href|src|action|formaction|xlink:href)\s*=\s*["']?[\s\x00-\x1f]*data\s*:(?!image\/(png|jpe?g|gif|webp)[;,])/i;
-const SAFE_HTML_DROP = "script,iframe,frame,frameset,object,embed,base,meta,link,style,template,noscript";
+const SAFE_HTML_TRIGGER = /[\s\/"']on[a-z]+\s*=|script\s*(:|&)|<\s*\/?\s*(script|frame|object|embed|base|meta|link|style|template|noscript)\b|<\s*iframe\b(?![^>]*\bsandbox="allow-scripts")|(href|src|action|formaction|xlink:href)\s*=\s*["']?[\s\x00-\x1f]*data\s*:(?!image\/(png|jpe?g|gif|webp)[;,])/i;
+const SAFE_HTML_DROP = "script,frame,frameset,object,embed,base,meta,link,style,template,noscript";
 /** clean a page's HTML before it goes on screen; PT's own markup takes the fast path and comes back unchanged */
 function safeHTML(html){
   const s = String(html ?? "");
@@ -30015,6 +30019,8 @@ function safeHTML(html){
     const tpl = document.createElement("template"); tpl.innerHTML = s;   // ok:raw (a template is inert: nothing runs, nothing loads)
     const f = tpl.content;
     for (const el of f.querySelectorAll(SAFE_HTML_DROP)) el.remove();
+    // the mock phone is PT's own sandboxed frame (scripts only, no same origin, srcdoc, no src): it stays; any other frame goes
+    for (const el of f.querySelectorAll("iframe")) if (el.getAttribute("sandbox") !== "allow-scripts" || el.hasAttribute("src")) el.remove();
     for (const el of f.querySelectorAll("*")){
       for (const a of Array.from(el.attributes)){
         const nm = a.name.toLowerCase();

@@ -40,8 +40,8 @@ function safeRecord(x, prefix, opts){
 /** links PT puts in a page: https only (http for nothing, never script: or data:) */
 function safeUrl(u){ const s = String(u ?? "").trim(); return /^https:\/\//i.test(s) ? s : ""; }
 
-const SAFE_HTML_TRIGGER = /[\s\/"']on[a-z]+\s*=|script\s*(:|&)|<\s*\/?\s*(script|iframe|frame|object|embed|base|meta|link|style|template|noscript)\b|(href|src|action|formaction|xlink:href)\s*=\s*["']?[\s\x00-\x1f]*data\s*:(?!image\/(png|jpe?g|gif|webp)[;,])/i;
-const SAFE_HTML_DROP = "script,iframe,frame,frameset,object,embed,base,meta,link,style,template,noscript";
+const SAFE_HTML_TRIGGER = /[\s\/"']on[a-z]+\s*=|script\s*(:|&)|<\s*\/?\s*(script|frame|object|embed|base|meta|link|style|template|noscript)\b|<\s*iframe\b(?![^>]*\bsandbox="allow-scripts")|(href|src|action|formaction|xlink:href)\s*=\s*["']?[\s\x00-\x1f]*data\s*:(?!image\/(png|jpe?g|gif|webp)[;,])/i;
+const SAFE_HTML_DROP = "script,frame,frameset,object,embed,base,meta,link,style,template,noscript";
 /** clean a page's HTML before it goes on screen; PT's own markup takes the fast path and comes back unchanged */
 function safeHTML(html){
   const s = String(html ?? "");
@@ -50,6 +50,8 @@ function safeHTML(html){
     const tpl = document.createElement("template"); tpl.innerHTML = s;   // ok:raw (a template is inert: nothing runs, nothing loads)
     const f = tpl.content;
     for (const el of f.querySelectorAll(SAFE_HTML_DROP)) el.remove();
+    // the mock phone is PT's own sandboxed frame (scripts only, no same origin, srcdoc, no src): it stays; any other frame goes
+    for (const el of f.querySelectorAll("iframe")) if (el.getAttribute("sandbox") !== "allow-scripts" || el.hasAttribute("src")) el.remove();
     for (const el of f.querySelectorAll("*")){
       for (const a of Array.from(el.attributes)){
         const nm = a.name.toLowerCase();

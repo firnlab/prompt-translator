@@ -87,7 +87,7 @@ def mutate(pg):
 
 _check0 = check
 def check(name, cond, info=""):
-    _check0(name, cond, info); print(("ok    " if cond else "FAIL  ") + name + ("" if cond else "  → " + str(info)[:600]), flush=True)
+    _check0(name, cond, info); print(("ok    " if cond else "FAIL  ") + name + ("" if cond else "  → " + str(info)[:int(os.environ.get("HUNT_INFO", 600))]), flush=True)
     if MUT and not cond and name.split(" ", 1)[0] == MUT:   # J4: the planted bug was caught, nothing else to run
         print("ok:", len(oks), "failed:", len(fails), "page errors:", len(errors), flush=True); sys.exit(1)
 ROOTP = pathlib.Path(__file__).resolve().parent.parent
@@ -341,9 +341,8 @@ with sync_playwright() as pw:
                         if MUT: break
                 if MUT and go_bad: break
             if MUT and go_bad: break
-        # EXPECTED RED until PLAN-2.1 C1 (the dead jump targets, known 1) is built: with the toast no longer a landing this check
-        # shows the dead jumps it used to count as landings. Never weaken it to green; C1 makes it green.
-        check("14 go-to: every kind of open item lands visibly in both faces", not go_bad, go_bad[:6])
+        # 2.1 C1 (known 1) built: a queue item or a known section the faces have no element for lands in the side panel. Never weaken.
+        check("14 go-to: every kind of open item lands visibly in both faces", not go_bad, go_bad[:40])
     if on("15"):
         here_bad = []
         for ph in PHASES:   # 2.0: the stage strip (both faces) marks exactly the stage the project is at

@@ -640,6 +640,11 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   and steps only into own properties; the main page and the care page go through `safeHTML` (handlers, script-like tags, script: and
   non-image data: links removed; PT's own markup takes the fast path unchanged); the last raw selector ids use `CSS.escape`; the one
   inline `onerror` became a listener. Checks: e2e210_safe H/I/P; static `[safe]`; planted bugs in check_the_checks.py.
+- Cause 104 (2.1 C1, the owner's report #1, known 1): a jump to an item the two faces have no element for (loop, scan, trace,
+  audience, the kit pages, a candidate test, an early check) ended in the "This is the place for it: the top of this step" toast and
+  nothing shown — a dead jump. hunt 14 used to count that toast as a landing (J2 made it honest, red). Now `navFallback` maps a
+  special anchor back to its item, any item in the queue opens in the side panel, and the side panel accepts the sections PT knows.
+  Check: hunt 14 (both faces, every kind); planted bug hunt.py "14".
 - Cause 103 (2.1 B17, review R1-10): imported notes and example images kept outside image links (a tracking pixel that tells another
   site when the owner opens the note). Import now clears image fields that point to another site; inline data: images and /_blob/
   stay. A first version also cleared every "src", which in PT is a source link: the export→import round trip caught it before
