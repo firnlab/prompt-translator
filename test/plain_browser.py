@@ -12,8 +12,7 @@ languages (no raw keys, German without ß); 390 px without sideways scroll; no p
 import json, sys, pathlib, re, os
 BK = sys.argv[1] if len(sys.argv) > 1 else "work/backup-141"
 sys.argv = [sys.argv[0], BK]
-__file__ = str(pathlib.Path(__file__).resolve().parent / "e2e14.py")
-exec(open(__file__).read().split("with sync_playwright() as pw:")[0])
+from harness import *   # 2.1 (J21): the shared setup as a module (was: exec of the first half of e2e14.py)
 _check0 = check
 def check(name, cond, info=""):
     _check0(name, cond, info); print(("ok    " if cond else "FAIL  ") + name + ("" if cond else "  → " + str(info)[:400]), flush=True)

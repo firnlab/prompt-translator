@@ -1,10 +1,23 @@
 // Static checks for the bug classes found in the 1.4.1 bug hunt. Fast (no browser). Run before every release:
-//   node test/static_checks.js [baseline-src-dir]      (baseline = the sources of the release before, e.g. src_v140_backup)
+//   node test/static_checks.js [baseline]      (baseline = the sources of the release before: a folder such as src_v180_backup, or a tag such as v2.0.0)
 // Hard checks fail the run (exit 1); "review" items are listed for a person to look at (only in files changed since the baseline).
 // A line can opt out of a review check with a trailing comment:  // ok:<check>  (for example  // ok:trunc  because it is a label).
-const fs = require('fs'), vm = require('vm'), path = require('path');
-const order = require('child_process').execSync("python3 -c \"import re;s=open('build.py').read();print(' '.join(re.search(r'order = \\[(.*?)\\]', s, re.S).group(1).replace('\\\"','').replace(',',' ').split()))\"").toString().trim().split(/\s+/);
-const base = process.argv[2] || (fs.readdirSync('.').filter(d => /^src_v\d+_backup$/.test(d)).sort((a, b) => +b.match(/\d+/)[0] - +a.match(/\d+/)[0])[0]);
+const fs = require('fs'), vm = require('vm'), path = require('path'), os = require('os'), cp = require('child_process');
+const order = cp.execSync("python3 -c \"import re;s=open('build.py').read();print(' '.join(re.search(r'order = \\[(.*?)\\]', s, re.S).group(1).replace('\\\"','').replace(',',' ').split()))\"").toString().trim().split(/\s+/);
+// 2.1 (J15): the baseline is NAMED here. Until 2.0 it was "the newest src_v*_backup folder", which stayed src_v180_backup for nine releases,
+// so the "function removed while a caller is left" check (cause 99) could not see any function added in 1.9, 1.10 or 2.0.
+// After each release set this to that release's tag (RELEASE-CHECKS post-release step 1); no new backup folder is needed.
+const BASELINE_TAG = 'v2.0.0';
+const baseArg = process.argv[2] || BASELINE_TAG, baseFail = [];
+let base = baseArg;
+if (!fs.existsSync(baseArg)){
+  base = null;
+  if (!/^v\d+\.\d+\.\d+$/.test(baseArg)) baseFail.push(`baseline "${baseArg}" is neither a folder nor a release tag`);
+  else try{ const d = fs.mkdtempSync(path.join(os.tmpdir(), 'pt-base-'));
+    process.on('exit', () => { try{ fs.rmSync(d, {recursive: true, force: true}); }catch(e){ /* a temp folder left behind is harmless */ } });
+    cp.execSync(`git archive ${baseArg} src | tar -x -C "${d}"`, {stdio: ['ignore', 'ignore', 'pipe']});
+    if (fs.existsSync(path.join(d, 'src'))) base = path.join(d, 'src'); else baseFail.push(`tag ${baseArg} has no src/`); }
+  catch(e){ baseFail.push(`cannot read tag ${baseArg} (a shallow clone without tags? use fetch-depth: 0): ${String(e.stderr || e.message).trim().slice(0, 140)}`); } }
 const strFiles = order.filter(f => /^(knowledge|strings)/.test(f)), codeFiles = order.filter(f => !/^(knowledge|strings)/.test(f));
 const ctx = {}; vm.createContext(ctx); vm.runInContext(strFiles.map(f => fs.readFileSync('src/' + f, 'utf8')).join('\n') + '\n;this.STR=STR;', ctx);
 const STR = ctx.STR, src = f => fs.readFileSync('src/' + f, 'utf8');
@@ -14,7 +27,7 @@ const isNew = k => JSON.stringify(OLD[k]) !== JSON.stringify(STR[k]);
 const DU_OK = new Set(["pc.numberhint"]);   // "Sie" here means "it" (die Zahl), not formal address
 const code = codeFiles.map(src).join('\n');
 const changed = f => { const b = base && path.join(base, f); return !b || !fs.existsSync(b) || fs.readFileSync(b, 'utf8') !== src(f); };
-const hard = [], review = [];
+const hard = baseFail.map(x => '[baseline] ' + x), review = [];
 // 0. every source file parses on its own, and the whole script parses (cause 44: one stray quote or comment breaks the app while the build still succeeds)
 for (const f of order.filter(f => f.endsWith('.js'))){ try{ new vm.Script(src(f), {filename: f}); }catch(e){ hard.push(`[parse] ${f}: ${String(e.message).slice(0, 160)}`); } }
 try{ new vm.Script(order.filter(f => f.endsWith('.js')).map(src).join('\n;\n'), {filename: 'all'}); }catch(e){ hard.push(`[parse] the joined script: ${String(e.message).slice(0, 160)}`); }
@@ -48,8 +61,58 @@ if (base && fs.existsSync(base)){
   const baseCode = fs.readdirSync(base).filter(f => f.endsWith('.js')).map(f => fs.readFileSync(path.join(base, f), 'utf8')).join('\n');
   const defs = c => new Set([...c.matchAll(/(?:^|[^A-Za-z0-9_$.])(?:async\s+)?function\s*\*?\s*([A-Za-z_$][A-Za-z0-9_$]*)\s*\(|(?:^|[^A-Za-z0-9_$.])(?:const|let|var)\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*=/g)].map(m => m[1] || m[2]));
   const now = defs(code);
-  for (const n of defs(baseCode)) if (n.length > 3 && !now.has(n) && new RegExp('(?:^|[^A-Za-z0-9_$.\'"])' + n.replace(/\$/g, '\\$') + '\\s*\\(').test(code)) H('calls', 'calls a function that is gone since ' + base + ': ' + n);
+  for (const n of defs(baseCode)) if (n.length > 3 && !now.has(n) && new RegExp('(?:^|[^A-Za-z0-9_$.\'"])' + n.replace(/\$/g, '\\$') + '\\s*\\(').test(code)) H('calls', 'calls a function that is gone since ' + baseArg + ': ' + n);
 }
+/* 3-nowhere. 2.1 (J15, R7-2): a call to a function that nothing in the CURRENT code defines, whatever the baseline holds (a function added and
+   removed between two releases, or renamed, is a page error the moment its caller runs). Comments, strings and regex literals are blanked first;
+   a name counts as defined when it is declared (function, class, const/let/var, destructuring), a parameter, or assigned somewhere.
+   Browser built-ins are listed in GLOBALS; a call guarded by  typeof NAME === "function"  is a deliberate optional call. */
+const stripJS = s => {   // blank comments, string and template text and regex literals; keep the code inside template ${ }
+  let o = '', i = 0; const n = s.length, depth = [];
+  const kwBefore = /(?:^|[^\w$])(return|typeof|case|do|else|in|of|void|delete|throw|new|yield|await)$/;
+  const text = () => { while (i < n){ const c = s[i];
+      if (c === '\\'){ o += '  '; i += 2; continue; }
+      if (c === '`'){ o += '`'; i++; return; }
+      if (c === '$' && s[i + 1] === '{'){ o += '${'; i += 2; depth.push(1); return; }
+      o += c === '\n' ? '\n' : ' '; i++; } };
+  while (i < n){ const c = s[i], d = s[i + 1];
+    if (c === '/' && d === '/'){ while (i < n && s[i] !== '\n'){ o += ' '; i++; } continue; }
+    if (c === '/' && d === '*'){ o += '  '; i += 2; while (i < n && !(s[i] === '*' && s[i + 1] === '/')){ o += s[i] === '\n' ? '\n' : ' '; i++; } o += '  '; i += 2; continue; }
+    if (c === '"' || c === "'"){ o += c; i++; while (i < n && s[i] !== c && s[i] !== '\n'){ if (s[i] === '\\'){ o += ' '; i++; } o += ' '; i++; } o += c; i++; continue; }
+    if (c === '`'){ o += c; i++; text(); continue; }
+    if (c === '/'){ let k = o.length - 1; while (k >= 0 && /\s/.test(o[k])) k--; const before = o.slice(Math.max(0, k - 8), k + 1), lc = before.slice(-1);
+      if (!lc || '(,=:[!&|?{};+-*%<>~^'.includes(lc) || kwBefore.test(before)){ o += '/'; i++; let cls = false;
+        while (i < n && s[i] !== '\n'){ if (s[i] === '\\'){ o += '  '; i += 2; continue; } if (s[i] === '[') cls = true; else if (s[i] === ']') cls = false; else if (s[i] === '/' && !cls) break; o += ' '; i++; }
+        o += '/'; i++; while (i < n && /[a-z]/.test(s[i])){ o += s[i]; i++; } continue; } }
+    if (depth.length && c === '{') depth[depth.length - 1]++;
+    if (depth.length && c === '}' && --depth[depth.length - 1] === 0){ depth.pop(); o += '}'; i++; text(); continue; }
+    o += c; i++; }
+  return o; };
+{ const GLOBALS = new Set(('AbortController Array ArrayBuffer Audio BigInt Blob Boolean BroadcastChannel CustomEvent DataView Date DOMParser Error Event File FileReader ' +
+    'Float32Array Float64Array FormData Function Headers Image Int32Array IntersectionObserver KeyboardEvent Map MouseEvent MutationObserver Notification Number Object ' +
+    'Option Promise Proxy RangeError RegExp Request ResizeObserver Response Set String Symbol SyntaxError TextDecoder TextEncoder TypeError URL URLSearchParams ' +
+    'Uint16Array Uint32Array Uint8Array Uint8ClampedArray WeakMap WeakRef WeakSet Worker alert atob btoa cancelAnimationFrame clearInterval clearTimeout confirm ' +
+    'decodeURI decodeURIComponent encodeURI encodeURIComponent fetch getComputedStyle isFinite isNaN matchMedia parseFloat parseInt prompt queueMicrotask ' +
+    'requestAnimationFrame requestIdleCallback setInterval setTimeout structuredClone').split(' '));
+  const KW = new Set('if for while switch catch return typeof function do else new delete void in of instanceof await async yield super import export with case throw'.split(' '));
+  const ID = '[A-Za-z_$][\\w$]*', parts = [], starts = []; let at = 0;
+  for (const f of codeFiles.filter(f => f.endsWith('.js'))){ const s = stripJS(src(f)) + '\n;\n'; parts.push(s); starts.push([at, f]); at += s.length; }
+  const S = parts.join(''), def = new Set(GLOBALS), addAll = s => { for (const m of s.matchAll(new RegExp(ID, 'g'))) def.add(m[0]); };
+  for (const m of S.matchAll(new RegExp(`\\b(?:function\\s*\\*?|class|const|let|var)\\s+(${ID})`, 'g'))) def.add(m[1]);
+  for (const m of S.matchAll(/\b(?:const|let|var)\s+([{[][^=]*?[}\]])\s*=/g)) addAll(m[1]);
+  for (const m of S.matchAll(new RegExp(`(?:^|[^\\w$.])(${ID})\\s*=(?![=>])`, 'gm'))) def.add(m[1]);
+  for (const m of S.matchAll(new RegExp(`(${ID})\\s*=>`, 'g'))) def.add(m[1]);
+  for (const m of S.matchAll(/\(([^()]*(?:\([^()]*\)[^()]*)*)\)\s*=>/g)) addAll(m[1]);
+  for (const m of S.matchAll(/\bfunction\b\s*\*?\s*[\w$]*\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g)) addAll(m[1]);
+  for (const m of S.matchAll(new RegExp(`(?:^|[^\\w$.])(${ID})\\s*\\(([^()]*)\\)\\s*\\{`, 'gm'))) if (!KW.has(m[1]) || m[1] === 'catch') addAll(m[2]);
+  for (const m of S.matchAll(new RegExp(`typeof\\s+(${ID})\\s*[!=]==?\\s*"`, 'g'))) def.add(m[1]);   // blanked string: typeof x === "function" guards an optional call
+  const seen = new Set(hard.filter(x => x.startsWith('[calls]')).map(x => x.split(': ').pop()));
+  for (const m of S.matchAll(new RegExp(`(?<![\\w$.])(${ID})\\s*\\(`, 'g'))){ const nm = m[1]; if (KW.has(nm) || def.has(nm) || seen.has(nm)) continue;
+    let j = m.index + m[0].length, dd = 1; while (dd && j < S.length){ const c = S[j++]; if (c === '(') dd++; else if (c === ')') dd--; }
+    if (/^\s*\{/.test(S.slice(j, j + 20))) continue;   // a method written name(args){ … } is a definition, not a call
+    const [st, f] = starts.filter(x => x[0] <= m.index).pop(), line = S.slice(st, m.index).split('\n').length;
+    if (/ok:nowhere/.test(src(f).split('\n')[line - 1] || '')) continue;
+    seen.add(nm); H('nowhere', `${f}:${line} calls ${nm}(), which nothing in the current code defines`); } }
 
 /* 3a. one definition per name (1.0–1.3: a later duplicate silently replaced the earlier one: job kinds, aiImpact, string keys → leftover "Sie") */
 { const seen = {};
@@ -101,6 +164,87 @@ for (const f of codeFiles) src(f).split('\n').forEach((line, i) => {
 { const PROMISE = [/GitHub[^.]*\b(waits|asks)\b[^.]*\bapprov|approval in the build environment/i, /GitHub[^.]*\b(wartet|fragt)\b[^.]*Freigabe|Build-Umgebung auf deine Freigabe/, /GitHub[^。；]*(等待你的批准|请你批准)/];
   for (const k in STR){ const r = STR[k]; if (!Array.isArray(r)) continue;
     r.forEach((x, i) => { if (PROMISE[i] && PROMISE[i].test(String(x))) H('claims', `${k} [${['en', 'de', 'zh'][i]}] promises a GitHub approval step for a build, which a private repository does not have: "${String(x).slice(0, 110)}"`); }); } }
+
+/* 3d. 2.1 (J16, R1-7): raw values put into HTML attributes, links (href/src), innerHTML and CSS selectors. Booby-trapped imports or AI-written
+   names and ids can then run hidden code or break a click handler (A1, R1-9). A value is fine when it is wrapped (esc, CSS.escape,
+   encodeURIComponent, safeUrl, num, Number), a literal, a number or yes/no (comparison, !x, .length, .includes()), a ternary or || of fine values,
+   or a name that iterates a fixed list on that line ([…].map(k => / LIST.map(k => / for (const k of LIST)). Links need a literal https:// or #
+   start, or safeUrl(). HARD (every line) in the files of RAW_HARD; a REVIEW item on new lines elsewhere until Wave 3 converts the old files and
+   adds them to RAW_HARD. A line opts out with  // ok:raw  plus the reason. */
+const RAW_HARD = [/^v200_/, /^v1100_/];   // the opt-in list: add a file here once it is clean
+// checked by hand in 2.1 Wave 1 (values from fixed lists or yes/no flags); Wave 3 wraps them and deletes the entry. A fixed entry that no longer
+// matches is printed as stale, so the list only shrinks.
+const RAW_VETTED = {
+  'v1100_hands.js': ['data-k="${k}"'],
+  'v200_facts.js': ['aria-current="${on}"'],
+  'v200_map.js': ['aria-pressed="${sl}"', 'data-v="${what}"', 'data-v="${key}"', 'data-f="${k}"', 'data-v="${k}"', 'aria-pressed="${G.noNevers}"', 'aria-labelledby="m20g-${k}"', 'id="m20g-${k}"', 'aria-current="${on}"'],
+  'v200_modes.js': ['data-a="${c.a}"'],
+  'v200_setup.js': ['href="${esc(links[i + 1])}"'],   // fixed https links of SU20_GUIDES
+};
+// real raw ids in selectors (R1-9): a quote or bracket in an id throws in the click handler. Wave 3 (A1) adds CSS.escape and deletes these.
+const RAW_KNOWN = {'v200_facts.js': ['"#fe-" + e.id'], 'v200_map.js': ['"#m20-keep-" + id']};
+const rawSinks = (() => {
+  const close = (s, i, o, c) => { let d = 1; while (i < s.length && d){ if (s[i] === o) d++; else if (s[i] === c) d--; i++; } return d ? -1 : i; };
+  const top = (e, ops) => { const out = []; let d = 0, q = null, last = 0;   // split at operators outside (), [], {}, strings and templates
+    for (let i = 0; i < e.length; i++){ const c = e[i];
+      if (q){ if (c === '\\') i++; else if (c === q) q = null; continue; }
+      if (c === '"' || c === "'" || c === '`'){ q = c; continue; }
+      if ('([{'.includes(c)) d++; else if (')]}'.includes(c)) d--;
+      else if (!d) for (const op of ops) if (e.startsWith(op, i)){ out.push(e.slice(last, i), op); i += op.length - 1; last = i + 1; break; } }
+    out.push(e.slice(last)); return out; };
+  const WRAP = /^(esc|CSS\.escape|encodeURIComponent|safeUrl|safeId|num|Number|parseInt|Math\.[a-z]+|String\(Number)\(/;
+  const safe = (e, B) => { e = e.trim(); if (!e) return false;
+    if (e[0] === '(' && close(e, 1, '(', ')') === e.length) return safe(e.slice(1, -1), B);
+    const w = e.match(WRAP); if (w && close(e, w[0].length, '(', ')') === e.length) return true;
+    if (/^-?\d+(\.\d+)?$/.test(e) || /^(true|false|null)$/.test(e) || /^(["'])[^"'<>&\\]*\1$/.test(e)) return true;
+    if (/^`[^`]*`$/s.test(e)){ let rest = e.slice(1, -1), k; if (/["'<>]/.test(rest.split('${')[0])) return false;
+      while ((k = rest.indexOf('${')) >= 0){ const j = close(rest, k + 2, '{', '}'); if (j < 0 || !safe(rest.slice(k + 2, j - 1), B)) return false; rest = rest.slice(j); if (/["'<>]/.test(rest.split('${')[0])) return false; }
+      return true; }
+    let p = top(e, ['?']); if (p.length >= 3){ const q = top(p.slice(2).join(''), [':']); return q.length >= 3 && safe(q[0], B) && safe(q.slice(2).join(''), B); }
+    p = top(e, ['||', '??']); if (p.length > 1) return p.filter((x, i) => i % 2 === 0).every(x => safe(x, B));
+    p = top(e, ['&&']); if (p.length > 1) return safe(p[p.length - 1], B);   // a && b gives a falsy a (false, 0, "", null) or b
+    if (top(e, ['===', '!==', '==', '!=', '<=', '>=', ' < ', ' > ', ' instanceof ', ' in ']).length > 1 || /^!/.test(e) || /\.(length|size)$/.test(e)) return true;
+    p = top(e, ['.']); if (p.length > 1 && /^(includes|has|some|every|startsWith|endsWith|test|toFixed)\(/.test(p[p.length - 1])) return true;
+    return /^[A-Za-z_$][\w$]*$/.test(e) && B.has(e); };
+  const bound = (lines, i) => { const B = new Set(), txt = lines.slice(Math.max(0, i - 4), i + 1).join('\n');
+    for (const m of txt.matchAll(/(?:\[[^\[\]]*\]|\b[A-Z][A-Z0-9_]{2,})\.(?:map|forEach|filter|flatMap)\(\s*\(?\s*([A-Za-z_$][\w$]*)\s*[,)=]/g)) B.add(m[1]);
+    for (const m of txt.matchAll(/for\s*\(\s*(?:const|let)\s+([A-Za-z_$][\w$]*)\s+of\s+(?:\[|[A-Z][A-Z0-9_]{2,}\b)/g)) B.add(m[1]);
+    return B; };
+  const URLATTR = /^(href|src|action|formaction|srcdoc|xlink:href|poster)$/i;
+  return text => { const lines = text.split('\n'), out = [];
+    lines.forEach((line, i) => { let Bc = null; const B = () => Bc || (Bc = bound(lines, i));
+      for (let k = line.indexOf('${'); k >= 0; k = line.indexOf('${', k + 2)){   // a. ${…} in an attribute value
+        const j = close(line, k + 2, '{', '}'); if (j < 0) break; const expr = line.slice(k + 2, j - 1), before = line.slice(0, k);
+        const a = before.match(/(?:^|[\s"'`])([a-zA-Z][\w:.-]*)=(["']?)([^"'<>=`]*)$/); if (!a) continue;
+        const lt = before.lastIndexOf('<'), gt = before.lastIndexOf('>'); if (gt > lt) continue;   // after the tag closed: text, not an attribute
+        if (lt >= 0 && !/^[a-z][a-z0-9-]*$/.test(before.slice(lt + 1).match(/^\/?([^\s>]*)/)[1])) continue;   // <your_rules …> in a prompt is not HTML
+        const what = a[1] + '=' + a[2] + a[3] + '${' + expr + '}' + a[2];
+        if (URLATTR.test(a[1]) && !/^(https:\/\/|#|\?|mailto:)/.test(a[3]) && !/^safeUrl\(/.test(expr.trim())) out.push({i, kind: 'a link', what});
+        else if (!safe(expr, B())) out.push({i, kind: a[2] ? 'an attribute' : 'an unquoted attribute', what}); }
+      for (const m of line.matchAll(/\.(innerHTML|outerHTML)\s*\+?=\s*([^;]*)|insertAdjacentHTML\(\s*["'][a-z]+["']\s*,\s*([^;]*)\)/g)){   // b. innerHTML
+        const rhs = (m[2] || m[3] || '').trim();
+        if (/^(["'])[^"']*\1$/.test(rhs) || /^[A-Za-z_$][\w$.]*\(/.test(rhs) && close(rhs, rhs.indexOf('(') + 1, '(', ')') === rhs.length) continue;   // a literal or a builder call
+        if (/^`[^`]*`$/s.test(rhs)){ let ok = true, rest = rhs;
+          for (let k = rest.indexOf('${'); k >= 0 && ok; k = rest.indexOf('${', k + 2)){ const j = close(rest, k + 2, '{', '}'); const ex = j < 0 ? '' : rest.slice(k + 2, j - 1).trim(); ok = j >= 0 && (/^[A-Za-z_$][\w$.]*\(/.test(ex) || safe(ex, B())); }
+          if (ok) continue; }
+        out.push({i, kind: 'innerHTML', what: (m[1] || 'insertAdjacentHTML') + ' = ' + rhs.slice(0, 70)}); }
+      for (const m of line.matchAll(/(?:querySelector(?:All)?|closest|matches|(?<![\w$])\$\$?)\(\s*(`[^`]*`|(["'])[^"']*\2\s*\+\s*([^,)]+(?:\([^()]*\))?))/g)){   // c. selectors
+        if (m[1][0] === '`'){ const rest = m[1]; for (let k = rest.indexOf('${'); k >= 0; k = rest.indexOf('${', k + 2)){ const j = close(rest, k + 2, '{', '}'); if (j < 0) break; if (!safe(rest.slice(k + 2, j - 1), B())){ out.push({i, kind: 'a selector', what: rest.slice(0, 80)}); break; } } }
+        else if (!safe(m[3], B())) out.push({i, kind: 'a selector', what: m[1].trim().slice(0, 80)}); } });
+    return out; }; })();
+{ const used = new Set();
+  for (const f of codeFiles.filter(f => f.endsWith('.js'))){
+    const isHard = RAW_HARD.some(r => r.test(f)), lines = src(f).split('\n');
+    if (!isHard && !changed(f)) continue;
+    const oldLines = isHard ? new Set() : new Set(base && fs.existsSync(path.join(base, f)) ? fs.readFileSync(path.join(base, f), 'utf8').split('\n') : []);
+    for (const s of rawSinks(src(f))){ const line = lines[s.i];
+      if (oldLines.has(line) || /ok:raw/.test(line)) continue;
+      const ok = [...(RAW_VETTED[f] || []), ...(RAW_KNOWN[f] || [])].find(x => s.what === x); if (ok){ used.add(f + '\u0000' + ok); continue; }
+      if (isHard) H('raw', `${f}:${s.i + 1} a raw value in ${s.kind}: ${s.what.slice(0, 110)} (wrap it: esc / CSS.escape / safeUrl, or // ok:raw with the reason)`);
+      else R('raw', f, s.i, line); } }
+  var rawStale = [];   // entries that no longer match: delete them
+  for (const M of [RAW_VETTED, RAW_KNOWN]) for (const [f, xs] of Object.entries(M)) for (const x of xs) if (!used.has(f + '\u0000' + x)) rawStale.push(f + ': ' + x);
+  var rawKnown = Object.values(RAW_KNOWN).flat().length; }
 
 /* 4. review items in changed files: the patterns behind the 1.4.1 and 1.4.2 bugs */
 for (const f of codeFiles.filter(changed)){
@@ -165,7 +309,8 @@ for (const sheet of ['styles.css', 'styles18.css'].filter(f => fs.existsSync('sr
     if (/z-index\s*:\s*\d{3,}/.test(line)) R('overlap', sheet, i, line);
     if (/(^|[;{\s])flex\s*:\s*1\s*[;}]/.test(line) || /min-width\s*:\s*0\b/.test(line)) R('squeeze', sheet, i, line);
     if (/height\s*:\s*\d+px/.test(line) && /overflow\s*:\s*hidden/.test(line)) R('cut', sheet, i, line); }); }
-console.log(`static checks (baseline ${base || 'none'}): ${hard.length} hard, ${review.length} to review`);
+console.log(`static checks (baseline ${baseArg}${base ? '' : ' NOT READ'}): ${hard.length} hard, ${review.length} to review`);
+console.log(`  raw values: hard in ${codeFiles.filter(f => RAW_HARD.some(r => r.test(f))).length} files (RAW_HARD), ${rawKnown} known raw selector ids left for Wave 3 (RAW_KNOWN)` + (rawStale.length ? `; stale entries to delete: ${rawStale.join(' | ')}` : ''));
 if (hard.length){ console.log('HARD'); hard.slice(0, 60).forEach(x => console.log('  ' + x)); }
 if (review.length){ console.log('REVIEW (look at each; add // ok:<check> when it is fine)'); review.slice(0, 120).forEach(x => console.log('  ' + x)); }
 process.exit(hard.length ? 1 : 0);

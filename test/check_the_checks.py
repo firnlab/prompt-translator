@@ -4,12 +4,14 @@ Run: python3 test/check_the_checks.py        (under a minute; never touches src/
 """
 import pathlib, shutil, subprocess, sys, tempfile, re
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-BASE = sorted([d for d in ROOT.iterdir() if re.fullmatch(r"src_v\d+_backup", d.name)], key=lambda d: int(re.search(r"\d+", d.name).group()))[-1].name
+# 2.1 (J15): the baseline is the release tag named in static_checks.js (BASELINE_TAG), unpacked from git into the copy
+TAG = re.search(r"const BASELINE_TAG = '([^']+)'", (ROOT / "test" / "static_checks.js").read_text()).group(1)
+BASE = "baseline-" + TAG
 APP = "\nfunction __zz{n}(p, x){{ {body} }}\n"
 # (name, file, kind, change, expected tag, hard?)  kind: "append" adds text at the end, "sub" replaces the first match, "dupline" repeats the line that matches
 M = [
     ("a comment that swallows the rest of a line (parse error)", "v150_pick.js", "sub", ("saveWs(); toast(t(good", "saveWs();   // note toast(t(good"), "parse", True),
-    ("a comment that swallows statements (still parses, cause 62)", "v14_finish.js", "sub", ("{rounds: FIX_CAP, quiet: true}); sum.fixed += s.fixed;", "{rounds: FIX_CAP, quiet: true});   // the cap sum.fixed += s.fixed;"), "comment", True),
+    ("a comment that swallows statements (still parses, cause 64)", "v14_finish.js", "sub", ("{rounds: FIX_CAP, quiet: true}); sum.fixed += s.fixed;", "{rounds: FIX_CAP, quiet: true});   // the cap sum.fixed += s.fixed;"), "comment", True),
     ("a comment that swallows the last statement of a block (2.0)", "core.js", "sub", ("}catch(e){ errs = []; } weak = errs.length > 0; } }", "}catch(e){ errs = []; }   // a check may ask weak = errs.length > 0; } }"), "comment", True),
     ("a comment that swallows a call at the end of a line (2.0 Part B)", "v200_stage.js", "sub", ("STAGE20_WAIT.includes(x.ph)); STAGE20_HELD.set(p, q.length - keep.length);", "STAGE20_WAIT.includes(x.ph));   // it stays STAGE20_HELD.set(p, q.length - keep.length);"), "comment", True),
     ("squeezed text: overflow-wrap:anywhere",          "styles.css", "append", ".zz{overflow-wrap:anywhere}", "layout", True),
@@ -30,6 +32,16 @@ M = [
     ("a button with no action",                        "views13.js", "append", APP.format(n=5, body="return '<button data-a=\"zz-nothing\">x</button>';"), "handlers", True),
     ("wrapper of a missing function",                  "actions4.js", "append", "\n{ const orig = zzGone; zzGone = function(){ return orig(); }; }\n", "wrappers", True),
     ("a function removed while a caller is left (2.0 gate, cause 99)", "tasks3.js", "sub", ("async function aiImpactParts(p, text){", "async function aiImpactPartsGone(p, text){"), "calls", True),
+    # 2.1 (J15, R7-2): the baseline is v2.0.0, so a 2.0 function is protected too; a call to a name defined nowhere is caught without any baseline
+    ("a 2.0 function removed while its callers are left (J15, R7-2)", "v200_map.js", "sub", ("function m20Chosen(", "function m20ChosenGone("), "calls", True),
+    ("a call to a function that nothing defines (J15)", "v200_loop.js", "append", APP.format(n=30, body="return zzNeverDefined(p);"), "nowhere", True),
+    # 2.1 (J16, R1-7): raw values in attributes, links, innerHTML and selectors are HARD in the RAW_HARD files, a review item elsewhere
+    ("a raw id in an attribute (J16)", "v200_map.js", "append", APP.format(n=31, body='return `<button data-a="m20-open" data-id="${x.id}">x</button>`;'), "raw", True),
+    ("a link not checked as https (J16, A14)", "v200_facts.js", "append", APP.format(n=32, body='return `<a class="chip" href="${esc(x.url)}">x</a>`;'), "raw", True),
+    ("raw text into innerHTML (J16)", "v1100_hands.js", "append", APP.format(n=33, body="p.innerHTML = x.name;"), "raw", True),
+    ("a raw id in a selector (J16, R1-9)", "v200_modes.js", "append", APP.format(n=34, body='return document.querySelector(`[data-id="${x.id}"]`);'), "raw", True),
+    ("a raw id in a selector built with + (J16, R1-9)", "v200_stage.js", "append", APP.format(n=35, body='return p.querySelector("#st-" + x.id);'), "raw", True),
+    ("a raw value in an old file's new line (J16: review until Wave 3)", "views13.js", "append", APP.format(n=36, body='return `<span class="x" title="${x.why}">x</span>`;'), "raw", False),
     # review items: the person must look at them, so they must show up
     ("silent failure: empty catch",                    "views13.js", "append", APP.format(n=6, body="try{ x(); }catch(e){}"), "catch", False),
     ("AI answer without a shape check",                "views13.js", "append", APP.format(n=7, body='return runAI("k", "l", "prompt", {json: true});'), "validate", False),
@@ -51,7 +63,12 @@ def run(tmp):
 
 with tempfile.TemporaryDirectory() as td:
     tmp = pathlib.Path(td)
-    for d in ("src", "test", BASE): shutil.copytree(ROOT / d, tmp / d, ignore=shutil.ignore_patterns("*.html", "*.png", "shots*"))
+    for d in ("src", "test"): shutil.copytree(ROOT / d, tmp / d, ignore=shutil.ignore_patterns("*.html", "*.png", "shots*"))
+    (tmp / BASE).mkdir()
+    tar = subprocess.run(["git", "-C", str(ROOT), "archive", TAG, "src"], capture_output=True)
+    if tar.returncode != 0: print(f"cannot read the baseline tag {TAG} (a shallow clone? use fetch-depth: 0): {tar.stderr.decode()[:300]}"); sys.exit(1)
+    subprocess.run(["tar", "-x", "-C", str(tmp / BASE)], input=tar.stdout, check=True)
+    BASE = BASE + "/src"
     shutil.copy(ROOT / "build.py", tmp / "build.py")
     code0, out0 = run(tmp)
     if code0 != 0 or "0 hard, 0 to review" not in out0:
