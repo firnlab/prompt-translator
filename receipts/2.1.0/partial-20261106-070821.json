@@ -1,0 +1,24 @@
+{
+ "version": "2.1.0",
+ "label": "partial-20261106-070821",
+ "scope": "PARTIAL",
+ "commit": "480ed787fd379c0bbdc57f98d469efce34e1768e",
+ "dirty": false,
+ "dist_sha256": "c1f40a3e0a580a5f8eca56e5d395568622141e13ec2fe08512c0ab2cc21ef444",
+ "started": "2026-11-06T07:08:21",
+ "seconds": 0,
+ "args": [
+  "--only=check the Pick tests"
+ ],
+ "checks": [
+  {
+   "name": "check the Pick tests",
+   "result": "FAIL",
+   "seconds": 0,
+   "ok": null,
+   "failed": null,
+   "key": "da846fe43704a2a484d9201053f35c33"
+  }
+ ],
+ "flaky": []
+}
