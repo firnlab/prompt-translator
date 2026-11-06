@@ -344,7 +344,9 @@ with tempfile.TemporaryDirectory() as td:
     os.symlink((ROOT / "work").resolve(), tmp / "work")
     def build():
         b = subprocess.run("python3 build.py", shell=True, cwd=tmp, capture_output=True, text=True)
-        return b.returncode == 0 and (tmp / "dist/prompt-translator.html").exists(), (b.stdout + b.stderr)[-800:]
+        # 2.1: the care suite (5: a preview copy never offers the switch) reads the preview build too
+        b2 = subprocess.run("python3 build.py https://claude.ai/artifact/6rj1ZPyMB6GxKwAHsmndny", shell=True, cwd=tmp, capture_output=True, text=True)
+        return b.returncode == 0 and b2.returncode == 0 and (tmp / "dist/prompt-translator.html").exists() and (tmp / "dist/prompt-translator-preview.html").exists(), (b.stdout + b.stderr + b2.stdout + b2.stderr)[-800:]
     ok, bout = build()
     if not ok: print("the copy does not build — nothing can be checked:\n" + bout); sys.exit(1)
     DIST = tmp / "dist/prompt-translator.html"
