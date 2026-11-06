@@ -1,0 +1,25 @@
+{
+ "version": "2.1.0",
+ "label": "partial-20261106-192419",
+ "scope": "PARTIAL",
+ "commit": "f493d990b975538bbf295d8f036bb7e642a7b7be",
+ "code_tree": "871d57e3758be5f6a581939da65d1bba84cebd8c",
+ "dirty": false,
+ "dist_sha256": "8193bd211bbc4d3f82d805aee70f6d9a2033343ea45f5a97cf30fe0f31d005bf",
+ "started": "2026-11-06T18:49:24",
+ "seconds": 2095,
+ "args": [
+  "--only=click everything"
+ ],
+ "checks": [
+  {
+   "name": "click everything",
+   "result": "PASS",
+   "seconds": 2095,
+   "ok": null,
+   "failed": null,
+   "key": "d4338b8af9132cf99e3aea0f4a0f14d0"
+  }
+ ],
+ "flaky": []
+}
