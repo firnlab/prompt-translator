@@ -13,6 +13,10 @@ Sprint goal: a safer PT and a test kit that cannot go quietly empty.
 ## Change before keep (owner, 6 Nov 18:01)
 - Pick → Pick Mode, Chat with structure → Chat Mode in every string (three languages), prompt, comment, test name and label; About rewritten (six paragraphs, accurate to 2.1: modes, what a project gets, promise and limits, AI steps and cost, web access and hands, data, reporting); 2.1.0 changelog gets a "Changed" block. Area tests green (modes 170, pseudo-localisation 179, 1.5 57, changelog 27). The built file changed, so the full gate runs again before the preview is republished.
 
+## Red team and the second change round (6 Nov 23:00 – 7 Nov)
+- Four red-team layers over everything since 2.0.0 (46 + 13 + 9 + 9 findings; verbatim in the session's scratchpad). Fixed here: the Design mock deleted by the filter (PT's frames exempt, src guard), raw number sinks coerced, import rewritten (whole-file check, counts, "from a backup" mark + lock + re-link, Undo via confirm, settings allow-list, projectId remap, object-held and numeric ids, depth 64), morning check reads pages only after "Watch these", typing on (form_input), download filename slugged, German "Pick-Modus", changelog rewritten, About approved line by line, CLAUDE.md: PT Flow + release rule + inbox rule; gate: minimum counts for every counted suite, fixtures/labels in every key, untracked = dirty, both builds, expected reds named, planted bugs cited by name.
+- State at this commit: the built file changed after the FULL receipt of 6029de7; **no full gate on the current code yet** — it runs next, from scratch.
+
 ## Gate and publish
 - Full gate GREEN, 54 of 54 checks, FULL on commit 6029de7 (built file sha256 e26ccc835b26953b…), receipt `receipts/2.1.0/full.json`.
 - Run as parts on the final code (one part per 2-hour window): hunt check 9 min (31/31), click everything 40 min, part A 28 min (50/50),

@@ -1,7 +1,7 @@
-# PT backlog (the owner orders; from 6 Nov 2026 one sprint at a time — see MERGE-2.1.md and CLAUDE.md)
+# PT backlog (the owner orders; from 7 Nov 2026 PT Flow: one item at a time — see CLAUDE.md "How PT is developed")
 
 Scope: every KEEP and CHANGE item of the master list below (round-3 result of the 4-round review, 5 Nov 2026).
-DEFER and DROP items stay out. Failing features ship switched off. One-GO release rule applies (CLAUDE.md).
+DEFER and DROP items stay out. Failing features ship switched off. The release rule is in CLAUDE.md (early preview, one full gate, main direct; owner, 7 Nov 2026).
 
 ## Owner decisions (5 Nov 2026 21:49)
 - b1 laptop tasks: ask first before sign-up, delete, publish, pay.
@@ -552,3 +552,24 @@ M8. Remove features that are never used — RECOMMEND: DEFER — was: C5-12
   F4 spending rule = C2 as GO'd. F5 own-risk decision typed before run 1. F6 navigation relabel/hide only. F7 CLAUDE.md tool-data
   line (added). F8 second owner: PO of her workspace, starting face Chat, G5 first.
 - Sprint 1 (PT 2.1.0): J1, J2, J5, J7, J9, J10, A1, B17, A14, import round-trip test, this rename. Sprint 2 (relisting, no code).
+
+## Red team of 6/7 Nov 2026 (four layers over everything since 2.0.0): what waits for the next item
+Fixed in 2.1.0: the Design mock removed by the filter; raw number sinks; import whole-file check, counts, mark/lock/re-link, Undo, settings allow-list; watch click; typing on; gate minimums, resume keys, untracked = dirty, both builds hashed, expected reds named, planted bugs cited by name; German "Pick-Modus"; About accurate.
+- RT-1 (M) AI-written ids checked against the id rule at every mapper (tasks.js, tasks2.js, v14_tasks.js) with an old→new table applied to recommended/chosen/reqIds; load-time re-id saved once with a restore point and one log line (N5), notes/patterns/research made safe at load (M4), notes' projectId remap on collision (#10).
+- RT-2 (M) dead jumps: map "#anchor" back unconditionally after a real landing renderer per section key (inspDetails with no item shows a raw key today); hunt 14 asserts a non-empty body and iterates all refs; second mutant (N9).
+- RT-3 (S) wire safeUrl where AI/scan URLs are stored (mdLite, sources, map evidence) or drop the A14 claim.
+- RT-4 (S) hunt 17 prints SKIP when it cannot be exercised and is excluded from the ok count; MIN_OK per (suite, data) (N11, M9).
+- RT-5 (S) e2e210_safe round trip: second import into a non-empty workspace with collisions (done in part), export captured from the action (done).
+- RT-6 (S) entity-in-URL trigger branch as defence in depth once M1 is in (#2).
+- RT-7 (S) receipt records ok counts for REUSED checks; the BAD regex "Error: " narrowed to real errors.
+- RT-8 (M) J18 nightly gate off-session: say what a synthetic-data gate proves and what it does not (CLAUDE.md "CI runs only the data-free checks").
+- RT-9 (owner) Improve PT: the owner ticks the fixed reports of 2.1.0 → IMPROVE_FIXED["2.1.0"]; changelog_test rule: the fixed-list of PT_VERSION exists (empty only with an explicit "none").
+- RT-10 (S) C3: "Show all routes" names 7 and makes more; name the real number before the run.
+## PT Flow automation (next items, in the owner's order)
+- FL-1 PT drafts the Item card from the Vision card by itself (announcement lines, scenarios, acceptance lines, non-goals, quality round, laptop/key steps with money, appetite).
+- FL-2 acceptance lines become tests automatically.
+- FL-3 usage counter with the brake on the running item's card; Morning card shows the running item against its lines.
+- FL-4 weekly line generated from receipts and usage; "quiet" when nothing changed.
+- FL-5 spine labels aligned to the six words (en/de/zh); Vision card as its own card.
+- FL-6 the riskiest-assumption probe before the map (E).
+- FL-7 STATE.md generated from the record.
