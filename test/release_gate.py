@@ -196,7 +196,7 @@ for x in todo:
 SCOPE = "QUICK" if QUICK else "PARTIAL" if (ONLY or SKIP) else "FULL"
 VERSION = GK.pt_version()
 label = re.sub(r"[^A-Za-z0-9._-]+", "-", LABEL or ("full" if SCOPE == "FULL" else SCOPE.lower() + "-" + time.strftime("%Y%m%d-%H%M%S")))
-receipt = {"version": VERSION, "label": label, "scope": SCOPE, "commit": COMMIT, "dirty": DIRTY, "dist_sha256": DIST_SHA,
+receipt = {"version": VERSION, "label": label, "scope": SCOPE, "commit": COMMIT, "code_tree": GK.code_tree(COMMIT), "dirty": DIRTY, "dist_sha256": DIST_SHA,
            "started": STARTED, "seconds": int(time.time() - T0), "args": [a for a in sys.argv[1:]],
            "checks": [{"name": r["name"], "result": r["result"], "seconds": r["s"], "ok": r["ok_n"], "failed": r["fail_n"], "key": r["key"]} for r in res],
            "flaky": [r["name"] for r in res if r["result"] == "FLAKY"]}

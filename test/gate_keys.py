@@ -67,6 +67,15 @@ def commit_info():
     st = [l for l in git("status", "--porcelain", "--untracked-files=no").splitlines() if l.strip() and not l[3:].startswith("receipts/")]
     return git("rev-parse", "HEAD") or "unknown", bool(st)
 
+def code_tree(commit="HEAD"):
+    """the commit's tree without receipts/ (the gate's own output): two commits that differ only by a committed receipt share it,
+    so a receipt committed between gate parts does not split one gate into "different commits" """
+    try:
+        ls = [l for l in git("ls-tree", commit).splitlines() if l.strip() and not l.endswith("\treceipts")]
+        r = subprocess.run(["git", "mktree"], cwd=ROOT, input="\n".join(ls) + "\n", capture_output=True, text=True)
+        return r.stdout.strip() or None
+    except Exception: return None
+
 def pt_version():
     for f in ("src/app.js", "src/core.js"):
         try: m = re.search(r'const PT_VERSION\s*=\s*"([^"]+)"', (ROOT / f).read_text())
@@ -76,7 +85,8 @@ def pt_version():
 
 def overall(rdir, names):
     """FULL only when every gate check is green (PASS or REUSED, never FLAKY) in the newest receipt that ran it, and all of those
-    receipts share one commit, a clean tree and one built file. Returns (word, reasons, commit)."""
+    receipts share one code tree (the commit without receipts/; the commit itself when a receipt lacks the tree), a clean tree and
+    one built file. Returns (word, reasons, commit)."""
     newest = {}
     for f in sorted(rdir.glob("*.json")):
         try: rc = json.loads(f.read_text())
@@ -88,8 +98,11 @@ def overall(rdir, names):
     if miss: why.append(f"not run ({len(miss)}): " + ", ".join(miss[:8]) + (", …" if len(miss) > 8 else ""))
     notgreen = [f"{n} {newest[n][1]['result']}" for n in names if n in newest and newest[n][1]["result"] not in ("PASS", "REUSED")]
     if notgreen: why.append("not green: " + ", ".join(notgreen))
-    commits = {newest[n][0]["commit"] for n in names if n in newest}; dists = {newest[n][0]["dist_sha256"] for n in names if n in newest}
-    if len(commits) > 1: why.append("parts on different commits: " + ", ".join(sorted(c[:10] for c in commits)))
+    used = [newest[n][0] for n in names if n in newest]
+    commits = {rc["commit"] for rc in used}; dists = {rc["dist_sha256"] for rc in used}
+    trees = {rc.get("code_tree") or ("commit:" + rc["commit"]) for rc in used}
+    if len(trees) > 1: why.append("parts on different commits: " + ", ".join(sorted(c[:10] for c in commits)))
+    elif len(commits) > 1: commits = {sorted(commits, key=lambda c: max(rc["started"] for rc in used if rc["commit"] == c))[-1]}   # receipt-only commits in between: the newest one names the gate
     if len(dists) > 1: why.append("parts on different built files: " + ", ".join(sorted(d[:12] for d in dists)))
     if any(newest[n][0].get("dirty") for n in names if n in newest): why.append("a part ran with uncommitted changes")
     return ("FULL" if not why else "PARTIAL"), why, (commits.pop() if len(commits) == 1 else None)

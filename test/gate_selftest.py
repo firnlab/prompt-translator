@@ -7,7 +7,7 @@
          a green run and gone code are not caught); the run stops at the expected FAIL line; a red clean copy stops everything;
          --resume reuses the clean run and a caught bug; --learn records the first failing check.
 Run: python3 test/gate_selftest.py"""
-import json, os, pathlib, subprocess, sys, tempfile, time
+import json, os, pathlib, re, subprocess, sys, tempfile, time
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "test"))
 import gate_keys as GK
@@ -73,9 +73,9 @@ rc, out = gate("--only=no such check")
 check("an unknown check name stops the gate", rc == 2 and "unknown check names" in out, out)
 
 print("FULL only on one commit")
-def rcp(d, label, commit="c1", dist="d1", dirty=False, res=None, started="2026-11-05T10:00:00"):
+def rcp(d, label, commit="c1", dist="d1", dirty=False, res=None, started="2026-11-05T10:00:00", tree=None):
     d.mkdir(parents=True, exist_ok=True)
-    (d / f"{label}.json").write_text(json.dumps({"commit": commit, "dist_sha256": dist, "dirty": dirty, "started": started,
+    (d / f"{label}.json").write_text(json.dumps({"commit": commit, "code_tree": tree, "dist_sha256": dist, "dirty": dirty, "started": started,
         "checks": [{"name": n, "result": (res or {}).get(n, "PASS")} for n in ("a", "b") if label != "A" or n == "a"]}))
 names = ["a", "b"]
 d = TD / "o1"; rcp(d, "A", res={"a": "PASS"}); rcp(d, "B")
@@ -83,6 +83,12 @@ check("all parts green on one commit and one built file: FULL", GK.overall(d, na
 d = TD / "o2"; rcp(d, "A", commit="c1"); rcp(d, "B", commit="c2", started="2026-11-05T09:00:00", res={"a": "FAIL"})
 w = GK.overall(d, names)
 check("parts on two commits: PARTIAL, both named", w[0] == "PARTIAL" and any("different commits" in x for x in w[1]), w)
+d = TD / "o2b"; rcp(d, "A", commit="c1", tree="t1", started="2026-11-05T09:00:00"); rcp(d, "B", commit="c2", tree="t1")
+w = GK.overall(d, names)
+check("two commits that differ only by a committed receipt (same code tree): FULL, the newest commit names the gate", w[0] == "FULL" and w[2] == "c2", w)
+d = TD / "o2c"; rcp(d, "A", commit="c1", tree="t1", started="2026-11-05T11:00:00"); rcp(d, "B", commit="c2", tree="t2")
+check("two commits with different code trees: PARTIAL", GK.overall(d, names)[0] == "PARTIAL")
+check("HEAD's code tree is a tree id and ignores receipts/", bool(re.fullmatch(r"[0-9a-f]{40}", GK.code_tree("HEAD") or "")) and GK.code_tree("HEAD") == GK.code_tree("HEAD") and "receipts" not in subprocess.run(["git", "ls-tree", GK.code_tree("HEAD")], cwd=ROOT, capture_output=True, text=True).stdout)
 d = TD / "o3"; rcp(d, "B", res={"b": "FLAKY"})
 check("a FLAKY check: PARTIAL", GK.overall(d, names)[0] == "PARTIAL")
 d = TD / "o4"; rcp(d, "B", dirty=True)
