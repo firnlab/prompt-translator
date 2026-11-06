@@ -1,4 +1,4 @@
-# PT 2.1.0 plan (owner GO 5 Nov 2026 17:05: "GO all in one update")
+# PT backlog (the owner orders; from 6 Nov 2026 one sprint at a time — see MERGE-2.1.md and CLAUDE.md)
 
 Scope: every KEEP and CHANGE item of the master list below (round-3 result of the 4-round review, 5 Nov 2026).
 DEFER and DROP items stay out. Failing features ship switched off. One-GO release rule applies (CLAUDE.md).
@@ -20,12 +20,6 @@ DEFER and DROP items stay out. Failing features ship switched off. One-GO releas
 - b14 success numbers: PT asks per project, nothing invented.
 - b15 automatic repair: off; a "Try again" button instead.
 - Paused 5 Nov 21:48 by the owner before Wave 1 was merged: more changes to come; spend nothing until the revised plan is agreed.
-
-## Waves (see the list for items)
-0 owner (GitHub clicks, decisions) · 1 gate proves things, then fast (J) · 2 repo safety PRs (K, I1, L) ·
-3 security + data (A1-A4, B, C7, F2, A13-A15) · 4 spending + wrong behaviour (C, D, I2-I7) · 5 delivering + daily use (E, G) ·
-6 AI quality (F; real-model checks cost-named) · 7 platform + one permissions bundle (H1, A5, H2, E10, D5, E7, H8, H9, guides; typing stays off) ·
-8 full gate on one commit, preview, live re-test, main.
 
 ## Master list
 ## A. Safety & security
@@ -552,3 +546,9 @@ M8. Remove features that are never used — RECOMMEND: DEFER — was: C5-12
   "continue" or "pause" at any time; a paused sprint keeps its state and resumes where it stopped. The owner's plan is the Max
   (USD 200/month) tier: PT's weekly budget estimate (400 units) is to be recalibrated against it once (measured, not assumed).
   Managed Agents credits for Max: USD 100/month (platform docs; the USD 200 figure is Ultra) — to be shown as such.
+
+## Owner decisions (6 Nov 2026 05:04): "all yes" to MERGE-2.1.md F1–F8, "Go both" (sprint 1 and sprint 2 in parallel)
+- F1 small releases, one per sprint, "PT's Scrum, levels 1–4". F2 two-GO release (CLAUDE.md changed). F3 sprint 2 shape A now.
+  F4 spending rule = C2 as GO'd. F5 own-risk decision typed before run 1. F6 navigation relabel/hide only. F7 CLAUDE.md tool-data
+  line (added). F8 second owner: PO of her workspace, starting face Chat, G5 first.
+- Sprint 1 (PT 2.1.0): J1, J2, J5, J7, J9, J10, A1, B17, A14, import round-trip test, this rename. Sprint 2 (relisting, no code).
