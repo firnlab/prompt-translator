@@ -535,3 +535,20 @@ M8. Remove features that are never used — RECOMMEND: DEFER — was: C5-12
   the morning check, one card incl. "waiting on you". Review = the owner tries the running thing (tool, or the preview), then
   keep / change / drop. Retrospective = one short note: what failed, why, the one change. KISS: every event is one card or one
   click; anything needing more than one card is split; one change per retrospective.
+- Artifacts (level 3): product backlog = one ordered list per product (tools: ideas + map routes as tool cards; PT: the master
+  list), the owner orders it, PT proposes the order from value/cost/risk, nothing deleted without the owner. Sprint backlog = the
+  one goal ("X runs") and its few steps (PT's task list); if it doesn't fit one card, split. Increment = the running tool with its
+  result log, or the published PT version with its gate receipt. Definition of Done: tools = the running level the goal card asks
+  for (Usable / Running / Measured) + a result-log entry; PT = full green gate on one version, published, receipt, retrospective
+  line. One definition, no exceptions.
+- Deeper rules (level 4): (1) the sprint is protected: new ideas go to the backlog with one click, never into the running sprint;
+  (2) vertical slices: the first sprint of any tool is the thinnest thing that runs (relisting: one watch, one relist, on command,
+  final click the owner's); (3) empiricism: every estimate shows its last measured value; (4) transparency: one place for the state
+  (the morning card and this plan), "if it isn't written there, it didn't happen"; (5) timeboxes: length set at planning. Left out
+  on purpose: story points, velocity, burndown, refinement meetings, scaled frameworks. Added: a stop rule: three sprints in a row
+  without something running → PT stops and says so.
+- Length and spending (owner, 6 Nov 04:17): default 3 days for a tool slice, 7 days for a PT release, set at planning. NO cap on
+  spending. Instead PT always shows the estimate of how much more usage and time it needs to finish, and the owner decides
+  "continue" or "pause" at any time; a paused sprint keeps its state and resumes where it stopped. The owner's plan is the Max
+  (USD 200/month) tier: PT's weekly budget estimate (400 units) is to be recalibrated against it once (measured, not assumed).
+  Managed Agents credits for Max: USD 100/month (platform docs; the USD 200 figure is Ultra) — to be shown as such.
