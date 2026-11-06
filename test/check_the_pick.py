@@ -1,6 +1,8 @@
 """Check the Pick checks: put known Pick and protection bugs back into a COPY of the sources, one at a time, build it, and make sure
 the Pick tests catch each one (the test named for it must turn red). A test that stays green with its bug back is broken.
-Run: python3 test/check_the_pick.py        (about 20 minutes; never touches src/)"""
+2.1: caught means its build succeeded and ITS check (test/check_the_pick_labels.json) printed FAIL, on suites that are green on the
+clean copy first (see the notes above the runner below).
+Run: python3 test/check_the_pick.py [--part=1/2] [--only=text] [--skip=text] [--data=fixture] [--resume] [--learn]   (never touches src/)"""
 import pathlib, shutil, subprocess, sys, tempfile, os
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 C, E, B = "python3 test/pick_contract.py", "python3 test/e2e15.py", "python3 test/e2e15b.py"
@@ -244,41 +246,170 @@ M = [
     ("a row of buttons in a top bar is as wide as its longest label", [("styles18.css", ":is(.row,.topbar,.panel-h,.head,.controw,.fullstep)>:is(.row,.controw){min-width:0;max-width:100%}", "")], "python3 test/pseudo19.py test/fixtures/synthetic.json"),
 ]
 
-ONLY = next((x.split("=", 1)[1] for x in sys.argv if x.startswith("--only=")), None)   # 1.8: run the planted bugs whose name or test contains this text
+if os.environ.get("PICK_M"):   # test/gate_selftest.py only: made-up planted bugs against a made-up suite
+    import json as _j0; M = [(n, [tuple(x) for x in subs], t) for n, subs, t in _j0.loads(pathlib.Path(os.environ["PICK_M"]).read_text())]
+M0 = list(M)
+
+# ---------- 2.1 (J1, J5, J6): how a planted bug counts as caught ----------
+# 1. The copy must build, and every target suite must be green on the CLEAN copy first; one red suite stops the run (its bugs could
+#    not be told apart from the failure that is already there).
+# 2. Each planted bug names the check that must turn red (test/check_the_pick_labels.json: "label" is the start of that check's name).
+#    It is caught only when its build succeeds AND a line "FAIL <label>…" prints. Red for another reason ("red elsewhere"), a broken
+#    build, a timeout or a green run all count as NOT caught.
+# 3. In the 2.0 suites with parts (A…, B…, D…, L…), a bug runs the suite only through the part of its check (--only, J5), and every run
+#    stops as soon as the expected FAIL line has printed.
+# 4. --resume: a clean run or a caught bug whose key (gate_keys.py: built file + test file + helpers + data + command + label) is
+#    unchanged is not run again; it reads "reused". --learn: a bug without a label runs once on the clean-green suite and its FIRST
+#    failing check becomes its label (review the new labels before committing them). --data=PATH: suites that take a data argument and
+#    name none run on PATH (e.g. test/fixtures/synthetic.json). PT_BROWSER_LOCK=<file>: every suite run waits for that flock lock.
+import json as _json, re as _re, signal as _sig, threading as _thr, time as _time
+sys.path.insert(0, str(ROOT / "test"))
+import gate_keys as GK
+ARGV = sys.argv[1:]
+def opt(n, d=None): return next((x.split("=", 1)[1] for x in ARGV if x.startswith(f"--{n}=")), d)
+ONLY = opt("only")   # 1.8: run the planted bugs whose name or test contains this text
+PART = opt("part")   # 2.0: "1/2" or "2/2" — the planted bugs in halves
+DATA = opt("data"); LEARN = "--learn" in ARGV; RESUME = "--resume" in ARGV; SECTIONS = "--no-sections" not in ARGV
+LOCK = os.environ.get("PT_BROWSER_LOCK", "")
+LABELS_F = pathlib.Path(os.environ.get("PICK_LABELS") or ROOT / "test" / "check_the_pick_labels.json")
+LABELS = _json.loads(LABELS_F.read_text()) if LABELS_F.exists() else {}
+SECTIONED = ("e2e200_foundation.py", "e2e200_map.py", "e2e200_loop.py", "e2e200_hands.py")   # suites with sec() parts (J5)
+NO_DATA_ARG = ("e2e12_on14.py",)   # its first argument is not the data
 if ONLY: M = [m for m in M if ONLY in m[0] or ONLY in m[2]]
-PART = next((x.split("=", 1)[1] for x in sys.argv if x.startswith("--part=")), None)   # 2.0: "1/2" or "2/2" — the planted bugs in halves (the whole run passed the gate's time limit)
+SKIP_T = opt("skip")   # 2.1: leave out the planted bugs whose name or test contains this text (e.g. a suite that needs the real-data copy)
+if SKIP_T: M = [m for m in M if not (SKIP_T in m[0] or SKIP_T in m[2])]
 if PART:
     _k, _n = (int(v) for v in PART.split("/"))
     M = [m for i, m in enumerate(M) if i * _n // len(M) == _k - 1]
-import re as _re
-def run(tmp, cmd):
-    r = subprocess.run(cmd, shell=True, cwd=tmp, capture_output=True, text=True, timeout=1800)
-    out = r.stdout + r.stderr
-    # 1.8: e2e17 ends with "N ok, 0 failed, page errors: 0" — that form counts as green too (before, its planted bugs always read as caught)
-    return r.returncode == 0 and ("failed: 0" in out or bool(_re.search(r"\b0 failed\b", out))) and "page errors: 0" in out, out
+_dup = sorted({m[0] for m in M if [x[0] for x in M].count(m[0]) > 1})
+if _dup: print("two planted bugs share a name (labels are kept by name):", _dup); sys.exit(1)
+FAIL_RX = _re.compile(r"^\s*FAIL:?\s+(.+?)(?:\s+→ .*)?\s*$")
+PART_RX = _re.compile(r"^([A-Z]\d+) \S")
 
+def command(m, with_part=True):
+    cmd = m[2]
+    script = cmd.split()[1].split("/")[-1]
+    if DATA and script not in NO_DATA_ARG and not _re.search(r"\s(test/fixtures/\S+|work/\S+)", cmd):
+        cmd = cmd.replace(cmd.split()[1], cmd.split()[1] + " " + DATA, 1)
+    part = (LABELS.get(m[0]) or {}).get("part")
+    if with_part and SECTIONS and part and script in SECTIONED and "--only" not in cmd: cmd += " --only " + part
+    return cmd
+
+def green(rc, out):
+    # 1.8: e2e17 ends with "N ok, 0 failed, page errors: 0" — that form counts as green too
+    return rc == 0 and ("failed: 0" in out or bool(_re.search(r"\b0 failed\b", out))) and "page errors: 0" in out
+
+def oks(out): return len(_re.findall(r"(?m)^\s*ok:?\s+\S", out))
+
+def run(tmp, cmd, label=None, learn=False, limit=1800):
+    """run one suite; stops it as soon as the expected FAIL line (or, learning, the first FAIL line) has printed.
+    returns (state, out, hit, part): state is green | red | hit | timeout"""
+    full = (f"flock {LOCK} " if LOCK else "") + cmd
+    p = subprocess.Popen(full, shell=True, cwd=tmp, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, start_new_session=True,
+                         env=dict(os.environ, PYTHONUNBUFFERED="1"), stdin=subprocess.DEVNULL)
+    timed = []
+    def kill():
+        try: os.killpg(p.pid, _sig.SIGKILL)
+        except Exception: pass
+    wd = _thr.Timer(limit, lambda: (timed.append(1), kill())); wd.start()
+    lines, hit, part, cur = [], None, None, None
+    try:
+        for line in p.stdout:
+            lines.append(line)
+            pm = PART_RX.match(line)
+            if pm: cur = pm.group(1)
+            fm = FAIL_RX.match(line)
+            if fm and ((label and fm.group(1).startswith(label)) or learn):
+                hit, part = fm.group(1), cur; kill(); break
+    finally:
+        wd.cancel()
+        try: p.wait(timeout=60)
+        except Exception: kill()
+    out = "".join(lines)
+    if hit: return "hit", out, hit, part
+    if timed: return "timeout", out, None, None
+    return ("green" if green(p.returncode, out) else "red"), out, None, None
+
+def fails_of(out): return [m.group(1)[:90] for m in map(FAIL_RX.match, out.splitlines()) if m][:3]
+
+STATE = GK.load_state() if RESUME else {}
+def reused(k, want): r = STATE.get(k); return r if r and r.get("result") == want else None
+
+(ROOT / "work").mkdir(exist_ok=True)
+T0 = _time.time()
 with tempfile.TemporaryDirectory() as td:
     tmp = pathlib.Path(td)
     for d in ("src", "test", "vault"): shutil.copytree(ROOT / d, tmp / d, ignore=shutil.ignore_patterns("*.html", "*.png", "shots*", "__pycache__"))   # 1.7: build.py reads vault/vault.json
     shutil.copy(ROOT / "build.py", tmp / "build.py"); (tmp / "dist").mkdir()
     os.symlink((ROOT / "work").resolve(), tmp / "work")
-    b = subprocess.run("python3 build.py", shell=True, cwd=tmp, capture_output=True, text=True)
-    if b.returncode != 0: print("the copy does not build — nothing can be checked:\n" + (b.stdout + b.stderr)[-800:]); sys.exit(1)
-    missed = []
-    for name, subs, test in M:
-        saved = {}
-        ok = True
+    def build():
+        b = subprocess.run("python3 build.py", shell=True, cwd=tmp, capture_output=True, text=True)
+        return b.returncode == 0 and (tmp / "dist/prompt-translator.html").exists(), (b.stdout + b.stderr)[-800:]
+    ok, bout = build()
+    if not ok: print("the copy does not build — nothing can be checked:\n" + bout); sys.exit(1)
+    DIST = tmp / "dist/prompt-translator.html"
+    unlabeled = [m for m in M if not (LABELS.get(m[0]) or {}).get("label")]
+    if unlabeled and not LEARN:
+        print(f"{len(unlabeled)} planted bugs name no check that must fail (test/check_the_pick_labels.json) — run with --learn first:")
+        for m in unlabeled[:20]: print("  " + m[0])
+        sys.exit(1)
+    # 1. every target suite green on the clean copy
+    base = list(dict.fromkeys(command(m) for m in M))
+    print(f"clean copy first: {len(base)} suite runs", flush=True)
+    for cmd in base:
+        k = GK.key(cmd, tmp, DIST)
+        r = reused(k, "green")
+        if r: print(f"clean   reused (key {k[:12]})  {cmd}", flush=True); continue
+        t1 = _time.time(); st, out, _, _ = run(tmp, cmd)
+        n = oks(out)
+        if st != "green" or n == 0:
+            print(f"NOT GREEN on the clean copy ({st}, {n} ok): {cmd}\n   " + "\n   ".join(fails_of(out) or [l for l in out.strip().splitlines()[-6:]]))
+            print("\nplanted Pick bugs: none judged — fix the clean suite first (a red suite would make its bugs look caught)")
+            sys.exit(1)
+        GK.save_state({"key": k, "kind": "pick-clean", "cmd": cmd, "result": "green", "ok": n, "s": int(_time.time() - t1)})
+        print(f"clean   green ({n} ok, {int(_time.time() - t1)} s)  {cmd}", flush=True)
+    # 2. each planted bug, one at a time
+    missed, caught, n_reused, learned = [], 0, 0, 0
+    for m in M:
+        name, subs, _test = m
+        lab = (LABELS.get(name) or {}).get("label")
+        learn = LEARN and not lab
+        cmd = command(m, with_part=not learn)
+        saved, ok = {}, True
         for f, old, new in subs:
             fp = tmp / "src" / f; s = saved.get(f, fp.read_text()); saved.setdefault(f, s)
             cur = fp.read_text()
             if old not in cur: missed.append(f"{name}: the code it changes is gone — update this script ({old[:60]})"); ok = False; break
             fp.write_text(cur.replace(old, new, 1))
-        if ok:
-            subprocess.run("python3 build.py", shell=True, cwd=tmp, capture_output=True)
-            passed, out = run(tmp, test)
-            print(("caught  " if not passed else "MISSED  ") + name + "  (" + test.split("/")[-1] + ")", flush=True)
-            if passed: missed.append(f"{name}: {test} stayed green")
-        for f, s in saved.items(): (tmp / "src" / f).write_text(s)
-    print(f"\nplanted Pick bugs: {len(M)}, MISSED {len(missed)}")
-    for m in missed: print("  " + m)
+        try:
+            if not ok: print("GONE    " + name, flush=True); continue
+            bok, bout = build()
+            if not bok:
+                missed.append(f"{name}: its build failed — a bug that does not build proves nothing ({bout.strip().splitlines()[-1:] or ''})")
+                print("BUILD FAILED  " + name, flush=True); continue
+            k = GK.key(cmd, tmp, DIST, extra=()) + ":" + GK.sha_bytes((lab or "").encode())[:8]
+            if lab and reused(k, "caught"):
+                caught += 1; n_reused += 1; print(f"caught  reused (key {k[:12]})  {name}", flush=True); continue
+            t1 = _time.time()
+            st, out, hit, part = run(tmp, cmd, label=lab, learn=learn)
+            tag = f"({cmd.split()[1].split('/')[-1]}{' --only ' + cmd.split('--only ')[1] if '--only ' in cmd else ''}, {int(_time.time() - t1)} s)"
+            if st == "hit" and learn:
+                LABELS[name] = {"label": hit[:100]} | ({"part": part} if part and cmd.split()[1].split("/")[-1] in SECTIONED else {})
+                LABELS_F.write_text(_json.dumps({x[0]: LABELS[x[0]] for x in M0 if x[0] in LABELS} | {n: v for n, v in LABELS.items() if n not in {x[0] for x in M0}}, ensure_ascii=False, indent=1) + "\n")
+                learned += 1; caught += 1
+                print(f"LEARNED {name}  → FAIL {hit[:80]}{' [' + part + ']' if part else ''}  {tag}", flush=True)
+            elif st == "hit":
+                caught += 1; GK.save_state({"key": k, "kind": "pick-bug", "name": name, "result": "caught", "s": int(_time.time() - t1)})
+                print(f"caught  {name}  {tag}", flush=True)
+            elif st == "green":
+                missed.append(f"{name}: {cmd} stayed green"); print(f"MISSED  {name}  {tag}", flush=True)
+            elif st == "timeout":
+                missed.append(f"{name}: {cmd} timed out before its check failed"); print(f"TIMEOUT {name}  {tag}", flush=True)
+            else:
+                missed.append(f"{name}: red, but not on its check “{lab}” (failed: {'; '.join(fails_of(out)) or 'no FAIL line — crashed?'})")
+                print(f"RED ELSEWHERE  {name}  {tag}", flush=True)
+        finally:
+            for f, s in saved.items(): (tmp / "src" / f).write_text(s)
+    print(f"\nplanted Pick bugs: {len(M)}, caught {caught}{f' ({n_reused} reused)' if n_reused else ''}{f', {learned} labels learned' if learned else ''}, MISSED {len(missed)}  ({int(_time.time() - T0)} s)")
+    for x in missed: print("  " + x)
     sys.exit(1 if missed else 0)

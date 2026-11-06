@@ -53,11 +53,23 @@ with sync_playwright() as pw:
     check("R4 picking the platform checks it right away (old parts gone)", ev(pg, "pickRead(curP()).platform").startswith("GenSpark") and len(parts) > 0 and not any(x["part"] == "old part" for x in parts), [ev(pg, "pickRead(curP()).platform"), parts])
     check("R4 ready to try needs a checked platform", ev(pg, "(() => { const k = pickOf(curP()), keep = k.platformParts; k.platformParts = []; const r = pickReady(curP()).find(x => x.id === 'platform').ok; k.platformParts = keep; return r === false; })()"))
     # R5 a workspace that fails to load is never written
+    # 2.1 (J8): the check counted every write of the workspace document, also the flush of a change a background step made after the
+    # test's own flush (openWorkspace stores what was just changed before it reads again: the loaded workspace, with its own settings).
+    # That write is right, and it made R5 flaky (red only when a background step happened to save in that window). What must never happen: a write while the failed workspace is the open one, a write
+    # that does not carry the loaded settings, or stored settings that differ after the failed load.
     wait_ai(pg, 30000)   # 1.6.0: PT's automatic steps may still be running; they are allowed to save
-    res = ev(pg, """async () => { await new Promise(r => { const f = () => AI.running.size || JOB_WATCH.size ? setTimeout(f, 200) : r(); f(); }); flushSaves(); await storeIdle(3000); const id = WS.id, wp = wsPath(); let saves = 0; const o1 = Store.put, o2 = Store.putNow; Store.put = function(pth){ if (pth === wp) saves++; return o1.apply(this, arguments); }; Store.putNow = function(pth){ if (pth === wp) saves++; return o2.apply(this, arguments); };
-      const m150 = WS.settings.m150; window.__mockFailGet = true; try{ await openWorkspace(id); }catch(e){} window.__mockFailGet = false; Store.put = o1; Store.putNow = o2;
-      const fatal = !!UI.fatal; await openWorkspace(id); return {saves, fatal, lang: WS.settings.lang, m150: WS.settings.m150 === m150}; }""")
-    check("R5 a failed load writes nothing over the workspace", res["saves"] == 0 and res["fatal"] and res["m150"], res)
+    res = ev(pg, """async () => { await new Promise(r => { const f = () => AI.running.size || JOB_WATCH.size ? setTimeout(f, 200) : r(); f(); }); flushSaves(); await storeIdle(3000);
+      const id = WS.id, wp = wsPath(), W0 = WS, seen = [];
+      const note = (pth, data) => { if (pth !== wp) return; seen.push({loaded: WS === W0, keeps: JSON.stringify((data || {}).settings) === JSON.stringify(W0.settings), by: String(new Error().stack).split('\\n').slice(2, 6).map(s => s.trim().split(' (')[0]).join(' < ')}); };
+      const o1 = Store.put, o2 = Store.putNow; Store.put = function(pth, data){ note(pth, data); return o1.apply(this, arguments); }; Store.putNow = function(pth, data){ note(pth, data); return o2.apply(this, arguments); };
+      saveWs();   // the flake's cause, now on every run: a change a background step makes just before the switch (stored as the loaded workspace)
+      const m150 = W0.settings.m150; window.__mockFailGet = true; try{ await openWorkspace(id); }catch(e){} const fatal = !!UI.fatal;
+      await new Promise(r => setTimeout(r, 900)); await storeIdle(3000);   // a write left over from the switch would land here
+      window.__mockFailGet = false; Store.put = o1; Store.putNow = o2;
+      const stored = (await Store.get(wp)) || {}; const storedKeeps = JSON.stringify(stored.settings) === JSON.stringify(W0.settings);
+      await openWorkspace(id); return {bad: seen.filter(x => !x.loaded || !x.keeps), flushed: seen.filter(x => x.loaded && x.keeps).length, fatal, storedKeeps, m150: WS.settings.m150 === m150}; }""")
+    check("R5 a failed load writes nothing over the workspace", not res["bad"] and res["fatal"] and res["storedKeeps"] and res["m150"], res)
+    check("R5 …a change made just before the switch is still stored, as the loaded workspace", res["flushed"] >= 1, res)
     ev(pg, "(() => { const p = WS.projects.find(x => x.name === 'Review project'); openProject(p.id); UI.home = false; render(); })()"); pg.wait_for_timeout(200)
     # R6 a background result that arrives during a try is never part of the try's Undo
     r6 = ev(pg, """async () => { const p = curP(); await actGroup(async () => { actOpen(p, 'step of the try', {by: 'pt'}); p.intake.raw += ' x'; actClose(p.id);
