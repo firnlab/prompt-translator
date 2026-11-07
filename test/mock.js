@@ -503,7 +503,7 @@ window.__mockJudgeOf = function(j, res){
   window.__browser = {pages: Object.assign({}, PAGES), fail: "", loadReads: 0, url: "", reads: 0, tabs: 0};
   /* the release page of the version under test (2.0.0 gate: a fixed "v1.10.0" page made every later version read "no release yet");
      PT_VERSION exists once the page's own script ran, so the page is added on DOMContentLoaded (tests may delete it afterwards) */
-  document.addEventListener("DOMContentLoaded", () => { try { const v = PT_VERSION; window.__browser.pages["https://github.com/firnlab/prompt-translator/releases/tag/v" + v] = "Releases\nPrompt Translator " + v + "\nv" + v + "\nAssets"; } catch(e){} });
+  document.addEventListener("DOMContentLoaded", () => { try { const v = PT_VERSION; window.__browser.pages["https://github.com/firnlab/prompt-translator/releases"] = "Releases\nLatest\nPrompt Translator " + v + "\nv" + v + "\nAssets\nPrompt Translator 2.0.0\nv2.0.0"; } catch(e){} });
   if (!window.__morningOn && localStorage.getItem("mockmorning") !== "1") window.__ptNoMorning = true;   // 2.0 Part D: the morning check runs on the owner's first open of a day; only tests that set window.__morningOn see it
   window.__browserCall = async function(rec, tool, input){
     const B = window.__browser; rec.server = "host:claude_browser";
