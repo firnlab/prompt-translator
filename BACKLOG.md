@@ -564,6 +564,7 @@ Fixed in 2.1.0: the Design mock removed by the filter; raw number sinks; import 
 - RT-7 (S) receipt records ok counts for REUSED checks; the BAD regex "Error: " narrowed to real errors.
 - RT-8 (M) J18 nightly gate off-session: say what a synthetic-data gate proves and what it does not (CLAUDE.md "CI runs only the data-free checks").
 - RT-9 (owner) Improve PT: the owner ticks the fixed reports of 2.1.0 → IMPROVE_FIXED["2.1.0"]; changelog_test rule: the fixed-list of PT_VERSION exists (empty only with an explicit "none").
+- RT-11 (next) Release check: when CAPABILITIES-2.0.json adds a tool under a `host:` server that the live main does not have yet, the gate says "publish from a local task in the desktop app" before the GO (2.1.0: the cloud publish was refused with 422 and the owner published locally). Cause 109 when built.
 - RT-10 (S) C3: "Show all routes" names 7 and makes more; name the real number before the run.
 ## PT Flow automation (next items, in the owner's order)
 - FL-1 PT drafts the Item card from the Vision card by itself (announcement lines, scenarios, acceptance lines, non-goals, quality round, laptop/key steps with money, appetite).

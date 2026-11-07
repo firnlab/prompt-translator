@@ -30,7 +30,15 @@ Sprint goal: a safer PT and a test kit that cannot go quietly empty.
 - Final gate on the red-team code (7 Nov, code tree bffafa59…, commits ee00efd → f822774 with receipts only): FULL, 54 of 54 PASS,
   8 known reds accepted (test/expected_red.json). Parts: hunt check 9 min (31/31), part A 28 min (50/50), click everything 40 min,
   Pick 1 37 min (104/104), Pick 2 41 min (103/103), `--resume` stitch 2 min (flows 1.2 re-ran, 161 ok). Wall ≈ 2 h 37 min.
-  Receipt `receipts/2.1.0/full.json`. Waits for "GO 2.1.0" → main directly (manifest CAPABILITIES-2.0.json with form_input).
+  Receipt `receipts/2.1.0/full.json`.
+- GO 2.1.0 (owner, 7 Nov 04:50). Publishing main from this cloud session was refused by the platform: a cloud session may not add
+  the local browser tool `form_input` to an artifact that used fewer tools (422; nothing published, main stayed 2.0.0). The owner
+  published from a local task in the desktop app (05:44): main version `1794026648-f594` (previous `1793826109-ac8d`), label
+  "2.1.0 main", manifest = CAPABILITIES-2.0.json with form_input, file of commit 2d3e27b. No preview step (release rule of 7 Nov).
+  Lesson (backlog RT-11): a manifest that adds a `host:` tool needs a local publish; the gate should say so before the GO.
+- Live main body equals the gated file byte for byte (546-byte platform skeleton around it). On the live file: smoke (0 errors),
+  pseudo-localisation (179 ok), 1.10 hands (54 ok), 2.0 hands (55 ok), 2.0 modes (170 ok), 2.1 safe (53 ok), 2.1 clicks (10 ok, 1 known red).
+- Improve-PT reports fixed by 2.1.0: the owner's workspace holds one open report (Capture, 5 Nov); 2.1.0 did not touch it → fixed-list "none" unless the owner ticks it.
 
 ## Retrospective (one line)
 The gate's own plumbing (labels, resume, receipts, time limits) took longer than the feature work; next sprint starts the long parts first and keeps the test kit frozen before the final gate.
