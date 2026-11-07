@@ -168,7 +168,7 @@ const ACTIONS = {
   "dl-all": () => { const p = curP(); saveFile(slug(p.name) + "-package-v" + p.versionNo + ".md", packageMarkdown(p)); },
   "dl-skills": async () => { const secs = curP().pkg.sections.filter(s => s.dest === "skill"); for (const s of secs){ const k = skillFromSection(s); await skillZip(k.name, k.md); } },
   "sec-copy": el => { const s = curP().pkg.sections.find(x => x.id === el.dataset.id); if (s) copyText(s.content); },
-  "sec-dl": el => { const s = curP().pkg.sections.find(x => x.id === el.dataset.id); if (s) saveFile(s.filename || slug(s.title) + ".md", s.content); },
+  "sec-dl": el => { const s = curP().pkg.sections.find(x => x.id === el.dataset.id); if (s) saveFile(slug(str(s.filename || s.title).replace(/\.[a-z0-9]{1,5}$/i, "")) + ".md", s.content); },
   "sec-edit": el => { const k = "ed-" + el.dataset.id; const p = curP(); if (UI.expanded.has(k)){ UI.expanded.delete(k); saveVersion(p, t("ver.edited")); touch(p); } else { snapshot(p); UI.expanded.add(k); } render(); },
   "sec-pattern": el => { const p = curP(); const s = p.pkg.sections.find(x => x.id === el.dataset.id); const lr = p.runs.find(r => r.label !== "candidate"); const x = {id:uid("pt"), title: s.title, desc: s.why, body: s.content, kind:"block", evidence: t("lib.evidence", {p: p.name, v: p.versionNo, r: lr ? lr.passRate + "%" : "—"}), createdAt: now()}; WS.patterns.push(x); Store.put(wsPath() + "/patterns/" + x.id, x); toast(t("lib.saved"), "ok"); },
   "sec-skill": async el => { const s = curP().pkg.sections.find(x => x.id === el.dataset.id); UI.modal = {kind:"skill", skill:null}; render(); const r = await aiSkill(s.content); if (UI.modal && UI.modal.kind === "skill"){ if (r){ UI.modal.skill = r; } else UI.modal = null; render(); } },
@@ -265,16 +265,8 @@ const CHANGES = {
   "fs-toggle": el => { const p = curP(); const f = p.foresight.find(x => x.id === el.dataset.id); if (f) f.done = el.checked; else p.fsDone[el.dataset.id] = el.checked; touch(p); render(); },
   "import-ws": async el => {
     const f = el.files && el.files[0]; if (!f) return;
-    try{
-      const d = JSON.parse(await f.text());
-      if (!d || d.app !== "prompt-translator") throw new Error("format");
-      let n = 0;
-      for (const p0 of arr(d.projects)){ const p = normalizeProject(p0); if (WS.projects.some(x => x.id === p.id)){ p.id = uid("p"); p.name += " " + t("proj.importsuffix"); } p.versions = []; p.versionNo = 0; WS.projects.push(p); touch(p); if (arr(p.pkg.sections).length) saveVersion(p, t("ver.imported")); n++; }
-      for (const x of arr(d.notes)){ if (!WS.notes.some(y => y.id === x.id)){ WS.notes.push(x); saveNote(x); } }
-      for (const x of arr(d.patterns)){ if (!WS.patterns.some(y => y.id === x.id)){ WS.patterns.push(x); Store.put(wsPath() + "/patterns/" + x.id, x); } }
-      for (const x of arr(d.research)){ if (!WS.research.some(y => y.id === x.id)){ WS.research.push(x); Store.put(wsPath() + "/research/" + x.id, x); } }
-      render(); toast(t("data.imported", {n}), "ok");
-    }catch(e){ toast(t("data.importerr"), "err"); }
+    try{ const d = JSON.parse(await f.text()); if (!d || d.app !== "prompt-translator") throw new Error("format"); importBackup(d, f.name); }   // 2.1: whole file checked first, counts told, Undo offered
+    catch(e){ toast(t("data.importerr"), "err"); }
     el.value = "";
   }
 };

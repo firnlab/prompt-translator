@@ -1,7 +1,7 @@
-/* ===================== 2.0.0 PART C — TWO FACES OF ONE LEDGER: PICK AND CHAT WITH STRUCTURE =====================
-   The owner (3–4 Nov 2026): "scrap all modes, only keep and improve the Pick mode, and make a new mode Chat with structure that
+/* ===================== 2.0.0 PART C — TWO FACES OF ONE LEDGER: PICK MODE AND CHAT MODE (named so since 2.1; 2.0 called them Pick and Chat with structure) =====================
+   The owner (3–4 Nov 2026): "scrap all modes, only keep and improve the Pick Mode, and make a new mode Chat Mode that
    can do all we want … as seamless, understandable, user-friendly, automatic, logical and visually matching as maximally possible".
-   - Two faces only: Pick (the deck, the pages) and Chat with structure (talk freely; PT answers, files what it learns into the
+   - Two faces only: Pick Mode (the deck, the pages) and Chat Mode (talk freely; PT answers, files what it learns into the
      facts book with "✓ Noted" receipts, keeps the goal card and the live map beside the conversation, shows the one Next and
      small chips so the owner rarely types). Both read and write the same project: p.ledger (Part A), p.goal20 / p.map20 (Part B),
      p.pick (cards and answers). A question PT asks in the chat IS a pick card, so what is answered in one face is answered in the other.
@@ -105,12 +105,12 @@ function c20Decided(p){ return pickRead(p).log.filter(e => str(e.answer).trim())
 function c20Prompt(p, text){
   const stage = stage20Early(p) ? ST20_SPLIT : stage20RouteBlock(p);
   return buildPrompt("chat20", {proj: p, rules: ["elicit", "simple"], context: projectContext(p, {max: 14000}),
-    body: `You are Prompt Translator's partner in "Chat with structure": the person talks freely about the tool they want built; you answer briefly AND file what they said, so nothing is asked twice and nothing they ruled out comes back.
+    body: `You are Prompt Translator's partner in "Chat Mode": the person talks freely about the tool they want built; you answer briefly AND file what they said, so nothing is asked twice and nothing they ruled out comes back.
 Read the newest message against the conversation so far, the goal card, what is decided and the map.
 1. "file": each rule, fact or decision the newest message states about the TOOL or the person's situation: "never" (must never happen or be used), "must" (must always hold), "fact" (about the person's world), "decision" (a choice), "tool" (how the finished tool behaves). "said" quotes the person's own words exactly from the newest message; "norm" is your short form. Leave out what <your_rules> or <your_facts> already hold, and anything you guess.
 2. "about": "pt" when the message is feedback about Prompt Translator itself (its screens, buttons, flow, wording) and not about the tool: then file nothing; "both" when it holds both; else "tool".
 3. "goal": only for goal fields that are "empty" or a guess, your best one-sentence guess from what the person said (leave the others out).
-4. "cards": at most one question, only when one answer would help most now, in Pick's card shape (2-4 options the person can tap). Never a question the facts, the decided list or the goal card already answer.
+4. "cards": at most one question, only when one answer would help most now, in Pick Mode's card shape (2-4 options the person can tap). Never a question the facts, the decided list or the goal card already answer.
 5. "next": "map" when the goal is clear enough to look at all ways to reach it, "goal" when the goal card should be checked first, else "none".
 6. "reply": answer the person; when you filed something, say so in a few words. Never promise what PT cannot do.${stage}
 <goal>${JSON.stringify(c20GoalJSON(p))}</goal>
@@ -288,7 +288,7 @@ function c20HTML(p){
   return `<div class="c20" data-page="chat20" data-anchor="page-chat20"><header class="c20-top">${stage20StripHTML(p)}${nx}</header>${sw}<div class="c20-grid">${conv}${c20WsHTML(p)}</div></div>`;
 }
 
-/* ---------- 5. Pick, improved: the order holds, the decided list comes from the same book ---------- */
+/* ---------- 5. Pick Mode, improved: the order holds, the decided list comes from the same book ---------- */
 /** before the route is decided, the Picks page leads to the decision (the details wait): goal card → map → shortlist → compare */
 function c20PickDecideHTML(p){
   if (!stage20Early(p) || (UI.pgInPage && pgCur(p) !== "picks")) return "";
@@ -302,7 +302,7 @@ function c20PickDecideHTML(p){
     <div class="row">${nx ? `<button class="btn sm primary" data-a="${esc(nx.a)}" data-v="${esc(nx.v || "map")}">${ic("arrow")}${esc(nx.label)}</button>` : ""}<button class="btn sm ghost" data-a="m20-open" data-v="map">${ic("layers")}${esc(t("m20.bar", {n: M.routes.length}))}</button>${str(G.f.outcome).trim() ? "" : `<button class="btn sm ghost" data-a="m20-open" data-v="goal">${esc(t("g20.tab"))}</button>`}</div></section>`;
 }
 { const orig = modePick; modePick = function(p){ const h = orig(p); let d = ""; try{ d = c20PickDecideHTML(p); }catch(e){ onAppError(e && e.message, "pick:decide"); } return d ? h.replace('<div class="pk-deck" id="pk-deck" data-anchor="pk-deck">', d + '<div class="pk-deck" id="pk-deck" data-anchor="pk-deck">') : h; }; }
-/* the Decisions page of Pick lists the same book the chat's Decided tab does */
+/* the Decisions page of Pick Mode lists the same book the chat's Decided tab does */
 { const orig = rowsViewHTML; rowsViewHTML = function(p){ const h = orig(p); let d = ""; try{ d = c20DecidedHTML(p); }catch(e){ onAppError(e && e.message, "rows:decided"); } return h.replace('</header>', '</header>' + d); }; }
 /* an answer given in either face is a new fact that may break the chosen route (the Route alert watches it) */
 { const orig = pickAnswer; pickAnswer = function(p, cid, o = {}){

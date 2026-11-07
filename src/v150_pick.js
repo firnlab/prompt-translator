@@ -255,7 +255,7 @@ async function aiPickNext(p, {n = 3, need = []} = {}){
   { const q0 = pickLive(p, WS.id); if (!q0) return null; p = q0; }
   const k = pickRead(p), ws0 = WS.id, lang = contentLang(p);
   const prompt = buildPrompt("pick-next", {proj: p, rules: ["elicit","assume","simple","golden","trifecta"], platform: true, context: projectContext(p),
-    body: `You run Pick mode: the person designs a tool by picking from concrete options instead of writing. Make the next ${n} picks.
+    body: `You run Pick Mode: the person designs a tool by picking from concrete options instead of writing. Make the next ${n} picks.
 How to choose them: first write 3-5 clearly different complete designs ("candidates") that all fit what is decided so far. Then make the picks that best tell these designs apart, weighted by what a wrong guess would cost (hard to undo, money, law, people affected). Never a pick that is already decided, open or parked (see the lists below).
 ${pickContext(p)}
 ${pickStyleNote()}
@@ -316,7 +316,7 @@ If it could reasonably mean two different things, return "clear": false and the 
 async function aiPickSecond(p){
   const ws0 = WS.id, lang = contentLang(p), k0 = pickRead(p);
   const prompt = buildPrompt("pick-second", {proj: p, rules: ["spec","trifecta","reversible"], platform: true, context: projectContext(p),
-    body: `You are an independent second opinion on a tool design made in Pick mode. Read everything decided so far and look for: contradictions between decisions, gaps that would stop a first version from working, risks nobody decided on, and decisions that rest on a platform part marked "impossible" or "unknown".
+    body: `You are an independent second opinion on a tool design made in Pick Mode. Read everything decided so far and look for: contradictions between decisions, gaps that would stop a first version from working, risks nobody decided on, and decisions that rest on a platform part marked "impossible" or "unknown".
 ${pickContext(p)}
 For each real problem (at most 5, most important first) write it as a pick the person can decide: a plain question with 2-4 options. If you find nothing that matters, return no issues and say so in "verdict".`,
     schema: `{"verdict":"one or two sentences","issues":[${PK_CARD_SCHEMA}]}`});
@@ -338,7 +338,7 @@ For each real problem (at most 5, most important first) write it as a pick the p
 async function aiPickImport(p, text){
   const ws0 = WS.id;
   const prompt = buildPrompt("pick-import", {proj: p, rules: ["spec","elicit"], context: projectContext(p, {only: ["north_star","decisions"]}),
-    body: `The person pastes a design made elsewhere (a chat, notes or a document). Turn it into Pick mode: every decision it already makes, and the open decisions it leaves.
+    body: `The person pastes a design made elsewhere (a chat, notes or a document). Turn it into Pick Mode: every decision it already makes, and the open decisions it leaves.
 ${untrusted("design", text, "pasted")}
 "decided": each decision as the question it answers and the answer as written there, with the place it decides ("target"). Measures and criteria carry "crit". Keep the person's meaning exactly; never add decisions they did not make.
 "open": the most important decisions still open (at most 6) as picks.`,
@@ -954,7 +954,7 @@ Object.assign(ACTIONS, {
     touch(p); actCloseSoon(p.id); render(); pickAfter(p); },
   "pk-change": el => { const p = curP(); if (!p) return; const k = pickOf(p), e = k.log.find(x => x.id === el.dataset.id); if (!e || !e.card) return; const had = k.cards.find(c => c.replaces === e.id); if (had){ UI.flashRef = "pick:" + had.id; render(); return; } actOpen(p, t("int.change"));
     const c = Object.assign({}, e.card, {target: e.card.target || e.target, id: uid("pk"), replaces: e.id, by: "you", at: now(), round: k.session.n}); k.cards.unshift(c); UI.pkSel[c.id] = arr(e.keys); UI.qDraft["pk-" + c.id] = str(e.own); touch(p); actCloseSoon(p.id);
-    UI.home = false; UI.drawer = false;   // both faces show the card again (Pick in its deck, Chat with structure in the conversation)
+    UI.home = false; UI.drawer = false;   // both faces show the card again (Pick in its deck, Chat Mode in the conversation)
     UI.flashRef = "pick:" + c.id; render(); },
   "pk-ovfold": () => { UI.pkOv = UI.pkOv === false; render(); },
   "pk-second": () => { const p = curP(); if (p) return costGuard(p, "pk-second", () => aiPickSecond(p)); },
@@ -1062,7 +1062,7 @@ function pickDefaultsOnce(){
   WS.settings.modeBefore150 = /^[a-z]{2,16}$/.test(str(WS.settings.defaultMode)) ? WS.settings.defaultMode : "steps";
   WS.settings.defaultMode = "pick"; WS.settings.m150 = now(); saveWs();
 }
-/* in both faces (Pick, Chat with structure) the deck and the chat are the guide: the 1.x step tips and the guide strip stay out of the way */
+/* in both faces (Pick, Chat Mode) the deck and the chat are the guide: the 1.x step tips and the guide strip stay out of the way */
 { const orig = momentCard; momentCard = function(p){ return p ? "" : orig(p); }; }
 { const orig = guideStrip; guideStrip = function(p){ return p ? "" : orig(p); }; }
 

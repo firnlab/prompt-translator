@@ -107,7 +107,7 @@ function viewInspector(){
 }
 function inspRefNow(p){ const r = UI.inspRef; if (!r || !p) return null;
   // every item the queue can point to can be shown here: list items, criteria, concerns, open questions, gates
-  const ok = itemExists(p, r) || /^(ns|arch:choice|intake:|und:)/.test(r) || (r.startsWith("fs:") && activeForesight(p).some(f => f.id === r.slice(3))) || (typeof itemByRef === "function" && !!itemByRef(p, r)) || queueOf(p).some(x => x.ref === r);
+  const ok = itemExists(p, r) || /^(ns|arch:choice|intake:|und:)/.test(r) || (r.startsWith("fs:") && activeForesight(p).some(f => f.id === r.slice(3))) || (typeof itemByRef === "function" && !!itemByRef(p, r)) || queueOf(p).some(x => x.ref === r) || (typeof SPECIAL_ANCHOR === "object" && !!SPECIAL_ANCHOR[r] && !!SPECIAL_ANCHOR[r][0]);   // 2.1 C1: a section PT knows (scan, trace, audience …) has a landing here too
   return ok ? r : null; }
 function inspPick(p){
   const q = queueOf(p).filter(x => x.ph === p.focus.ph && /:/.test(x.ref)).slice(0, 8);

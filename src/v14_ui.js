@@ -172,16 +172,20 @@ function refEl(ref){
   for (const sel of [`[data-anchor~="${CSS.escape(ref)}"]`, `.irow [data-ref="${CSS.escape(ref)}"]`, `.item[data-ref="${CSS.escape(ref)}"]`]){ const e = [...host.querySelectorAll(sel)].find(vis); if (e) return e; }
   return null;
 }
+/* 2.1 C1 (known 1): every item the queue points to has a landing — the side panel shows it — so no jump ends in the "top of this step" toast alone */
+function navInQueue(p, r){ try{ return !!r && queueOf(p).some(x => x.ref === r); }catch(e){ return false; } }
 function navFallback(ref){
-  const p = curP(); UI.navTry = (UI.navTry || 0) + 1;
+  ref = str(ref); const p = curP(); UI.navTry = (UI.navTry || 0) + 1;
+  // 2.1 C1: a special anchor ("#loop", "#trace14" …) that the faces have no element for falls back as its item (loop, trace …)
+  if (ref.startsWith("#")){ const k = Object.keys(SPECIAL_ANCHOR).find(k => SPECIAL_ANCHOR[k][1] === ref.slice(1)); if (k && p && navInQueue(p, k)) ref = k; }
   // 1. the current view has no place for it: open the full step (Back returns to the view you were in)
   // 1.5.0: in Pick, an item the side panel can show opens there (you stay in Pick)
-  if (UI.navTry === 1 && p && MODES.includes(projMode(p))){ const r0 = ref.startsWith("#") ? null : ref; if (r0 && (itemExists(p, r0) || /^(ns|arch:choice|intake:|und:|fs:|pq:|crit:|engine:|pick:|proof:|audience)/.test(r0))){ UI.navRef = null; UI.navTry = 0; inspOpen(r0, "details"); return; } }
+  if (UI.navTry === 1 && p && MODES.includes(projMode(p))){ const r0 = ref.startsWith("#") ? null : ref; if (r0 && (itemExists(p, r0) || /^(ns|arch:choice|intake:|und:|fs:|pq:|crit:|engine:|pick:|proof:|audience)/.test(r0) || navInQueue(p, r0))){ UI.navRef = null; UI.navTry = 0; inspOpen(r0, "details"); return; } }
   // 2.0: there is no Steps view to jump to any more; the pages (both faces) and the side panel show every item
   UI.navRef = null; UI.navTry = 0;
   // 2. no place in the step either: the inspector shows it, with its details and tools
   const r = ref.startsWith("#") ? null : ref;
-  if (r && p && (itemExists(p, r) || /^(ns|arch:choice|intake:|und:|fs:|pq:|crit:|engine:|pick:|proof:)/.test(r))){ inspOpen(r, "details"); return; }
+  if (r && p && (itemExists(p, r) || /^(ns|arch:choice|intake:|und:|fs:|pq:|crit:|engine:|pick:|proof:)/.test(r) || navInQueue(p, r))){ inspOpen(r, "details"); return; }
   // 3. a whole section (review, test, build …): the step's top is the place
   const m = document.querySelector(".main"); if (m) m.scrollTo({top: 0, behavior: "smooth"});
   toast(t("nav.attop"), "");

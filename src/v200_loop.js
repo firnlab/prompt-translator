@@ -12,7 +12,7 @@
       from the goal to the route decision; Settings › Metrics. */
 const PT20_MAX = 5, PT20_RUNS = 5, PT20_PKG = 60000;
 /* report ids fixed in a version (filled at release time from the Improve-PT inbox; ids only, never the words) */
-const IMPROVE_FIXED = {"2.0.0": []};
+const IMPROVE_FIXED = {"2.0.0": [], "2.1.0": []};
 
 /* ---------- 3. metrics (first: the other parts count into them) ---------- */
 function m20MetOf(pid){ if (!WS || !WS.settings || !pid) return null; const S = WS.settings; if (!S.met20 || typeof S.met20 !== "object") S.met20 = {}; const M = S.met20[pid] = S.met20[pid] && typeof S.met20[pid] === "object" ? S.met20[pid] : {}; return M; }

@@ -1,5 +1,6 @@
 """Bug-hunt checks, part 2 (classes from the bug history since 1.0 that hunt.py does not cover). Same harness: a COPY of the real data, mock runtime.
-Run: python3 test/hunt2.py [backup dir]          (about 5 minutes)
+Run: python3 test/hunt2.py [backup dir | bundle.json]          (about 5 minutes)
+     HUNT_MUTATE=<n> python3 test/hunt2.py …   puts known bug n back (test/check_the_hunts.py) and runs only check n (2.1, J4)
 
 22 raw text      no screen shows undefined / NaN / [object Object] / null, or an internal id or reference (fd-…, ex-…, req:…)
 23 still screen  a background render (save state, AI progress, going online) never moves the screen or changes the step
@@ -17,9 +18,15 @@ BK = sys.argv[1] if len(sys.argv) > 1 else "work/backup-141"
 sys.argv = [sys.argv[0], BK]
 __file__ = str(pathlib.Path(__file__).resolve().parent / "e2e14.py")
 exec(open(__file__).read().split("with sync_playwright() as pw:")[0])
+import os
+MUT = os.environ.get("HUNT_MUTATE") or ""
+SEL = MUT or os.environ.get("HUNT_ONLY") or ""   # HUNT_ONLY=<n>: only check n, no planted bug (its clean run, for check_the_hunts --clean)
+def on(*ns): return not SEL or SEL in ns   # 2.1 (J4): a planted bug runs only the check it is named for
 _check0 = check
 def check(name, cond, info=""):
     _check0(name, cond, info); print(("ok    " if cond else "FAIL  ") + name + ("" if cond else "  → " + str(info)[:600]), flush=True)
+    if MUT and not cond and name.split(" ", 1)[0] == MUT:   # caught: nothing else to run
+        print("ok:", len(oks), "failed:", len(fails), "page errors:", len(errors), flush=True); sys.exit(1)
 PHASES = ["capture", "understand", "interview", "assume", "require", "arch", "build", "review", "test", "launch", "release", "operate"]
 SCREENS = lambda pid: [f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{pid}'); UI.home=true; render(); }})()"] + \
     [f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{pid}'); UI.home=false; pgShowPhase(curP(), '{ph}'); setPhase('{ph}'); render(); }})()" for ph in PHASES] + \
@@ -70,178 +77,199 @@ STATE = r"""(() => { const app = document.querySelector('.app'); const p = curP(
 DANGER = re.compile(r"delete|del-|remove|reset|publish|release|runner|pilot|live|launch|import|export|logout|lock|wipe|restore|rollback|install|engine|kp-|research|lang|theme|level|quit|close-ws|switch-ws|download")
 
 # check the checks: HUNT_MUTATE=<name> puts one known bug back after the page opens (test/check_the_hunts.py); every hunt2 check must then fail
-import os
 MUTATIONS = {
-    "22": "window.humanIds = function(){};",
+    "22": "window.humanIds = function(){}; { const o = t; window.t = function(k, v){ return o.call(this, k); }; }",   # ids left in AI text, and placeholders ({n}, {x}) never filled
     "23": "{ const o = render; window.render = function(...a){ const r = o(...a); const m = document.querySelector('.main'); if (m) m.scrollTop = 0; return r; }; }",
     "24": "ACTIONS['zz-dead'] = () => {}; const o = render; window.render = function(...a){ const r = o(...a); const m = document.querySelector('.main-inner, .main'); if (m && !m.querySelector('[data-a=zz-dead]')) m.insertAdjacentHTML('afterbegin', '<button class=\"btn\" data-a=\"zz-dead\">Looks useful</button>'); return r; };",
     "25": "{ const st = document.createElement('style'); st.textContent = '@media (max-width:700px){ .app button{min-height:0!important;height:16px!important;padding:0 2px!important} }'; document.head.appendChild(st); }",
     "26": "{ const o = queueCounts; window.queueCounts = function(p, s){ const c = o(p, s); c.should += 1; return c; }; }",
     "27": "window.contentLang = function(){ return LANG; };",
     "28": "{ const o = runAI; window.runAI = async function(...a){ const r = await o(...a); const q = curP(); if (q){ q.zzRace = (q.zzRace || 0) + 1; } return r; }; }",
-    "29": "{ const p = WS.projects[0]; if (p && p.requirements && p.requirements[1]) p.requirements[1].id = p.requirements[0].id; }",
+    "29": "{ const p = WS.projects.find(p => arr(p.requirements).length > 1); if (p && p.requirements && p.requirements[1]) p.requirements[1].id = p.requirements[0].id; }",
     "30": "{ const o = render; window.render = function(...a){ const t0 = performance.now(); while (performance.now() - t0 < 300){} return o(...a); }; }",
     "31": "window.setSave = function(){};",
 }
+if MUT and MUT not in MUTATIONS: sys.exit("HUNT_MUTATE=" + MUT + ": no such planted bug in hunt2.py")
 def mutate(pg):
-    m = os.environ.get("HUNT_MUTATE")
+    m = MUT
     if m: pg.evaluate("() => { " + MUTATIONS[m] + " }")   # as a function body: a bare expression that ends in a function would be called by evaluate
 
 with sync_playwright() as pw:
     b = pw.chromium.launch()
-    ctx = new_ctx(b); pg = open_page(ctx); watch(pg); mutate(pg); pg.wait_for_timeout(300)
-    PIDS = pg.evaluate("WS.projects.map(p => p.id)")
-    # 22 raw text
-    raw_bad = []
-    for lang in ["en", "zh"]:
-        pg.evaluate(f"(() => {{ LANG = '{lang}'; if (WS.settings) WS.settings.lang = '{lang}'; }})()")
-        for pid in PIDS:
-            for js in SCREENS(pid):
+    if on("22", "23", "25", "26", "27", "29", "30"):
+        ctx = new_ctx(b); pg = open_page(ctx); watch(pg); mutate(pg); pg.wait_for_timeout(300)
+        PIDS = pg.evaluate("WS.projects.map(p => p.id)")
+    if on("22"):
+        # 22 raw text
+        raw_bad = []
+        for lang in ["en", "zh"]:
+            pg.evaluate(f"(() => {{ LANG = '{lang}'; if (WS.settings) WS.settings.lang = '{lang}'; }})()")
+            for pid in PIDS:
+                for js in SCREENS(pid):
+                    pg.evaluate(js); pg.wait_for_timeout(40)
+                    r = pg.evaluate(RAW)
+                    if r: raw_bad.append([pg.evaluate(WHERE) + " " + lang, r])
+        pg.evaluate("(() => { LANG = 'en'; if (WS.settings) WS.settings.lang = 'en'; })()")
+        check("22 raw text: no undefined / NaN / [object Object] / internal ids on any screen", not raw_bad, raw_bad[:6])
+    if on("23"):
+        # 23 still screen
+        if SEL:   # run alone (J4): its setup in the full run is check 22, which has visited every screen once (first-visit work done)
+            for js in SCREENS(PIDS[0]): pg.evaluate(js); pg.wait_for_timeout(40)
+            pg.wait_for_timeout(1000)
+        still_bad = []
+        for w in (1440, 390):
+            pg.set_viewport_size({"width": w, "height": 900 if w > 700 else 800})
+            for js in SCREENS(PIDS[0]):
                 pg.evaluate(js); pg.wait_for_timeout(40)
-                r = pg.evaluate(RAW)
-                if r: raw_bad.append([pg.evaluate(WHERE) + " " + lang, r])
-    pg.evaluate("(() => { LANG = 'en'; if (WS.settings) WS.settings.lang = 'en'; })()")
-    check("22 raw text: no undefined / NaN / [object Object] / internal ids on any screen", not raw_bad, raw_bad[:6])
-    # 23 still screen
-    still_bad = []
-    for w in (1440, 390):
-        pg.set_viewport_size({"width": w, "height": 900 if w > 700 else 800})
+                r = pg.evaluate(STILL)
+                if r: still_bad.append([pg.evaluate(WHERE) + f" @{w}", r])
+        check("23 still screen: background renders never move the screen or change the step", not still_bad, still_bad[:6])
+    if on("25"):
+        # 25 tap targets on a phone
+        tap_bad = []
+        pg.set_viewport_size({"width": 390, "height": 800})
         for js in SCREENS(PIDS[0]):
             pg.evaluate(js); pg.wait_for_timeout(40)
-            r = pg.evaluate(STILL)
-            if r: still_bad.append([pg.evaluate(WHERE) + f" @{w}", r])
-    check("23 still screen: background renders never move the screen or change the step", not still_bad, still_bad[:6])
-    # 25 tap targets on a phone
-    tap_bad = []
-    pg.set_viewport_size({"width": 390, "height": 800})
-    for js in SCREENS(PIDS[0]):
-        pg.evaluate(js); pg.wait_for_timeout(40)
-        r = pg.evaluate(TAP)
-        if r: tap_bad.append([pg.evaluate(WHERE), r])
-    pg.set_viewport_size({"width": 1440, "height": 900})
-    check("25 tap targets: on a phone every control is 24 × 24 px or has room around it, and every button has a name", not tap_bad, tap_bad[:6])
-    # 26 one count for open work: the Finish button, the steps and the counts all say the same number
-    cnt = pg.evaluate("""(phs) => { const out = []; for (const p of WS.projects){ openProject(p.id); UI.home = true; UI.modal = null; render();
-        const c = queueCounts(p), total = c.block + c.should, perStep = phs.reduce((s, ph) => s + queueOf(p).filter(x => x.ph === ph && youOpen(x)).length, 0);
-        const all = queueOf(p).filter(youOpen).length;
-        const b = [...document.querySelectorAll('.app [data-a=finish-open]')].map(e => +((e.textContent.match(/\\d+/) || [NaN])[0])).filter(n => !isNaN(n));
-        if (total !== all) out.push(p.name.slice(0, 14) + ': counts ' + total + ' vs queue ' + all);
-        if (perStep !== all) out.push(p.name.slice(0, 14) + ': steps add up to ' + perStep + ', queue has ' + all);
-        if (b.some(n => n !== total)) out.push(p.name.slice(0, 14) + ': Finish button says ' + b.join('/') + ', queue has ' + total); } return out; }""", PHASES)
-    check("26 one count: the Finish button, the steps and the counts all show the same open work", not cnt, cnt[:6])
-    # 27 language: screen German, project English (and the other way round)
-    lang_bad = []
-    for scr, plang in (("de", "en"), ("en", "zh")):
-        pg.evaluate(f"(() => {{ LANG = '{scr}'; if (WS.settings) WS.settings.lang = '{scr}'; const p = WS.projects.find(x => x.id === '{PIDS[0]}'); p.lang = '{plang}'; window.__allPrompts = []; }})()")
-        for js in SCREENS(PIDS[0])[1:9]:
-            pg.evaluate(js); pg.wait_for_timeout(30)
-            pg.evaluate("""() => { const ai = Object.keys(ACTIONS).filter(k => /runAI|await ai[A-Z]|=> ai[A-Z]\\w*\\(curP\\(\\)/.test(String(ACTIONS[k])) && !/publish|release|runner|pilot|live|launch|delete|reset|import|export|engine|kp-|research|translate/.test(k));
-                const e = [...document.querySelectorAll('.app [data-a]')].find(e => e.offsetParent && !e.disabled && ai.includes(e.dataset.a)); if (e) e.click(); }""")
-            pg.wait_for_timeout(200)
-            if pg.evaluate("!!(UI.modal && UI.modal.kind === 'cost')"): pg.evaluate("ACTIONS['cost-go'] && ACTIONS['cost-go']({dataset: {v: 'once'}})")
-            try: pg.wait_for_function("AI.running.size === 0", timeout=10000)
-            except Exception: pass
-            pg.evaluate("UI.modal = null; UI.review = null; UI.finish = null")
-        res = pg.evaluate(f"""(() => {{ const want = langName('{plang}').split(' (')[0], screen = langName('{scr}').split(' (')[0]; const out = [];
-            for (const pr of window.__allPrompts || []){{ const task = (/\\[\\[task:([a-z0-9-]+)\\]\\]/.exec(pr) || [0, '?'])[1];
-              const content = new RegExp('text value in ' + want.replace(/[()]/g, '.') + '|written in ' + want.replace(/[()]/g, '.') + '|in ' + want.replace(/[()]/g, '.')).test(pr);
-              const viewer = /reader's language|the reader/.test(pr);
-              if (!content && !viewer && /Write every human-readable|written in/.test(pr)) out.push(task + ': asks for ' + (pr.includes(screen) ? screen : 'another language')); }}
-            return [(window.__allPrompts || []).length, out]; }})()""")
-        if res[1]: lang_bad.append([f"screen {scr} / project {plang}", res[1][:4]])
-        if not res[0]: lang_bad.append([f"screen {scr} / project {plang}", "no AI prompt was sent — the check did not run"])
-    pg.evaluate("(() => { LANG = 'en'; if (WS.settings) WS.settings.lang = 'en'; })()")
-    check("27 language: every AI prompt asks for the project's language, or says it writes for the reader", not lang_bad, lang_bad[:4])
-    # 29 integrity
-    integ = pg.evaluate("""(() => { const out = []; for (const p of WS.projects){ const n = p.name.slice(0, 14);
-        for (const k of ['requirements','tests','risks','assumptions','findings','qa']){ const ids = arr(p[k]).map(x => x && x.id).filter(Boolean); const d = ids.filter((x, i) => ids.indexOf(x) !== i); if (d.length) out.push(n + ' ' + k + ' duplicate ids ' + [...new Set(d)].slice(0, 3).join(',')); }
-        const req = new Set(arr(p.requirements).map(r => r.id));
-        for (const x of arr(p.tests)) for (const r of arr(x.reqIds)) if (!req.has(r)) out.push(n + ' test ' + x.id + ' → missing requirement ' + r);
-        for (const f of arr(p.findings).filter(f => f.status === 'open')) for (const tg of arr(f.targets)){ const ref = typeof tg === 'string' ? tg : tg && tg.ref; if (ref && /^(req|test|risk|assumption):/.test(ref) && typeof itemExists === 'function' && !itemExists(p, ref)) out.push(n + ' problem ' + f.id + ' → missing ' + ref); } }
-        return out; })()""")
-    check("29 integrity: unique ids, and every link points to an item that exists", not integ, integ[:6])
-    # 30 speed
-    slow = []
-    big = pg.evaluate("WS.projects.slice().sort((a, b) => JSON.stringify(b).length - JSON.stringify(a).length)[0].id")
-    for js in SCREENS(big):
-        pg.evaluate(js)
-        ms = pg.evaluate("(() => { render(); const ts = []; for (let i = 0; i < 5; i++){ const t0 = performance.now(); render(); ts.push(performance.now() - t0); } return Math.min(...ts); })()")   # the fastest of 5: the code's own cost, not a busy machine
-        if ms > 250: slow.append([pg.evaluate(WHERE), round(ms)])
-    check("30 speed: every screen renders in under 250 ms with the biggest project", not slow, slow[:6])
-    ctx.close()
+            r = pg.evaluate(TAP)
+            if r: tap_bad.append([pg.evaluate(WHERE), r])
+        pg.set_viewport_size({"width": 1440, "height": 900})
+        check("25 tap targets: on a phone every control is 24 × 24 px or has room around it, and every button has a name", not tap_bad, tap_bad[:6])
+    if on("26"):
+        # 26 one count for open work: the Finish button, the steps and the counts all say the same number
+        cnt = pg.evaluate("""(phs) => { const out = []; for (const p of WS.projects){ openProject(p.id); UI.home = true; UI.modal = null; render();
+            const c = queueCounts(p), total = c.block + c.should, perStep = phs.reduce((s, ph) => s + queueOf(p).filter(x => x.ph === ph && youOpen(x)).length, 0);
+            const all = queueOf(p).filter(youOpen).length;
+            const b = [...document.querySelectorAll('.app [data-a=finish-open]')].map(e => +((e.textContent.match(/\\d+/) || [NaN])[0])).filter(n => !isNaN(n));
+            if (total !== all) out.push(p.name.slice(0, 14) + ': counts ' + total + ' vs queue ' + all);
+            if (perStep !== all) out.push(p.name.slice(0, 14) + ': steps add up to ' + perStep + ', queue has ' + all);
+            if (b.some(n => n !== total)) out.push(p.name.slice(0, 14) + ': Finish button says ' + b.join('/') + ', queue has ' + total); } return out; }""", PHASES)
+        check("26 one count: the Finish button, the steps and the counts all show the same open work", not cnt, cnt[:6])
+    if on("27"):
+        # 27 language: screen German, project English (and the other way round)
+        lang_bad = []
+        for scr, plang in (("de", "en"), ("en", "zh")):
+            pg.evaluate(f"(() => {{ LANG = '{scr}'; if (WS.settings) WS.settings.lang = '{scr}'; const p = WS.projects.find(x => x.id === '{PIDS[0]}'); p.lang = '{plang}'; window.__allPrompts = []; }})()")
+            for js in SCREENS(PIDS[0])[1:9]:
+                pg.evaluate(js); pg.wait_for_timeout(30)
+                pg.evaluate("""() => { const ai = Object.keys(ACTIONS).filter(k => /runAI|await ai[A-Z]|=> ai[A-Z]\\w*\\(curP\\(\\)/.test(String(ACTIONS[k])) && !/publish|release|runner|pilot|live|launch|delete|reset|import|export|engine|kp-|research|translate/.test(k));
+                    const e = [...document.querySelectorAll('.app [data-a]')].find(e => e.offsetParent && !e.disabled && ai.includes(e.dataset.a)); if (e) e.click(); }""")
+                pg.wait_for_timeout(200)
+                if pg.evaluate("!!(UI.modal && UI.modal.kind === 'cost')"): pg.evaluate("ACTIONS['cost-go'] && ACTIONS['cost-go']({dataset: {v: 'once'}})")
+                try: pg.wait_for_function("AI.running.size === 0", timeout=10000)
+                except Exception: pass
+                pg.evaluate("UI.modal = null; UI.review = null; UI.finish = null")
+            res = pg.evaluate(f"""(() => {{ const want = langName('{plang}').split(' (')[0], screen = langName('{scr}').split(' (')[0]; const out = [];
+                for (const pr of window.__allPrompts || []){{ const task = (/\\[\\[task:([a-z0-9-]+)\\]\\]/.exec(pr) || [0, '?'])[1];
+                  const content = new RegExp('text value in ' + want.replace(/[()]/g, '.') + '|written in ' + want.replace(/[()]/g, '.') + '|in ' + want.replace(/[()]/g, '.')).test(pr);
+                  const viewer = /reader's language|the reader/.test(pr);
+                  if (!content && !viewer && /Write every human-readable|written in/.test(pr)) out.push(task + ': asks for ' + (pr.includes(screen) ? screen : 'another language')); }}
+                return [(window.__allPrompts || []).length, out]; }})()""")
+            if res[1]: lang_bad.append([f"screen {scr} / project {plang}", res[1][:4]])
+            if not res[0]: lang_bad.append([f"screen {scr} / project {plang}", "no AI prompt was sent — the check did not run"])
+        pg.evaluate("(() => { LANG = 'en'; if (WS.settings) WS.settings.lang = 'en'; })()")
+        check("27 language: every AI prompt asks for the project's language, or says it writes for the reader", not lang_bad, lang_bad[:4])
+    if on("29"):
+        # 29 integrity
+        integ = pg.evaluate("""(() => { const out = []; for (const p of WS.projects){ const n = p.name.slice(0, 14);
+            for (const k of ['requirements','tests','risks','assumptions','findings','qa']){ const ids = arr(p[k]).map(x => x && x.id).filter(Boolean); const d = ids.filter((x, i) => ids.indexOf(x) !== i); if (d.length) out.push(n + ' ' + k + ' duplicate ids ' + [...new Set(d)].slice(0, 3).join(',')); }
+            const req = new Set(arr(p.requirements).map(r => r.id));
+            for (const x of arr(p.tests)) for (const r of arr(x.reqIds)) if (!req.has(r)) out.push(n + ' test ' + x.id + ' → missing requirement ' + r);
+            for (const f of arr(p.findings).filter(f => f.status === 'open')) for (const tg of arr(f.targets)){ const ref = typeof tg === 'string' ? tg : tg && tg.ref; if (ref && /^(req|test|risk|assumption):/.test(ref) && typeof itemExists === 'function' && !itemExists(p, ref)) out.push(n + ' problem ' + f.id + ' → missing ' + ref); } }
+            return out; })()""")
+        check("29 integrity: unique ids, and every link points to an item that exists", not integ, integ[:6])
+    if on("30"):
+        # 30 speed
+        slow = []
+        big = pg.evaluate("WS.projects.slice().sort((a, b) => JSON.stringify(b).length - JSON.stringify(a).length)[0].id")
+        for js in SCREENS(big):
+            pg.evaluate(js)
+            ms = pg.evaluate("(() => { render(); const ts = []; for (let i = 0; i < 5; i++){ const t0 = performance.now(); render(); ts.push(performance.now() - t0); } return Math.min(...ts); })()")   # the fastest of 5: the code's own cost, not a busy machine
+            if ms > 250: slow.append([pg.evaluate(WHERE), round(ms)])
+        check("30 speed: every screen renders in under 250 ms with the biggest project", not slow, slow[:6])
+    if on("22", "23", "25", "26", "27", "29", "30"):
+        ctx.close()
     # 28 await race: an answer that comes back after a project switch lands in its own project
-    ctx = new_ctx(b); pg = open_page(ctx); watch(pg); mutate(pg); pg.wait_for_timeout(300)
-    race = []
-    # #83 (1.7): opening the other project wakes its own automatic steps (screening, missing picks) — those are its own changes, not a race; off for this check
-    pg.evaluate("WS.settings.autoJobs = false; window.__mockDelayMs = 600")   # the answer must arrive after the switch, on a loaded machine too
-    if len(PIDS) < 2: race.append(["setup", "", "fewer than 2 projects"])
-    else:
-        A, B = PIDS[0], PIDS[1]
-        # 2.0: the steps are gone; AI answers start in the two faces — a chat message, and the AI buttons of Pick
-        ran = 0
-        for face in ["chat", "pick"]:
-            pg.evaluate(f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{A}'); UI.home=false; face20Set(curP(), '{face}'); render(); }})()"); pg.wait_for_timeout(60)
-            snapB = pg.evaluate(f"JSON.stringify(Object.assign({{}}, WS.projects.find(x => x.id === '{B}'), {{updatedAt: 0, _rev: 0, focus: 0, seenAt: 0, lastWhere: 0}}))")
-            if face == "chat":
-                started = pg.evaluate("""() => { const f = document.querySelector('form[data-form=c20-say]'), el = f && f.querySelector('#c20-in'); if (!el) return null;
-                    el.value = 'We need a weekly summary for the team.'; FORMS['c20-say'](f); return 'c20-say'; }""")
-            else:   # the Pick cover: try its buttons one by one (navigation and anything that cannot be undone left out) until one starts an AI answer
-                started = None
-                cands = pg.evaluate("""() => [...new Set([...document.querySelectorAll('.app [data-a]')].filter(e => e.offsetParent && !e.disabled).map(e => e.dataset.a))]""")
-                for a in cands:
-                    if DANGER.search(a) or re.search(r"^(nav|open-project|new-project|palette|dock-toggle|home|undo|face20|project-menu|keys|ws-menu|insp-toggle|panel|phase|stage|q-tab|goto-ref|q-goto|clamp-toggle)$|-open$|^edit-", a): continue
-                    pg.evaluate(f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{A}'); face20Set(curP(), 'pick'); render(); }})()")
-                    if pg.evaluate(f"""() => {{ const e = [...document.querySelectorAll('.app [data-a="{a}"]')].find(e => e.offsetParent && !e.disabled); if (!e) return false; e.click(); return AI.running.size > 0; }}"""):
-                        started = a; break
-            pg.wait_for_timeout(10)
-            if not started or not pg.evaluate("AI.running.size > 0"):
-                race.append([face, started, "no AI answer started: the check would prove nothing"]); continue
-            ran += 1
-            pg.evaluate(f"(() => {{ openProject('{B}'); UI.home = true; render(); }})()")
-            if pg.evaluate("!!(UI.modal && UI.modal.kind === 'cost')"): pg.evaluate("ACTIONS['cost-go'] && ACTIONS['cost-go']({dataset: {v: 'once'}})")
-            try: pg.wait_for_function("AI.running.size === 0", timeout=15000)
-            except Exception: race.append([face, started, "still running"])
-            pg.wait_for_timeout(200)
-            nowB = pg.evaluate(f"JSON.stringify(Object.assign({{}}, WS.projects.find(x => x.id === '{B}'), {{updatedAt: 0, _rev: 0, focus: 0, seenAt: 0, lastWhere: 0}}))")
-            if nowB != snapB: race.append([face, started, "the other project changed"])
-            pg.evaluate("UI.modal = null; UI.review = null; UI.finish = null")
-    pg.evaluate("window.__mockDelayMs = 0")
-    check("28 await race: an AI answer after a project switch lands in its own project", not race, race[:6])
-    # 31 save failure is visible and retried; typed text stays
-    pg.evaluate(f"(() => {{ openProject('{PIDS[0]}'); UI.home = false; pgShowPhase(curP(), 'capture'); setPhase('capture'); render(); window.__mockFailSet = true; const p = curP(); p.zzSaveProbe = 'x'; touch(p); saveProject(p); }})()")
-    pg.wait_for_timeout(4000)
-    shown = pg.evaluate("(() => { const s = document.getElementById('savestate'); return {text: s ? s.innerText : '', retry: !!document.querySelector('[data-a=save-retry]'), toast: [...document.querySelectorAll('#toasts .toast')].map(t => t.textContent).join('|')}; })()")
-    pg.evaluate("(() => { window.__mockFailSet = false; ACTIONS['save-retry'] && ACTIONS['save-retry'](); })()"); pg.wait_for_timeout(2500)
-    after = pg.evaluate("(() => { const d = window.__mockdb(); const k = Object.keys(d).find(k => k.includes(curP().id)); return {saved: !!(k && JSON.stringify(d[k]).includes('zzSaveProbe')), text: (document.getElementById('savestate') || {}).innerText || ''}; })()")
-    ok31 = bool(shown["text"].strip()) and (shown["retry"] or "retry" in shown["text"].lower()) and after["saved"]
-    check("31 save failure: the screen says it is not saved, offers a retry, and the retry saves", ok31, [shown, after])
-    ctx.close()
+    if on("28", "31"):
+        ctx = new_ctx(b); pg = open_page(ctx); watch(pg); mutate(pg); pg.wait_for_timeout(300)
+        PIDS = pg.evaluate("WS.projects.map(p => p.id)")
+        pg.evaluate("WS.settings.autoJobs = false")   # #83 (1.7): opening the other project wakes its own automatic steps — off for 28 and 31
+    if on("28"):
+        race = []
+        # #83 (1.7): opening the other project wakes its own automatic steps (screening, missing picks) — those are its own changes, not a race; off for this check
+        pg.evaluate("window.__mockDelayMs = 600")   # the answer must arrive after the switch, on a loaded machine too
+        if len(PIDS) < 2: race.append(["setup", "", "fewer than 2 projects"])
+        else:
+            A, B = PIDS[0], PIDS[1]
+            # 2.0: the steps are gone; AI answers start in the two faces — a chat message, and the AI buttons of Pick
+            ran = 0
+            for face in ["chat", "pick"]:
+                pg.evaluate(f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{A}'); UI.home=false; face20Set(curP(), '{face}'); render(); }})()"); pg.wait_for_timeout(60)
+                snapB = pg.evaluate(f"JSON.stringify(Object.assign({{}}, WS.projects.find(x => x.id === '{B}'), {{updatedAt: 0, _rev: 0, focus: 0, seenAt: 0, lastWhere: 0}}))")
+                if face == "chat":
+                    started = pg.evaluate("""() => { const f = document.querySelector('form[data-form=c20-say]'), el = f && f.querySelector('#c20-in'); if (!el) return null;
+                        el.value = 'We need a weekly summary for the team.'; FORMS['c20-say'](f); return 'c20-say'; }""")
+                else:   # the Pick cover: try its buttons one by one (navigation and anything that cannot be undone left out) until one starts an AI answer
+                    started = None
+                    cands = pg.evaluate("""() => [...new Set([...document.querySelectorAll('.app [data-a]')].filter(e => e.offsetParent && !e.disabled).map(e => e.dataset.a))]""")
+                    for a in cands:
+                        if DANGER.search(a) or re.search(r"^(nav|open-project|new-project|palette|dock-toggle|home|undo|face20|project-menu|keys|ws-menu|insp-toggle|panel|phase|stage|q-tab|goto-ref|q-goto|clamp-toggle)$|-open$|^edit-", a): continue
+                        pg.evaluate(f"(() => {{ UI.modal=null; UI.review=null; UI.finish=null; openProject('{A}'); face20Set(curP(), 'pick'); render(); }})()")
+                        if pg.evaluate(f"""() => {{ const e = [...document.querySelectorAll('.app [data-a="{a}"]')].find(e => e.offsetParent && !e.disabled); if (!e) return false; e.click(); return AI.running.size > 0; }}"""):
+                            started = a; break
+                pg.wait_for_timeout(10)
+                if not started or not pg.evaluate("AI.running.size > 0"):
+                    race.append([face, started, "no AI answer started: the check would prove nothing"]); continue
+                ran += 1
+                pg.evaluate(f"(() => {{ openProject('{B}'); UI.home = true; render(); }})()")
+                if pg.evaluate("!!(UI.modal && UI.modal.kind === 'cost')"): pg.evaluate("ACTIONS['cost-go'] && ACTIONS['cost-go']({dataset: {v: 'once'}})")
+                try: pg.wait_for_function("AI.running.size === 0", timeout=15000)
+                except Exception: race.append([face, started, "still running"])
+                pg.wait_for_timeout(200)
+                nowB = pg.evaluate(f"JSON.stringify(Object.assign({{}}, WS.projects.find(x => x.id === '{B}'), {{updatedAt: 0, _rev: 0, focus: 0, seenAt: 0, lastWhere: 0}}))")
+                if nowB != snapB: race.append([face, started, "the other project changed"])
+                pg.evaluate("UI.modal = null; UI.review = null; UI.finish = null")
+        pg.evaluate("window.__mockDelayMs = 0")
+        check("28 await race: an AI answer after a project switch lands in its own project", not race, race[:6])
+    if on("31"):
+        # 31 save failure is visible and retried; typed text stays
+        pg.evaluate(f"(() => {{ openProject('{PIDS[0]}'); UI.home = false; pgShowPhase(curP(), 'capture'); setPhase('capture'); render(); window.__mockFailSet = true; const p = curP(); p.zzSaveProbe = 'x'; touch(p); saveProject(p); }})()")
+        pg.wait_for_timeout(4000)
+        shown = pg.evaluate("(() => { const s = document.getElementById('savestate'); return {text: s ? s.innerText : '', retry: !!document.querySelector('[data-a=save-retry]'), toast: [...document.querySelectorAll('#toasts .toast')].map(t => t.textContent).join('|')}; })()")
+        pg.evaluate("(() => { window.__mockFailSet = false; ACTIONS['save-retry'] && ACTIONS['save-retry'](); })()"); pg.wait_for_timeout(2500)
+        after = pg.evaluate("(() => { const d = window.__mockdb(); const k = Object.keys(d).find(k => k.includes(curP().id)); return {saved: !!(k && JSON.stringify(d[k]).includes('zzSaveProbe')), text: (document.getElementById('savestate') || {}).innerText || ''}; })()")
+        ok31 = bool(shown["text"].strip()) and (shown["retry"] or "retry" in shown["text"].lower()) and after["saved"]
+        check("31 save failure: the screen says it is not saved, offers a retry, and the retry saves", ok31, [shown, after])
+    if on("28", "31"):
+        ctx.close()
     # 24 dead clicks (fresh copy: clicks change the data)
-    ctx = new_ctx(b); pg = open_page(ctx); watch(pg); mutate(pg); pg.wait_for_timeout(300)
-    pg.evaluate("(() => { const w = navigator.clipboard && navigator.clipboard.writeText; if (navigator.clipboard) navigator.clipboard.writeText = (s) => { window.__copied = (window.__copied || 0) + 1; return Promise.resolve(); }; })()")
-    dead, tried24 = [], 0
-    pid = pg.evaluate("WS.projects.slice().sort((a, b) => arr(b.requirements).length - arr(a.requirements).length)[0].id")
-    for js in SCREENS(pid):
-        pg.evaluate(js); pg.wait_for_timeout(40)
-        btns = pg.evaluate("""(() => { const seen = new Set(); return [...document.querySelectorAll('.app [data-a]')].filter(e => e.offsetParent && !e.disabled && e.getAttribute('aria-disabled') !== 'true').map((e, i) => { if (e.getAttribute('aria-current')) return null;   // the page you are on
-            const k = e.dataset.a + '|' + JSON.stringify(e.dataset); if (seen.has(k)) return null; seen.add(k); return [i, e.dataset.a, (e.innerText || e.getAttribute('aria-label') || '').trim().slice(0, 24)]; }).filter(Boolean).slice(0, 30); })()""")
-        for i, a, label in btns:
-            if DANGER.search(a): continue
-            pg.evaluate(js); pg.wait_for_timeout(30)
-            before = pg.evaluate(STATE)
-            ok = pg.evaluate("([i, a]) => { const e = [...document.querySelectorAll('.app [data-a]')].filter(e => e.offsetParent && !e.disabled && e.getAttribute('aria-disabled') !== 'true')[i]; if (!e || e.dataset.a !== a) return false; e.click(); return true; }", [i, a])
-            if not ok: continue
-            tried24 += 1
-            pg.wait_for_timeout(140)
-            after = pg.evaluate(STATE)
-            if after == before:
-                pg.wait_for_timeout(500); after = pg.evaluate(STATE)
-            if after == before: dead.append([pg.evaluate(WHERE), a, label])
-            try: pg.wait_for_function("AI.running.size === 0", timeout=8000)
-            except Exception: pass
-            pg.evaluate("UI.modal = null; UI.review = null; UI.finish = null; UI.palette = false; UI.capture = false; UI.drawer = false; document.querySelectorAll('#toasts .toast').forEach(t => t.remove()); render()")
-    check(f"24 dead clicks: every visible button does something you can see ({tried24} clicked)", not dead, dead[:8])
-    ctx.close()
+    if on("24"):
+        ctx = new_ctx(b); pg = open_page(ctx); watch(pg); mutate(pg); pg.wait_for_timeout(300)
+        pg.evaluate("(() => { const w = navigator.clipboard && navigator.clipboard.writeText; if (navigator.clipboard) navigator.clipboard.writeText = (s) => { window.__copied = (window.__copied || 0) + 1; return Promise.resolve(); }; })()")
+        dead, tried24 = [], 0
+        pid = pg.evaluate("WS.projects.slice().sort((a, b) => arr(b.requirements).length - arr(a.requirements).length)[0].id")
+        for js in SCREENS(pid):
+            pg.evaluate(js); pg.wait_for_timeout(40)
+            btns = pg.evaluate("""(() => { const seen = new Set(); return [...document.querySelectorAll('.app [data-a]')].filter(e => e.offsetParent && !e.disabled && e.getAttribute('aria-disabled') !== 'true').map((e, i) => { if (e.getAttribute('aria-current')) return null;   // the page you are on
+                const k = e.dataset.a + '|' + JSON.stringify(e.dataset); if (seen.has(k)) return null; seen.add(k); return [i, e.dataset.a, (e.innerText || e.getAttribute('aria-label') || '').trim().slice(0, 24)]; }).filter(Boolean).slice(0, 30); })()""")
+            for i, a, label in btns:
+                if DANGER.search(a): continue
+                pg.evaluate(js); pg.wait_for_timeout(30)
+                before = pg.evaluate(STATE)
+                ok = pg.evaluate("([i, a]) => { const e = [...document.querySelectorAll('.app [data-a]')].filter(e => e.offsetParent && !e.disabled && e.getAttribute('aria-disabled') !== 'true')[i]; if (!e || e.dataset.a !== a) return false; e.click(); return true; }", [i, a])
+                if not ok: continue
+                tried24 += 1
+                pg.wait_for_timeout(140)
+                after = pg.evaluate(STATE)
+                if after == before:
+                    pg.wait_for_timeout(500); after = pg.evaluate(STATE)
+                if after == before: dead.append([pg.evaluate(WHERE), a, label])
+                if MUT and dead: break   # J4: caught
+                try: pg.wait_for_function("AI.running.size === 0", timeout=8000)
+                except Exception: pass
+                pg.evaluate("UI.modal = null; UI.review = null; UI.finish = null; UI.palette = false; UI.capture = false; UI.drawer = false; document.querySelectorAll('#toasts .toast').forEach(t => t.remove()); render()")
+            if MUT and dead: break
+        check(f"24 dead clicks: every visible button does something you can see ({tried24} clicked)", not dead, dead[:8])
+        ctx.close()
     b.close()
 print("ok:", len(oks), "failed:", len(fails), "page errors:", len(errors))
 for f in fails: print("  FAIL", f)

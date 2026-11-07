@@ -12,8 +12,7 @@ languages (no raw keys, German without ß); 390 px without sideways scroll; no p
 import json, sys, pathlib, re, os
 BK = sys.argv[1] if len(sys.argv) > 1 else "work/backup-141"
 sys.argv = [sys.argv[0], BK]
-__file__ = str(pathlib.Path(__file__).resolve().parent / "e2e14.py")
-exec(open(__file__).read().split("with sync_playwright() as pw:")[0])
+from harness import *   # 2.1 (J21): the shared setup as a module (was: exec of the first half of e2e14.py)
 _check0 = check
 def check(name, cond, info=""):
     _check0(name, cond, info); print(("ok    " if cond else "FAIL  ") + name + ("" if cond else "  → " + str(info)[:400]), flush=True)
@@ -57,7 +56,12 @@ with sync_playwright() as pw:
         p.on("console", lambda m: errors.append("console(plain): " + m.text[:300]) if m.type == "error" else None)
         p.on("dialog", lambda d: (errors.append("native dialog: " + d.message[:100]), d.dismiss()))
         p.on("request", lambda r: reqs.append(r.url))
-        p.goto(DIST.as_uri()); p.wait_for_selector(".v19", timeout=20000); p.wait_for_timeout(200)
+        p.goto(DIST.as_uri())
+        # 2.1: a build that falls back to the editable local mode (the planted bug) must fail a check, not crash the suite
+        try: p.wait_for_selector(".v19", timeout=20000); p.wait_for_timeout(200)
+        except Exception:
+            check("PT outside claude.ai shows the read-only viewer, never the editable local mode", False, ev(p, "document.body.className + ' ' + (document.querySelector('.app, .lock, .ws-opt') ? 'editable app on screen' : 'nothing on screen')"))
+            print(f"ok: {len(oks)} failed: {len(fails)} page errors: {len(errors)}"); sys.exit(1)
         return c, p, reqs
 
     print("1 the built file in plain Chromium, no runtime")

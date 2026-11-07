@@ -19,13 +19,30 @@ Run: python3 test/e2e200_loop.py [work/backup-141 | test/fixtures/synthetic.json
  L6 the guides: GitHub App, connector, Dependabot-only auto-merge, cloud scheduled task, computer use, one per helper; click by click.
  three languages (no raw keys, no ß), 390 px without sideways scroll, no page errors."""
 import json, sys, pathlib, re
-BK = sys.argv[1] if len(sys.argv) > 1 else "work/backup-141"
+# 2.1 (J5): --only A3[,A5] runs the suite from its start through the last part named and stops there (each part builds on the
+# parts before it, so the earlier ones run as its setup); the planted-bug run (check_the_pick.py) uses it to run less per bug
+ONLY = set()
+for _i, _a in enumerate(sys.argv):
+    if _a == "--only" and _i + 1 < len(sys.argv): ONLY = set(sys.argv[_i + 1].split(","))
+    elif _a.startswith("--only="): ONLY = set(_a.split("=", 1)[1].split(","))
+ARGS = [a for a in sys.argv[1:] if not a.startswith("--") and not re.fullmatch(r"[A-Z0-9,]+", a)]
+BK = ARGS[0] if ARGS else "work/backup-141"
 sys.argv = [sys.argv[0], BK]
 __file__ = str(pathlib.Path(__file__).resolve().parent / "e2e14.py")
 exec(open(__file__).read().split("with sync_playwright() as pw:")[0])
 _check0 = check
 def check(name, cond, info=""):
     _check0(name, cond, info); print(("ok    " if cond else "FAIL  ") + name + ("" if cond else "  → " + str(info)[:600]), flush=True)
+SEEN = []
+def sec(title):   # 2.1 (J5): a part's heading; with --only, the run ends at the first part after the parts named
+    part = title.split()[0]
+    if ONLY and ONLY <= set(SEEN) and part not in ONLY:
+        print(f"--only {','.join(sorted(ONLY))}: stopped before “{title}”", flush=True)
+        try: (ROOT / "test" / PAGE).unlink()
+        except Exception: pass
+        print("ok:", len(oks), "failed:", len(fails), "page errors:", len(errors), flush=True)
+        sys.exit(1 if fails or errors else 0)
+    SEEN.append(part); print(title, flush=True)
 def ev(pg, js, *a): return pg.evaluate(js, *a)
 def wait_idle(pg, ms=30000):
     for _ in range(ms // 100):
@@ -58,6 +75,7 @@ with sync_playwright() as pw:
         touch(p); }})()""")
 
     # ---------- L1 the morning check ----------
+    sec("L1 the morning check")
     ev(pg, "window.__mcp.length = 0; window.__ptNoMorning = false; delete WS.settings.morning20")
     check("L1 due on the owner's first open of the day", ev(pg, "mc20Due()"))
     ev(pg, "openWorkspace(WS.id)"); pg.wait_for_timeout(2600); wait_idle(pg)
@@ -83,8 +101,13 @@ with sync_playwright() as pw:
         window.__helperAnswer = (server, tool, input) => server === 'host:fetch' ? 'Contents of ' + input.url + ':\\nChangelog version ' + window.__pageV : null; })()""")
     ev(pg, "helper20Detect()"); wait_idle(pg)
     check("L5 the Fetch helper lists (listTools) as Ready", ev(pg, "HELP20.st.fetch") == "ready", ev(pg, "HELP20.st"))
+    # 2.1 (owner, 7 Nov): PT reads a project's pages only after the owner's "Watch these" click; before it, the card lists the pages
+    ev(pg, "window.__calls = []; mc20Run()"); wait_idle(pg)
+    tx0 = ev(pg, "document.querySelector('.mc20') ? document.querySelector('.mc20').textContent : ''")
+    check("L1 before the click: the card lists the pages PT would read, with a 'Watch these' button, and nothing was fetched", "https://example.org/changelog" in tx0 and ev(pg, "!!document.querySelector('.mc20 [data-a=watch20-ok]')") and not [c for c in host(pg) if c["server"] == "host:fetch"], tx0[:300])
     ev(pg, "(() => { const M = WS.settings.morning20; M.kp = 'kp-old'; })()")
-    ev(pg, "mc20Run()"); wait_idle(pg)
+    ev(pg, f"(() => {{ ACTIONS['watch20-ok']({{dataset: {{id: '{pid}'}}}}); }})()"); wait_idle(pg)
+    check("L1 the click turns the watch on for that project only", ev(pg, f"WS.projects.find(x => x.id === '{pid}').watch20Ok === true"))
     hc = [c for c in host(pg) if c["server"] == "host:fetch"]
     check("L1 a watch line with a page: read through the Fetch helper (its first reading is kept)", len(hc) == 1 and hc[0]["tool"] == "fetch" and hc[0]["input"]["url"] == "https://example.org/changelog" and ev(pg, f"!!WS.settings.morning20.watch['{pid}:N801']"), hc)
     al0 = ev(pg, f"m20Read(WS.projects.find(x => x.id === '{pid}')).alerts.length")
@@ -108,6 +131,7 @@ with sync_playwright() as pw:
     ev(pg, "(() => { Store.isOwner = true; render(); })()")
 
     # ---------- L2 prompt tests ----------
+    sec("L2 prompt tests")
     ev(pg, f"""(() => {{ openProject('{pid}'); UI.home = false; const p = curP();
         p.pkg = Object.assign({{}}, p.pkg, {{sections: [{{id: 'S1', title: 'Instructions', dest: 'project', content: 'You help the family keep one shopping list.'}}]}});
         factsAdd(p, {{kind: 'never', words: 'We never talk about prices', src: {{k: 'you'}}}}); factsAdd(p, {{kind: 'must', words: 'Answers must be in plain words', src: {{k: 'you'}}}});
@@ -143,6 +167,7 @@ with sync_playwright() as pw:
     ev(pg, "(() => { const p = curP(); p.pkg.sections = p._pk; delete p._pk; render(); })()")
 
     # ---------- L3 Improve PT ----------
+    sec("L3 Improve PT")
     ev(pg, "(() => { ACTIONS['tool-report']({dataset: {k: 'header'}}); })()"); pg.wait_for_timeout(200)
     ev(pg, "(() => { document.getElementById('tr-in').value = 'The Next button jumps to an answered question'; })()")
     pg.locator("form[data-form=tool-report] button[type=submit]").first.click(); pg.wait_for_timeout(300)
@@ -155,7 +180,7 @@ with sync_playwright() as pw:
     check("L3 on a version change the listed report is marked fixed in this version", n == 1 and ev(pg, f"ipt20List().find(x => x.id === '{rid}').status") == "fixed" and ev(pg, f"ipt20List().find(x => x.id === '{rid}').fixed") == ev(pg, "PT_VERSION"))
     cockpit(pg)
     check("L3 …and the owner is told once (a card)", "fixes 1 of your Improve PT reports" in main(pg))
-    check("L3 …a second open says nothing again", ev(pg, "ipt20Version()") == 0)
+    check("L3 …a second open says nothing again", ev(pg, "ipt20Version()") == 0 and ev(pg, "WS.settings.ipt20v === PT_VERSION"), ev(pg, "WS.settings.ipt20v"))   # 2.1: the version is remembered (else every open runs the check and saves again)
     pg.locator("[data-a=ipt20-ok]").first.click(); pg.wait_for_timeout(200)
     check("L3 …Got it removes the card", "fixes 1 of your" not in main(pg))
     settings(pg, "health")
@@ -163,6 +188,7 @@ with sync_playwright() as pw:
     ev(pg, f"delete IMPROVE_FIXED[PT_VERSION]")
 
     # ---------- L4 metrics ----------
+    sec("L4 metrics")
     ev(pg, f"(() => {{ delete WS.settings.met20; openProject('{pid}'); UI.home = false; render(); }})()")
     m = ev(pg, """(async () => { const p = curP();
         const e = factsAdd(p, {kind: 'fact', words: 'The list lives on the fridge tablet', src: {k: 'you'}});
@@ -181,6 +207,7 @@ with sync_playwright() as pw:
     check("L4 no prompt ever carries the metrics", "met20" not in allp and '"twice"' not in allp and "goalAt" not in allp)
 
     # ---------- L5 helpers ----------
+    sec("L5 helpers")
     ev(pg, """(() => { window.__mcp.length = 0; HELP20.st = {}; HELP20.note = {};
         window.__hostServers = {'host:filesystem': {tools: ['list_allowed_directories', 'list_directory', 'write_file', 'read_text_file']}, 'host:git': {tools: ['git_log']}, 'host:fetch': {tools: ['fetch'], live: false}};
         window.__helperAnswer = (server, tool, input) => server === 'host:filesystem' ? (tool === 'list_allowed_directories' ? 'Allowed directories:\\n/Users/me/Documents/PT' : tool === 'list_directory' ? '[FILE] notes.md\\n[FILE] ' + window.__pfile : 'Successfully wrote to ' + input.path) : null; })()""")
@@ -234,10 +261,11 @@ with sync_playwright() as pw:
     S = {s["server"]: s["tools"] for s in CAP["mcp"]["servers"]}
     H = ev(pg, "HELPERS20.map(h => [h.server, h.tools])")
     check("L5 CAPABILITIES-2.0.json lists every helper with exactly the tools PT calls", all(S.get(sv) == tl for sv, tl in H), [S, H])
-    check("L5 …and the app's browser with the hands' tools (form_input only while typing is on: off in 2.0.0, the platform does not grant it from a cloud publish)", S.get("host:claude_browser") == ev(pg, "H20_TOOLS.filter(x => H20_TYPE || x !== 'form_input')") and set(ev(pg, "HANDS_TOOLS.slice()")) <= set(S.get("host:claude_browser", [])), S.get("host:claude_browser"))
+    check("L5 …and the app's browser with the hands' tools (form_input included: typing is on from 2.1)", S.get("host:claude_browser") == ev(pg, "H20_TOOLS.filter(x => H20_TYPE || x !== 'form_input')") and set(ev(pg, "HANDS_TOOLS.slice()")) <= set(S.get("host:claude_browser", [])), S.get("host:claude_browser"))
     check("L5 …and keeps the existing entries", S.get("Claude Code Remote") == ["fire_trigger", "list_triggers", "update_trigger", "create_trigger"] and CAP.get("sample") == {"images": True} and len(CAP["db"]["rules"]) == 3)
 
     # ---------- L6 guides ----------
+    sec("L6 guides")
     settings(pg, "setup20")
     G = ev(pg, "[...document.querySelectorAll('.su20-g')].map(d => [d.dataset.g, d.querySelectorAll('.su20-steps li').length])")
     check("L6 guides: GitHub App, connector, auto-merge, cloud task, computer use, one per helper — click by click", [g for g, _ in G] == ["app", "connector", "automerge", "cloud", "computer", "h-files", "h-git", "h-fetch", "h-blender"] and all(n >= 5 for _, n in G), G)
@@ -250,6 +278,7 @@ with sync_playwright() as pw:
     check("L6 the morning card's cloud link opens that guide in Settings › Setup", ev(pg, "UI.setTab") == "setup20" and ev(pg, "document.getElementById('su20-g-cloud').open"))
 
     # ---------- L7 (hunt 5, cause 93) an automatic step closes its own action ----------
+    sec("L7 (hunt 5, cause 93) an automatic step closes its own action")
     r7 = ev(pg, f"""(async () => {{ openProject('{pid}'); const p = curP(); const e = eng(p); e.trial.runs = []; e.trial.cases = [{{id: 'C1', input: 'Add milk', expect: 'milk is on the list'}}];
         actClose(p.id); const n0 = arr(p.acts).length; await aiTrialRun(liveP(p)); const q = liveP(p);
         return {{open: ACT.open.has(q.id), last: (arr(q.acts).slice(-1)[0] || {{}}).label, grew: arr(q.acts).length > n0 || arr(q.acts).length === 25}}; }})()"""); wait_idle(pg)
@@ -258,6 +287,7 @@ with sync_playwright() as pw:
     check("L7 …and every automatic step autoEngine starts is closed when it ends (frontier scan, engine suggestion, trial)", src7.count("own(() => frontierJob(p))") == 1 and src7.count("own(() => aiEngineSuggest(p))") == 1 and src7.count("own(() => aiTrialRun(p))") == 1 and ".finally(() => actClose(p.id))" in src7)
 
     # ---------- languages, phone width ----------
+    sec("languages, phone width")
     for lang in ("de", "zh"):
         ev(pg, f"(() => {{ LANG = '{lang}'; applyLangAttr(); render(); }})()")
         for tab in ("setup20", "metrics", "health"):
@@ -278,6 +308,7 @@ with sync_playwright() as pw:
     check("390 px: the cockpit with the morning card has no sideways scroll", sx <= 2 and card(pg), sx)
     check("no page errors", not errors, errors[:5])
     ctx.close(); b.close()
+if ONLY and not ONLY <= set(SEEN): fails.append("--only names a part this suite does not have: " + ",".join(sorted(ONLY - set(SEEN))))
 try: (ROOT / "test" / PAGE).unlink()
 except Exception: pass
 print("ok:", len(oks), "failed:", len(fails), "page errors:", len(errors))

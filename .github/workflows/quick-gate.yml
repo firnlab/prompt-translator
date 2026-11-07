@@ -1,80 +1,79 @@
-# Quick gate: runs on every push and pull request. About 12 minutes, no private data needed.
-# Green means: the sources build, every file parses, the strings are complete, the known bugs are still caught
-# and nothing private or secret is in the repository.
-# The full gate (RELEASE-CHECKS.md) runs on a copy of real project data and therefore runs in Claude's session before every push — not here.
+# Quick gate: runs on every pull request and on main. No private data: only made-up data (test/fixtures/synthetic.json).
+# Green means: the sources build, every file parses, the strings are complete, the known bugs are still caught, every cause still
+# has its checks, every flow suite passes on made-up data, and nothing private or secret is in the repository.
+# The full gate (RELEASE-CHECKS.md) also runs on a copy of real project data and therefore runs in Claude's session before every push — not here.
+# 2.1 (J10, J18, J23): one job per flow suite (fail-fast off, so one red suite no longer hides the others), the 2.0 suites, e2e15b and
+# e2e1100_hands added, Playwright pinned, push runs only on main (a branch with a pull request ran the gate twice).
+# The required status checks stay "data-guard" and "quick-gate"; quick-gate is the last job and is green only when every job before it is.
 name: quick gate
 on:
   push:
-    branches: ["**"]
+    branches: [main]
   pull_request:
   workflow_dispatch:
 concurrency:
-  group: quick-${{ github.ref }}
+  group: quick-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 permissions:
   contents: read
+env:
+  PLAYWRIGHT_VERSION: "1.56.0"   # J23: pinned; change it on purpose, after a local run of the flows
+  DATA: test/fixtures/synthetic.json
 jobs:
   # Server-side data guard (1.8 decision): the same check as the pre-push hook, run by GitHub so it cannot be skipped.
   # Required status check "data-guard" in the main ruleset.
   data-guard:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # pinned: ubuntu-latest became 26.04 on 7 Nov 2026 and Playwright 1.56 has no Chromium for it
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: data guard (no private data, no secrets in the repository)
         run: python3 tools/data_guard.py --all
-  # Required status check "quick-gate" in the main ruleset.
-  quick-gate:
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
+
+  static:
+    runs-on: ubuntu-24.04   # pinned: ubuntu-latest became 26.04 on 7 Nov 2026 and Playwright 1.56 has no Chromium for it
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: inbox triage rules (hostile, stranger, secret-in-issue, duplicate)
-        run: python3 test/triage_test.py
+        with:
+          fetch-depth: 0   # J15: the static checks read their baseline from the last release tag (BASELINE_TAG)
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "22"
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
+      - name: inbox triage rules (hostile, stranger, secret-in-issue, duplicate)
+        run: python3 test/triage_test.py
       - name: build
         run: python3 build.py
-      - name: static checks (every source file parses, no duplicate functions, planted bugs are caught)
+      - name: static checks (every source file parses, no call to a missing function, no raw values in the 2.0 files)
         run: node test/static_checks.js
       - name: strings complete in every language
         run: node test/i18n14.js
       # unit14.js runs on the private data copy too (loads real projects); it runs in Claude's session, not here
       - name: check the checks (known bugs put back into a copy must turn a check red)
         run: python3 test/check_the_checks.py
+      - name: every cause has its checks and planted bugs (test/causes.json), and that check catches its own mistakes
+        run: |
+          python3 test/check_the_causes.py
+          python3 test/check_the_causes.py --self-test
       - name: every test and tool script parses
         run: python3 -W error -m py_compile test/*.py tools/*.py
-      # 1.7 (task #84): the flow tests run here on made-up data built by PT itself (test/fixtures/synthetic.json, tools/make_synthetic.py).
-      # The hunts, layout and migration checks still need the copy of real data and run in Claude's session (full gate).
-      - name: browser for the flow tests
-        run: pip install playwright && python3 -m playwright install --with-deps chromium
-      - name: flows on made-up data (1.5 Pick, 1.6 kits, 1.7 pages, 1.7.1 time and names, Pick contract)
+      - name: changelog
         run: |
-          python3 test/e2e15.py test/fixtures/synthetic.json
-          python3 test/e2e16.py test/fixtures/synthetic.json
-          python3 test/e2e17.py test/fixtures/synthetic.json
-          python3 test/e2e171.py test/fixtures/synthetic.json
-          python3 test/e2e180_look.py test/fixtures/synthetic.json
-          python3 test/e2e180_rows.py test/fixtures/synthetic.json
-          python3 test/e2e180_kits.py test/fixtures/synthetic.json
-          python3 test/e2e180_checks.py test/fixtures/synthetic.json
-          python3 test/e2e180_decide.py test/fixtures/synthetic.json
-          python3 test/e2e180_health.py test/fixtures/synthetic.json
-          python3 test/e2e180_run.py test/fixtures/synthetic.json
-          python3 test/e2e180_cone.py test/fixtures/synthetic.json
-          python3 test/e2e190_care.py test/fixtures/synthetic.json
-          python3 test/plain_browser.py test/fixtures/synthetic.json
-          python3 test/e2e190_fleet.py test/fixtures/synthetic.json
-          python3 test/e2e190_scan.py test/fixtures/synthetic.json
-          python3 test/e2e191_judge.py test/fixtures/synthetic.json
-          python3 test/pseudo19.py test/fixtures/synthetic.json
           python3 test/changelog_test.py
           python3 tools/changelog.py --check
-          python3 test/pick_contract.py test/fixtures/synthetic.json
+      - name: the made-up data is not empty (J10, R7-10)
+        run: |
+          python3 - <<'EOF'
+          import json, os, sys
+          d = json.load(open(os.environ["DATA"]))["docs"]
+          ps = [k for k in d if "/projects/" in k and "/versions/" not in k]
+          ws = [k for k in d if k.endswith("/meta")]
+          print(f"{os.environ['DATA']}: {len(ps)} projects, {len(ws)} workspace list(s)")
+          sys.exit(0 if len(ps) >= 4 and ws else "the made-up data has fewer than 4 projects: the flows would test nothing")
+          EOF
       - name: keep the built file for 7 days
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -82,3 +81,48 @@ jobs:
           name: prompt-translator-${{ github.sha }}
           path: dist/prompt-translator.html
           retention-days: 7
+
+  # 1.7 (task #84): the flow tests run here on made-up data built by PT itself (test/fixtures/synthetic.json, tools/make_synthetic.py).
+  # The hunts, layout and migration checks still need the copy of real data and run in Claude's session (full gate).
+  flow:
+    runs-on: ubuntu-24.04   # pinned: ubuntu-latest became 26.04 on 7 Nov 2026 and Playwright 1.56 has no Chromium for it
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [e2e15, e2e15b, e2e16, e2e17, e2e171, e2e180_look, e2e180_rows, e2e180_kits, e2e180_checks, e2e180_decide, e2e180_health,
+                e2e180_run, e2e180_cone, e2e190_care, plain_browser, e2e190_fleet, e2e190_scan, e2e191_judge, pseudo19, pick_contract,
+                e2e1100_hands, e2e200_foundation, e2e200_map, e2e200_modes, e2e200_hands, e2e200_loop]
+    name: flow (${{ matrix.suite }})
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: browser for the flow tests (Playwright pinned)
+        run: pip install "playwright==${PLAYWRIGHT_VERSION}" && python3 -m playwright install --with-deps chromium
+      - name: build
+        run: python3 build.py
+      - name: ${{ matrix.suite }} on made-up data
+        env:
+          SUITE: ${{ matrix.suite }}
+        run: |
+          set -o pipefail
+          python3 "test/${SUITE}.py" "$DATA" < /dev/null 2>&1 | tee flow.log
+          # J14-style guard: a suite that ran no check at all is not green
+          grep -Eq '^ok ' flow.log || { echo "${SUITE} ran no check (no 'ok' line)"; exit 1; }
+
+  # Required status check "quick-gate" in the main ruleset: green only when the static job and every flow job are green.
+  quick-gate:
+    if: always()
+    needs: [static, flow]
+    runs-on: ubuntu-24.04   # pinned: ubuntu-latest became 26.04 on 7 Nov 2026 and Playwright 1.56 has no Chromium for it
+    timeout-minutes: 2
+    steps:
+      - name: every job before this one is green
+        env:
+          STATIC: ${{ needs.static.result }}
+          FLOW: ${{ needs.flow.result }}
+        run: |
+          echo "static: $STATIC · flows: $FLOW"
+          [ "$STATIC" = "success" ] && [ "$FLOW" = "success" ]

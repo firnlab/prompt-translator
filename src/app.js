@@ -1,7 +1,7 @@
 /* ===================== APP STATE ===================== */
 let META = {workspaces: [], last: null};
 let WS = {id:null, name:"", settings:{}, profile:{entries:[]}, projects:[], notes:[], patterns:[], research:[], jobs:[], insights:null, profileSuggestions:[]};
-const PT_VERSION = "2.0.0";
+const PT_VERSION = "2.1.0";
 /* ---------- version next to the name: "newest" check (shared doc app/version: read by everyone, written by the owner's page) ---------- */
 const APPV = {latest: PT_VERSION, newer: false, checked: false};
 function verCmp(a, b){ const x = String(a || "0").split(".").map(n => parseInt(n, 10) || 0), y = String(b || "0").split(".").map(n => parseInt(n, 10) || 0); for (let i = 0; i < 3; i++){ if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) - (y[i] || 0); } return 0; }
@@ -69,6 +69,7 @@ function guessContentLang(p){
   return de > en * 1.2 && de > 8 ? "de" : "en";
 }
 function normalizeProject(p){
+  safeDeep(p);   // 2.1 A1: unsafe item ids get fresh ones, prototype keys go
   const b = blankProject(p.name);
   const legacy = !p.schema || p.schema < 2;
   if (!p.lang) p.lang = guessContentLang(p) || (WS && WS.settings && WS.settings.lang) || LANG;   // 1.4: an empty project takes the workspace language
@@ -81,6 +82,7 @@ function normalizeProject(p){
   eng(p);   // 1.2 engine fields (filled step by step; nothing is invented for older projects)
   if (!p.focus || !PHASE_IDS.includes(p.focus.ph)) p.focus = {ph: PHASE_IDS.includes(p.phase) ? p.phase : "capture", id: null};
   if (!PHASE_IDS.includes(p.phase)) p.phase = "capture";
+  safeNums(p);   // 2.1: numbers that pages print raw are numbers
   return p;
 }
 /* v1 → 1.0: nothing is dropped; new fields are derived from what exists */
@@ -365,10 +367,11 @@ function logDecision(p, title, choice, reason){ p.decisions.push({id:uid("d"), a
 /* ---------- binding helpers ---------- */
 function resolvePath(root, path){
   const segs = path.split(".");
+  if (segs.some(s => SAFE_BAD_KEYS.has(s.replace(/^#/, "")))) return null;   // 2.1 A1: never walk into the prototype
   let o = root;
   for (let i = 0; i < segs.length - 1; i++){
     const s = segs[i];
-    if (s.startsWith("#")){ o = arr(o).find(x => x.id === s.slice(1)); } else { if (o[s] == null) o[s] = {}; o = o[s]; }
+    if (s.startsWith("#")){ o = arr(o).find(x => x.id === s.slice(1)); } else { if (!Object.prototype.hasOwnProperty.call(o, s) || o[s] == null) o[s] = {}; o = o[s]; }
     if (o == null) return null;
   }
   return {obj: o, key: segs[segs.length - 1]};

@@ -1,10 +1,10 @@
-"""2.0.0 Part C ("Two modes"): Pick and Chat with structure are two faces of one ledger; the five 1.x modes are gone; every project
+"""2.0.0 Part C ("Two modes"): Pick Mode and Chat Mode are two faces of one ledger; the five 1.x modes are gone; every project
 moves to 2.0 additively behind a "Before 2.0" restore point; the acceptance test "RC replay" — on a COPY of the real data
 (work/backup-140, work/backup-141) or the made-up bundle (test/fixtures/synthetic.json), with the mock runtime.
 Run: python3 test/e2e200_modes.py [work/backup-141 | work/backup-140 | test/fixtures/synthetic.json] [--only C1,C2,…,R]
- C1 two faces only: Pick and Chat with structure (the switch in every project, also on the cover), the 1.x views and their switchers,
+ C1 two faces only: Pick Mode and Chat Mode (the switch in every project, also on the cover), the 1.x views and their switchers,
     actions and strings are gone; a stored 1.x view ("steps", "blueprint" …) opens as Pick; Settings and the start screen offer the two.
- C2 Chat with structure: a message is answered and filed into the facts book ("✓ Noted as never" with ✎ and take back), its prompt
+ C2 Chat Mode: a message is answered and filed into the facts book ("✓ Noted as never" with ✎ and take back), its prompt
     carries <your_rules> first and the route-splitting rule before the decision (<chosen_route> after it); a never is filed by code
     when the call fails; an answer that still breaks a rule is left out; feedback about PT is never filed (Improve PT is offered);
     a question PT asks is a pick card (answered in the chat = answered in Pick); a question already answered is not asked again;
@@ -66,7 +66,7 @@ with sync_playwright() as pw:
     # ---------- C1 two faces only ----------
     if on("C1"):
         print("C1 two faces only")
-        check("only two faces exist: Pick and Chat with structure", ev(pg, "JSON.stringify(MODES)") == '["pick","chat"]', ev(pg, "MODES"))
+        check("only two faces exist: Pick Mode and Chat Mode", ev(pg, "JSON.stringify(MODES)") == '["pick","chat"]', ev(pg, "MODES"))
         gone = ev(pg, f"{json.dumps(OLD_FNS)}.filter(f => typeof window[f] === 'function' || (() => {{ try{{ return typeof eval(f) === 'function'; }}catch(e){{ return false; }} }})())")
         check("the 1.x views are gone from the code (Steps, Journey, Swimlanes, Express, Blueprint, the Express and change-map calls)", not gone, gone)
         acts = ev(pg, f"{json.dumps(OLD_ACTS)}.filter(a => ACTIONS[a])")
@@ -81,10 +81,10 @@ with sync_playwright() as pw:
             check(f"…and '{m or 'none'}' too, without the old screens", ev(pg, "projMode(curP())") == "pick" and not ev(pg, "!!document.querySelector('.steps2, .journey, .lgrid, .xp, [data-a=mode-back]')"))
         ev(pg, "ACTIONS['home'](); render()"); pg.wait_for_timeout(200)
         sw = ev(pg, "[...document.querySelectorAll('.face20 button')].map(b => b.dataset.v + ':' + b.getAttribute('aria-pressed'))")
-        check("the switch is in the project, also on the cover: Chat with structure · Pick (Pick pressed)", sw == ["chat:false", "pick:true"], sw)
+        check("the switch is in the project, also on the cover: Chat Mode · Pick Mode (Pick Mode pressed)", sw == ["chat:false", "pick:true"], sw)
         check("…no other way-of-working buttons are left", not ev(pg, "!!document.querySelector('[data-a=mode]:not(.face20 *), [data-a=pk-map], .modeseg:not(.face20)')"))
         pg.locator(".face20 [data-v=chat]").click(); pg.wait_for_timeout(300)
-        check("one tap on Chat with structure shows the conversation (and saves the face)", ev(pg, "projMode(curP())") == "chat" and ev(pg, "!!document.querySelector('.c20 .c20-log[role=log]')") and ev(pg, "curP().mode") == "chat")
+        check("one tap on Chat Mode shows the conversation (and saves the face)", ev(pg, "projMode(curP())") == "chat" and ev(pg, "!!document.querySelector('.c20 .c20-log[role=log]')") and ev(pg, "curP().mode") == "chat")
         pg.locator(".face20 [data-v=pick]").click(); pg.wait_for_timeout(300)
         check("…and back to Pick (the cover and its pages)", ev(pg, "projMode(curP())") == "pick" and not ev(pg, "!!document.querySelector('.c20')") and ev(pg, "!!document.querySelector('.pg-cover, .pg')"))
         ev(pg, "(() => { UI.view = 'settings'; UI.setTab = 'general'; render(); })()"); pg.wait_for_timeout(200)
@@ -95,9 +95,9 @@ with sync_playwright() as pw:
         check("the start screen offers the two faces", sorted(cards) in (["chat", "pick"], []), cards)
         ev(pg, f"openProject('{pid}')"); pg.wait_for_timeout(200)
 
-    # ---------- C2 Chat with structure ----------
+    # ---------- C2 Chat Mode ----------
     if on("C2") or on("C3"):
-        print("C2 Chat with structure")
+        print("C2 Chat Mode")
         pid = ev(pg, "(" + NEW_PROJ + ")('Family list', 'chat')"); pg.wait_for_timeout(400)
         check("a new chat project shows the conversation, the stage strip, the one Next and the workspace", ev(pg, "!!document.querySelector('.c20 .c20-log') && !!document.querySelector('.c20 .st20') && document.querySelectorAll('.c20 .nx20-next').length === 1 && !!document.querySelector('.c20-ws .c20-tabs')"))
         check("…the composer is labelled and the conversation is a log region", ev(pg, "!!document.querySelector('label[for=c20-in]') && document.querySelector('.c20-log').getAttribute('aria-live') === 'polite'"))
@@ -188,7 +188,7 @@ with sync_playwright() as pw:
         ev(pg, "window.__m20WatchN = 0; { const o = m20WatchSoon; window.m20WatchSoon = m20WatchSoon = function(p, it){ window.__m20WatchN++; window.__m20WatchLast = it; return o.apply(this, arguments); }; }")
         ev(pg, "(() => { const p = curP(); const k = pickOf(p); k.cards.push(Object.assign(pickCleanCard({q: 'Must the list work offline?', target: 'decision', multi: false, options: [{label: 'Yes', text: 'offline'}, {label: 'No', text: 'online'}], rec: 0, recWhy: 'x'}, 1, k), {})); touch(p); render(); })()")
         ev(pg, "(() => { const p = curP(); const c = pickRead(p).cards.find(x => /offline/.test(x.q)); pickAnswer(p, c.id, {keys: ['A']}); })()"); pg.wait_for_timeout(300)
-        check("an answer after the decision goes through the Route alert's watch (a new fact source)", ev(pg, "window.__m20WatchN") >= 1 and (ev(pg, "window.__m20WatchLast.ref") or "").startswith("pick:"), ev(pg, "window.__m20WatchLast"))
+        check("an answer after the decision goes through the Route alert's watch (a new fact source)", ev(pg, "window.__m20WatchN") >= 1 and (ev(pg, "(window.__m20WatchLast || {}).ref") or "").startswith("pick:"), ev(pg, "window.__m20WatchLast"))
         pid2 = ev(pg, "(" + NEW_PROJ + ")('Early pick', 'pick')"); pg.wait_for_timeout(300)
         ev(pg, "(() => { const p = curP(); p.northStar.goal = 'A shared family list'; const G = goal20Of(p); G.f.outcome = 'A shared family list'; G.by.outcome = 'you'; G.f.whom = 'us four'; G.by.whom = 'you'; G.f.success = 'nobody forgets milk'; G.by.success = 'you'; G.noNevers = true; p.assumptions.push({id: 'A1', text: 'Everyone has a phone', category: 'feasibility', impact: 3, risk: 3}); touch(p); pgOpen(p, 'picks'); })()"); pg.wait_for_timeout(300)
         check("before the decision the Picks page leads to the route first (goal → map → decide), the details wait", ev(pg, "!!document.querySelector('[data-anchor=pick-decide]')") and "Detail questions wait" in main(pg) and ev(pg, "stage20Early(curP()) && !queueOf(curP()).some(x => x.ph === 'assume')"), main(pg)[:400])

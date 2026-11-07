@@ -5,13 +5,32 @@ notes PT shows in "What's new" (`CHANGELOG` in `src/views_run.js`, the `cl.<vers
 (published date and release notes). Do not edit it by hand: `python3 tools/changelog.py` writes it, `--check` says when it is stale.
 Versions before 1.8 were published from the private archive repository (see RELEASES-ARCHIVE.md).
 
+## 2.1.0 — 2026-11-07
+
+Release notes: 2.1.0: Pick Mode and Chat Mode (renamed), About rewritten; safety layer for imported and generated content (safe ids, no prototype keys, safe HTML at the page sink, https-only links, numbers coerced); backups import in one step with a from-a-backup mark, Undo, and re-link by one click before anything automatic runs; the morning check reads pages only after the owner's Watch-these click (20 s limit); typing into forms on (published from a local session); dead jumps fixed; toast Undo buttons; test kit with 207 planted Pick bugs, hunt checks, receipts with a code tree, causes 102-108. Full gate 54 of 54 on the released code tree.
+
+### Changed
+
+- The two modes are now called Pick Mode and Chat Mode (before: Pick and Chat with structure), everywhere in PT
+- Typing into forms is on: PT fills only fields you cleared, never a key, password or card field, only on sites on your list, and stops before every final button
+- About: what PT is, the two modes, what every project gets, what PT can and cannot promise, how AI steps, costs, web access and your data are handled, and where to report
+
+### Fixed
+
+- A backup file from somewhere else could carry hidden code or names that overwrite a restore point; imports now get safe ids (your names stay), the page removes anything that could run, and an import tells you what it changed and can be undone
+- Imported notes and example pictures could load images from other sites (which tells those sites when you look); pictures linked from other websites are now removed at import, pictures stored in PT stay
+- An imported project could switch scheduled tasks or watch pages under its old links; it now runs nothing until you re-link it with one click that shows the ids
+- The morning check reads a project's pages only after your one “Watch these” click; the pages are listed on the card
+- The result mock on the Design page was removed by the new safety filter as soon as it existed; PT's own frames stay
+- Numbers in imported files (likelihood, impact, fit) could carry markup; they are numbers now
+
 ## 2.0.0 — 2026-11-04
 
 Release notes: 2.0.0: two faces of one project, Chat with structure and Pick (Steps, Blueprint, Journey, Swimlanes and Express removed; their content stays readable). The solution map: goal first, every route from simple to frontier including the not-yet-possible ones, decide, then details; coverage rounds and a red-team round. Each project's rules never cut from its prompt; nothing crosses between projects. PT's hands per project with a site list and a contract card, stopping before every final button; typing into forms is off (the platform does not grant form_input from a cloud publish). Morning check, prompt tests, Improve-PT loop, metrics kept in the workspace, Setup guides for the GitHub App, connector and the helpers Filesystem, Git, Fetch and Blender.
 
 ### Added
 
-- Chat with structure: talk freely, and PT files what it learns into the project's facts book with a “✓ filed” note; a question answered in Chat counts as answered in Pick
+- Chat Mode: talk freely, and PT files what it learns into the project's facts book with a “✓ filed” note; a question answered in Chat counts as answered in Pick Mode
 - The solution map: first the goal, then every route PT can find — from simple to frontier, including the ones not possible yet, with why and how they could become possible — then you decide, and only then the details; the map stays live while the project grows
 - Coverage rounds: “Show all routes” searches from six angles, a red-team round looks for what is missing, and PT says how sure it is that nothing big is left
 - Routes that worked in your other projects appear on the map next to the others, re-checked against this project and without that project's rules
@@ -26,9 +45,9 @@ Release notes: 2.0.0: two faces of one project, Chat with structure and Pick (St
 
 ### Changed
 
-- Only two modes now, Chat with structure and Pick, as two faces of one project: switching never loses or doubles anything
+- Only two modes now, Chat Mode and Pick Mode, as two faces of one project: switching never loses or doubles anything
 - Every project moves to 2.0 on first open: first a “Before 2.0” restore point, then its rules, out-of-scope items and earlier design choices go into its facts book and map; nothing is deleted, and each project gets only its own content
-- Pick waits with detail questions until a route is decided
+- Pick Mode waits with detail questions until a route is decided
 - Your workspace profile no longer goes into project prompts; “Copy into this project” does it when you want
 - Wider text column, plainer words
 
@@ -42,7 +61,7 @@ Release notes: 2.0.0: two faces of one project, Chat with structure and Pick (St
 
 ### Removed
 
-- The modes Steps, Blueprint, Journey, Swimlanes and Express; their content stays in your projects and is now read by Chat and Pick
+- The modes Steps, Blueprint, Journey, Swimlanes and Express; their content stays in your projects and is now read by Chat Mode and Pick Mode
 
 ## 1.10.0 — 2026-11-03
 
@@ -202,9 +221,9 @@ Release notes: 1.8.0: the friendlier look (always light, ink blue), deciding wit
 
 ### Changed
 
-- Kit decisions appear in the one queue (Pick deck, counts, Finish) and block a build until made
-- One way to work: every project opens in Pick; Blueprint, Journey, Swimlanes and Steps are read-only maps under the mode bar; session sizes, rounds and the second-opinion button left the surface (the second opinion still runs before every first version)
-- The spine at the top of Pick: Idea → Picks → Try it → Design → Review → Build brief → Run, always one next step; hard-to-undo picks no longer block a first version (they ride along as marked assumptions)
+- Kit decisions appear in the one queue (Pick Mode deck, counts, Finish) and block a build until made
+- One way to work: every project opens in Pick Mode; Blueprint, Journey, Swimlanes and Steps are read-only maps under the mode bar; session sizes, rounds and the second-opinion button left the surface (the second opinion still runs before every first version)
+- The spine at the top of Pick Mode: Idea → Picks → Try it → Design → Review → Build brief → Run, always one next step; hard-to-undo picks no longer block a first version (they ride along as marked assumptions)
 - Missing picks for a first version (idea, result, measure) are made by themselves; research findings are screened on arrival, re-check earlier cards and show as a short strip
 - PT's own drafts (criteria, requirements, answers) are one card per batch, not one per item
 - Own words: the card shows PT reading them and keeps the text; what was recorded stays on screen with Undo and Change; a failed read says so
@@ -214,7 +233,7 @@ Release notes: 1.8.0: the friendlier look (always light, ink blue), deciding wit
 
 ### Added
 
-- Pick mode: design a tool by picking. A few decisions at a time, as concrete examples you click, combine or answer in a few words (typed, spoken, or all at once); each option with its point for and against; ★ with its reason and whether it rests on a source, nothing recommended on hard-to-undo points
+- Pick Mode: design a tool by picking. A few decisions at a time, as concrete examples you click, combine or answer in a few words (typed, spoken, or all at once); each option with its point for and against; ★ with its reason and whether it rests on a source, nothing recommended on hard-to-undo points
 - Research before and during the picks: the best results reached, what exists, what does not exist yet, the newest approaches, law, money and risks, each with its source and date; you see what PT asked the web; research text that tries to instruct the AI is left out
 - The platform is checked as soon as you pick it: right away from PT's knowledge, then on the platform's own pages; a blog never counts
 - Try it: one click builds a first version and runs a quick check on it; failed cases, what you notice and what three simulated users hit become the next picks; trying again first updates what you decided since
@@ -225,7 +244,7 @@ Release notes: 1.8.0: the friendlier look (always light, ink blue), deciding wit
 
 ### Changed
 
-- New projects open in Pick, in both workspaces; existing projects keep their view
+- New projects open in Pick Mode, in both workspaces; existing projects keep their view
 - Every decision you make reaches every later step (requirements, design, package); a changed decision replaces its old line
 - Designed protections are one item to check, each one on its own and changeable in your words
 - PT's knowledge of the Claude platform is current to 23 Oct 2026 (one Claude since 16 Sep, scheduled tasks, artifacts, memory, skills) and Opus 5.5 starts at medium effort

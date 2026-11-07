@@ -323,6 +323,7 @@ function jobsColl(){ return wsPath() + "/jobs"; }
 const JOB_WATCH = new Map();
 const JOB_EST = {research: 25, pilot: 60, health: 60, update: 80, collect: 15, build: 80, linkcheck: 10};
 async function startJob(kind, {title, instructions, inputs = {}, projectId = null, onStart = null} = {}){
+  { const lp = projectId && WS.projects.find(x => x.id === projectId); if (lp && importedLocked(lp) && ["update", "collect", "health"].includes(kind)){ toast(t("imp21.locked"), "err"); return null; } }   // 2.1: no job touches a backup's live links before the owner re-links
   if (Store.mode !== "cloud"){ toast(t("run.err.noapp"), "err"); return null; }
   if (PT_PREVIEW && PREVIEW_BLOCKED.includes(kind)){ toast(t("pv.blocked"), "err"); return null; }
   // over budget: warn only, never block (decision D5)
@@ -410,6 +411,8 @@ async function healthJob(p, depth){
 Write "result" as: {"passRate":<0-100>,"quality":<1-5>,"tests":[{"id":"T1","pass":true,"reason":"…"}],"summary":"3-5 sentences in ${langName(contentLang(p))}","problems":[{"title":"…","detail":"what went wrong and the likely cause"}]}.`});
 }
 function collectJob(projects){
+  projects = projects.filter(p => !importedLocked(p));   // 2.1: a backup's artifact ids are not this workspace's until re-linked
+  if (!projects.length){ toast(t("imp21.locked"), "err"); return null; }
   const list = projects.map(p => ({tool: p.id, name: p.name, artifacts: arr(p.tool.artifacts), runsPrefix: p.id, tested: arr(p.tests).map(x => x.category + ": " + trunc(x.title || x.input, 80))}));
   return startJob("collect", {projectId: projects.length === 1 ? projects[0].id : null, title: t("op.collect"), inputs: {tools: list, runsCollection: wsPath() + "/toolruns"},
     instructions: `Collect problem reports, error records and run records for these built tools: ${JSON.stringify(list)}.

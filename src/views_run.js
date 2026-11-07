@@ -82,7 +82,8 @@ function phOperate(p){
 function phOperate0(p){
   const tabs = ["inbox","update","health","watch"].map(x => `<button class="tab ${(UI.opTab || "inbox") === x ? "on" : ""}" data-a="tab" data-t="opTab" data-v="${x}">${esc(t("op.tab2." + x))}${x === "inbox" ? " · " + arr(p.inbox).filter(i => !i.done).length : ""}</button>`).join("");
   const trig = arr(p.tool.triggers);
-  const status = `<div class="row"><span class="dot ok"></span><b>${esc(t("op.livev", {v: p.live.v}))}</b><span class="small muted">${esc(t("op.since", {d: fmtDay(p.live.since)}))}</span><span style="flex:1"></span>${btn("health-run", t("hc.run"), {icon: "heart", cls: "sm"})}${btn("collect", t("op.collect"), {icon: "inbox", cls: "sm"})}${trig.length ? btn("pause-tool", p.tool.paused ? t("op.resume") : t("op.pause"), {icon: "pause", cls: "sm ghost"}) : ""}</div>`;
+  const fromBackup = importedLocked(p) ? `<div class="banner warnb"><span class="dot warn"></span><span>${esc(t("imp21.frombackup"))} · ${esc(t("imp21.locked"))}</span>${btn("relink-imported", t("imp21.relink"), {cls: "xs primary"})}</div>` : "";
+  const status = `${fromBackup}<div class="row"><span class="dot ok"></span><b>${esc(t("op.livev", {v: p.live.v}))}</b><span class="small muted">${esc(t("op.since", {d: fmtDay(p.live.since)}))}</span><span style="flex:1"></span>${btn("health-run", t("hc.run"), {icon: "heart", cls: "sm"})}${btn("collect", t("op.collect"), {icon: "inbox", cls: "sm"})}${trig.length ? btn("pause-tool", p.tool.paused ? t("op.resume") : t("op.pause"), {icon: "pause", cls: "sm ghost"}) : ""}</div>`;
   const tab = UI.opTab || "inbox";
   let body = "";
   if (tab === "inbox") body = opInbox(p) + opFeedback(p);
@@ -171,6 +172,7 @@ function rpPreview(p, pv){
     ${row(t("rev.problems"), arr(s.findings).length, p.findings.length)}${row(t("test.title"), arr(s.tests).length, p.tests.length)}</tbody></table></div>`;
 }
 const CHANGELOG = [
+  {v: "2.1.0", d: "2026-11-06", changed: "cl.210.changed", fixed: "cl.210.fixed"},
   {v: "2.0.0", d: "2026-11-04", added: "cl.200.added", changed: "cl.200.changed", fixed: "cl.200.fixed", removed: "cl.200.removed"},
   {v: "1.10.0", d: "2026-11-03", added: "cl.1100.added"},
   {v: "1.9.4", d: "2026-11-02", fixed: "cl.194.fixed"},

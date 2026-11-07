@@ -129,7 +129,7 @@ function renderInner(){
   if (UI.fatal){ root.innerHTML = `<div class="lock"><div class="lock-card stack"><b>${esc(t("fatal.t"))}</b><p class="small">${esc(t("fatal.p"))}</p><div class="row">${btn("retry-load", t("fatal.retry"), {icon: "arrow", cls: "primary"})}</div></div></div>`; return; }
   if (!UI.unlocked){ root.innerHTML = viewLock(); afterRender(); return; }
   const drawer = !!UI.drawer;
-  root.innerHTML = `<a class="skip" href="#main-inner">${esc(t("a11y.skip"))}</a><div class="app ${drawer ? "with-drawer" : ""} with-sbar" style="--dockw:${num(UI.dockW, 360)}px">${viewRail()}<main class="main" id="main"><div class="main-inner" id="main-inner" tabindex="-1">${previewBanner()}${typeof offlineBar === "function" ? offlineBar() : ""}${typeof pinResetBanner === "function" ? pinResetBanner() : ""}${UI.loading ? `<div class="busy"><span class="pulse"></span>${esc(t("boot.loading"))}</div>` : viewMain()}</div></main>${drawer ? viewInspector() : ""}${statusBar()}</div>${viewOverlays()}`;
+  root.innerHTML = safeHTML(`<a class="skip" href="#main-inner">${esc(t("a11y.skip"))}</a><div class="app ${drawer ? "with-drawer" : ""} with-sbar" style="--dockw:${num(UI.dockW, 360)}px">${viewRail()}<main class="main" id="main"><div class="main-inner" id="main-inner" tabindex="-1">${previewBanner()}${typeof offlineBar === "function" ? offlineBar() : ""}${typeof pinResetBanner === "function" ? pinResetBanner() : ""}${UI.loading ? `<div class="busy"><span class="pulse"></span>${esc(t("boot.loading"))}</div>` : viewMain()}</div></main>${drawer ? viewInspector() : ""}${statusBar()}</div>${viewOverlays()}`);
   const m2 = root.querySelector(".main"); if (m2) m2.scrollTop = scroll;
   const d2 = root.querySelector(".dr-body"); if (d2) d2.scrollTop = dscroll;
   const refocus = actId ? document.getElementById(actId) : actBind ? document.querySelector(`[data-bind="${CSS.escape(actBind)}"]`) : null;   // 1.3: bound fields without an id keep the cursor too
@@ -137,7 +137,7 @@ function renderInner(){
   afterRender();
 }
 function afterRender(){
-  for (const f of $$("iframe[data-srcdoc]")){ if (!f.dataset.done){ f.srcdoc = f.getAttribute("data-srcdoc"); f.dataset.done = "1"; } }
+  for (const f of $$("iframe.mock[data-srcdoc]")){ if (!f.dataset.done){ f.srcdoc = f.getAttribute("data-srcdoc"); f.dataset.done = "1"; } }
   setSave(saveState);
   if (typeof restoreDrafts === "function") restoreDrafts();
   drawMaps();

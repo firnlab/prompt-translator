@@ -1,4 +1,4 @@
-/* ===================== 1.0 PROJECT FRAME (2.0: the five 1.x modes are gone; Pick and Chat with structure are the two faces, v200_modes.js) ===================== */
+/* ===================== 1.0 PROJECT FRAME (2.0: the five 1.x modes are gone; Pick Mode and Chat Mode are the two faces, v200_modes.js) ===================== */
 const MODE_ICON = {};
 const ST_DOT = {done:"ok", attn:"warn", cur:"cur", todo:"todo"};
 function guided(){ return levelOf(UI.view === "project" ? curP() : null) !== "pro"; }
@@ -29,7 +29,7 @@ function itemRow(p, it){
 function itemList(p, list){ return list.length ? `<div class="ilist">${list.map(i => itemRow(p, i)).join("")}</div>` : `<p class="small muted">${esc(t("nothing.yet"))}</p>`; }
 
 /* ---------- project frame ---------- */
-/** the faces of a project (2.0: Pick and Chat with structure; v200_modes.js draws the switch) */
+/** the faces of a project (2.0: Pick Mode and Chat Mode; v200_modes.js draws the switch) */
 function modeBar(p){ return ""; }
 function stepCard(p, ph){
   const seen = (p.cards || {})[ph];
@@ -49,7 +49,7 @@ function stepScreen(p, ph){
   UI.phase = ph;
   return `${stepCard(p, ph)}${viewPhase(p)}`;
 }
-function modeBody(p){ return ""; }   // the faces fill it (v150_pick.js: Pick, v200_modes.js: Chat with structure)
+function modeBody(p){ return ""; }   // the faces fill it (v150_pick.js: Pick Mode, v200_modes.js: Chat Mode)
 
 /* ---------- the full step (the "all details" of a page) ---------- */
 function fullStep(p, ph){

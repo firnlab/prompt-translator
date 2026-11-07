@@ -381,7 +381,7 @@ async function rowsTakeStar(p, r, {auto = false} = {}){
   touch(p); render();
   toast(t("row.auto.done", {x: rowCut(opts[i].label, 80)}), "ok");
   const host = document.getElementById("toasts"), el = host && host.lastElementChild;
-  if (el){ const b = document.createElement("button"); b.className = "btn xs"; b.textContent = t("btn.undo1"); b.addEventListener("click", () => { el.remove(); rowsUndo(p, r.src); }); el.appendChild(document.createTextNode(" ")); el.appendChild(b); }
+  if (el){ const b = document.createElement("button"); b.className = "btn xs"; b.dataset.undo = "rows:" + r.src; b.textContent = t("btn.undo1"); b.addEventListener("click", () => { el.remove(); rowsUndo(p, r.src); }); el.appendChild(document.createTextNode(" ")); el.appendChild(b); }
   return true;
 }
 async function rowsSetTier(p, src, tier){

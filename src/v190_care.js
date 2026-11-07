@@ -470,7 +470,7 @@ async function view19File(el){
   finally{ VIEW19.busy = false; }
   view19Render();
 }
-function view19Render(){ const root = document.getElementById("app"); if (root) root.innerHTML = view19HTML(); }
+function view19Render(){ const root = document.getElementById("app"); if (root) root.innerHTML = safeHTML(view19HTML()); }
 function view19Text(label, s){ s = str(s).trim(); return s ? `<div class="v19-f"><b class="small">${esc(label)}</b><p class="v19-pre">${esc(s)}</p></div>` : ""; }
 function view19Proj(p){
   const ns = p.northStar || {}, pick = (p.pick && Array.isArray(p.pick.log)) ? p.pick.log : [];

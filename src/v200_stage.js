@@ -2,7 +2,7 @@
    The owner (2 Nov 2026): PT asked detail questions (assumptions, requirements, examples) for a solution that was not chosen yet, and later
    a fact broke the solution after much work had gone into it. The independent design (§2): first the goal, then all routes on one map,
    then a decision with tripwires, and only then the details of the chosen route.
-   This file is the reusable stage model (Part C builds Chat with structure and Pick on it):
+   This file is the reusable stage model (Part C builds Chat Mode and Pick Mode on it):
    - STAGE20 (8 stages) mapped onto today's 12 phases (STAGE20_PHASES): capture + understand + interview → Goal; arch options → Map and
      Decide; assume + require → Details (for the chosen route only); build; review + test → Check; launch + release → Launch; operate.
    - stage20Rows(p, id): the visible checklist of a stage (3–6 rows, each {k, ok, label}); a stage is done when its rows are green.

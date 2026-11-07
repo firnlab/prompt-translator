@@ -187,7 +187,7 @@ with sync_playwright() as pw:
 
     # ---------- 6. the three levels ----------
     ctx = new_ctx(b); pg = open_page(ctx); watch(pg); pg.wait_for_timeout(300)
-    # 2.0: the learning moments, the guide strip and the stage gate lived in the 1.x step views (Pick and Chat with structure are their own guide)
+    # 2.0: the learning moments, the guide strip and the stage gate lived in the 1.x step views (Pick Mode and Chat Mode are their own guide)
     ev(pg, "(() => { for (let i = 0; i < 4; i++) skillEvidence(curP(), 'judge'); })()")
     check("learning: practice fades the explanations (Practised)", ev(pg, "skillLv('judge')") == 2)
     ev(pg, "go('cockpit')"); pg.wait_for_timeout(200)

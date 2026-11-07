@@ -43,7 +43,7 @@ The causes that apply to tools, not only to PT, are built into PT's own design s
 - Limits never gate automation (`autoOK`, `costGuard`); gaps make cards (`pickGaps`, `pickGapCards`, `aiPickNext need`); research is screened on arrival and chains refresh + gaps; PT drafts are one batch card; own words are confirmed (`UI.pkReading`, `UI.pkLast`).
 - Hard-to-undo open picks ride along as assumptions; only nsdecide / audience / gatefired block a first version.
 
-## Pick mode (1.5.0): rules it is built on
+## Pick Mode (1.5.0): rules it is built on
 - One model, many views: every pick writes into the project's own fields (northStar, goal criteria, examples, audience, decisions); "Design so far" also shows what was decided elsewhere. Nothing is kept twice: a changed decision replaces its line (d.replaced), a changed criterion keeps its id and gets a new version (critVersion).
 - Picks count in the one queue (kind "pick": hard → block, parked → later); everything that waits for you appears in the deck or the Parked list (the counts and the screen always agree). One "Later": parked in Pick = put off in Finish (p.later).
 - Every AI step of Pick goes through runAI with validate and, for cards, `check` (pickCardChecks): a broken answer is asked again once with the exact problems, then the cleaner (pickCleanCard) fixes or drops what still breaks a rule. Results are written to pickLive(p, ws) (never to a deleted project or another workspace).
@@ -451,7 +451,7 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
 - check_the_pick.py must start from a tree whose own test is green: a planted-bug run on a red baseline reads every bug as "caught".
 
 ## 2.0.0 Part C — two modes, one ledger (src/v200_modes.js, src/strings28.js, test/e2e200_modes.py)
-- What changes for the owner: every project has a switch "Chat with structure · Pick" (status line, also on the cover). Chat: he types
+- What changes for the owner: every project has a switch "Chat Mode · Pick Mode" (status line, also on the cover). Chat: he types
   freely; PT answers in a sentence or four and files what he said into the facts book ("✓ Noted as never: “…”" with ✎ and Take back;
   "Already in your facts book" when it is there), keeps the goal card, the map, Decided, Plan and Events beside the conversation
   (on a phone: one tap between conversation and workspace), shows the one Next and a few chips; a question PT asks is a pick card
@@ -469,7 +469,7 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   ref)` (file a list of {kind, said, norm} with the quote and the duplicate checks), `c20CodeFile(text)`, `c20Guard(p, text)` (the reply's
   last rule check), `c20DecidedHTML(p)` (one Decided list for both faces), `c20PickDecideHTML(p)`, `m200Run(p, raw)` / `m200All()`
   (idempotent), `m200Prints` / `m200Changed`.
-- Cause 90 (owner, 3–4 Nov 2026, "scrap all modes … make a new mode Chat with structure that can do all we want"): six ways of working
+- Cause 90 (owner, 3–4 Nov 2026, "scrap all modes … make a new mode Chat Mode that can do all we want"): six ways of working
   over one item model; what he said outside the Pick deck (notes, the Express box, the change map) was not filed anywhere binding, and
   the switchers multiplied the places to look. Now two faces of one ledger: the chat files every message into the facts book (the
   quote must be in the message — a made-up quote is sent back once; a never / must is also filed by code, so a failed call loses no
@@ -506,7 +506,7 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
 - Tests moved with the views: tests that set `p.mode = "steps"` (or another 1.x view) to reach a step now open that step in its page's
   details (`pgShowPhase` before `setPhase`; the page's render sets the cursor to its own steps); hunt 15 ("the Journey marker") is now
   "the stage strip marks the one stage the project is at"; e2e141's learning-moment, guide-strip and stage-gate checks are gone (those
-  lived only in the 1.x step views; Pick and Chat with structure are their own guide); layout141 shows the chat and its workspace.
+  lived only in the 1.x step views; Pick Mode and Chat Mode are their own guide); layout141 shows the chat and its workspace.
 - Found by the hunt once it visited the page details (both also on ab8ef98 with the same hunt): (5) the Design page drew the open kit
   questions twice, in "What you decide" and in its kits block (two boxes with one id) — fixed, the kits block leaves out what is above;
   (6) hunt 5: "Make about 30 variants" on the Review page's test details, followed by PT's automatic trial, cannot be undone back to the
@@ -633,6 +633,37 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
 - Cause 101 (flows 1.4): the walk through a list ("1 of N", next, Back — the queue's titles, "Walk through", Finish's list) never
   showed on the pages: the pages' `goRef` opened the item's page through `pgOpen`, which clears `UI.nav`, and dropped the list. Now
   the list is kept. Check: e2e14 part 7.
+- Cause 102 (2.1 A1, review R1-1/R1-3/R1-5/R1-9): values from outside were trusted. A crafted backup (or AI output) could carry an id
+  with "/" (written over another project's restore point), "." (a data-bind path into `__proto__`), quotes or markup (an attribute
+  break-out with an event handler), or markup in a number field shown raw. Now: `safeDeep`/`safeRecord` give every unsafe item id a
+  fresh one and drop prototype keys at import and in `normalizeProject`; `resolvePath` refuses `__proto__`/`constructor`/`prototype`
+  and steps only into own properties; the main page and the care page go through `safeHTML` (handlers, script-like tags, script: and
+  non-image data: links removed; PT's own markup takes the fast path unchanged); the last raw selector ids use `CSS.escape`; the one
+  inline `onerror` became a listener. Checks: e2e210_safe H/I/P; static `[safe]`; planted bugs in check_the_checks.py.
+- Cause 104 (2.1 C1, the owner's report #1, known 1): a jump to an item the two faces have no element for (loop, scan, trace,
+  audience, the kit pages, a candidate test, an early check) ended in the "This is the place for it: the top of this step" toast and
+  nothing shown — a dead jump. hunt 14 used to count that toast as a landing (J2 made it honest, red). Now `navFallback` maps a
+  special anchor back to its item, any item in the queue opens in the side panel, and the side panel accepts the sections PT knows.
+  Check: hunt 14 (both faces, every kind); planted bug hunt.py "14".
+- Cause 103 (2.1 B17, review R1-10): imported notes and example images kept outside image links (a tracking pixel that tells another
+  site when the owner opens the note). Import now clears image fields that point to another site; inline data: images and /_blob/
+  stay. A first version also cleared every "src", which in PT is a source link: the export→import round trip caught it before
+  release; "src"/"data" are now cleared only on an image file. Checks: e2e210_safe I.imgs, I.imgkeep, R.projects; planted bug.
+- Cause 105 (2.1, red team #1): the Design-page result mock (an iframe with `sandbox=""`) vanished on every render as soon as it
+  existed, because the new safety filter took PT's own frame for a foreign one. The filter now keeps exactly PT's two frame kinds
+  (`sandbox=""` and `sandbox="allow-scripts"`, never with `src`) and still fires on any frame with `src`. Checks: e2e210_safe F, H.fast.project
+  (measured on the input per phase).
+- Cause 106 (2.1, red team M1): 1–5 scales, fit and verdict criteria from an imported file were printed raw; markup in them reached
+  the page past the filter's fast path (entity-encoded scheme, fixed overlay, outside form or image, target=_top). `normalizeProject`
+  coerces them to numbers; the trapped fixture carries every class; every phase page is DOM-checked. Checks: e2e210_safe I.nums, I.phases.
+- Cause 107 (2.1, red team M2/M3; owner 7 Nov): an imported backup carried trigger and artifact ids, watch URLs and mock HTML from
+  elsewhere; pause, update, collect and the morning check acted on them after a confirm that showed no ids. Imported projects are
+  marked "from a backup" and locked until the owner re-links with one click that lists the ids; the morning check reads a project's
+  pages only after the owner's "Watch these" click. Checks: e2e210_safe J, e2e200_loop L1; planted bugs in check_the_checks.py.
+- Cause 108 (2.1, red team #6/#7/N6/N8/Q7): the import toast said "1 project imported" whatever happened; records with an existing
+  id were skipped silently; a bad record left a half-written import; settings never came back; no way back. The import checks the whole
+  file first, counts imported / skipped / made safe / settings, restores only the allowed settings, and offers Undo (confirm). Checks:
+  e2e210_safe R.toast, R.again, R.undo, J.allornothing, J.settings.
 - The release page of the version under test (flows 1.10 hands, flows 2.0 loop): the mock's GitHub had a fixed page for v1.10.0, so
   from 2.0.0 on "Check this version's release" read "no release yet". The mock now adds the page of `PT_VERSION` once the page's
   script has run (tests that need "not there yet" still delete it). No app change.

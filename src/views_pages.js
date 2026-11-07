@@ -123,7 +123,7 @@ function viewSettings(){
       <div class="stack"><h3>${esc(t("data.backup"))}</h3><p class="small muted">${esc(t("data.backup.sub"))}</p><div class="row">${btn("export-ws", t("data.export"), {icon:"dl"})}<label class="btn" style="cursor:pointer">${ic("plus")}${esc(t("data.import"))}<input type="file" accept="application/json,.json" data-a-change="import-ws" hidden></label></div></div>
       ${curP() ? `<div class="stack"><h3>${esc(t("data.spec"))}</h3><div class="row">${btn("export-spec", t("data.specdl"), {icon:"dl"})}</div></div>` : ""}`;
   } else {
-    body = `<div class="stack lg"><p class="lead">${esc(t("about.p1"))}</p><p class="lead">${esc(t("about.p2"))}</p><p class="lead">${esc(t("about.p3"))}</p>
+    body = `<div class="stack lg">${["about.p1", "about.p2", "about.p3", "about.p4", "about.p5", "about.p6"].map(k => `<p class="lead">${esc(t(k))}</p>`).join("")}
       <dl class="kv"><dt>${esc(t("op.kp"))}</dt><dd>${esc(kpLabel())}</dd><dt>${esc(t("about.version"))}</dt><dd>${esc(PT_VERSION)}</dd><dt>${esc(t("about.runner"))}</dt><dd class="mono small">${esc(Runner.id())}</dd></dl>
       <div class="row">${btn("whatsnew", t("wn.open"), {icon:"info", cls:"sm"})}${btn("copy-upgrade", t("tfb.upgrade"), {icon:"copy", cls:"sm"})}${btn("runner-check", t("about.runnercheck"), {icon:"play", cls:"sm ghost"})}</div>
       <h3>${esc(t("cl.title"))}</h3>${CHANGELOG.map(c => `<div class="stack"><h4>${esc(c.v)} · ${esc(fmtDay(c.d))}</h4>${changelogHTML(c)}</div>`).join("")}</div>`;
