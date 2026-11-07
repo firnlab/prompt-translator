@@ -215,7 +215,7 @@ with sync_playwright() as pw:
     check("the Build page shows Build without a chat with copy + open, and the one-time setup", ev(pg, "!!document.querySelector('.pg-build [data-a=bw-copy]') && !!document.querySelector('.pg-build a[data-a=bw-open]') && document.querySelector('.pg-build').textContent.includes('CLAUDE_CODE_OAUTH_TOKEN')"))
     check("every person step is a laptop task", ev(pg, "document.querySelectorAll('.pg-laptop .item').length") == ev(pg, "personSteps(curP()).length") and ev(pg, "personSteps(curP()).length") >= 2)
     txt = ev(pg, "laptopTaskText(curP(), personSteps(curP())[0])")
-    check("the task text carries the gate rules (stop before sign-up / payment, no passwords in chat, laptop only)", "Stop and ask me" in txt and "password" in txt and "this laptop" in txt)
+    check("the task text carries the gate rules (stop before any sign-up / payment / deletion / publishing, no passwords in chat, laptop only)", "Stop and ask me before any sign-up, payment, deletion, publishing" in txt and "password" in txt and "this laptop" in txt and "only before a payment" not in txt)
     a0 = ev(pg, "arr(curP().acts).filter(a => !a.undone).length")
     pg.locator(".pg-laptop [data-a=lt-copy]").first.click(); pg.wait_for_timeout(200)
     check("copying hands the step over (state sent, one Undo step of its own)", ev(pg, "Object.values(curP().laptop).filter(x => x.state === 'sent').length === 1") and ev(pg, "arr(curP().acts).filter(a => !a.undone && a.label === t('lt.act.sent')).length") == 1)

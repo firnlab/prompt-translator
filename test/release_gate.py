@@ -31,6 +31,7 @@ CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("tests parse",    "python3 -W error -m py_compile test/*.py tools/*.py", True, 2),   # 1.7: the test scripts are parsed like the sources
     ("check the checks","python3 test/check_the_checks.py", True, 3),   # known bugs put back into a copy: every one must be caught
     ("the gate itself", "python3 test/gate_selftest.py", True, 3),   # 2.1: planted bugs need their own check, no retry of planted/data checks, minimum counts, receipts, FULL/PARTIAL, resume keys
+    ("manifest",       "python3 tools/manifest_check.py --selftest && python3 tools/manifest_check.py", True, 1),   # 2.1.1 (RT-11, cause 111): the host tools of the manifest against the live artifacts' recorded sets; says "publish from a local task" before the GO
     ("strings",        "node test/i18n14.js", True, 2),
     ("unit",           "node test/unit14.js", True, 5),
     ("flows 1.4.1",    "python3 test/e2e141.py", True, 20),
@@ -87,7 +88,7 @@ JOBS = int(next((x.split("=", 1)[1] for x in sys.argv if x.startswith("--jobs=")
 EXCLUSIVE = {"click everything"}   # already runs three browsers: alone, after the others
 # 2.1 (J9): never run again — a planted bug caught only on the second try, or a data-safety check that passes on the second try, is RED
 PLANTED = {"check the checks", "check the rows", "check the hunt", "check the Pick tests", "check the Pick tests 2"}
-NO_RETRY = {"build", "static checks", "tests parse", "strings", "unit", "changelog", "the gate itself"} | PLANTED
+NO_RETRY = {"build", "static checks", "tests parse", "strings", "unit", "changelog", "the gate itself", "manifest"} | PLANTED
 DATA_SAFETY = {"migration 1.4.1", "migration 1.4", "flows 1.8 health"}   # whole suites about keeping the data (migration, restore check, export)
 # a failing line about keeping data (written over, lost, deleted, restore point, backup, a failed load) is never retried either
 DATA_RX = re.compile(r"(?i)writes? (nothing )?over|overwrit|never written|writes nothing|nothing (is )?lost|\blost\b|deleted|delete[sd]? |restore point|backup|failed load|fails to load|data safety|keeps? (every|all) |nothing (from|of) another")
@@ -104,7 +105,7 @@ _LAST = {"check the checks": 49, "the gate itself": 36, "unit": 14, "flows 1.4.1
          "flows 2.1 platform": 52, "flows 2.1 clicks": 10, "flows 2.1 safe": 53, "changelog": 27}   # 2.1 (red team 4 #16): every counted suite is listed
 MIN_OK = {n: (c if c <= 25 else int(c * 0.9)) for n, c in _LAST.items()}
 # suites that print no ok-count by design (a build, a parser, a scan that prints only problems): the only ones allowed to miss MIN_OK
-NO_COUNT = {"build", "static checks", "tests parse", "strings", "check the causes", "smoke", "flows 1.3", "click everything"}
+NO_COUNT = {"build", "static checks", "tests parse", "strings", "check the causes", "smoke", "flows 1.3", "click everything", "manifest"}
 _missing = [n for n, *_ in CHECKS if n not in MIN_OK and n not in NO_COUNT]
 if _missing and not _os.environ.get("GATE_CHECKS"): print("GATE SETUP RED: suites without a minimum count (add to _LAST or NO_COUNT): " + ", ".join(_missing)); sys.exit(2)
 def ok_count(out):

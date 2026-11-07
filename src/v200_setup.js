@@ -9,7 +9,8 @@
    PT's own): terminal / shell, databases, office documents, notes, browser automation outside the app's browser (PT's hands are the
    only browser), memory (the facts book is PT's memory), time. A different program per category needs a small update of this table.
    The guides (GUIDES20): the Claude GitHub App for firnlab, the GitHub connector in claude.ai, auto-merge for Dependabot pull requests
-   only, a cloud scheduled task for the morning check, computer use in the desktop app, and one per helper. PT creates no scheduled task. */
+   only, a cloud scheduled task for the morning check, computer use in the desktop app, and one per helper. The morning-check task is the
+   owner's to create from the guide; PT creates scheduled tasks only for a tool's runner and the Sunday run (core.js Runner, owner's click). */
 const HELPERS20 = [
   {id: "files", cat: "files", prog: "Filesystem", by: "Model Context Protocol (reference server)", src: "https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem", server: "host:filesystem",
     tools: ["list_allowed_directories", "list_directory", "write_file"], probe: "list_allowed_directories", needs: "Node.js",

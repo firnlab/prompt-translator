@@ -65,7 +65,7 @@ One system for PT building tools and for building PT. Principle: the owner gives
 - **Out, on purpose:** sprints, sprint planning, protected sprints, points, velocity, burndown, standups, refinement, personas, sign-off meetings, documents as deliverables, change bureaucracy, interviews about the past, estimates without a measured value. Honest caveat: no source covers "one non-coder owner + one AI worker"; the proof is the measured lines after the first items.
 
 ## Releases
-- Version in `src/core.js` (`PT_VERSION`), changelog strings `cl.<ver>.*`, `BUILD-LOG-*.md`.
+- Version in `src/app.js` (`PT_VERSION`), changelog strings `cl.<ver>.*`, `BUILD-LOG-*.md`.
 - After a GO and a publish: add the version to `releases.json` (date, commit, main and preview artifact ids with the live and the previous version id, notes) on a branch, open a PR, the owner merges → the `release` workflow creates the tag `v<version>` at that commit and a GitHub release with the built file. Tags cannot be pushed from a Claude session (branch-only access); never try to work around that.
 - Rollback = republishing the previous artifact version id from the tag message (needs GO).
 

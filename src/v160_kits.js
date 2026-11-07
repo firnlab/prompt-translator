@@ -139,11 +139,17 @@ PROOF_IDS.push("consent", "where", "secret");
    GitHub issue when something needs the person); a watchdog for every tool that runs daily or more; PT's own radar runs weekly by
    itself and writes proposals only. Facts checked on the official pages 2026-10-23. */
 const KIT_SCHED_FACTS = `Claude scheduled tasks (included in Pro and Max): created by describing the task and its schedule; hourly, daily, weekdays, weekly or by hand, never more often than once an hour; each run is a fresh session with web research, connectors, skills and plugins and no memory of the previous run except what it reads from files or storage; it runs in the cloud while the computer sleeps, except a task that needs local files or apps; nobody is there to approve during a run, so an outward action (send, post, pay, delete) becomes a draft or a hand-off, never an inline approval; a run can also be fired by an API call or by a GitHub pull-request or release event. Each run costs usage on the person's plan, nothing extra.
-Managed Agents (Claude API, beta): a deployment runs on a cron schedule to the minute, with a budget per run, can be paused or archived, calls webhooks and has no approval step; it costs USD 0.08 per session-hour plus tokens (Opus 5.5 USD 4 / 20 per million tokens in and out, Sonnet 5.5 2 / 10, Haiku 5.5 0.10 / 0.50) and needs a Console organisation with a key kept only in GitHub's secret store and a spend limit; Max plans include monthly API credits (USD 100 on 5x, USD 200 on 20x) that cover this once claimed.
+Managed Agents (Claude API, beta): a deployment runs on a cron schedule to the minute, with a budget per run, can be paused or archived, calls webhooks and has no approval step; it costs USD 0.08 per session-hour plus tokens (Opus 5.5 USD 4 / 20 per million tokens in and out, Sonnet 5.5 2 / 10, Haiku 5.5 0.10 / 0.50) and needs a Console organisation with a key kept only in GitHub's secret store and a spend limit; Max plans include monthly API credits (USD 100 on 5x, USD 200 on 20x) that cover this once claimed. Checked 7 Nov 2026 on platform.claude.com/docs/en/managed-agents: still beta; the Console has an agent builder with test sessions, production deployments run through the API or the CLI; no service-level statement; not eligible for zero-data-retention; no free tier was found on an official page. Allowed for a tool only after K3 (the owner's decision of 6 Nov 2026).
 Rules for every scheduled tool: it reads its state from storage or files at the start and writes it at the end (nothing lives in memory between runs); two runs never overlap; a run that fails or stops half-way leaves a record and can be run again without sending or writing anything twice; at the end of every run the tool writes one line (time, what it did, ok or not) where the person can see it; schedules are written in Europe/Zurich time; results that need the person go where the person already looks, not into a new place.`;
 const KIT_SCHED_WORDS = ["schedul", "daily", "weekly", "hourly", "weekdays", "every morning", "every day", "every week", "radar", "monitor", "watch", "recurring", "background", "täglich", "wöchentl", "stündl", "geplant", "jeden", "überwach", "定时", "每天", "每周", "每小时", "监控", "后台"];
-const KIT_FAST_WORDS = ["minute", "minutes", "every 5", "every 10", "every 15", "every 30", "real-time", "realtime", "live", "instantly", "immediately", "within the hour", "minuten", "sofort", "echtzeit", "分钟", "实时", "立即"];
-const KIT_BUDGET_WORDS = ["budget per run", "hard budget", "spend limit", "cap per run", "many runs", "hundreds of runs", "dozens of runs", "pro lauf", "budget", "预算", "上限"];
+/* 2.1.1: whole words only (a bare "live" matched "deliver" and "alive", "budget" matched every budget line, "sofort" and "上限" any
+   constraint); bare "live", "budget", "预算", "上限" dropped; Latin words match at word boundaries, CJK words as written. */
+const KIT_FAST_WORDS = ["minute", "minutes", "every 5", "every 10", "every 15", "every 30", "real-time", "realtime", "live updates", "instantly", "immediately", "within the hour", "minuten", "alle 5", "alle 10", "alle 15", "alle 30", "echtzeit", "分钟", "实时", "立即"];
+const KIT_BUDGET_WORDS = ["budget per run", "hard budget", "spend limit", "cap per run", "many runs", "hundreds of runs", "dozens of runs", "budget pro lauf", "festes budget", "viele läufe", "每次运行的预算", "硬预算", "每天很多次"];
+function kitWordHit(txt, w){ return /^[\x00-\x7f\u00c0-\u024f ]+$/.test(w) ? new RegExp("(^|[^a-z\u00c0-\u024f])" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?![a-z\u00c0-\u024f])", "i").test(txt) : txt.includes(w); }
+/* K3 (the tools repository's build workflow with the key in GitHub's secret store) is not done yet; Managed Agents are allowed only after it
+   (owner, D-2026-11-06-04). Until then the ★ stays on the included scheduled task and says so; a Managed Agent stays selectable with its cost. */
+const KIT_K3_DONE = false;
 function kit2Applies(p){
   if (!p || !arr(p.arch && p.arch.components).length) return false;
   const home = str(p.tool && p.tool.home && p.tool.home.where).toLowerCase() + " " + str(p.tool && p.tool.home && p.tool.home.parts).toLowerCase();
@@ -156,8 +162,10 @@ function kit2Text(p){ const ns = p.northStar || {}, comps = arr(p.arch && p.arch
 const KIT_ENGINE = ["scheduled", "managed"];
 function kitEngineRec(p){
   const txt = kit2Text(p);
-  if (KIT_FAST_WORDS.some(w => txt.includes(w))) return {kind: "managed", why: t("kit.rec.managed.fast")};
-  if (KIT_BUDGET_WORDS.some(w => txt.includes(w))) return {kind: "managed", why: t("kit.rec.managed.budget")};
+  const fast = KIT_FAST_WORDS.some(w => kitWordHit(txt, w)), budget = !fast && KIT_BUDGET_WORDS.some(w => kitWordHit(txt, w));
+  if ((fast || budget) && !KIT_K3_DONE) return {kind: "scheduled", why: t("kit.rec.k3", {x: t(fast ? "kit.rec.managed.fast" : "kit.rec.managed.budget")})};
+  if (fast) return {kind: "managed", why: t("kit.rec.managed.fast")};
+  if (budget) return {kind: "managed", why: t("kit.rec.managed.budget")};
   return {kind: "scheduled", why: t("kit.rec.scheduled")};
 }
 /** results: a page that keeps the history (plus a GitHub issue when something needs the person) unless the output is an action to approve or a table */

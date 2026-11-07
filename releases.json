@@ -166,12 +166,59 @@
     "main": {
       "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
       "live": "1794026648-f594",
-      "previous": "1793826109-ac8d"
+      "previous": "1793826109-ac8d",
+      "hosts": {
+        "claude_browser": [
+          "computer",
+          "find",
+          "form_input",
+          "get_page_text",
+          "navigate",
+          "preview_start"
+        ],
+        "filesystem": [
+          "list_allowed_directories",
+          "list_directory",
+          "write_file"
+        ],
+        "git": [
+          "git_status"
+        ],
+        "fetch": [
+          "fetch"
+        ],
+        "blender": [
+          "execute_blender_code"
+        ]
+      }
     },
     "preview": {
       "artifact": "6rj1ZPyMB6GxKwAHsmndny",
       "live": "1793982956-0929",
-      "previous": "1793825785-5fb3"
+      "previous": "1793825785-5fb3",
+      "hosts": {
+        "claude_browser": [
+          "computer",
+          "find",
+          "get_page_text",
+          "navigate",
+          "preview_start"
+        ],
+        "filesystem": [
+          "list_allowed_directories",
+          "list_directory",
+          "write_file"
+        ],
+        "git": [
+          "git_status"
+        ],
+        "fetch": [
+          "fetch"
+        ],
+        "blender": [
+          "execute_blender_code"
+        ]
+      }
     },
     "notes": "2.1.0: Pick Mode and Chat Mode (renamed), About rewritten; safety layer for imported and generated content (safe ids, no prototype keys, safe HTML at the page sink, https-only links, numbers coerced); backups import in one step with a from-a-backup mark, Undo, and re-link by one click before anything automatic runs; the morning check reads pages only after the owner's Watch-these click (20 s limit); typing into forms on (published from a local session); dead jumps fixed; toast Undo buttons; test kit with 207 planted Pick bugs, hunt checks, receipts with a code tree, causes 102-108. Full gate 54 of 54 on the released code tree."
   }

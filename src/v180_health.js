@@ -400,8 +400,11 @@ function hr18FactKind(id){ id = str(id); return id === "kits" ? "price" : id ===
 function hr18Facts(){
   const seen = new Map(), add = x => { if (x && x.d){ const k = str(x.id) + "|" + str(x.d); if (!seen.has(k)) seen.set(k, x); } };
   const ps = arr(WS.projects).filter(p => p && p.status !== "archived" && !p.example18);
-  for (const p of ps){ let L = []; try{ L = factList(p); }catch(e){ L = []; } L.forEach(add); }   // ok:catch a project whose facts cannot be read adds none
-  if (!ps.length){ try{ factList(null).forEach(add); }catch(e){ console.warn("health: facts", e); } }   // ok:catch no facts then
+  /* 2.1.1: the same typed list as the Design page (factTyped splits the kit facts into platform / prices / law), so Health names
+     "Firnlab kit prices" on the day the Design page does, with the same label and the same budget */
+  const typed = p => (typeof factTyped === "function" ? factTyped(p) : factList(p)).map(x => Object.assign({}, x, {kind: str(x.kind) || str(x.type)}));
+  for (const p of ps){ let L = []; try{ L = typed(p); }catch(e){ L = []; } L.forEach(add); }   // ok:catch a project whose facts cannot be read adds none
+  if (!ps.length){ try{ typed(null).forEach(add); }catch(e){ console.warn("health: facts", e); } }   // ok:catch no facts then
   return [...seen.values()].map(x => { const kind = str(x.kind) || hr18FactKind(x.id), budget = num(x.budget, 0) || HR18_BUDGET[kind] || FACT_DAYS, age = factAge(x.d), past = age > budget;
     return {label: str(x.label), kind, budget, age, past, csb: past && !factStale(x.d, kind)}; });
 }

@@ -304,15 +304,15 @@ with sync_playwright() as pw:
     pg.locator("[data-a=bld18-copy-cmd]").first.click(); pg.wait_for_timeout(200)
     check("copying the comment says so", ev(pg, "[...document.querySelectorAll('#toasts .toast')].some(x => /copied/i.test(x.textContent))"))
 
-    print("8 laptop tasks stop only before a payment and always report in three lines")
-    for lang, must, mustnot in (("en", ["Stop and ask me only before a payment", "Sign-ups, deletions and publishing need no question", "three lines", "this laptop", "password"], ["Stop and ask me before any sign-up"]),
-                                ("de", ["nur vor einer Zahlung", "Anmeldungen, Löschungen und Veröffentlichungen brauchen keine Rückfrage", "drei Zeilen"], ["vor jeder Anmeldung"]),
-                                ("zh", ["只有在付款之前", "注册、删除和发布不需要问我", "三行"], ["注册、付款、删除、发布"])):
+    print("8 laptop tasks stop at every gate (2.1.1, owner's rule b1/D1: the 1.8 'only before a payment' override is gone) and report in three lines")
+    for lang, must, mustnot in (("en", ["Stop and ask me before any sign-up, payment, deletion, publishing", "three lines", "this laptop", "password"], ["Stop and ask me only before a payment", "need no question"]),
+                                ("de", ["vor jeder Anmeldung, Zahlung, Löschung, Veröffentlichung", "drei Zeilen"], ["nur vor einer Zahlung", "brauchen keine Rückfrage"]),
+                                ("zh", ["注册、付款、删除、发布", "三行"], ["只有在付款之前", "不需要问我"])):
         ev(pg, f"LANG = '{lang}'; render()")
         txt = ev(pg, "laptopTaskText(curP(), personSteps(curP())[0])")
         check(f"the task text says so ({lang})", all(m in txt for m in must) and not any(m in txt for m in mustnot), txt[:500])
     ev(pg, "LANG = 'en'; render()"); pg.wait_for_timeout(200)
-    check("the laptop card says it stops only before a payment", ev(pg, "(() => { const c = document.querySelector('.pg-laptop'); return !!c && c.textContent.includes('stops only before a payment') && c.textContent.includes('reported after in three lines'); })()"))
+    check("the laptop card says it stops at every gate and asks before a sign-up", ev(pg, "(() => { const c = document.querySelector('.pg-laptop'); return !!c && c.textContent.includes('stops at every gate') && c.textContent.includes('asks you before a sign-up') && !c.textContent.includes('only before a payment'); })()"))
 
     print("9 three languages, phone width, no raw keys")
     for lang in ("en", "de", "zh"):

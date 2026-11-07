@@ -25,7 +25,7 @@ function factsBlock(p){
     ${stale.length ? `<p class="small warn-t">${esc(t("fact.stalelist", {x: stale.map(x => x.label).join(", ")}))}</p>` : ""}</section>`;
 }
 /* every kit option names the date of the facts behind it */
-{ const orig = qOptions; qOptions = function(p, x){ const O = orig(p, x); if (x && /^kit-/.test(str(x.kind)) && Array.isArray(O)) for (const o of O){ if (o && !o.facted){ o.facted = true; o.why = (o.why ? o.why + " · " : "") + t("fact.checked", {d: fmtDay(KIT_CHECKED)}) + (factStale(KIT_CHECKED) ? " · " + t("fact.stale") : ""); } } return O; }; }
+{ const orig = qOptions; qOptions = function(p, x){ const O = orig(p, x); if (x && /^kit-/.test(str(x.kind)) && Array.isArray(O)) for (const o of O){ if (o && !o.facted){ o.facted = true; o.why = (o.why ? o.why + " · " : "") + t("fact.checked", {d: fmtDay(KIT_CHECKED)}) + (factStale(KIT_CHECKED, "price") ? " · " + t("fact.stale") : ""); } } return O; }; }
 /* every design, package and compile prompt carries the honesty rule */
 function honestyPromptBlock(p){
   const stale = factStale(KIT_CHECKED) || factStale(KP_VERSION);
