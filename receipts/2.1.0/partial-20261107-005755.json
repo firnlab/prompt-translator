@@ -1,0 +1,27 @@
+{
+ "version": "2.1.0",
+ "label": "partial-20261107-005755",
+ "scope": "PARTIAL",
+ "commit": "ce3f5c7464a987bd1a4403ec09a0a1c861cb158b",
+ "code_tree": "c022049815f3e671b571ae5115fc7f5296c6a2b9",
+ "dirty": false,
+ "dist_sha256": "c5d852230893514283203fb42f78be2995d601dc81e003d466434f902da049c4",
+ "started": "2026-11-07T00:48:41",
+ "seconds": 553,
+ "args": [
+  "--only=check the hunt"
+ ],
+ "checks": [
+  {
+   "name": "check the hunt",
+   "result": "PASS",
+   "seconds": 553,
+   "ok": 31,
+   "failed": null,
+   "key": "494164f6ca4d428ae27b6c2df14476c4"
+  }
+ ],
+ "flaky": [],
+ "expected_red": 8,
+ "preview_sha256": "055aac89272880ea802bb041e6a4407b0e76247ba3a1d23b324bfe8a1ea66d25"
+}

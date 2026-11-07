@@ -178,7 +178,7 @@ with sync_playwright() as pw:
     pg.evaluate(IMPORT, badfile)
     after2 = pg.evaluate("[WS.projects.length, WS.notes.length]")
     ck("J.allornothing", "a file with one bad record writes nothing (the good project in it is not half-imported)", before == after2 and pg.evaluate("!WS.projects.some(p => p.id === 'pGOOD')"), (before, after2))
-    gate = pg.evaluate("""() => { const src = String(mc20Run); return {ask: /watchask/.test(src), gate: /p\.watch20Ok && !importedLocked\(p\)\) for/.test(src), timeout: /Promise\.race/.test(src)}; }""")
+    gate = pg.evaluate(r"""() => { const src = String(mc20Run); return {ask: /watchask/.test(src), gate: /p\.watch20Ok && !importedLocked\(p\)\) for/.test(src), timeout: /Promise\.race/.test(src)}; }""")
     ck("J.watchgate", "the morning check lists a project's pages and reads them only after the owner's click, with a timeout per page", all(gate.values()), gate)
 
     # ---------- P: data-bind paths ----------
