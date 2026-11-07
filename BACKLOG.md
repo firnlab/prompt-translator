@@ -564,6 +564,7 @@ Fixed in 2.1.0: the Design mock removed by the filter; raw number sinks; import 
 - RT-7 (S) receipt records ok counts for REUSED checks; the BAD regex "Error: " narrowed to real errors.
 - RT-8 (M) J18 nightly gate off-session: say what a synthetic-data gate proves and what it does not (CLAUDE.md "CI runs only the data-free checks").
 - RT-9 (owner) Improve PT: the owner ticks the fixed reports of 2.1.0 → IMPROVE_FIXED["2.1.0"]; changelog_test rule: the fixed-list of PT_VERSION exists (empty only with an explicit "none").
+- FIX-2.1.1-1 (built on branch fix/release-check, commit 23ee2c6, goes into 2.1.1): the release check reads the releases list, never the tag page (404 in the browser pane before the merge). Cause 109. More Fix items from the owner's testing of 2.1.0 in main collect here.
 - RT-11 (next) Release check: when CAPABILITIES-2.0.json adds a tool under a `host:` server that the live main does not have yet, the gate says "publish from a local task in the desktop app" before the GO (2.1.0: the cloud publish was refused with 422 and the owner published locally). Cause 109 when built.
 - RT-10 (S) C3: "Show all routes" names 7 and makes more; name the real number before the run.
 ## PT Flow automation (next items, in the owner's order)
@@ -574,3 +575,10 @@ Fixed in 2.1.0: the Design mock removed by the filter; raw number sinks; import 
 - FL-5 spine labels aligned to the six words (en/de/zh); Vision card as its own card.
 - FL-6 the riskiest-assumption probe before the map (E).
 - FL-7 STATE.md generated from the record.
+
+## PT 3.0.0 (owner, 7 Nov 2026 05:07, in the "Promptise" chat): three things to remember
+Each is researched to the bottom, decided and designed in chat before any of it enters PT.
+- 3.0-1 Tools as a product to sell: customers, billing, support, incidents, uptime, Swiss and EU legal; the operations kit as its base.
+- 3.0-2 A professional-developer interface, switchable: the same PT, all of it, exposed as a developer works (code, contracts, evals, traces, repository first).
+- 3.0-3 A local model such as Ollama: which parts of PT and of built tools run locally, on what machine, with what licence and privacy gain, and what stays on Claude.
+The "Promptise" chat (7 Nov 00:10–05:07) also produced a 50-item list against PT 2.0.0 (frameworks and no-code builders compared); it is red-teamed in four rounds on 7 Nov for the 2.1.1 update (material and reports in the session scratchpad; the result goes into this file as "2.1.1" and "2.2" items after the owner's word).

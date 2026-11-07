@@ -11,7 +11,7 @@ jobs:
     if: >
       github.event.comment.user.login == 'firnsmith' &&
       contains(github.event.comment.body, '@claude build')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: build
     timeout-minutes: 90
     permissions:
