@@ -664,6 +664,9 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   id were skipped silently; a bad record left a half-written import; settings never came back; no way back. The import checks the whole
   file first, counts imported / skipped / made safe / settings, restores only the allowed settings, and offers Undo (confirm). Checks:
   e2e210_safe R.toast, R.again, R.undo, J.allornothing, J.settings.
+- Cause 109 (2.1.1, owner 7 Nov): "Check this version's release" opened the tag page `releases/tag/v<version>`; before the owner merged
+  the release pull request that is GitHub's not-found page, and it stayed in the browser pane beside PT. The check reads the releases
+  list instead (never a not-found page) and looks for the version there. Check: flows 1.10 hands "opens the releases list".
 - The release page of the version under test (flows 1.10 hands, flows 2.0 loop): the mock's GitHub had a fixed page for v1.10.0, so
   from 2.0.0 on "Check this version's release" read "no release yet". The mock now adds the page of `PT_VERSION` once the page's
   script has run (tests that need "not there yet" still delete it). No app change.
