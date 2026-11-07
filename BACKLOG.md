@@ -575,3 +575,10 @@ Fixed in 2.1.0: the Design mock removed by the filter; raw number sinks; import 
 - FL-5 spine labels aligned to the six words (en/de/zh); Vision card as its own card.
 - FL-6 the riskiest-assumption probe before the map (E).
 - FL-7 STATE.md generated from the record.
+
+## PT 3.0.0 (owner, 7 Nov 2026 05:07, in the "Promptise" chat): three things to remember
+Each is researched to the bottom, decided and designed in chat before any of it enters PT.
+- 3.0-1 Tools as a product to sell: customers, billing, support, incidents, uptime, Swiss and EU legal; the operations kit as its base.
+- 3.0-2 A professional-developer interface, switchable: the same PT, all of it, exposed as a developer works (code, contracts, evals, traces, repository first).
+- 3.0-3 A local model such as Ollama: which parts of PT and of built tools run locally, on what machine, with what licence and privacy gain, and what stays on Claude.
+The "Promptise" chat (7 Nov 00:10–05:07) also produced a 50-item list against PT 2.0.0 (frameworks and no-code builders compared); it is red-teamed in four rounds on 7 Nov for the 2.1.1 update (material and reports in the session scratchpad; the result goes into this file as "2.1.1" and "2.2" items after the owner's word).
