@@ -26998,11 +26998,13 @@ const HANDS_CHECKS = {
     return {list: handsParsePrs(txt)};
   },
   async rel(){
-    const v = PT_VERSION;
-    await handsOpen(`https://github.com/${HANDS_REPO}/releases/tag/v${v}`);
-    const txt = await handsRead(new RegExp("Prompt Translator " + v.replace(/\./g, "\\.") + "\\b|Not Found|not the web page", "i"));
+    const v = PT_VERSION, ve = v.replace(/\./g, "\\."), rx = new RegExp("Prompt Translator " + ve + "\\b|\\bv" + ve + "\\b");
+    /* the releases list, never the tag page: the tag of a version exists only after the owner merged its pull request, and
+       GitHub's not-found page stayed in the browser pane beside PT (owner, 7 Nov 2026) */
+    await handsOpen(`https://github.com/${HANDS_REPO}/releases`);
+    const txt = await handsRead(new RegExp(rx.source + "|aren.t any releases|\\bLatest\\b|Not Found|not the web page", "i"));
     if (handsSignin(txt)) throw {code: "hands_signin"};
-    return {v, found: new RegExp("Prompt Translator " + v.replace(/\./g, "\\.") + "\\b").test(txt) && !/not the web page/i.test(txt)};
+    return {v, found: rx.test(txt) && !/not the web page/i.test(txt)};
   },
   async keys(){
     await handsOpen("https://github.com/settings/personal-access-tokens");

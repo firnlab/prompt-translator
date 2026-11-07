@@ -81,14 +81,14 @@ with sync_playwright() as pw:
     reset(pg); health(pg)
     click(pg, ".hands [data-a=hands-check][data-k=rel]")
     c = calls(pg); t4 = box(pg)
-    check("Check this version's release opens the tag of this version", c and c[0]["input"]["url"] == "https://github.com/firnlab/prompt-translator/releases/tag/v" + ev(pg, "PT_VERSION"), c[:1])
+    check("Check this version's release opens the releases list (never the tag page, which is not found before the merge)", c and c[0]["input"]["url"] == "https://github.com/firnlab/prompt-translator/releases", c[:1])
     check("…found: GitHub has the release", "GitHub has the release v" + ev(pg, "PT_VERSION") + "." in t4, t4[:300])
-    reset(pg); ev(pg, "(() => { delete window.__browser.pages['https://github.com/firnlab/prompt-translator/releases/tag/v' + PT_VERSION]; })()"); health(pg)
+    reset(pg); ev(pg, "window.__browser.pages['https://github.com/firnlab/prompt-translator/releases'] = 'Releases\\nLatest\\nPrompt Translator 2.0.0\\nv2.0.0\\nAssets'"); health(pg)
     click(pg, ".hands [data-a=hands-check][data-k=rel]")
     t4b = box(pg); reads = [x for x in calls(pg) if x["tool"] == "get_page_text"]
     check("…not there yet: says so and where it comes from", "has no release v" in t4b and "after you merge the release pull request" in t4b, t4b[:300])
-    check("…after one read (GitHub's not-found page counts as an answer)", len(reads) == 1, len(reads))
-    ev(pg, "window.__browser.pages['https://github.com/firnlab/prompt-translator/releases/tag/v' + PT_VERSION] = 'Loading…'"); reset(pg); health(pg)
+    check("…after one read (the list without this version counts as an answer)", len(reads) == 1, len(reads))
+    ev(pg, "window.__browser.pages['https://github.com/firnlab/prompt-translator/releases'] = 'Loading…'"); reset(pg); health(pg)
     click(pg, ".hands [data-a=hands-check][data-k=rel]")
     reads = [x for x in calls(pg) if x["tool"] == "get_page_text"]
     check("…a page that never fills: four reads at most, then an answer", len(reads) == 4 and "has no release" in box(pg), [len(reads), box(pg)[-300:]])
