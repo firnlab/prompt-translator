@@ -23,7 +23,7 @@ jobs:
   # Server-side data guard (1.8 decision): the same check as the pre-push hook, run by GitHub so it cannot be skipped.
   # Required status check "data-guard" in the main ruleset.
   data-guard:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # pinned: ubuntu-latest became 26.04 on 7 Nov 2026 and Playwright 1.56 has no Chromium for it
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -31,7 +31,7 @@ jobs:
         run: python3 tools/data_guard.py --all
 
   static:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # pinned: ubuntu-latest became 26.04 on 7 Nov 2026 and Playwright 1.56 has no Chromium for it
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -85,7 +85,7 @@ jobs:
   # 1.7 (task #84): the flow tests run here on made-up data built by PT itself (test/fixtures/synthetic.json, tools/make_synthetic.py).
   # The hunts, layout and migration checks still need the copy of real data and run in Claude's session (full gate).
   flow:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # pinned: ubuntu-latest became 26.04 on 7 Nov 2026 and Playwright 1.56 has no Chromium for it
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -116,7 +116,7 @@ jobs:
   quick-gate:
     if: always()
     needs: [static, flow]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # pinned: ubuntu-latest became 26.04 on 7 Nov 2026 and Playwright 1.56 has no Chromium for it
     timeout-minutes: 2
     steps:
       - name: every job before this one is green
