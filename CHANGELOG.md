@@ -5,6 +5,24 @@ notes PT shows in "What's new" (`CHANGELOG` in `src/views_run.js`, the `cl.<vers
 (published date and release notes). Do not edit it by hand: `python3 tools/changelog.py` writes it, `--check` says when it is stale.
 Versions before 1.8 were published from the private archive repository (see RELEASES-ARCHIVE.md).
 
+## 2.1.1 — 2026-11-07
+
+Release notes: 2.1.1 (small lane, Fix items): the release check reads the releases list instead of the tag page (cause 109); the laptop task stops before any sign-up, payment, deletion, publishing or anything it cannot undo (D1, cause 110); kitEngineRec matches whole words and keeps the ★ on the scheduled task while K3 is open; Health and the kit options follow the 20-day price clock; manifest check in the gate with hosts per artifact (RT-11, cause 111); the second owner's welcome without "1.8"; kit facts dated 7 Nov (Managed Agents, Vercel Hobby, Stripe restricted keys). Page byte budget 3.5 -&gt; 3.6 MB. Full gate 55 of 55 on 1004f85. Main published from the cloud with capabilities omitted (host set unchanged, manifest carried forward incl. form_input) - first cloud publish to main since typing was added.
+
+### Changed
+
+- Before every GO the gate compares the publish manifest with the live artifacts’ recorded tools and says “cloud publish ok” or “publish from a local task” (2.1.0 main was refused from the cloud because typing was new; the releases file now records each artifact’s tools)
+- Kit facts checked on the providers’ own pages on 7 Nov 2026, each with its own date: Managed Agents (beta, Console builder with test sessions, production through the API or CLI, no service-level statement, not zero-data-retention, after K3), Vercel Hobby cannot deploy a private repository of a GitHub organisation, Stripe with a restricted key per service
+- The notes PT keeps about itself are true again (version constant, cause numbers, the state file)
+
+### Fixed
+
+- “Check this version’s release” opened GitHub’s not-found page in the browser pane until you had merged the release; it now reads the releases list
+- The laptop task you copy still said “sign-ups, deletions and publishing need no question” — against your rule of 5 Nov; it now stops and asks before any sign-up, payment, deletion, publishing or anything it cannot undo
+- The engine ★ of a scheduled tool flipped to a Managed Agent on ordinary words like “deliver” or a budget line; it now matches whole words only, and while K3 is open the ★ stays on the included scheduled task and says so (a Managed Agent stays selectable with its cost)
+- Health and the Design page named the kit prices differently when they pass their 20-day budget; both now say “Firnlab kit prices”, and the kit options follow the same 20-day clock
+- The welcome screen a second owner sees on her first open said “PT 1.8” three times; it now says “Welcome to PT”, “moved to this version” and “Before the move”
+
 ## 2.1.0 — 2026-11-07
 
 Release notes: 2.1.0: Pick Mode and Chat Mode (renamed), About rewritten; safety layer for imported and generated content (safe ids, no prototype keys, safe HTML at the page sink, https-only links, numbers coerced); backups import in one step with a from-a-backup mark, Undo, and re-link by one click before anything automatic runs; the morning check reads pages only after the owner's Watch-these click (20 s limit); typing into forms on (published from a local session); dead jumps fixed; toast Undo buttons; test kit with 207 planted Pick bugs, hunt checks, receipts with a code tree, causes 102-108. Full gate 54 of 54 on the released code tree.

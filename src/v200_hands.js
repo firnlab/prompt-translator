@@ -14,8 +14,9 @@
    The morning check (§ 9 below): on the owner's first open of a day PT re-runs the 1.10 GitHub checks (pull requests, key dates, the
    release), the tripwires of each chosen route against what came in since the last check, and the map's "Not possible yet" watch lines
    (platform knowledge changed; a watched page changed — read through the Fetch helper when it is installed), shows one summary card on the
-   cockpit and raises a Route alert through m20WatchSoon for whatever changed for a project. PT creates no scheduled task itself (the guide
-   in Settings › Setup shows how). */
+   cockpit and raises a Route alert through m20WatchSoon for whatever changed for a project. The morning check's cloud task is created by the
+   owner from the guide in Settings › Setup; PT itself creates scheduled tasks only for a tool's runner and the Sunday run (core.js Runner,
+   with the owner's click). */
 const H20_TOOLS = ["preview_start", "navigate", "get_page_text", "find", "computer", "form_input"];
 const H20_MOVES = ["scroll_to", "hover", "wait", "left_click"];
 const H20_DO = ["type", "choose", "click"];

@@ -667,6 +667,15 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
 - Cause 109 (2.1.1, owner 7 Nov): "Check this version's release" opened the tag page `releases/tag/v<version>`; before the owner merged
   the release pull request that is GitHub's not-found page, and it stayed in the browser pane beside PT. The check reads the releases
   list instead (never a not-found page) and looks for the version there. Check: flows 1.10 hands "opens the releases list".
+- Cause 110 (2.1.1, red team of 7 Nov, D1/b1): the laptop task PT gives the owner to paste (`bld.lt.rules`, a 1.8 override) still said
+  "sign-ups, deletions and publishing need no question" — against the owner's rule of 5 Nov 2026 that every final button is his; the only
+  text in PT that told an agent past a gate. The override is gone; the task says "stop and ask me before any sign-up, payment, deletion,
+  publishing or anything you cannot undo". Checks: flows 1.8 run part 8 (must / must-not phrases ×3), flows 1.7 pages (the rule line).
+- Cause 111 (2.1.1, RT-11): a cloud session cannot add a local (`host:`) tool to an artifact's manifest; 2.1.0 main was refused (422)
+  after the full gate and the owner published from a local task; nothing had said so before the GO, and no record of any artifact's live
+  host set existed. releases.json now carries `hosts` per artifact (from 2.1.0 on) and the gate check "manifest" (tools/manifest_check.py)
+  prints "cloud publish ok" / "publish from a local task" / "removal untested" / "no record" for main and preview before every GO; its
+  self-test plants the four cases.
 - The release page of the version under test (flows 1.10 hands, flows 2.0 loop): the mock's GitHub had a fixed page for v1.10.0, so
   from 2.0.0 on "Check this version's release" read "no release yet". The mock now adds the page of `PT_VERSION` once the page's
   script has run (tests that need "not there yet" still delete it). No app change.

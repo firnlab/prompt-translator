@@ -1,8 +1,7 @@
 # State (hand-written until FL-7 generates it; read first with CLAUDE.md, BACKLOG.md, DECISIONS.md, releases.json)
-- Live main: Prompt Translator 2.0.0 (artifact VjEPcpnocMTPMwHvHdwTZ3). Live preview: 2.1.0 pre-rename build (version 1793982956-0929) — superseded by the next publish.
-- Running item: PT 2.1.0 release on branch `sprint1` (large lane). Code done incl. the red-team fixes 1–9 of 7 Nov; About approved by the owner; CLAUDE.md carries PT Flow and the release rule.
-- Next: quick checks → full gate from scratch on the final commit (parts, then one --resume run for the FULL receipt) → owner's "GO 2.1.0" → main published directly → owner tests in main → releases.json PR and code PR for the owner to merge.
-- 2.1.0 is live in main (7 Nov 05:44, version 1794026648-f594, published by the owner from a local task; rollback = previous 1793826109-ac8d).
-- 2.1.1 (small lane) collects Fix items from the owner's testing: FIX-2.1.1-1 release check (branch fix/release-check). Ships together when the owner says so.
-- Waiting on the owner: merge of PR sprint1 → main (code + releases.json; the release workflow then tags v2.1.0); his word on the one open Improve-PT report (fixed / none); testing 2.1.0 in main with his projects → Fix items.
-- Appetite (PT work, estimate): full gate ≈ 2 h 35 from scratch (measured 6 Nov); this item has used about one working day of sessions since 6 Nov 03:56.
+- Live main: Prompt Translator 2.1.0 (artifact VjEPcpnocMTPMwHvHdwTZ3, version 1794026648-f594, published by the owner from a local task on 7 Nov 05:44; rollback = 1793826109-ac8d). PR #28 merged, tag v2.1.0 at 2d3e27b, GitHub release published. Live preview: 2.1.0 pre-rename build (1793982956-0929), manifest without form_input.
+- Released: PT 2.1.1 on 7 Nov 2026 21:2x (owner "GO 2.1.1" 21:19): main VjEPcpnocMTPMwHvHdwTZ3 version 1794082802-e32a (previous 1794026648-f594), published from the cloud with `capabilities` omitted, manifest carried forward incl. form_input — answers the open question: a cloud publish to main with an unchanged host set works. Preview 6rj1ZPyMB6GxKwAHsmndny 1794071704-0c06. Full gate 55/55 FULL on 1004f85. Live main verified equal to the gated file.
+- Next: owner merges the release PR rel/2.1.1 → main (one merge; the release workflow tags v2.1.1); then the 2.2 list in the owner's order — item 7 (kit price re-check) before 13 Nov 2026, when the kit options go "not used" on the 20-day price clock.
+- Waiting on the owner: merges of PR #29 (release-check fix) and PR #30 (3.0 items); repo setting "merge commits only"; the local probe T1–T5 on a throwaway artifact when the desktop app is open.
+- The 2.2 list (owner orders) and 3.0 items are in BACKLOG.md ("PT 2.1.1 and 2.2 from the Promptise red team").
+- Appetite (PT work, estimate): 2.1.1 sessions ≈ 4–5 h (estimate) + one full gate ≈ 157 min (measured 2 h 37 on 7 Nov, 2 h 35 on 6 Nov).

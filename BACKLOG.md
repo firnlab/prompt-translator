@@ -565,7 +565,7 @@ Fixed in 2.1.0: the Design mock removed by the filter; raw number sinks; import 
 - RT-8 (M) J18 nightly gate off-session: say what a synthetic-data gate proves and what it does not (CLAUDE.md "CI runs only the data-free checks").
 - RT-9 (owner) Improve PT: the owner ticks the fixed reports of 2.1.0 → IMPROVE_FIXED["2.1.0"]; changelog_test rule: the fixed-list of PT_VERSION exists (empty only with an explicit "none").
 - FIX-2.1.1-1 (built on branch fix/release-check, commit 23ee2c6, goes into 2.1.1): the release check reads the releases list, never the tag page (404 in the browser pane before the merge). Cause 109. More Fix items from the owner's testing of 2.1.0 in main collect here.
-- RT-11 (next) Release check: when CAPABILITIES-2.0.json adds a tool under a `host:` server that the live main does not have yet, the gate says "publish from a local task in the desktop app" before the GO (2.1.0: the cloud publish was refused with 422 and the owner published locally). Cause 109 when built.
+- RT-11 (next) Release check: when CAPABILITIES-2.0.json adds a tool under a `host:` server that the live main does not have yet, the gate says "publish from a local task in the desktop app" before the GO (2.1.0: the cloud publish was refused with 422 and the owner published locally). Built in 2.1.1: tools/manifest_check.py, gate check "manifest", `hosts` per artifact in releases.json, cause 111.
 - RT-10 (S) C3: "Show all routes" names 7 and makes more; name the real number before the run.
 ## PT Flow automation (next items, in the owner's order)
 - FL-1 PT drafts the Item card from the Vision card by itself (announcement lines, scenarios, acceptance lines, non-goals, quality round, laptop/key steps with money, appetite).
@@ -582,3 +582,31 @@ Each is researched to the bottom, decided and designed in chat before any of it 
 - 3.0-2 A professional-developer interface, switchable: the same PT, all of it, exposed as a developer works (code, contracts, evals, traces, repository first).
 - 3.0-3 A local model such as Ollama: which parts of PT and of built tools run locally, on what machine, with what licence and privacy gain, and what stays on Claude.
 The "Promptise" chat (7 Nov 00:10–05:07) also produced a 50-item list against PT 2.0.0 (frameworks and no-code builders compared); it is red-teamed in four rounds on 7 Nov for the 2.1.1 update (material and reports in the session scratchpad; the result goes into this file as "2.1.1" and "2.2" items after the owner's word).
+
+## PT 2.1.1 and 2.2 from the Promptise red team (four rounds, 7 Nov 2026; owner "all 10 as your rec" 17:40)
+Truth about the Promptise chat's 50 items against PT 2.1.0 (code, not change log): already built 9 (1, 5, 8, 12, 19, 42; the eight 2.0.0 claims real — ceiling, judge-after-30, independent checker, attack drill as code; CHF 10 cap, proof-of-life, founder gate as brief text; hidden twins outside PT), nowhere 8 (12, 19/42, 26 by b12, 31 computer use cannot type in browsers, 41, 48, 50's sub-tool proposals), 2.1.1 two kit-fact sentences (17, 30), the rest 2.2 Idea cards or 3.0. About 40 of the 50 assume a tool live with users → E1 first.
+2.1.1 (built on rel/2.1.1): FIX-2.1.1-1 · D1 (cause 110) · kitEngineRec whole words + K3 gate · fact labels on the price clock · RT-11 manifest check + `hosts` (cause 111) · G5 three keys · kit-fact sentences dated 7 Nov · records · IMPROVE_FIXED "2.1.1". Fact for every release: every gate key carries the built file's hash, so a release always reruns the whole gate (≈157 min).
+2.2 Idea cards, PT's proposed order (value/risk/usage), the owner orders — one at a time:
+1. "Ship one tool for real" (E1) · tools · medium — the gate for 40 of the 50 items.
+2. "Fix Reinstall before I ever need it" (C7) · PT · medium.
+3. "PT drafts the Item card itself" (FL-1; absorbs 13 last-mile checklist, 22 data-handling, 23 memory, 1's line) · PT · large.
+4. "Acceptance lines become tests" (FL-2; absorbs 10 output contract, 24 retrieval tests) · PT · medium.
+5. "After a deploy, PT opens the live address and tells me green or red" (36; h20SiteOk + get_page_text) · PT · medium.
+6. "Tell me when a run did not happen" (6 = H3, Morning-card line) · PT · small.
+7. "A vendor's limit explained: what it really does, set when, checked when" (16 + rest of 30; kit-facts column, Expo and GitHub Actions rows; price re-check on official pages replaces the flaviocopes source — do before 13 Nov or the kit options show "not used") · PT · medium.
+8. "Reinstall with or without the tool's data" (3; on restore points) · PT · medium.
+9. "Claude Code as a build target with deploy-on-merge; D6 revisited" (28 = M1; auto-merge off, merge commits, gh CLI) · PT · medium.
+10. "Problem reports can become a test with one tick" (2; Improve page) · PT · small.
+11. "The you-press screen: Take me there, one sentence, cost, undoable, a read after" (14 = A6 + A7 + post-press read; no screenshot) · PT · medium.
+12. "Which connector a route needs, shown on the route" (4; map fact, never a pick) · PT · small.
+13. "Where results land: a default line, Claude Tag marked not on your plan" (21) · PT · small.
+14. "Two routes on every map that cost real money: hire someone, buy a managed service, dated" (29) · PT · small.
+15. "An outside event can wake a scheduled tool: Fire URL, GitHub issue events, token in the sender's vault" (20) · kits · small.
+16. "A per-output Good / Not good inside tools I build, as data" (11; kit 1 line + {self} rule template) · kits · small.
+17. "Learning moments where a repo word shows" (32) · PT · small.
+18. Kit lines when a tool needs them: handoff table + loop rule (27), undoable column in records (34), sandbox for user content after A5 (25), backoff with a named limit (7), rate-limit sentence (38), full-record switch default off (49), fallback wording (8), progress markers (9), rung wording for reasoning patterns (18) · kits · each small.
+19. RT-9 changelog rule for the fixed-list · kitEngineRec flag form (K3 done as a workspace setting) · kit2Applies and kit2Text read different texts (goal only in kit2Text) · RT-1…RT-8, RT-10, A4 runner guard, A5 shrink the manifest (needs probe T4) · PT · as listed.
+20. "Canary for send/pay/publish tools, with another word" (40) · kits · medium, after E1 and 36.
+21. Page size: build.py strips comment lines from the sources (~23 KB of the 3.5 MB page); the "PT checks itself" byte budget went 3.5 → 3.6 MB for 2.1.1 (first full gate, 7 Nov 19:30; 2.1.1 built 3,502,304 bytes), the time budgets are the real guard · PT · small.
+3.0: 3.0-1 product (absorbs 15, 33, 35, 37, 38, 39, 47) · 3.0-2 developer interface · 3.0-3 local model · kits 7–10 (43–46; new names, official facts first) · 50's "second lab on designs" and "workspace fact index" only as research (D3 conflict).
+Open from the rounds: the official Managed Agents pricing page is unreadable from a session (owner may read it once); the second owner's real workspace on 2.1.x is proven only on synthetic data (data job with her backup under work/); a cloud publish to main with an unchanged host set works (answered by the 2.1.1 main publish, 7 Nov 21:2x: `capabilities` omitted, manifest carried forward).

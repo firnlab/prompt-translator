@@ -20,7 +20,8 @@
       the update step and shows the change list; putting it live stays your click.
    6. Build: the GitHub issue (you comment "@claude build") is the default way; the cloud build job stays as the second way. The page
       opens no issue itself: it shows the exact text and the link to paste (no new network code, no connector).
-   7. Laptop tasks stop only before a payment; sign-ups, deletions and publishing go ahead and are reported after in three lines. */
+   7. Laptop tasks stop at every gate (sign-up, payment, deletion, publishing, anything not undoable): the 1.8 "only before a payment"
+      override was removed in 2.1.1 (owner's rule b1/D1 of 5 Nov 2026). */
 const RUN18 = {ws: "", notes: null, loading: null, building: false, drilling: false, lfuBusy: false, reports: new Map(), last: null, timer: 0, gen: 0};
 const RUN18_TZ = "Europe/Zurich", RUN18_DAY = 86400000, WK18_CAP = 600;   // the note: at most ten minutes to read
 
@@ -632,9 +633,8 @@ function bld18Card(p){
 }
 { const orig = buildCard; buildCard = function(p){ try{ return bld18Card(p); }catch(e){ onAppError(e && e.message, "bld18"); return orig(p); } }; }
 
-/* ---------- 9. laptop tasks: stop only before a payment, report everything after ---------- */
-{ const orig = laptopTaskText; laptopTaskText = function(p, s){ return orig.apply(this, arguments).replace(t("lt.rules"), t("bld.lt.rules")).replace(t("lt.report"), t("bld.lt.report")); }; }
-{ const orig = laptopCard; laptopCard = function(p){ return orig.apply(this, arguments).replace(esc(t("lt.sub")), esc(t("bld.lt.sub"))).replace(esc(t("lt.hint")), esc(t("bld.lt.hint"))); }; }
+/* ---------- 9. laptop tasks: the 1.8 override ("stop only before a payment") was removed in 2.1.1 (owner's rule b1/D1 of 5 Nov 2026):
+   the laptop task stops before any sign-up, payment, deletion, publishing or anything it cannot undo (lt.rules in strings10.js) ---------- */
 
 /* ---------- 10. actions ---------- */
 function run18GoTo(pid, ref){

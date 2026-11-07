@@ -402,7 +402,7 @@ function factPromptBlock(p){
 /* a kit option whose platform facts are past their budget gets no ★ (PT does not recommend on a fact it may not use) and says why */
 { const orig = qOptions; qOptions = function(p, x){
     const O = orig(p, x);
-    if (x && /^kit-/.test(str(x.kind)) && Array.isArray(O) && factStale(KIT_CHECKED, "platform")) for (const o of O){ if (o && !o.factPast){ o.factPast = true; o.star = false; o.why = (o.why ? o.why + " · " : "") + t("fact.option.past", {n: FACT_BUDGET.platform}); } }
+    if (x && /^kit-/.test(str(x.kind)) && Array.isArray(O) && factStale(KIT_CHECKED, "price")) for (const o of O){ if (o && !o.factPast){ o.factPast = true; o.star = false; o.why = (o.why ? o.why + " · " : "") + t("fact.option.past", {n: FACT_BUDGET.price}); } }   // 2.1.1: price-typed (20 days), the same clock as the Design page
     return O; }; }
 /* research past its budget is left out of what PT passes on, and the prompt says so */
 { const orig = projectContext; projectContext = function(p, o = {}){
