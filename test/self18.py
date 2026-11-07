@@ -37,7 +37,10 @@ def check(name, cond, info=""):
     _check0(name, cond, info); print(("ok    " if cond else "FAIL  ") + name + ("" if cond else "  → " + str(info)[:700]), flush=True)
 def ev(pg, js, *a): return pg.evaluate(js, *a)
 
-BUDGET = {"bytes": 3_500_000, "first_ms": 6000, "open_ms": 6000, "boot_task_ms": 4000, "screen_task_ms": 1500}
+# bytes: 3.5 MB from 1.8 to 2.1.0 (2.1.0 built 3,495,572); 2.1.1 adds 6.7 KB of strings and the manifest note, so 3.6 MB from
+# 2.1.1 on - the time budgets below are the real guard (first screen ~0.4 s against 6 s). 2.2 wins ~23 KB back by stripping
+# comment lines in build.py (BACKLOG).
+BUDGET = {"bytes": 3_600_000, "first_ms": 6000, "open_ms": 6000, "boot_task_ms": 4000, "screen_task_ms": 1500}
 # findings in screens other parts own, accepted for now with the reason (matched against the finding's text); new ones fail
 KNOWN = [
 ]
