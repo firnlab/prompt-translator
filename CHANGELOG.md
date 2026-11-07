@@ -5,7 +5,9 @@ notes PT shows in "What's new" (`CHANGELOG` in `src/views_run.js`, the `cl.<vers
 (published date and release notes). Do not edit it by hand: `python3 tools/changelog.py` writes it, `--check` says when it is stale.
 Versions before 1.8 were published from the private archive repository (see RELEASES-ARCHIVE.md).
 
-## 2.1.0 — 2026-11-06
+## 2.1.0 — 2026-11-07
+
+Release notes: 2.1.0: Pick Mode and Chat Mode (renamed), About rewritten; safety layer for imported and generated content (safe ids, no prototype keys, safe HTML at the page sink, https-only links, numbers coerced); backups import in one step with a from-a-backup mark, Undo, and re-link by one click before anything automatic runs; the morning check reads pages only after the owner's Watch-these click (20 s limit); typing into forms on (published from a local session); dead jumps fixed; toast Undo buttons; test kit with 207 planted Pick bugs, hunt checks, receipts with a code tree, causes 102-108. Full gate 54 of 54 on the released code tree.
 
 ### Changed
 
