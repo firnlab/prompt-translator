@@ -26,7 +26,11 @@ Sprint goal: a safer PT and a test kit that cannot go quietly empty.
 - GO 2.1.0 (owner, 6 Nov 17:35): preview published, version id 1793982956-0929 (previous 1793825785-5fb3), contract 0.2.88 unchanged,
   manifest = CAPABILITIES-2.0.json (no form_input). Live body equals the built file (3 472 647 bytes inside the platform skeleton).
   On the live file: smoke (0 errors), PT outside claude.ai (21 ok), pseudo-localisation (179 ok), 1.10 hands (54 ok), 2.0 hands (52 ok),
-  2.0 modes (170 ok), 2.1 safe (36 ok). Stopped here: main publishes after the owner's keep click.
+  2.0 modes (170 ok), 2.1 safe (36 ok). Then the owner ordered the rename, About and the red-team round (new release rule: no second preview).
+- Final gate on the red-team code (7 Nov, code tree bffafa59…, commits ee00efd → f822774 with receipts only): FULL, 54 of 54 PASS,
+  8 known reds accepted (test/expected_red.json). Parts: hunt check 9 min (31/31), part A 28 min (50/50), click everything 40 min,
+  Pick 1 37 min (104/104), Pick 2 41 min (103/103), `--resume` stitch 2 min (flows 1.2 re-ran, 161 ok). Wall ≈ 2 h 37 min.
+  Receipt `receipts/2.1.0/full.json`. Waits for "GO 2.1.0" → main directly (manifest CAPABILITIES-2.0.json with form_input).
 
 ## Retrospective (one line)
 The gate's own plumbing (labels, resume, receipts, time limits) took longer than the feature work; next sprint starts the long parts first and keeps the test kit frozen before the final gate.
