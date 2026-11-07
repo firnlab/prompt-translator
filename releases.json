@@ -1,225 +1,288 @@
 [
-  {
-    "version": "1.8.0",
-    "date": "2026-11-01",
-    "commit": "a00b175054114b22f13729bcb2d9f0210456d23c",
-    "main": {
-      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
-      "live": "1793541397-6111",
-      "previous": "1792946573-2d87"
-    },
-    "preview": {
-      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
-      "live": "1793541188-7ab4",
-      "previous": "1792946526-0c4b"
-    },
-    "notes": "1.8.0: the friendlier look (always light, ink blue), deciding with ★ on hard questions and your earlier call first, check rows per tool with fix-until-green, facts with an age, decision rows with Undo and the Decisions page, the cone (start from one sentence), running (Sunday note, inbox sorting, tell PT what's wrong), Health and the move of 1.7 projects with a restore point, kits on Opus 5.5; 1.7.1 (time baseline, name independence) is inside. Previous versions in the private archive (1.0-1.7)."
+ {
+  "version": "1.8.0",
+  "date": "2026-11-01",
+  "commit": "a00b175054114b22f13729bcb2d9f0210456d23c",
+  "main": {
+   "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+   "live": "1793541397-6111",
+   "previous": "1792946573-2d87"
   },
-  {
-    "version": "1.8.1",
-    "date": "2026-11-01",
-    "commit": "95a1c0996febfabedf2f4ea297883b8a2e9860f1",
-    "main": {
-      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
-      "live": "1793554626-3ad8",
-      "previous": "1793541397-6111"
-    },
-    "preview": {
-      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
-      "live": "1793554511-e0e7",
-      "previous": "1793541188-7ab4"
-    },
-    "notes": "1.8.1: turning on the Sunday preparation run (and a second login's runner) works again: every scheduled task PT creates asks for a new session per run, which the scheduled-task service now requires when notifications are set; one retry without notifications if the service refuses those settings; never from a preview copy."
+  "preview": {
+   "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+   "live": "1793541188-7ab4",
+   "previous": "1792946526-0c4b"
   },
-  {
-    "version": "1.8.2",
-    "date": "2026-11-01",
-    "commit": "9f225da3fd459de5fb554911272b5c34f95426b1",
-    "main": {
-      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
-      "live": "1793568295-4f03",
-      "previous": "1793554626-3ad8"
-    },
-    "preview": {
-      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
-      "live": "1793568176-3b15",
-      "previous": "1793554511-e0e7"
-    },
-    "notes": "1.8.2: a scheduled task created from PT takes the cloud environment the scheduled-task service lists (a page has no session to take it from) and PT remembers it; PT tells the owner to turn on automatic approval for such a task. Proven first with a one-button live check."
+  "notes": "1.8.0: the friendlier look (always light, ink blue), deciding with ★ on hard questions and your earlier call first, check rows per tool with fix-until-green, facts with an age, decision rows with Undo and the Decisions page, the cone (start from one sentence), running (Sunday note, inbox sorting, tell PT what's wrong), Health and the move of 1.7 projects with a restore point, kits on Opus 5.5; 1.7.1 (time baseline, name independence) is inside. Previous versions in the private archive (1.0-1.7)."
+ },
+ {
+  "version": "1.8.1",
+  "date": "2026-11-01",
+  "commit": "95a1c0996febfabedf2f4ea297883b8a2e9860f1",
+  "main": {
+   "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+   "live": "1793554626-3ad8",
+   "previous": "1793541397-6111"
   },
-  {
-    "version": "1.9.0",
-    "date": "2026-11-02",
-    "commit": "8ffd34967929e6cf6373eb2d2d5de1cd938bee08",
-    "main": {
-      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
-      "live": "1793588961-aa84",
-      "previous": "1793568295-4f03"
-    },
-    "preview": {
-      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
-      "live": "1793588849-f17a",
-      "previous": "1793568176-3b15"
-    },
-    "notes": "1.9.0: self-scan with one-tap shortcuts (propose only), the 4×4 interview before big changes to live tools, update my tools to the current kit (one card, one tool at a time, stops at the first problem), the owner's reminders (quarterly export + read-only viewer outside claude.ai, AI ceiling from Feb 2027, push switch off by default, key renewal from Oct 2027, server-backed AI as a choice with a required limit), a generated public changelog."
+  "preview": {
+   "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+   "live": "1793554511-e0e7",
+   "previous": "1793541188-7ab4"
   },
-  {
-    "version": "1.9.1",
-    "date": "2026-11-02",
-    "commit": "0343edc47a9d0c4c6f5a0d94e17bd60f6b413fa6",
-    "main": {
-      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
-      "live": "1793612057-67af",
-      "previous": "1793588961-aa84"
-    },
-    "preview": {
-      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
-      "live": "1793611842-c79f",
-      "previous": "1793588849-f17a"
-    },
-    "notes": "1.9.1: the independent check (a judge after every build, verified update and pasted build report; green only when every acceptance line holds, the floors pass and the commit came first; a kit run is green only with a judge pass), the second opinion from another lab (off until SECOND_LAB_API_KEY is added in GitHub), the GitHub build room in firnlab/tools (independent judge in the pull request, hidden test twins off until the pt-private key is added)."
+  "notes": "1.8.1: turning on the Sunday preparation run (and a second login's runner) works again: every scheduled task PT creates asks for a new session per run, which the scheduled-task service now requires when notifications are set; one retry without notifications if the service refuses those settings; never from a preview copy."
+ },
+ {
+  "version": "1.8.2",
+  "date": "2026-11-01",
+  "commit": "9f225da3fd459de5fb554911272b5c34f95426b1",
+  "main": {
+   "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+   "live": "1793568295-4f03",
+   "previous": "1793554626-3ad8"
   },
-  {
-    "version": "1.9.2",
-    "date": "2026-11-02",
-    "commit": "fb25ede71803efedaba252b90b9cb335f6542feb",
-    "main": {
-      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
-      "live": "1793629097-1653",
-      "previous": "1793612057-67af"
-    },
-    "preview": {
-      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
-      "live": "1793628914-30d1",
-      "previous": "1793611842-c79f"
-    },
-    "notes": "1.9.2: a release check with stretched stand-in text (every text PT shows comes from its three languages, no label cut off, no page scrolling sideways, at desktop and phone width); the Firnlab vault's tool lines in German and Chinese; rows of buttons and the notes page no longer push a phone screen sideways."
+  "preview": {
+   "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+   "live": "1793568176-3b15",
+   "previous": "1793554511-e0e7"
   },
-  {
-    "version": "1.9.3",
-    "date": "2026-11-02",
-    "commit": "d05ca4b987718ff9980a3696268885b051764718",
-    "main": {
-      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
-      "live": "1793648891-af98",
-      "previous": "1793629097-1653"
-    },
-    "preview": {
-      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
-      "live": "1793648709-a256",
-      "previous": "1793628914-30d1"
-    },
-    "notes": "1.9.3: the Build page says correctly how a build in the tools repository is locked: only a comment from your own login starts it, and on a private repository GitHub adds no second approval step (the old text promised an approval in the build environment that does not exist); a release check now catches any text that promises such a step."
+  "notes": "1.8.2: a scheduled task created from PT takes the cloud environment the scheduled-task service lists (a page has no session to take it from) and PT remembers it; PT tells the owner to turn on automatic approval for such a task. Proven first with a one-button live check."
+ },
+ {
+  "version": "1.9.0",
+  "date": "2026-11-02",
+  "commit": "8ffd34967929e6cf6373eb2d2d5de1cd938bee08",
+  "main": {
+   "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+   "live": "1793588961-aa84",
+   "previous": "1793568295-4f03"
   },
-  {
-    "version": "1.9.4",
-    "date": "2026-11-03",
-    "commit": "e571ca06b8bc4e202bb69f5635176ddbd1ad71fb",
-    "main": {
-      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
-      "live": "1793669544-2baa",
-      "previous": "1793648891-af98"
-    },
-    "preview": {
-      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
-      "live": "1793669381-0b78",
-      "previous": "1793648709-a256"
-    },
-    "notes": "1.9.4: the yearly “Renew 2 keys” reminder in the Sunday note now covers the tools repository too: each new key goes into prompt-translator and then into the tools repository (named from Settings › General), with a link to each settings page, so builds there keep working after a renewal; the terminal stays open until the Claude key is in both places."
+  "preview": {
+   "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+   "live": "1793588849-f17a",
+   "previous": "1793568176-3b15"
   },
-  {
-    "version": "1.10.0",
-    "date": "2026-11-03",
-    "commit": "583a6103fda173bce7d8175d85779cd55c57817c",
-    "main": {
-      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
-      "live": "1793741450-54e1",
-      "previous": "1793669544-2baa"
-    },
-    "preview": {
-      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
-      "live": "1793741106-aca6",
-      "previous": "1793669381-0b78"
-    },
-    "notes": "1.10.0: PT's hands (Settings › PT health, in the Claude desktop app). PT opens GitHub in the app's built-in browser with the owner's own login, reads it and takes the owner to the right spot: open pull requests with their titles, this version's release, the end date of each fine-grained key (marked within 30 days), and “Take me there” to a pull request's merge button and to each line of the key renewal card. It never clicks, types or handles keys; github.com only; owner only. Tried live by the owner twice: GitHub's real pages fixed two readings (labels before #N; the key list loads after the header)."
+  "notes": "1.9.0: self-scan with one-tap shortcuts (propose only), the 4×4 interview before big changes to live tools, update my tools to the current kit (one card, one tool at a time, stops at the first problem), the owner's reminders (quarterly export + read-only viewer outside claude.ai, AI ceiling from Feb 2027, push switch off by default, key renewal from Oct 2027, server-backed AI as a choice with a required limit), a generated public changelog."
+ },
+ {
+  "version": "1.9.1",
+  "date": "2026-11-02",
+  "commit": "0343edc47a9d0c4c6f5a0d94e17bd60f6b413fa6",
+  "main": {
+   "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+   "live": "1793612057-67af",
+   "previous": "1793588961-aa84"
   },
-  {
-    "version": "2.0.0",
-    "date": "2026-11-04",
-    "commit": "b182f1dbce513935feb182db1eaba77543321602",
-    "main": {
-      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
-      "live": "1793826109-ac8d",
-      "previous": "1793741450-54e1"
-    },
-    "preview": {
-      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
-      "live": "1793825785-5fb3",
-      "previous": "1793741106-aca6"
-    },
-    "notes": "2.0.0: two faces of one project, Chat with structure and Pick (Steps, Blueprint, Journey, Swimlanes and Express removed; their content stays readable). The solution map: goal first, every route from simple to frontier including the not-yet-possible ones, decide, then details; coverage rounds and a red-team round. Each project's rules never cut from its prompt; nothing crosses between projects. PT's hands per project with a site list and a contract card, stopping before every final button; typing into forms is off (the platform does not grant form_input from a cloud publish). Morning check, prompt tests, Improve-PT loop, metrics kept in the workspace, Setup guides for the GitHub App, connector and the helpers Filesystem, Git, Fetch and Blender."
+  "preview": {
+   "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+   "live": "1793611842-c79f",
+   "previous": "1793588849-f17a"
   },
-  {
-    "version": "2.1.0",
-    "date": "2026-11-07",
-    "commit": "2d3e27b44c2614dcfbe35eaf31e13a850cdeb95d",
-    "main": {
-      "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
-      "live": "1794026648-f594",
-      "previous": "1793826109-ac8d",
-      "hosts": {
-        "claude_browser": [
-          "computer",
-          "find",
-          "form_input",
-          "get_page_text",
-          "navigate",
-          "preview_start"
-        ],
-        "filesystem": [
-          "list_allowed_directories",
-          "list_directory",
-          "write_file"
-        ],
-        "git": [
-          "git_status"
-        ],
-        "fetch": [
-          "fetch"
-        ],
-        "blender": [
-          "execute_blender_code"
-        ]
-      }
-    },
-    "preview": {
-      "artifact": "6rj1ZPyMB6GxKwAHsmndny",
-      "live": "1793982956-0929",
-      "previous": "1793825785-5fb3",
-      "hosts": {
-        "claude_browser": [
-          "computer",
-          "find",
-          "get_page_text",
-          "navigate",
-          "preview_start"
-        ],
-        "filesystem": [
-          "list_allowed_directories",
-          "list_directory",
-          "write_file"
-        ],
-        "git": [
-          "git_status"
-        ],
-        "fetch": [
-          "fetch"
-        ],
-        "blender": [
-          "execute_blender_code"
-        ]
-      }
-    },
-    "notes": "2.1.0: Pick Mode and Chat Mode (renamed), About rewritten; safety layer for imported and generated content (safe ids, no prototype keys, safe HTML at the page sink, https-only links, numbers coerced); backups import in one step with a from-a-backup mark, Undo, and re-link by one click before anything automatic runs; the morning check reads pages only after the owner's Watch-these click (20 s limit); typing into forms on (published from a local session); dead jumps fixed; toast Undo buttons; test kit with 207 planted Pick bugs, hunt checks, receipts with a code tree, causes 102-108. Full gate 54 of 54 on the released code tree."
-  }
+  "notes": "1.9.1: the independent check (a judge after every build, verified update and pasted build report; green only when every acceptance line holds, the floors pass and the commit came first; a kit run is green only with a judge pass), the second opinion from another lab (off until SECOND_LAB_API_KEY is added in GitHub), the GitHub build room in firnlab/tools (independent judge in the pull request, hidden test twins off until the pt-private key is added)."
+ },
+ {
+  "version": "1.9.2",
+  "date": "2026-11-02",
+  "commit": "fb25ede71803efedaba252b90b9cb335f6542feb",
+  "main": {
+   "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+   "live": "1793629097-1653",
+   "previous": "1793612057-67af"
+  },
+  "preview": {
+   "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+   "live": "1793628914-30d1",
+   "previous": "1793611842-c79f"
+  },
+  "notes": "1.9.2: a release check with stretched stand-in text (every text PT shows comes from its three languages, no label cut off, no page scrolling sideways, at desktop and phone width); the Firnlab vault's tool lines in German and Chinese; rows of buttons and the notes page no longer push a phone screen sideways."
+ },
+ {
+  "version": "1.9.3",
+  "date": "2026-11-02",
+  "commit": "d05ca4b987718ff9980a3696268885b051764718",
+  "main": {
+   "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+   "live": "1793648891-af98",
+   "previous": "1793629097-1653"
+  },
+  "preview": {
+   "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+   "live": "1793648709-a256",
+   "previous": "1793628914-30d1"
+  },
+  "notes": "1.9.3: the Build page says correctly how a build in the tools repository is locked: only a comment from your own login starts it, and on a private repository GitHub adds no second approval step (the old text promised an approval in the build environment that does not exist); a release check now catches any text that promises such a step."
+ },
+ {
+  "version": "1.9.4",
+  "date": "2026-11-03",
+  "commit": "e571ca06b8bc4e202bb69f5635176ddbd1ad71fb",
+  "main": {
+   "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+   "live": "1793669544-2baa",
+   "previous": "1793648891-af98"
+  },
+  "preview": {
+   "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+   "live": "1793669381-0b78",
+   "previous": "1793648709-a256"
+  },
+  "notes": "1.9.4: the yearly “Renew 2 keys” reminder in the Sunday note now covers the tools repository too: each new key goes into prompt-translator and then into the tools repository (named from Settings › General), with a link to each settings page, so builds there keep working after a renewal; the terminal stays open until the Claude key is in both places."
+ },
+ {
+  "version": "1.10.0",
+  "date": "2026-11-03",
+  "commit": "583a6103fda173bce7d8175d85779cd55c57817c",
+  "main": {
+   "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+   "live": "1793741450-54e1",
+   "previous": "1793669544-2baa"
+  },
+  "preview": {
+   "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+   "live": "1793741106-aca6",
+   "previous": "1793669381-0b78"
+  },
+  "notes": "1.10.0: PT's hands (Settings › PT health, in the Claude desktop app). PT opens GitHub in the app's built-in browser with the owner's own login, reads it and takes the owner to the right spot: open pull requests with their titles, this version's release, the end date of each fine-grained key (marked within 30 days), and “Take me there” to a pull request's merge button and to each line of the key renewal card. It never clicks, types or handles keys; github.com only; owner only. Tried live by the owner twice: GitHub's real pages fixed two readings (labels before #N; the key list loads after the header)."
+ },
+ {
+  "version": "2.0.0",
+  "date": "2026-11-04",
+  "commit": "b182f1dbce513935feb182db1eaba77543321602",
+  "main": {
+   "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+   "live": "1793826109-ac8d",
+   "previous": "1793741450-54e1"
+  },
+  "preview": {
+   "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+   "live": "1793825785-5fb3",
+   "previous": "1793741106-aca6"
+  },
+  "notes": "2.0.0: two faces of one project, Chat with structure and Pick (Steps, Blueprint, Journey, Swimlanes and Express removed; their content stays readable). The solution map: goal first, every route from simple to frontier including the not-yet-possible ones, decide, then details; coverage rounds and a red-team round. Each project's rules never cut from its prompt; nothing crosses between projects. PT's hands per project with a site list and a contract card, stopping before every final button; typing into forms is off (the platform does not grant form_input from a cloud publish). Morning check, prompt tests, Improve-PT loop, metrics kept in the workspace, Setup guides for the GitHub App, connector and the helpers Filesystem, Git, Fetch and Blender."
+ },
+ {
+  "version": "2.1.0",
+  "date": "2026-11-07",
+  "commit": "2d3e27b44c2614dcfbe35eaf31e13a850cdeb95d",
+  "main": {
+   "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+   "live": "1794026648-f594",
+   "previous": "1793826109-ac8d",
+   "hosts": {
+    "claude_browser": [
+     "computer",
+     "find",
+     "form_input",
+     "get_page_text",
+     "navigate",
+     "preview_start"
+    ],
+    "filesystem": [
+     "list_allowed_directories",
+     "list_directory",
+     "write_file"
+    ],
+    "git": [
+     "git_status"
+    ],
+    "fetch": [
+     "fetch"
+    ],
+    "blender": [
+     "execute_blender_code"
+    ]
+   }
+  },
+  "preview": {
+   "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+   "live": "1793982956-0929",
+   "previous": "1793825785-5fb3",
+   "hosts": {
+    "claude_browser": [
+     "computer",
+     "find",
+     "get_page_text",
+     "navigate",
+     "preview_start"
+    ],
+    "filesystem": [
+     "list_allowed_directories",
+     "list_directory",
+     "write_file"
+    ],
+    "git": [
+     "git_status"
+    ],
+    "fetch": [
+     "fetch"
+    ],
+    "blender": [
+     "execute_blender_code"
+    ]
+   }
+  },
+  "notes": "2.1.0: Pick Mode and Chat Mode (renamed), About rewritten; safety layer for imported and generated content (safe ids, no prototype keys, safe HTML at the page sink, https-only links, numbers coerced); backups import in one step with a from-a-backup mark, Undo, and re-link by one click before anything automatic runs; the morning check reads pages only after the owner's Watch-these click (20 s limit); typing into forms on (published from a local session); dead jumps fixed; toast Undo buttons; test kit with 207 planted Pick bugs, hunt checks, receipts with a code tree, causes 102-108. Full gate 54 of 54 on the released code tree."
+ },
+ {
+  "version": "2.1.1",
+  "date": "2026-11-07",
+  "commit": "1004f854666557ff6c0bc9da7531bd987d09d2bb",
+  "main": {
+   "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+   "live": "1794082802-e32a",
+   "previous": "1794026648-f594",
+   "hosts": {
+    "claude_browser": [
+     "computer",
+     "find",
+     "form_input",
+     "get_page_text",
+     "navigate",
+     "preview_start"
+    ],
+    "filesystem": [
+     "list_allowed_directories",
+     "list_directory",
+     "write_file"
+    ],
+    "git": [
+     "git_status"
+    ],
+    "fetch": [
+     "fetch"
+    ],
+    "blender": [
+     "execute_blender_code"
+    ]
+   }
+  },
+  "preview": {
+   "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+   "live": "1794071704-0c06",
+   "previous": "1793982956-0929",
+   "hosts": {
+    "claude_browser": [
+     "computer",
+     "find",
+     "get_page_text",
+     "navigate",
+     "preview_start"
+    ],
+    "filesystem": [
+     "list_allowed_directories",
+     "list_directory",
+     "write_file"
+    ],
+    "git": [
+     "git_status"
+    ],
+    "fetch": [
+     "fetch"
+    ],
+    "blender": [
+     "execute_blender_code"
+    ]
+   }
+  },
+  "notes": "2.1.1 (small lane, Fix items): the release check reads the releases list instead of the tag page (cause 109); the laptop task stops before any sign-up, payment, deletion, publishing or anything it cannot undo (D1, cause 110); kitEngineRec matches whole words and keeps the ★ on the scheduled task while K3 is open; Health and the kit options follow the 20-day price clock; manifest check in the gate with hosts per artifact (RT-11, cause 111); the second owner's welcome without \"1.8\"; kit facts dated 7 Nov (Managed Agents, Vercel Hobby, Stripe restricted keys). Page byte budget 3.5 -> 3.6 MB. Full gate 55 of 55 on 1004f85. Main published from the cloud with capabilities omitted (host set unchanged, manifest carried forward incl. form_input) - first cloud publish to main since typing was added."
+ }
 ]

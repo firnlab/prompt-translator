@@ -7,6 +7,8 @@ Versions before 1.8 were published from the private archive repository (see RELE
 
 ## 2.1.1 — 2026-11-07
 
+Release notes: 2.1.1 (small lane, Fix items): the release check reads the releases list instead of the tag page (cause 109); the laptop task stops before any sign-up, payment, deletion, publishing or anything it cannot undo (D1, cause 110); kitEngineRec matches whole words and keeps the ★ on the scheduled task while K3 is open; Health and the kit options follow the 20-day price clock; manifest check in the gate with hosts per artifact (RT-11, cause 111); the second owner's welcome without "1.8"; kit facts dated 7 Nov (Managed Agents, Vercel Hobby, Stripe restricted keys). Page byte budget 3.5 -&gt; 3.6 MB. Full gate 55 of 55 on 1004f85. Main published from the cloud with capabilities omitted (host set unchanged, manifest carried forward incl. form_input) - first cloud publish to main since typing was added.
+
 ### Changed
 
 - Before every GO the gate compares the publish manifest with the live artifacts’ recorded tools and says “cloud publish ok” or “publish from a local task” (2.1.0 main was refused from the cloud because typing was new; the releases file now records each artifact’s tools)
