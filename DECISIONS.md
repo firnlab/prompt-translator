@@ -24,3 +24,4 @@
 - D-2026-11-09-06 · owner · add / edit / delete any prompt; a settings area for everything logical (item 22) · PT · active
 - D-2026-11-09-07 · owner · the owner's 8 standing rules do not go into PT's prompts (they are claude.ai preferences) (item 22) · PT · active
 - D-2026-11-09-08 · owner · item 22 and the Chinese-typing fix (item 23) go into the next update with the other planned items; timing (a) together / (b) item 7 + 23 first is the owner's choice; HANDOFF-item22.md replaces every earlier item-22 note · PT · active
+- D-2026-11-09-09 · owner · "i want all in one update" (9 Nov 23:23): one release with item 7 + item 23 + item 22 (timing option (a)); the kit options may show "not used" from 13 Nov until that release · PT · active
