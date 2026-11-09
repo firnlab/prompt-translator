@@ -14142,9 +14142,11 @@ document.addEventListener("input", e => {
   if (el.matches("[data-lines-test]")){ const p = curP(); const x = p.tests.find(y => y.id === el.dataset.linesTest); x.criteria = el.value.split("\n").map(s => s.trim()).filter(Boolean); if (p.seal.test === p.versionNo){ p.seal.test = 0; logAct(p, t("act.sealbroken"), {kind: "seal"}); } touch(p); return; }
   if (el.matches("[data-reqids]")){ const p = curP(); const x = p.tests.find(y => y.id === el.dataset.reqids); x.reqIds = el.value.split(/[,\s]+/).map(s => s.trim().toUpperCase()).filter(Boolean); touch(p); return; }
   if (el.matches("[data-res-topic]")){ UI.modal.topic = el.value; const b = $("#res-brief"); if (b) b.textContent = researchBrief(curP(), el.value || "…"); return; }
-  if (el.id === "pal-in"){ UI.palQ = el.value; UI.palSel = 0; render(); return; }
+  if (el.id === "pal-in"){ UI.palQ = el.value; UI.palSel = 0; if (e.isComposing) return; render(); return; }   // 2.2.0 (item 23): no render while pinyin/IME composes; compositionend renders once
 });
 const debounceRender = debounce(() => render(), 250);
+/* 2.2.0 (item 23): the Ctrl+K search renders once when the IME confirms the characters (the input event during composition is skipped above) */
+document.addEventListener("compositionend", e => { const el = e.target; if (el && el.id === "pal-in"){ UI.palQ = el.value; UI.palSel = 0; render(); } });
 document.addEventListener("change", e => {
   const el = e.target;
   if (el.matches("[data-a-change]")){ const fn = CHANGES[el.dataset.aChange]; if (fn) fn(el); return; }

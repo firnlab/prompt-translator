@@ -710,3 +710,4 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
   no longer lists form_input. e2e200_hands D0 checks the off state; the typing tests run with the switch on.
 - 2.0.0 PR: quick-gate red on a stale CHANGELOG.md. The releases.json notes go into CHANGELOG.md, so adding the release entry needs
   `python3 tools/changelog.py` again before the commit (the local gate had run before the entry existed).
+- Cause 112 (2.2.0, item 23): the Ctrl+K search re-rendered on every input event during an IME composition, so pinyin input broke; the input handler skips composing events and `compositionend` renders once; check `e2e210_clicks.py` K.ime-search (reverting the guard turns it red).
