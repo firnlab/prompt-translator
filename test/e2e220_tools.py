@@ -103,7 +103,7 @@ with sync_playwright() as pw:
     pg.locator("[data-cand=ib-t22a] [data-a=rc22-test]").click(); pg.wait_for_timeout(3000)
     check("“Make it a test” turns it into a test after your tick, and it leaves the board", ev(pg, "curP().tests.length") == n0 + 1 and ev(pg, "!!curP().inbox.find(x => x.id === 'ib-t22a').testId") and not ev(pg, "!!document.querySelector('[data-cand=ib-t22a]')"), [ev(pg, "curP().tests.length"), n0])
 
-    print("7 hard gates")
+    print("7 the hard gates (release blockers)")
     hg = ev(pg, MK, {"name": "Shared shop 22", "raw": "A web app online shop where customers pay with a subscription, log in, and their orders are stored in a database", "aud": {"customers": True}, "home": "a web app on its own domain"})
     ev(pg, """(id) => { const p = WS.projects.find(x => x.id === id); p.pkg.sections = [{id: 'instructions', dest: 'instructions', title: 'Instructions', reqIds: [], content: 'Use the key ' + ['sk', 'live', 'AbCdEfGhIjKlMnOpQrStUvWx0123'].join('_') + ' for Stripe.'}]; touch(p); }""", hg)
     items = ev(pg, "(id) => queueOf(WS.projects.find(x => x.id === id)).filter(x => x.kind === 'hg22').map(x => ({id: x.ref.slice(5), cls: x.cls}))", hg)
