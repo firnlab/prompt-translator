@@ -21,3 +21,4 @@ Owner "GO 2.2.0" 10 Nov 2026 00:52 (D-2026-11-10-01: everything in one update). 
 - quick220d: flows 1.6 (kit 1) red once under load, green on rerun and 3× alone: the own-words box of the result pick was not drawn yet when the step typed into it. The step now draws once if the box is missing and says so on the console (ledger entry kept).
 - quick220d also: hunt 12 (id "pq-" twice on Build/Launch) and hunt 30 (screens 280–392 ms against 250 ms under gate load) — cause 117. Items now through qItem; open gates/apps memoized per render (Q_CACHE identity). HUNT_ONLY=12 and HUNT_ONLY=30 green, e2e220_tools 57.
   Manual plant: qItem removed from the hard-gate items → the key check red [None ×5]; restored → 57 green.
+- Preview published 10 Nov: Prompt Translator 2.2.0 preview, version 1794279862-ced9 (previous 1794071704-0c06 stays restorable); capabilities carried forward unchanged; quick gate quick220e green 46/46.
