@@ -113,6 +113,17 @@ with sync_playwright() as pw:
     if shown: click(pg, ".m20-gdiff [data-a=g20-drop]")
     check("K.g20-drop", "the goal card: dropping a proposed change takes the comparison away and leaves the goal as it was", shown and ev(pg, "!goal20Read(curP()).pend") and not has(pg, ".m20-gdiff") and ev(pg, "JSON.stringify(goal20Read(curP()).f)") == g0, [shown, ev(pg, "goal20Read(curP()).pend")])
 
+    # 2.2.0 item 23: Chinese typing in the Ctrl+K search — no render while the IME composes, one render when it confirms
+    ev(pg, "() => { UI.palette = true; UI.palQ = ''; render(); }"); pg.wait_for_timeout(200)
+    ev(pg, "() => { window.__rc = 0; const o = render; render = function(){ window.__rc++; return o.apply(this, arguments); }; }")
+    ev(pg, """() => { const el = document.getElementById('pal-in'); el.focus(); el.dispatchEvent(new CompositionEvent('compositionstart', {bubbles: true, data: ''}));
+      for (const v of ['n', 'ni', 'nih', 'niha']){ el.value = v; el.dispatchEvent(new InputEvent('input', {bubbles: true, isComposing: true, data: v})); } }""")
+    during = ev(pg, "window.__rc"); same_el = ev(pg, "document.activeElement && document.activeElement.id === 'pal-in' && document.activeElement.value === 'niha'")
+    ev(pg, """() => { const el = document.getElementById('pal-in'); el.value = '你好'; el.dispatchEvent(new CompositionEvent('compositionend', {bubbles: true, data: '你好'})); }""")
+    pg.wait_for_timeout(150)
+    after = ev(pg, "window.__rc"); q = ev(pg, "UI.palQ")
+    check("K.ime-search", "Ctrl+K search: typing pinyin does not redraw the page (the field keeps its composing text); confirming the characters filters once", during == 0 and same_el and after == 1 and q == "你好", [during, same_el, after, q])
+    ev(pg, "() => { UI.palette = false; render(); }")
     check("errors", "no page errors", not errors, errors[:5])
     b.close()
 try: (ROOT / "test" / PAGE).unlink()

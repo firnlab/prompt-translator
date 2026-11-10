@@ -1,116 +1,1157 @@
 {
-  "_about": "2.1 (J3, C8-2): every cause of RELEASE-CHECKS.md linked to the checks that catch it and the planted bugs that prove those checks. Each entry is \"<file> :: <text that must be in it>\" (a check name, a section title or a planted bug's name). A cause without a check says \"manual\" and why; a cause without a planted bug says \"no_plant\" and why. test/check_the_causes.py proves every cited text exists (data-free, under 5 s, in the quick gate).",
-  "causes": {
-    "1": {"cause": "One fact, many formulas", "checks": ["test/static_checks.js :: H('count'", "test/hunt.py :: check(\"17 done", "test/hunt2.py :: check(\"26 one count"], "planted": ["test/check_the_checks.py :: three counts for open work", "test/hunt2.py :: \"26\": "]},
-    "2": {"cause": "AI does not see what it needs (context cut)", "checks": ["test/static_checks.js :: H('cut'", "test/static_checks.js :: R('cut'", "test/hunt.py :: check(f\"18 broken AI answers"], "planted": ["test/check_the_checks.py :: long text cut silently"]},
-    "3": {"cause": "AI answer not checked", "checks": ["test/static_checks.js :: R('validate'", "test/static_checks.js :: R('verdict'", "test/hunt.py :: check(f\"18 broken AI answers"], "planted": ["test/check_the_checks.py :: AI answer without a shape check", "test/check_the_checks.py :: verdict forced to yes/no"]},
-    "4": {"cause": "Boxes overlap, clip or cover", "checks": ["test/static_checks.js :: H('layout'", "test/static_checks.js :: R('overlap'", "test/hunt.py :: check(\"11 menus", "test/layout141.py :: "], "planted": ["test/check_the_checks.py :: menus cut off: no top-layer menus", "test/check_the_checks.py :: raw z-index in new CSS"]},
-    "5": {"cause": "\"Go to\" lands nowhere", "checks": ["test/hunt.py :: check(\"14 go-to", "test/static_checks.js :: R('goto'"], "no_plant": "hunt checks 1-21 have no planted bugs yet (J2, C8-3); the goto review item has none either"},
-    "6": {"cause": "A render destroys typed text, cursor or open panels", "checks": ["test/hunt.py :: check(\"16 typing"], "no_plant": "hunt checks 1-21 have no planted bugs yet (J2)"},
-    "7": {"cause": "The screen moves without you", "checks": ["test/static_checks.js :: R('move'", "test/hunt2.py :: check(\"23 still screen"], "planted": ["test/check_the_checks.py :: screen moves after a wait", "test/hunt2.py :: \"23\": "]},
-    "8": {"cause": "Wrong language in content", "checks": ["test/static_checks.js :: H('lang'", "test/hunt2.py :: check(\"27 language"], "planted": ["test/check_the_checks.py :: content in the screen language", "test/hunt2.py :: \"27\": "]},
-    "9": {"cause": "\"Who did it\" recorded wrongly", "checks": ["test/hunt.py :: check(f\"5 undo", "test/hunt.py :: check(\"6 toast-undo"], "planted": ["test/check_the_pick.py :: an automatic step leaves its action open (hunt 5, cause 93)"]},
-    "10": {"cause": "Open work buried", "checks": ["test/hunt.py :: check(\"17 done", "test/hunt2.py :: check(\"26 one count"], "planted": ["test/hunt2.py :: \"26\": "]},
-    "11": {"cause": "Stale copy after a wait", "checks": ["test/static_checks.js :: R('stale'", "test/hunt2.py :: check(\"28 await race"], "planted": ["test/check_the_checks.py :: stale copy after a wait", "test/hunt2.py :: \"28\": "]},
-    "12": {"cause": "A click does nothing, or no way to \"done\"", "checks": ["test/static_checks.js :: H('handlers'", "test/hunt.py :: check(\"1 handlers", "test/hunt2.py :: check(f\"24 dead clicks", "test/monkey141.py :: "], "planted": ["test/check_the_checks.py :: a button with no action", "test/hunt2.py :: \"24\": "]},
-    "13": {"cause": "Endless AI loops, runaway cost", "checks": ["test/static_checks.js :: R('loop'"], "planted": ["test/check_the_checks.py :: AI loop without a cap"]},
-    "14": {"cause": "Built not as agreed", "manual": "the full release gate plus the owner's GO on the change list; no automatic check can know what was agreed"},
-    "15": {"cause": "Ids reused or taken from position", "checks": ["test/static_checks.js :: H('ids'", "test/hunt.py :: check(\"21 remove", "test/hunt2.py :: check(\"29 integrity"], "planted": ["test/check_the_checks.py :: ids reused after a delete", "test/hunt2.py :: \"29\": "]},
-    "16": {"cause": "A change marks too much or too little", "checks": ["test/unit14.js :: console.log(\"4 links: only direct dependents"], "no_plant": "unit14 runs only on the real-data copy (full gate); it has no planted bug"},
-    "17": {"cause": "Undo takes back the wrong thing", "checks": ["test/static_checks.js :: R('undo'", "test/hunt.py :: check(f\"5 undo", "test/hunt.py :: check(\"6 toast-undo"], "planted": ["test/check_the_pick.py :: Undo leaves a pick open and decided"]},
-    "18": {"cause": "One feature built twice, the later one wins", "checks": ["build.py :: duplicate function definitions", "test/static_checks.js :: H('names'", "test/static_checks.js :: H('wrappers'"], "planted": ["test/check_the_checks.py :: leftover 'Sie': a string key defined twice", "test/check_the_checks.py :: one name declared in two files", "test/check_the_checks.py :: wrapper of a missing function"]},
-    "19": {"cause": "Strings and locale", "checks": ["test/static_checks.js :: H('strings'", "test/static_checks.js :: [du]", "test/static_checks.js :: [plural]", "test/static_checks.js :: R('regex'", "test/i18n14.js :: ", "test/hunt.py :: check(\"9 languages"], "planted": ["test/check_the_checks.py :: German ß", "test/check_the_checks.py :: Traditional Chinese", "test/check_the_checks.py :: missing translation key"]},
-    "20": {"cause": "Measuring the harness instead of the tool", "checks": ["test/static_checks.js :: H('rule'"], "planted": ["test/check_the_checks.py :: AI call that skips runAI"]},
-    "21": {"cause": "Silent failure", "checks": ["test/static_checks.js :: R('catch'", "test/hunt.py :: check(\"19 failed load", "test/hunt2.py :: check(\"31 save failure"], "planted": ["test/check_the_checks.py :: silent failure: empty catch", "test/hunt2.py :: \"31\": "]},
-    "22": {"cause": "PT decides without asking", "manual": "review of each design card (only easy-to-undo choices get a star); RELEASE-CHECKS names unit14, which has no named check for it"},
-    "23": {"cause": "A fix written to the wrong item", "checks": ["test/hunt2.py :: check(\"29 integrity", "test/migrate14.py :: "], "planted": ["test/hunt2.py :: \"29\": "]},
-    "24": {"cause": "Saving loses or overwrites data", "checks": ["test/hunt.py :: check(\"4 persist", "test/static_checks.js :: R('field'"], "no_plant": "hunt checks 1-21 have no planted bugs yet (J2)"},
-    "25": {"cause": "Preview acts like main", "checks": ["test/static_checks.js :: R('preview'"], "planted": ["test/check_the_checks.py :: live action in the preview", "test/check_the_pick.py :: a preview copy runs the kit update", "test/check_the_pick.py :: a preview copy starts the judge"]},
-    "26": {"cause": "Text cut", "checks": ["test/static_checks.js :: R('trunc'", "test/static_checks.js :: R('cut'", "test/layout141.py :: ", "test/migrate141.py :: "], "planted": ["test/check_the_checks.py :: text cut with …"]},
-    "27": {"cause": "Old or half-filled data", "checks": ["test/hunt.py :: check(\"7 partial data", "test/hunt.py :: check(\"8 empty project", "test/hunt.py :: check(f\"10 migrations", "test/migrate141.py :: ", "test/migrate14.py :: "], "no_plant": "hunt checks 1-21 have no planted bugs yet (J2); the migration suites run on the real-data copy"},
-    "28": {"cause": "Accessibility", "checks": ["test/hunt2.py :: check(\"25 tap targets"], "planted": ["test/hunt2.py :: \"25\": "]},
-    "29": {"cause": "The checks themselves miss bugs", "checks": ["test/check_the_checks.py :: the sources are not clean to start with", "test/hunt.py :: \"14\": ", "test/check_the_pick.py :: ", "test/check_the_causes.py :: "], "no_plant": "these are the planted-bug runners themselves; check_the_checks stops when the clean copy is not green"},
-    "30": {"cause": "Text squeezed to a word per line", "checks": ["test/static_checks.js :: H('layout'", "test/static_checks.js :: R('squeeze'", "test/hunt.py :: check(\"13 squeeze"], "planted": ["test/check_the_checks.py :: squeezed text: overflow-wrap:anywhere", "test/check_the_checks.py :: text squeezed by flex:1"]},
-    "31": {"cause": "Internal ids shown to people", "checks": ["test/static_checks.js :: R('rawid'", "test/hunt2.py :: check(\"22 raw text"], "planted": ["test/check_the_checks.py :: internal id shown as text", "test/hunt2.py :: \"22\": "]},
-    "32": {"cause": "Storage limits", "checks": ["test/hunt.py :: check(\"20 size"], "no_plant": "hunt checks 1-21 have no planted bugs yet (J2)"},
-    "33": {"cause": "State not bound to its workspace or project", "checks": ["test/hunt.py :: check(\"3 switch"], "no_plant": "hunt checks 1-21 have no planted bugs yet (J2)"},
-    "34": {"cause": "Text from files or the web read as orders", "checks": ["test/static_checks.js :: H('rule'", "test/static_checks.js :: R('esc'", "test/static_checks.js :: H('raw'"], "planted": ["test/check_the_checks.py :: untrusted text read as orders: rule removed", "test/check_the_checks.py :: a raw id in an attribute (J16)", "test/check_the_checks.py :: raw text into innerHTML (J16)", "test/check_the_checks.py :: a link not checked as https (J16, A14)", "test/check_the_checks.py :: a raw id in a selector (J16, R1-9)", "test/check_the_checks.py :: a raw id in a selector built with + (J16, R1-9)", "test/check_the_checks.py :: a raw value in an old file's new line (J16: review until Wave 3)","test/check_the_pick.py :: findings that instruct the AI reach the prompts"]},
-    "35": {"cause": "Redo replaces instead of reconciling", "checks": ["test/e2e14.py :: 5. Requirements redo opens the review"], "no_plant": "e2e14 runs on the real-data copy; no planted bug"},
-    "36": {"cause": "The same box shown twice", "checks": ["test/hunt.py :: check(\"12 one box", "test/static_checks.js :: R('field'"], "planted": ["test/check_the_pick.py :: the Design page draws a kit question twice (Part C, hunt 12)"]},
-    "37": {"cause": "Keys in the wrong place", "checks": ["test/static_checks.js :: R('keys'", "test/hunt.py :: check(\"2 keys"], "no_plant": "hunt checks 1-21 have no planted bugs yet (J2); the keys review item has none"},
-    "38": {"cause": "Slow screens", "checks": ["test/hunt2.py :: check(\"30 speed"], "planted": ["test/hunt2.py :: \"30\": "]},
-    "39": {"cause": "A write that runs after its context changed", "checks": ["test/e2e15b.py :: R5 a failed load writes nothing", "test/e2e15b.py :: R15 a project deleted during a round"], "planted": ["test/check_the_pick.py :: a failed workspace load writes the workspace", "test/check_the_pick.py :: a run writes into a project that was deleted meanwhile"]},
-    "40": {"cause": "Partial Undo leaves two truths", "checks": ["test/pick_contract.py :: "], "planted": ["test/check_the_pick.py :: Undo leaves a pick open and decided"]},
-    "41": {"cause": "A check that can only reject", "checks": ["test/e2e15b.py :: R28 a card the cleaner cannot repair", "test/pick_contract.py :: "], "planted": ["test/check_the_pick.py :: an AI answer that breaks a card rule is used without asking again"]},
-    "42": {"cause": "Secondary sources taken as platform truth", "checks": ["test/pick_contract.py :: ", "test/e2e15b.py :: R29"], "planted": ["test/check_the_pick.py :: a blog confirms what a platform can do"]},
-    "43": {"cause": "Typed or web text in a fixed prompt tag", "checks": ["test/e2e15b.py :: R26 typed and outside text goes into a tag with a random id"], "planted": ["test/check_the_pick.py :: own words go into the prompt raw", "test/check_the_pick.py :: findings that instruct the AI reach the prompts"]},
-    "44": {"cause": "Text in a source file that breaks the script", "checks": ["test/static_checks.js :: [parse]"], "planted": ["test/check_the_checks.py :: a comment that swallows the rest of a line (parse error)"]},
-    "45": {"cause": "A decision written before its Undo step opens", "checks": ["test/e2e16.py :: "], "planted": ["test/check_the_pick.py :: a storage decision made before its Undo step opens splits into two steps"]},
-    "46": {"cause": "A soft limit silently gated the automatic steps", "checks": ["test/e2e16.py :: print(\"13 the spine"], "planted": ["test/check_the_pick.py :: the budget throttles the automatic steps again"]},
-    "47": {"cause": "Readiness needed a decision no card ever asked", "checks": ["test/e2e16.py :: print(\"13 the spine"], "planted": ["test/check_the_pick.py :: a missing result pick is not noticed"]},
-    "48": {"cause": "PT's own drafts asked the person once per item", "checks": ["test/e2e16.py :: print(\"13 the spine"], "planted": ["test/check_the_pick.py :: PT's drafts ask once per item again"]},
-    "49": {"cause": "Typed words vanished with the card", "checks": ["test/e2e16.py :: print(\"13 the spine"], "planted": ["test/check_the_pick.py :: what was recorded is not shown"]},
-    "50": {"cause": "Automatic steps wrote into the project without an action of their own", "checks": ["test/hunt.py :: check(f\"5 undo", "test/e2e200_loop.py :: L7 (hunt 5, cause 93)"], "planted": ["test/check_the_pick.py :: an automatic step leaves its action open (hunt 5, cause 93)"]},
-    "51": {"cause": "A view switch lived in the status line", "checks": ["test/e2e17.py :: print(\"3 the Bauplan on the Design page"], "planted": ["test/check_the_pick.py :: the Bauplan does nothing again (the Design page loses the map)"]},
-    "52": {"cause": "Seven kit decisions appeared at once", "checks": ["test/e2e17.py :: print(\"5 kit decisions wait for the design station"], "planted": ["test/check_the_pick.py :: kit decisions come all at once before the design"]},
-    "53": {"cause": "\"Fix automatically\" ended with a count", "checks": ["test/e2e17.py :: print(\"6 Finish shows what it changed"], "planted": ["test/check_the_pick.py :: Finish hides what it changed"]},
-    "54": {"cause": "Facts carried no date", "checks": ["test/e2e17.py :: print(\"8 honesty as code: facts carry their dates"], "planted": ["test/check_the_pick.py :: a stale fact is not flagged"]},
-    "55": {"cause": "An issue can carry a pasted key or instructions aimed at an agent", "checks": ["test/triage_test.py :: three secret kinds removed", "test/triage_test.py :: hostile text is kept as data"], "no_plant": "triage_test feeds fixed hostile issues; the cases are the planted inputs"},
-    "56": {"cause": "A PR opened by a workflow token starts no other workflow", "manual": "workflow wiring (vault.yml starts quick-gate with workflow_dispatch); seen when the PR's required checks report. No test runs GitHub workflows"},
-    "57": {"cause": "The vault lock file copied a licence head with an e-mail address", "manual": "vault_mirror.py masks addresses in licence heads; no test exercises it (it downloads). The data-guard job blocks a push that carries one"},
-    "58": {"cause": "A second vault run on the same day failed (tag and branch existed)", "manual": "vault.yml numbers releases -2, -3 and puts the time in the branch; no test runs the workflow"},
-    "59": {"cause": "A workspace found or named by a person's name", "checks": ["test/static_checks.js :: H('person'"], "planted": ["test/check_the_checks.py :: a workspace found by a person's name (cause 59)"]},
-    "60": {"cause": "Two unrelated .chk rules collided", "checks": ["test/e2e180_look.py :: a checkbox with its words is a plain row, not a card"], "no_plant": "a layout check in e2e180_look; no planted bug"},
-    "61": {"cause": "New classes without a style; unrounded numbers", "checks": ["test/e2e180_look.py :: .pt-tile"], "no_plant": "a layout check in e2e180_look; no planted bug"},
-    "62": {"cause": "check_the_pick counted a test green only on \"failed: 0\"", "checks": ["test/check_the_pick.py :: that form counts as green too"], "no_plant": "a rule of the planted-bug runner itself"},
-    "63": {"cause": "One constant for a rule decided per tool or type", "checks": ["test/e2e180_checks.py :: print(\"5 tests: 3 runs, 5 for a tool that acts", "test/e2e180_checks.py :: print(\"7 facts by type with an error budget"], "planted": ["test/check_the_pick.py :: a tool that acts outward runs its tests only 3 times", "test/check_the_pick.py :: a price past its budget is still used (one 90-day rule again)"]},
-    "64": {"cause": "A // comment in the middle of a line swallowed statements", "checks": ["test/static_checks.js :: H('comment'"], "planted": ["test/check_the_checks.py :: a comment that swallows statements (still parses, cause 64)", "test/check_the_checks.py :: a comment that swallows the last statement of a block (2.0)", "test/check_the_checks.py :: a comment that swallows a call at the end of a line (2.0 Part B)"]},
-    "65": {"cause": "The mock prompt asked for project parts that do not exist", "checks": ["test/e2e180_decide.py :: the mock is drawn from the idea, your answers and the research so far"], "no_plant": "no planted bug for the mock prompt's parts"},
-    "66": {"cause": "A load-time template read a later file's const (PT stopped at boot)", "checks": ["test/e2e14.py :: wait for the first screen"], "no_plant": "a boot stop fails every flow suite at its first screen; nothing to plant beyond that"},
-    "67": {"cause": "Screens read the whole tool text many times (speed)", "checks": ["test/e2e180_checks.py :: speed (cause 67)", "test/hunt2.py :: check(\"30 speed"], "planted": ["test/hunt2.py :: \"30\": "]},
-    "68": {"cause": "A status pill squeezed a queue row's text", "checks": ["test/hunt.py :: check(\"13 squeeze"], "no_plant": "hunt checks 1-21 have no planted bugs yet (J2)"},
-    "69": {"cause": "The scheduled-task service refuses notifications without a new session per run", "checks": ["test/e2e180_run.py :: print(\"5 the Sunday preparation run"], "planted": ["test/check_the_pick.py :: a scheduled task is created with notifications but without a new session per run", "test/check_the_pick.py :: any refusal of a new scheduled task is tried again"]},
-    "70": {"cause": "A task created from a page has no session to take its environment from", "checks": ["test/e2e180_run.py :: the service asks for a cloud environment"], "planted": ["test/check_the_pick.py :: a scheduled task created from PT gets no cloud environment", "test/check_the_pick.py :: a self-hosted pool is taken before a cloud environment"]},
-    "71": {"cause": "A kit number and the kit version were written the same way", "checks": ["test/e2e16.py :: Firnlab kit 1", "test/e2e190_fleet.py :: kitVersion"], "no_plant": "a wording check; no planted bug"},
-    "72": {"cause": "A new KEEP_FIELDS field made restores of older projects throw", "checks": ["test/e2e191_judge.py :: print(\"a restore, save + reload"], "planted": ["test/check_the_pick.py :: a restore breaks on a tool that never had a judge record"]},
-    "73": {"cause": "The PT side and the GitHub side of the second lab disagreed", "checks": ["test/e2e191_judge.py :: print(\"6 the second-lab row"], "planted": ["test/check_the_pick.py :: PART R hands the second-lab key to the builder", "test/check_the_pick.py :: the second-lab provider list offers a lab the workflow cannot call", "test/check_the_pick.py :: the second-lab week forgets the Claude weeks", "test/check_the_pick.py :: the GitHub build issue drops the acceptance lines from tool.json"]},
-    "74": {"cause": "English-only vault lines; rows wider than a phone", "checks": ["test/pseudo19.py :: "], "planted": ["test/check_the_pick.py :: a button label is written in English in the code", "test/check_the_pick.py :: the Build page shows the vault lines in English only", "test/check_the_pick.py :: the notes page keeps its fixed filter column on a phone", "test/check_the_pick.py :: a row of buttons in a top bar is as wide as its longest label"]},
-    "75": {"cause": "A promised GitHub approval step that a private repository does not have", "checks": ["test/static_checks.js :: H('claims'"], "planted": ["test/check_the_checks.py :: a build promised to wait for a GitHub approval (cause 75)"]},
-    "76": {"cause": "The key renewal named only prompt-translator's secrets", "checks": ["test/e2e190_care.py :: print(\"7 R7: renew the two keys"], "planted": ["test/check_the_pick.py :: the key renewal leaves the build repository out of the pt-private key (cause 76)", "test/check_the_pick.py :: the build repository's key page ignores Settings › General (cause 76)"]},
-    "77": {"cause": "The owner's rules lived as text a budget could drop", "checks": ["test/e2e200_foundation.py :: sec(\"A2 the rules channel"], "planted": ["test/check_the_pick.py :: the rules channel is left out of project prompts", "test/check_the_pick.py :: the rules are left out when the project is long", "test/check_the_pick.py :: another project's rules reach this project's prompt", "test/check_the_pick.py :: a sentence that keeps the rule reads as a break (no negation check)", "test/check_the_pick.py :: a proposal that breaks a rule is not asked again", "test/check_the_pick.py :: an option blocked by a rule can still be taken", "test/check_the_pick.py :: PT's ★ points at an option blocked by a rule"]},
-    "78": {"cause": "Questions deduplicated only against their own source", "checks": ["test/e2e200_foundation.py :: sec(\"A3 ask once"], "planted": ["test/check_the_pick.py :: an answered question is asked again (ask once off)", "test/check_the_pick.py :: an unclear question is never checked against the facts"]},
-    "79": {"cause": "The workspace profile and other tools' choices reached project prompts", "checks": ["test/e2e200_foundation.py :: sec(\"A5 cross-project"], "planted": ["test/check_the_pick.py :: the workspace profile goes into project prompts again", "test/check_the_pick.py :: the cone stars your choice on another tool again"]},
-    "80": {"cause": "Answers changed data with no visible end state", "checks": ["test/e2e200_foundation.py :: sec(\"A6 one Next and receipts"], "planted": ["test/check_the_pick.py :: no receipt after an answer", "test/check_the_pick.py :: the examples loop goes back to a judged example", "test/check_the_pick.py :: two Next bars on a page"]},
-    "81": {"cause": "Errors were a toast that vanished", "checks": ["test/e2e200_foundation.py :: sec(\"A7 errors"], "planted": ["test/check_the_pick.py :: an error is not kept", "test/check_the_pick.py :: an error card keeps the project's text", "test/check_the_pick.py :: Report to Improve PT starts empty"]},
-    "82": {"cause": "Example prompts could ask questions", "checks": ["test/e2e200_foundation.py :: sec(\"A8 examples never ask"], "planted": ["test/check_the_pick.py :: an example that asks passes the check"]},
-    "83": {"cause": "Buttons reserved almost half of a row", "checks": ["test/e2e200_foundation.py :: sec(\"A9 layout"], "planted": ["test/check_the_pick.py :: the action column gets a fixed share of the row again"]},
-    "84": {"cause": "Process words on the surface", "checks": ["test/e2e200_foundation.py :: sec(\"A10 plain words"], "planted": ["test/check_the_pick.py :: an old process word is back (Out of scope)"]},
-    "85": {"cause": "Details asked before the route was chosen", "checks": ["test/e2e200_map.py :: sec(\"B1 the new order", "test/e2e200_map.py :: sec(\"B5 deciding"], "planted": ["test/check_the_pick.py :: detail questions are asked before the route is chosen", "test/check_the_pick.py :: the pick prompt asks details before the decision", "test/check_the_pick.py :: every detail counts as route-bound"]},
-    "86": {"cause": "One call listed the options and stopped when the list looked complete", "checks": ["test/e2e200_map.py :: sec(\"B3 the map and the coverage engin", "test/e2e200_map.py :: sec(\"B8 map chat"], "planted": ["test/check_the_pick.py :: the lens calls run all at once", "test/check_the_pick.py :: one call for every angle (no lenses)", "test/check_the_pick.py :: a lens no longer asks for unusual answers", "test/check_the_pick.py :: a route found twice is added twice (no merge)", "test/check_the_pick.py :: a red-team break is not recorded as a correction", "test/check_the_pick.py :: the map claims saturation after one quiet round", "test/check_the_pick.py :: a multi-call search starts without naming its cost"]},
-    "87": {"cause": "A route that breaks a never was dropped or shown like the others", "checks": ["test/e2e200_map.py :: sec(\"B4 your rules on the map"], "planted": ["test/check_the_pick.py :: a route that breaks your never is not greyed", "test/check_the_pick.py :: the map shows rule-breaking routes by default"]},
-    "88": {"cause": "A worked solution could only come over as a project copy", "checks": ["test/e2e200_map.py :: sec(\"B9 proven routes from other proje"], "planted": ["test/check_the_pick.py :: a proven route carries its project's rule words into the library", "test/check_the_pick.py :: a route enters the library before its project launched"]},
-    "89": {"cause": "A check row's star carried another tool's choice", "checks": ["test/e2e180_checks.py :: print(\"2 tapping a row"], "planted": ["test/check_the_pick.py :: the checks ★ carries your choice on another tool again"]},
-    "90": {"cause": "Six ways of working over one model; what was said outside the deck was not filed", "checks": ["test/e2e200_modes.py :: print(\"C1 two faces only", "test/e2e200_modes.py :: print(\"C2 Chat Mode", "test/e2e200_modes.py :: print(\"C3 Pick improved"], "planted": ["test/check_the_pick.py :: the chat files nothing into the facts book", "test/check_the_pick.py :: the chat files feedback about PT into the project", "test/check_the_pick.py :: a never is lost when the chat call fails", "test/check_the_pick.py :: a chat answer that breaks your rule is shown", "test/check_the_pick.py :: the chat asks details before the decision", "test/check_the_pick.py :: a question in the chat is asked again", "test/check_the_pick.py :: Pick's Decisions page and the chat's Decided tab differ", "test/check_the_pick.py :: an answer after the decision is not watched by the Route alert", "test/check_the_pick.py :: the old modes are back"]},
-    "91": {"cause": "A chat reply is one string, so a rule break in it could only be recorded", "checks": ["test/e2e200_modes.py :: TEMPT"], "planted": ["test/check_the_pick.py :: a chat answer that breaks your rule is shown"]},
-    "92": {"cause": "A move that rewrites data cannot be checked; twice adds everything twice", "checks": ["test/e2e200_modes.py :: print(\"C4 the move to 2.0", "test/e2e200_modes.py :: R the RC replay"], "planted": ["test/check_the_pick.py :: the move makes no restore point first", "test/check_the_pick.py :: the move twice adds the rules twice", "test/check_the_pick.py :: the move brings another project's rules", "test/check_the_pick.py :: the move changes a field the project had", "test/check_the_pick.py :: a confirmed 1.x choice is not the chosen route after the move"]},
-    "93": {"cause": "Automatic steps opened their action and never closed it", "checks": ["test/hunt.py :: check(f\"5 undo", "test/e2e200_loop.py :: L7 (hunt 5, cause 93)"], "planted": ["test/check_the_pick.py :: an automatic step leaves its action open (hunt 5, cause 93)"]},
-    "94": {"cause": "Hands that click without a rule could press a final button", "checks": ["test/e2e200_hands.py :: D1 the page and the sites", "test/e2e200_hands.py :: D4 the final", "test/e2e200_hands.py :: D5 keys and passwords", "test/e2e200_hands.py :: D6 the guard"], "planted": ["test/check_the_pick.py :: PT's hands click a final button (no final-word check)", "test/check_the_pick.py :: the guard clicks an element nobody cleared", "test/check_the_pick.py :: PT types into a password or code field", "test/check_the_pick.py :: PT types a key-shaped value", "test/check_the_pick.py :: PT's hands open a site off the project's list", "test/check_the_pick.py :: PT's hands click and type on github.com off the list", "test/check_the_pick.py :: the steps run before the contract is shown", "test/check_the_pick.py :: a click that leads off the list goes on"]},
-    "95": {"cause": "Watch lines and tripwires were checked only when something happened in PT", "checks": ["test/e2e200_loop.py :: L1 the morning check"], "planted": ["test/check_the_pick.py :: the morning check runs twice a day", "test/check_the_pick.py :: the morning check runs for another login", "test/check_the_pick.py :: the morning check skips the tripwires", "test/check_the_pick.py :: a watched page that changed raises nothing"]},
-    "96": {"cause": "A prompt test that sends the rules channel tests PT's prompt, not the tool's", "checks": ["test/e2e200_loop.py :: L2 prompt tests"], "planted": ["test/check_the_pick.py :: prompt tests trust the call over PT's word check"]},
-    "97": {"cause": "Reports had no status, so the owner never learned what an update fixed", "checks": ["test/e2e200_loop.py :: L3 Improve PT"], "planted": ["test/check_the_pick.py :: an Improve PT report is not kept", "test/check_the_pick.py :: fixed reports are announced on every open"]},
-    "98": {"cause": "A page's details moved the cursor without setPhase (no automatic step ran)", "checks": ["test/e2e12_on14.py :: print(\"3 understand + first questions"], "planted": ["test/check_the_pick.py :: a step's tab on a page is not a visit: no automatic step (cause 98)"]},
-    "99": {"cause": "A function removed while a caller is left", "checks": ["test/static_checks.js :: H('calls'", "test/static_checks.js :: H('nowhere'"], "planted": ["test/check_the_checks.py :: a function removed while a caller is left (2.0 gate, cause 99)", "test/check_the_checks.py :: a 2.0 function removed while its callers are left (J15, R7-2)", "test/check_the_checks.py :: a call to a function that nothing defines (J15)"]},
-    "100": {"cause": "A workspace's 1.x default view was recorded as steps", "checks": ["test/e2e12_on14.py :: print(\"1 boot + migration"], "planted": ["test/check_the_pick.py :: the workspace's 1.x default view is recorded as steps (cause 100)"]},
-    "101": {"cause": "The walk through a list never showed on the pages", "checks": ["test/e2e14.py :: 7. goRef navigator \"1 of N\" + Back"], "no_plant": "e2e14 runs on the real-data copy; no planted bug"},
-    "102": {"cause": "Values from outside (import, AI) could carry unsafe ids, prototype keys or markup", "checks": ["test/e2e210_safe.py :: I.ids", "test/e2e210_safe.py :: I.norun", "test/e2e210_safe.py :: P.refuse", "test/static_checks.js :: H('safe'"], "planted": ["test/check_the_checks.py :: the main page skips safeHTML (A1)", "test/check_the_checks.py :: resolvePath walks into __proto__ again (A1, R1-1)", "test/check_the_checks.py :: an inline onerror handler in markup (A1)"]},
-    "103": {"cause": "Imported notes kept outside image links (tracking pixels)", "checks": ["test/e2e210_safe.py :: I.imgs", "test/e2e210_safe.py :: R.projects"], "planted": ["test/check_the_checks.py :: an import loop takes records as they come (A1, B17)"]},
-    "104": {"cause": "A jump to an item without a place on the page ended in a toast and nothing shown", "checks": ["test/hunt.py :: check(\"14 go-to"], "planted": ["test/hunt.py :: \"14\": "]},
-    "105": {"cause": "The Design-page result mock vanished: the safety filter took PT's own frame for a foreign one", "checks": ["test/e2e210_safe.py :: F.mockup", "test/e2e210_safe.py :: F.foreign", "test/e2e210_safe.py :: H.fast.project"], "no_plant": "the check asserts PT's own frame survives and the fast path on the input; a plant that removes the exemption is the F.foreign expectation itself"},
-    "106": {"cause": "Numbers in imported files (likelihood, impact, fit, verdicts) were printed raw, so markup in them reached the page past the filter's fast path", "checks": ["test/e2e210_safe.py :: I.nums", "test/e2e210_safe.py :: I.phases"], "no_plant": "the booby-trapped fixture carries the payload classes (entity scheme, overlay, outside form and image, target=_top); normalizeProject coerces at load"},
-    "107": {"cause": "An imported backup could switch another workspace's scheduled tasks, run jobs on its artifact ids and have the morning check read its pages, with no click that showed the ids", "checks": ["test/e2e210_safe.py :: J.mark", "test/e2e210_safe.py :: J.locked", "test/e2e210_safe.py :: J.relink.ids", "test/e2e200_loop.py :: L1 before the click"], "planted": ["test/check_the_checks.py :: the import forgets the from-a-backup mark (2.1, M3)", "test/check_the_checks.py :: pause acts on a backup's trigger ids before re-link (2.1, M3)", "test/check_the_checks.py :: the morning check reads pages without the owner's click (2.1)"]},
-    "108": {"cause": "An import said \"1 project imported\" whatever it had changed, skipped or carried; a half-written import on a bad record; no way back", "checks": ["test/e2e210_safe.py :: R.toast", "test/e2e210_safe.py :: R.again", "test/e2e210_safe.py :: R.undo", "test/e2e210_safe.py :: J.allornothing", "test/e2e210_safe.py :: J.settings"], "planted": ["test/check_the_checks.py :: an import loop takes records as they come (A1, B17)"]},
-    "109": {"cause": "\"Check this version's release\" opened the tag page of the version; before the owner merged the release pull request that page is GitHub's not-found page, which stayed in the browser pane beside PT (owner, 7 Nov 2026)", "checks": ["test/e2e1100_hands.py :: Check this version's release opens the releases list (never the tag page, which is not found before the merge)"], "no_plant": "the check compares the opened address with the list page; a wrong address fails it directly"},
-    "110": {"cause": "The laptop task PT gives the owner to paste still said \"sign-ups, deletions and publishing need no question\" (a 1.8 override of the owner's rule b1/D1 of 5 Nov 2026): the only text in PT that told an agent past a final button", "checks": ["test/e2e180_run.py :: 8 laptop tasks stop at every gate", "test/e2e17.py :: stop before any sign-up / payment / deletion / publishing"], "no_plant": "text pinned by two suites with must and must-not phrases in three languages; a static plant cannot tell the two wordings apart"},
-    "111": {"cause": "A cloud session cannot add a local (host:) tool to an artifact's manifest: the 2.1.0 main publish was refused (422) after the full gate, and nothing had warned before the GO; no record of any artifact's live host set existed", "checks": ["test/release_gate.py :: manifest"], "no_plant": "tools/manifest_check.py --selftest plants a manifest that adds, removes and equals a tool and checks the four verdicts; the gate runs the self-test before the check"}
+ "_about": "2.1 (J3, C8-2): every cause of RELEASE-CHECKS.md linked to the checks that catch it and the planted bugs that prove those checks. Each entry is \"<file> :: <text that must be in it>\" (a check name, a section title or a planted bug's name). A cause without a check says \"manual\" and why; a cause without a planted bug says \"no_plant\" and why. test/check_the_causes.py proves every cited text exists (data-free, under 5 s, in the quick gate).",
+ "causes": {
+  "1": {
+   "cause": "One fact, many formulas",
+   "checks": [
+    "test/static_checks.js :: H('count'",
+    "test/hunt.py :: check(\"17 done",
+    "test/hunt2.py :: check(\"26 one count"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: three counts for open work",
+    "test/hunt2.py :: \"26\": "
+   ]
+  },
+  "2": {
+   "cause": "AI does not see what it needs (context cut)",
+   "checks": [
+    "test/static_checks.js :: H('cut'",
+    "test/static_checks.js :: R('cut'",
+    "test/hunt.py :: check(f\"18 broken AI answers"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: long text cut silently"
+   ]
+  },
+  "3": {
+   "cause": "AI answer not checked",
+   "checks": [
+    "test/static_checks.js :: R('validate'",
+    "test/static_checks.js :: R('verdict'",
+    "test/hunt.py :: check(f\"18 broken AI answers"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: AI answer without a shape check",
+    "test/check_the_checks.py :: verdict forced to yes/no"
+   ]
+  },
+  "4": {
+   "cause": "Boxes overlap, clip or cover",
+   "checks": [
+    "test/static_checks.js :: H('layout'",
+    "test/static_checks.js :: R('overlap'",
+    "test/hunt.py :: check(\"11 menus",
+    "test/layout141.py :: "
+   ],
+   "planted": [
+    "test/check_the_checks.py :: menus cut off: no top-layer menus",
+    "test/check_the_checks.py :: raw z-index in new CSS"
+   ]
+  },
+  "5": {
+   "cause": "\"Go to\" lands nowhere",
+   "checks": [
+    "test/hunt.py :: check(\"14 go-to",
+    "test/static_checks.js :: R('goto'"
+   ],
+   "no_plant": "hunt checks 1-21 have no planted bugs yet (J2, C8-3); the goto review item has none either"
+  },
+  "6": {
+   "cause": "A render destroys typed text, cursor or open panels",
+   "checks": [
+    "test/hunt.py :: check(\"16 typing"
+   ],
+   "no_plant": "hunt checks 1-21 have no planted bugs yet (J2)"
+  },
+  "7": {
+   "cause": "The screen moves without you",
+   "checks": [
+    "test/static_checks.js :: R('move'",
+    "test/hunt2.py :: check(\"23 still screen"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: screen moves after a wait",
+    "test/hunt2.py :: \"23\": "
+   ]
+  },
+  "8": {
+   "cause": "Wrong language in content",
+   "checks": [
+    "test/static_checks.js :: H('lang'",
+    "test/hunt2.py :: check(\"27 language"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: content in the screen language",
+    "test/hunt2.py :: \"27\": "
+   ]
+  },
+  "9": {
+   "cause": "\"Who did it\" recorded wrongly",
+   "checks": [
+    "test/hunt.py :: check(f\"5 undo",
+    "test/hunt.py :: check(\"6 toast-undo"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: an automatic step leaves its action open (hunt 5, cause 93)"
+   ]
+  },
+  "10": {
+   "cause": "Open work buried",
+   "checks": [
+    "test/hunt.py :: check(\"17 done",
+    "test/hunt2.py :: check(\"26 one count"
+   ],
+   "planted": [
+    "test/hunt2.py :: \"26\": "
+   ]
+  },
+  "11": {
+   "cause": "Stale copy after a wait",
+   "checks": [
+    "test/static_checks.js :: R('stale'",
+    "test/hunt2.py :: check(\"28 await race"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: stale copy after a wait",
+    "test/hunt2.py :: \"28\": "
+   ]
+  },
+  "12": {
+   "cause": "A click does nothing, or no way to \"done\"",
+   "checks": [
+    "test/static_checks.js :: H('handlers'",
+    "test/hunt.py :: check(\"1 handlers",
+    "test/hunt2.py :: check(f\"24 dead clicks",
+    "test/monkey141.py :: "
+   ],
+   "planted": [
+    "test/check_the_checks.py :: a button with no action",
+    "test/hunt2.py :: \"24\": "
+   ]
+  },
+  "13": {
+   "cause": "Endless AI loops, runaway cost",
+   "checks": [
+    "test/static_checks.js :: R('loop'"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: AI loop without a cap"
+   ]
+  },
+  "14": {
+   "cause": "Built not as agreed",
+   "manual": "the full release gate plus the owner's GO on the change list; no automatic check can know what was agreed"
+  },
+  "15": {
+   "cause": "Ids reused or taken from position",
+   "checks": [
+    "test/static_checks.js :: H('ids'",
+    "test/hunt.py :: check(\"21 remove",
+    "test/hunt2.py :: check(\"29 integrity"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: ids reused after a delete",
+    "test/hunt2.py :: \"29\": "
+   ]
+  },
+  "16": {
+   "cause": "A change marks too much or too little",
+   "checks": [
+    "test/unit14.js :: console.log(\"4 links: only direct dependents"
+   ],
+   "no_plant": "unit14 runs only on the real-data copy (full gate); it has no planted bug"
+  },
+  "17": {
+   "cause": "Undo takes back the wrong thing",
+   "checks": [
+    "test/static_checks.js :: R('undo'",
+    "test/hunt.py :: check(f\"5 undo",
+    "test/hunt.py :: check(\"6 toast-undo"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: Undo leaves a pick open and decided"
+   ]
+  },
+  "18": {
+   "cause": "One feature built twice, the later one wins",
+   "checks": [
+    "build.py :: duplicate function definitions",
+    "test/static_checks.js :: H('names'",
+    "test/static_checks.js :: H('wrappers'"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: leftover 'Sie': a string key defined twice",
+    "test/check_the_checks.py :: one name declared in two files",
+    "test/check_the_checks.py :: wrapper of a missing function"
+   ]
+  },
+  "19": {
+   "cause": "Strings and locale",
+   "checks": [
+    "test/static_checks.js :: H('strings'",
+    "test/static_checks.js :: [du]",
+    "test/static_checks.js :: [plural]",
+    "test/static_checks.js :: R('regex'",
+    "test/i18n14.js :: ",
+    "test/hunt.py :: check(\"9 languages"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: German ß",
+    "test/check_the_checks.py :: Traditional Chinese",
+    "test/check_the_checks.py :: missing translation key"
+   ]
+  },
+  "20": {
+   "cause": "Measuring the harness instead of the tool",
+   "checks": [
+    "test/static_checks.js :: H('rule'"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: AI call that skips runAI"
+   ]
+  },
+  "21": {
+   "cause": "Silent failure",
+   "checks": [
+    "test/static_checks.js :: R('catch'",
+    "test/hunt.py :: check(\"19 failed load",
+    "test/hunt2.py :: check(\"31 save failure"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: silent failure: empty catch",
+    "test/hunt2.py :: \"31\": "
+   ]
+  },
+  "22": {
+   "cause": "PT decides without asking",
+   "manual": "review of each design card (only easy-to-undo choices get a star); RELEASE-CHECKS names unit14, which has no named check for it"
+  },
+  "23": {
+   "cause": "A fix written to the wrong item",
+   "checks": [
+    "test/hunt2.py :: check(\"29 integrity",
+    "test/migrate14.py :: "
+   ],
+   "planted": [
+    "test/hunt2.py :: \"29\": "
+   ]
+  },
+  "24": {
+   "cause": "Saving loses or overwrites data",
+   "checks": [
+    "test/hunt.py :: check(\"4 persist",
+    "test/static_checks.js :: R('field'"
+   ],
+   "no_plant": "hunt checks 1-21 have no planted bugs yet (J2)"
+  },
+  "25": {
+   "cause": "Preview acts like main",
+   "checks": [
+    "test/static_checks.js :: R('preview'"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: live action in the preview",
+    "test/check_the_pick.py :: a preview copy runs the kit update",
+    "test/check_the_pick.py :: a preview copy starts the judge"
+   ]
+  },
+  "26": {
+   "cause": "Text cut",
+   "checks": [
+    "test/static_checks.js :: R('trunc'",
+    "test/static_checks.js :: R('cut'",
+    "test/layout141.py :: ",
+    "test/migrate141.py :: "
+   ],
+   "planted": [
+    "test/check_the_checks.py :: text cut with …"
+   ]
+  },
+  "27": {
+   "cause": "Old or half-filled data",
+   "checks": [
+    "test/hunt.py :: check(\"7 partial data",
+    "test/hunt.py :: check(\"8 empty project",
+    "test/hunt.py :: check(f\"10 migrations",
+    "test/migrate141.py :: ",
+    "test/migrate14.py :: "
+   ],
+   "no_plant": "hunt checks 1-21 have no planted bugs yet (J2); the migration suites run on the real-data copy"
+  },
+  "28": {
+   "cause": "Accessibility",
+   "checks": [
+    "test/hunt2.py :: check(\"25 tap targets"
+   ],
+   "planted": [
+    "test/hunt2.py :: \"25\": "
+   ]
+  },
+  "29": {
+   "cause": "The checks themselves miss bugs",
+   "checks": [
+    "test/check_the_checks.py :: the sources are not clean to start with",
+    "test/hunt.py :: \"14\": ",
+    "test/check_the_pick.py :: ",
+    "test/check_the_causes.py :: "
+   ],
+   "no_plant": "these are the planted-bug runners themselves; check_the_checks stops when the clean copy is not green"
+  },
+  "30": {
+   "cause": "Text squeezed to a word per line",
+   "checks": [
+    "test/static_checks.js :: H('layout'",
+    "test/static_checks.js :: R('squeeze'",
+    "test/hunt.py :: check(\"13 squeeze"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: squeezed text: overflow-wrap:anywhere",
+    "test/check_the_checks.py :: text squeezed by flex:1"
+   ]
+  },
+  "31": {
+   "cause": "Internal ids shown to people",
+   "checks": [
+    "test/static_checks.js :: R('rawid'",
+    "test/hunt2.py :: check(\"22 raw text"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: internal id shown as text",
+    "test/hunt2.py :: \"22\": "
+   ]
+  },
+  "32": {
+   "cause": "Storage limits",
+   "checks": [
+    "test/hunt.py :: check(\"20 size"
+   ],
+   "no_plant": "hunt checks 1-21 have no planted bugs yet (J2)"
+  },
+  "33": {
+   "cause": "State not bound to its workspace or project",
+   "checks": [
+    "test/hunt.py :: check(\"3 switch"
+   ],
+   "no_plant": "hunt checks 1-21 have no planted bugs yet (J2)"
+  },
+  "34": {
+   "cause": "Text from files or the web read as orders",
+   "checks": [
+    "test/static_checks.js :: H('rule'",
+    "test/static_checks.js :: R('esc'",
+    "test/static_checks.js :: H('raw'"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: untrusted text read as orders: rule removed",
+    "test/check_the_checks.py :: a raw id in an attribute (J16)",
+    "test/check_the_checks.py :: raw text into innerHTML (J16)",
+    "test/check_the_checks.py :: a link not checked as https (J16, A14)",
+    "test/check_the_checks.py :: a raw id in a selector (J16, R1-9)",
+    "test/check_the_checks.py :: a raw id in a selector built with + (J16, R1-9)",
+    "test/check_the_checks.py :: a raw value in an old file's new line (J16: review until Wave 3)",
+    "test/check_the_pick.py :: findings that instruct the AI reach the prompts"
+   ]
+  },
+  "35": {
+   "cause": "Redo replaces instead of reconciling",
+   "checks": [
+    "test/e2e14.py :: 5. Requirements redo opens the review"
+   ],
+   "no_plant": "e2e14 runs on the real-data copy; no planted bug"
+  },
+  "36": {
+   "cause": "The same box shown twice",
+   "checks": [
+    "test/hunt.py :: check(\"12 one box",
+    "test/static_checks.js :: R('field'"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: the Design page draws a kit question twice (Part C, hunt 12)"
+   ]
+  },
+  "37": {
+   "cause": "Keys in the wrong place",
+   "checks": [
+    "test/static_checks.js :: R('keys'",
+    "test/hunt.py :: check(\"2 keys"
+   ],
+   "no_plant": "hunt checks 1-21 have no planted bugs yet (J2); the keys review item has none"
+  },
+  "38": {
+   "cause": "Slow screens",
+   "checks": [
+    "test/hunt2.py :: check(\"30 speed"
+   ],
+   "planted": [
+    "test/hunt2.py :: \"30\": "
+   ]
+  },
+  "39": {
+   "cause": "A write that runs after its context changed",
+   "checks": [
+    "test/e2e15b.py :: R5 a failed load writes nothing",
+    "test/e2e15b.py :: R15 a project deleted during a round"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: a failed workspace load writes the workspace",
+    "test/check_the_pick.py :: a run writes into a project that was deleted meanwhile"
+   ]
+  },
+  "40": {
+   "cause": "Partial Undo leaves two truths",
+   "checks": [
+    "test/pick_contract.py :: "
+   ],
+   "planted": [
+    "test/check_the_pick.py :: Undo leaves a pick open and decided"
+   ]
+  },
+  "41": {
+   "cause": "A check that can only reject",
+   "checks": [
+    "test/e2e15b.py :: R28 a card the cleaner cannot repair",
+    "test/pick_contract.py :: "
+   ],
+   "planted": [
+    "test/check_the_pick.py :: an AI answer that breaks a card rule is used without asking again"
+   ]
+  },
+  "42": {
+   "cause": "Secondary sources taken as platform truth",
+   "checks": [
+    "test/pick_contract.py :: ",
+    "test/e2e15b.py :: R29"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: a blog confirms what a platform can do"
+   ]
+  },
+  "43": {
+   "cause": "Typed or web text in a fixed prompt tag",
+   "checks": [
+    "test/e2e15b.py :: R26 typed and outside text goes into a tag with a random id"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: own words go into the prompt raw",
+    "test/check_the_pick.py :: findings that instruct the AI reach the prompts"
+   ]
+  },
+  "44": {
+   "cause": "Text in a source file that breaks the script",
+   "checks": [
+    "test/static_checks.js :: [parse]"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: a comment that swallows the rest of a line (parse error)"
+   ]
+  },
+  "45": {
+   "cause": "A decision written before its Undo step opens",
+   "checks": [
+    "test/e2e16.py :: "
+   ],
+   "planted": [
+    "test/check_the_pick.py :: a storage decision made before its Undo step opens splits into two steps"
+   ]
+  },
+  "46": {
+   "cause": "A soft limit silently gated the automatic steps",
+   "checks": [
+    "test/e2e16.py :: print(\"13 the spine"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: the budget throttles the automatic steps again"
+   ]
+  },
+  "47": {
+   "cause": "Readiness needed a decision no card ever asked",
+   "checks": [
+    "test/e2e16.py :: print(\"13 the spine"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: a missing result pick is not noticed"
+   ]
+  },
+  "48": {
+   "cause": "PT's own drafts asked the person once per item",
+   "checks": [
+    "test/e2e16.py :: print(\"13 the spine"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: PT's drafts ask once per item again"
+   ]
+  },
+  "49": {
+   "cause": "Typed words vanished with the card",
+   "checks": [
+    "test/e2e16.py :: print(\"13 the spine"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: what was recorded is not shown"
+   ]
+  },
+  "50": {
+   "cause": "Automatic steps wrote into the project without an action of their own",
+   "checks": [
+    "test/hunt.py :: check(f\"5 undo",
+    "test/e2e200_loop.py :: L7 (hunt 5, cause 93)"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: an automatic step leaves its action open (hunt 5, cause 93)"
+   ]
+  },
+  "51": {
+   "cause": "A view switch lived in the status line",
+   "checks": [
+    "test/e2e17.py :: print(\"3 the Bauplan on the Design page"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: the Bauplan does nothing again (the Design page loses the map)"
+   ]
+  },
+  "52": {
+   "cause": "Seven kit decisions appeared at once",
+   "checks": [
+    "test/e2e17.py :: print(\"5 kit decisions wait for the design station"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: kit decisions come all at once before the design"
+   ]
+  },
+  "53": {
+   "cause": "\"Fix automatically\" ended with a count",
+   "checks": [
+    "test/e2e17.py :: print(\"6 Finish shows what it changed"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: Finish hides what it changed"
+   ]
+  },
+  "54": {
+   "cause": "Facts carried no date",
+   "checks": [
+    "test/e2e17.py :: print(\"8 honesty as code: facts carry their dates"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: a stale fact is not flagged"
+   ]
+  },
+  "55": {
+   "cause": "An issue can carry a pasted key or instructions aimed at an agent",
+   "checks": [
+    "test/triage_test.py :: three secret kinds removed",
+    "test/triage_test.py :: hostile text is kept as data"
+   ],
+   "no_plant": "triage_test feeds fixed hostile issues; the cases are the planted inputs"
+  },
+  "56": {
+   "cause": "A PR opened by a workflow token starts no other workflow",
+   "manual": "workflow wiring (vault.yml starts quick-gate with workflow_dispatch); seen when the PR's required checks report. No test runs GitHub workflows"
+  },
+  "57": {
+   "cause": "The vault lock file copied a licence head with an e-mail address",
+   "manual": "vault_mirror.py masks addresses in licence heads; no test exercises it (it downloads). The data-guard job blocks a push that carries one"
+  },
+  "58": {
+   "cause": "A second vault run on the same day failed (tag and branch existed)",
+   "manual": "vault.yml numbers releases -2, -3 and puts the time in the branch; no test runs the workflow"
+  },
+  "59": {
+   "cause": "A workspace found or named by a person's name",
+   "checks": [
+    "test/static_checks.js :: H('person'"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: a workspace found by a person's name (cause 59)"
+   ]
+  },
+  "60": {
+   "cause": "Two unrelated .chk rules collided",
+   "checks": [
+    "test/e2e180_look.py :: a checkbox with its words is a plain row, not a card"
+   ],
+   "no_plant": "a layout check in e2e180_look; no planted bug"
+  },
+  "61": {
+   "cause": "New classes without a style; unrounded numbers",
+   "checks": [
+    "test/e2e180_look.py :: .pt-tile"
+   ],
+   "no_plant": "a layout check in e2e180_look; no planted bug"
+  },
+  "62": {
+   "cause": "check_the_pick counted a test green only on \"failed: 0\"",
+   "checks": [
+    "test/check_the_pick.py :: that form counts as green too"
+   ],
+   "no_plant": "a rule of the planted-bug runner itself"
+  },
+  "63": {
+   "cause": "One constant for a rule decided per tool or type",
+   "checks": [
+    "test/e2e180_checks.py :: print(\"5 tests: 3 runs, 5 for a tool that acts",
+    "test/e2e180_checks.py :: print(\"7 facts by type with an error budget"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: a tool that acts outward runs its tests only 3 times",
+    "test/check_the_pick.py :: a price past its budget is still used (one 90-day rule again)"
+   ]
+  },
+  "64": {
+   "cause": "A // comment in the middle of a line swallowed statements",
+   "checks": [
+    "test/static_checks.js :: H('comment'"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: a comment that swallows statements (still parses, cause 64)",
+    "test/check_the_checks.py :: a comment that swallows the last statement of a block (2.0)",
+    "test/check_the_checks.py :: a comment that swallows a call at the end of a line (2.0 Part B)"
+   ]
+  },
+  "65": {
+   "cause": "The mock prompt asked for project parts that do not exist",
+   "checks": [
+    "test/e2e180_decide.py :: the mock is drawn from the idea, your answers and the research so far"
+   ],
+   "no_plant": "no planted bug for the mock prompt's parts"
+  },
+  "66": {
+   "cause": "A load-time template read a later file's const (PT stopped at boot)",
+   "checks": [
+    "test/e2e14.py :: wait for the first screen"
+   ],
+   "no_plant": "a boot stop fails every flow suite at its first screen; nothing to plant beyond that"
+  },
+  "67": {
+   "cause": "Screens read the whole tool text many times (speed)",
+   "checks": [
+    "test/e2e180_checks.py :: speed (cause 67)",
+    "test/hunt2.py :: check(\"30 speed"
+   ],
+   "planted": [
+    "test/hunt2.py :: \"30\": "
+   ]
+  },
+  "68": {
+   "cause": "A status pill squeezed a queue row's text",
+   "checks": [
+    "test/hunt.py :: check(\"13 squeeze"
+   ],
+   "no_plant": "hunt checks 1-21 have no planted bugs yet (J2)"
+  },
+  "69": {
+   "cause": "The scheduled-task service refuses notifications without a new session per run",
+   "checks": [
+    "test/e2e180_run.py :: print(\"5 the Sunday preparation run"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: a scheduled task is created with notifications but without a new session per run",
+    "test/check_the_pick.py :: any refusal of a new scheduled task is tried again"
+   ]
+  },
+  "70": {
+   "cause": "A task created from a page has no session to take its environment from",
+   "checks": [
+    "test/e2e180_run.py :: the service asks for a cloud environment"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: a scheduled task created from PT gets no cloud environment",
+    "test/check_the_pick.py :: a self-hosted pool is taken before a cloud environment"
+   ]
+  },
+  "71": {
+   "cause": "A kit number and the kit version were written the same way",
+   "checks": [
+    "test/e2e16.py :: Firnlab kit 1",
+    "test/e2e190_fleet.py :: kitVersion"
+   ],
+   "no_plant": "a wording check; no planted bug"
+  },
+  "72": {
+   "cause": "A new KEEP_FIELDS field made restores of older projects throw",
+   "checks": [
+    "test/e2e191_judge.py :: print(\"a restore, save + reload"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: a restore breaks on a tool that never had a judge record"
+   ]
+  },
+  "73": {
+   "cause": "The PT side and the GitHub side of the second lab disagreed",
+   "checks": [
+    "test/e2e191_judge.py :: print(\"6 the second-lab row"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: PART R hands the second-lab key to the builder",
+    "test/check_the_pick.py :: the second-lab provider list offers a lab the workflow cannot call",
+    "test/check_the_pick.py :: the second-lab week forgets the Claude weeks",
+    "test/check_the_pick.py :: the GitHub build issue drops the acceptance lines from tool.json"
+   ]
+  },
+  "74": {
+   "cause": "English-only vault lines; rows wider than a phone",
+   "checks": [
+    "test/pseudo19.py :: "
+   ],
+   "planted": [
+    "test/check_the_pick.py :: a button label is written in English in the code",
+    "test/check_the_pick.py :: the Build page shows the vault lines in English only",
+    "test/check_the_pick.py :: the notes page keeps its fixed filter column on a phone",
+    "test/check_the_pick.py :: a row of buttons in a top bar is as wide as its longest label"
+   ]
+  },
+  "75": {
+   "cause": "A promised GitHub approval step that a private repository does not have",
+   "checks": [
+    "test/static_checks.js :: H('claims'"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: a build promised to wait for a GitHub approval (cause 75)"
+   ]
+  },
+  "76": {
+   "cause": "The key renewal named only prompt-translator's secrets",
+   "checks": [
+    "test/e2e190_care.py :: print(\"7 R7: renew the two keys"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: the key renewal leaves the build repository out of the pt-private key (cause 76)",
+    "test/check_the_pick.py :: the build repository's key page ignores Settings › General (cause 76)"
+   ]
+  },
+  "77": {
+   "cause": "The owner's rules lived as text a budget could drop",
+   "checks": [
+    "test/e2e200_foundation.py :: sec(\"A2 the rules channel"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: the rules channel is left out of project prompts",
+    "test/check_the_pick.py :: the rules are left out when the project is long",
+    "test/check_the_pick.py :: another project's rules reach this project's prompt",
+    "test/check_the_pick.py :: a sentence that keeps the rule reads as a break (no negation check)",
+    "test/check_the_pick.py :: a proposal that breaks a rule is not asked again",
+    "test/check_the_pick.py :: an option blocked by a rule can still be taken",
+    "test/check_the_pick.py :: PT's ★ points at an option blocked by a rule"
+   ]
+  },
+  "78": {
+   "cause": "Questions deduplicated only against their own source",
+   "checks": [
+    "test/e2e200_foundation.py :: sec(\"A3 ask once"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: an answered question is asked again (ask once off)",
+    "test/check_the_pick.py :: an unclear question is never checked against the facts"
+   ]
+  },
+  "79": {
+   "cause": "The workspace profile and other tools' choices reached project prompts",
+   "checks": [
+    "test/e2e200_foundation.py :: sec(\"A5 cross-project"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: the workspace profile goes into project prompts again",
+    "test/check_the_pick.py :: the cone stars your choice on another tool again"
+   ]
+  },
+  "80": {
+   "cause": "Answers changed data with no visible end state",
+   "checks": [
+    "test/e2e200_foundation.py :: sec(\"A6 one Next and receipts"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: no receipt after an answer",
+    "test/check_the_pick.py :: the examples loop goes back to a judged example",
+    "test/check_the_pick.py :: two Next bars on a page"
+   ]
+  },
+  "81": {
+   "cause": "Errors were a toast that vanished",
+   "checks": [
+    "test/e2e200_foundation.py :: sec(\"A7 errors"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: an error is not kept",
+    "test/check_the_pick.py :: an error card keeps the project's text",
+    "test/check_the_pick.py :: Report to Improve PT starts empty"
+   ]
+  },
+  "82": {
+   "cause": "Example prompts could ask questions",
+   "checks": [
+    "test/e2e200_foundation.py :: sec(\"A8 examples never ask"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: an example that asks passes the check"
+   ]
+  },
+  "83": {
+   "cause": "Buttons reserved almost half of a row",
+   "checks": [
+    "test/e2e200_foundation.py :: sec(\"A9 layout"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: the action column gets a fixed share of the row again"
+   ]
+  },
+  "84": {
+   "cause": "Process words on the surface",
+   "checks": [
+    "test/e2e200_foundation.py :: sec(\"A10 plain words"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: an old process word is back (Out of scope)"
+   ]
+  },
+  "85": {
+   "cause": "Details asked before the route was chosen",
+   "checks": [
+    "test/e2e200_map.py :: sec(\"B1 the new order",
+    "test/e2e200_map.py :: sec(\"B5 deciding"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: detail questions are asked before the route is chosen",
+    "test/check_the_pick.py :: the pick prompt asks details before the decision",
+    "test/check_the_pick.py :: every detail counts as route-bound"
+   ]
+  },
+  "86": {
+   "cause": "One call listed the options and stopped when the list looked complete",
+   "checks": [
+    "test/e2e200_map.py :: sec(\"B3 the map and the coverage engin",
+    "test/e2e200_map.py :: sec(\"B8 map chat"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: the lens calls run all at once",
+    "test/check_the_pick.py :: one call for every angle (no lenses)",
+    "test/check_the_pick.py :: a lens no longer asks for unusual answers",
+    "test/check_the_pick.py :: a route found twice is added twice (no merge)",
+    "test/check_the_pick.py :: a red-team break is not recorded as a correction",
+    "test/check_the_pick.py :: the map claims saturation after one quiet round",
+    "test/check_the_pick.py :: a multi-call search starts without naming its cost"
+   ]
+  },
+  "87": {
+   "cause": "A route that breaks a never was dropped or shown like the others",
+   "checks": [
+    "test/e2e200_map.py :: sec(\"B4 your rules on the map"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: a route that breaks your never is not greyed",
+    "test/check_the_pick.py :: the map shows rule-breaking routes by default"
+   ]
+  },
+  "88": {
+   "cause": "A worked solution could only come over as a project copy",
+   "checks": [
+    "test/e2e200_map.py :: sec(\"B9 proven routes from other proje"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: a proven route carries its project's rule words into the library",
+    "test/check_the_pick.py :: a route enters the library before its project launched"
+   ]
+  },
+  "89": {
+   "cause": "A check row's star carried another tool's choice",
+   "checks": [
+    "test/e2e180_checks.py :: print(\"2 tapping a row"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: the checks ★ carries your choice on another tool again"
+   ]
+  },
+  "90": {
+   "cause": "Six ways of working over one model; what was said outside the deck was not filed",
+   "checks": [
+    "test/e2e200_modes.py :: print(\"C1 two faces only",
+    "test/e2e200_modes.py :: print(\"C2 Chat Mode",
+    "test/e2e200_modes.py :: print(\"C3 Pick improved"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: the chat files nothing into the facts book",
+    "test/check_the_pick.py :: the chat files feedback about PT into the project",
+    "test/check_the_pick.py :: a never is lost when the chat call fails",
+    "test/check_the_pick.py :: a chat answer that breaks your rule is shown",
+    "test/check_the_pick.py :: the chat asks details before the decision",
+    "test/check_the_pick.py :: a question in the chat is asked again",
+    "test/check_the_pick.py :: Pick's Decisions page and the chat's Decided tab differ",
+    "test/check_the_pick.py :: an answer after the decision is not watched by the Route alert",
+    "test/check_the_pick.py :: the old modes are back"
+   ]
+  },
+  "91": {
+   "cause": "A chat reply is one string, so a rule break in it could only be recorded",
+   "checks": [
+    "test/e2e200_modes.py :: TEMPT"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: a chat answer that breaks your rule is shown"
+   ]
+  },
+  "92": {
+   "cause": "A move that rewrites data cannot be checked; twice adds everything twice",
+   "checks": [
+    "test/e2e200_modes.py :: print(\"C4 the move to 2.0",
+    "test/e2e200_modes.py :: R the RC replay"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: the move makes no restore point first",
+    "test/check_the_pick.py :: the move twice adds the rules twice",
+    "test/check_the_pick.py :: the move brings another project's rules",
+    "test/check_the_pick.py :: the move changes a field the project had",
+    "test/check_the_pick.py :: a confirmed 1.x choice is not the chosen route after the move"
+   ]
+  },
+  "93": {
+   "cause": "Automatic steps opened their action and never closed it",
+   "checks": [
+    "test/hunt.py :: check(f\"5 undo",
+    "test/e2e200_loop.py :: L7 (hunt 5, cause 93)"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: an automatic step leaves its action open (hunt 5, cause 93)"
+   ]
+  },
+  "94": {
+   "cause": "Hands that click without a rule could press a final button",
+   "checks": [
+    "test/e2e200_hands.py :: D1 the page and the sites",
+    "test/e2e200_hands.py :: D4 the final",
+    "test/e2e200_hands.py :: D5 keys and passwords",
+    "test/e2e200_hands.py :: D6 the guard"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: PT's hands click a final button (no final-word check)",
+    "test/check_the_pick.py :: the guard clicks an element nobody cleared",
+    "test/check_the_pick.py :: PT types into a password or code field",
+    "test/check_the_pick.py :: PT types a key-shaped value",
+    "test/check_the_pick.py :: PT's hands open a site off the project's list",
+    "test/check_the_pick.py :: PT's hands click and type on github.com off the list",
+    "test/check_the_pick.py :: the steps run before the contract is shown",
+    "test/check_the_pick.py :: a click that leads off the list goes on"
+   ]
+  },
+  "95": {
+   "cause": "Watch lines and tripwires were checked only when something happened in PT",
+   "checks": [
+    "test/e2e200_loop.py :: L1 the morning check"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: the morning check runs twice a day",
+    "test/check_the_pick.py :: the morning check runs for another login",
+    "test/check_the_pick.py :: the morning check skips the tripwires",
+    "test/check_the_pick.py :: a watched page that changed raises nothing"
+   ]
+  },
+  "96": {
+   "cause": "A prompt test that sends the rules channel tests PT's prompt, not the tool's",
+   "checks": [
+    "test/e2e200_loop.py :: L2 prompt tests"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: prompt tests trust the call over PT's word check"
+   ]
+  },
+  "97": {
+   "cause": "Reports had no status, so the owner never learned what an update fixed",
+   "checks": [
+    "test/e2e200_loop.py :: L3 Improve PT"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: an Improve PT report is not kept",
+    "test/check_the_pick.py :: fixed reports are announced on every open"
+   ]
+  },
+  "98": {
+   "cause": "A page's details moved the cursor without setPhase (no automatic step ran)",
+   "checks": [
+    "test/e2e12_on14.py :: print(\"3 understand + first questions"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: a step's tab on a page is not a visit: no automatic step (cause 98)"
+   ]
+  },
+  "99": {
+   "cause": "A function removed while a caller is left",
+   "checks": [
+    "test/static_checks.js :: H('calls'",
+    "test/static_checks.js :: H('nowhere'"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: a function removed while a caller is left (2.0 gate, cause 99)",
+    "test/check_the_checks.py :: a 2.0 function removed while its callers are left (J15, R7-2)",
+    "test/check_the_checks.py :: a call to a function that nothing defines (J15)"
+   ]
+  },
+  "100": {
+   "cause": "A workspace's 1.x default view was recorded as steps",
+   "checks": [
+    "test/e2e12_on14.py :: print(\"1 boot + migration"
+   ],
+   "planted": [
+    "test/check_the_pick.py :: the workspace's 1.x default view is recorded as steps (cause 100)"
+   ]
+  },
+  "101": {
+   "cause": "The walk through a list never showed on the pages",
+   "checks": [
+    "test/e2e14.py :: 7. goRef navigator \"1 of N\" + Back"
+   ],
+   "no_plant": "e2e14 runs on the real-data copy; no planted bug"
+  },
+  "102": {
+   "cause": "Values from outside (import, AI) could carry unsafe ids, prototype keys or markup",
+   "checks": [
+    "test/e2e210_safe.py :: I.ids",
+    "test/e2e210_safe.py :: I.norun",
+    "test/e2e210_safe.py :: P.refuse",
+    "test/static_checks.js :: H('safe'"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: the main page skips safeHTML (A1)",
+    "test/check_the_checks.py :: resolvePath walks into __proto__ again (A1, R1-1)",
+    "test/check_the_checks.py :: an inline onerror handler in markup (A1)"
+   ]
+  },
+  "103": {
+   "cause": "Imported notes kept outside image links (tracking pixels)",
+   "checks": [
+    "test/e2e210_safe.py :: I.imgs",
+    "test/e2e210_safe.py :: R.projects"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: an import loop takes records as they come (A1, B17)"
+   ]
+  },
+  "104": {
+   "cause": "A jump to an item without a place on the page ended in a toast and nothing shown",
+   "checks": [
+    "test/hunt.py :: check(\"14 go-to"
+   ],
+   "planted": [
+    "test/hunt.py :: \"14\": "
+   ]
+  },
+  "105": {
+   "cause": "The Design-page result mock vanished: the safety filter took PT's own frame for a foreign one",
+   "checks": [
+    "test/e2e210_safe.py :: F.mockup",
+    "test/e2e210_safe.py :: F.foreign",
+    "test/e2e210_safe.py :: H.fast.project"
+   ],
+   "no_plant": "the check asserts PT's own frame survives and the fast path on the input; a plant that removes the exemption is the F.foreign expectation itself"
+  },
+  "106": {
+   "cause": "Numbers in imported files (likelihood, impact, fit, verdicts) were printed raw, so markup in them reached the page past the filter's fast path",
+   "checks": [
+    "test/e2e210_safe.py :: I.nums",
+    "test/e2e210_safe.py :: I.phases"
+   ],
+   "no_plant": "the booby-trapped fixture carries the payload classes (entity scheme, overlay, outside form and image, target=_top); normalizeProject coerces at load"
+  },
+  "107": {
+   "cause": "An imported backup could switch another workspace's scheduled tasks, run jobs on its artifact ids and have the morning check read its pages, with no click that showed the ids",
+   "checks": [
+    "test/e2e210_safe.py :: J.mark",
+    "test/e2e210_safe.py :: J.locked",
+    "test/e2e210_safe.py :: J.relink.ids",
+    "test/e2e200_loop.py :: L1 before the click"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: the import forgets the from-a-backup mark (2.1, M3)",
+    "test/check_the_checks.py :: pause acts on a backup's trigger ids before re-link (2.1, M3)",
+    "test/check_the_checks.py :: the morning check reads pages without the owner's click (2.1)"
+   ]
+  },
+  "108": {
+   "cause": "An import said \"1 project imported\" whatever it had changed, skipped or carried; a half-written import on a bad record; no way back",
+   "checks": [
+    "test/e2e210_safe.py :: R.toast",
+    "test/e2e210_safe.py :: R.again",
+    "test/e2e210_safe.py :: R.undo",
+    "test/e2e210_safe.py :: J.allornothing",
+    "test/e2e210_safe.py :: J.settings"
+   ],
+   "planted": [
+    "test/check_the_checks.py :: an import loop takes records as they come (A1, B17)"
+   ]
+  },
+  "109": {
+   "cause": "\"Check this version's release\" opened the tag page of the version; before the owner merged the release pull request that page is GitHub's not-found page, which stayed in the browser pane beside PT (owner, 7 Nov 2026)",
+   "checks": [
+    "test/e2e1100_hands.py :: Check this version's release opens the releases list (never the tag page, which is not found before the merge)"
+   ],
+   "no_plant": "the check compares the opened address with the list page; a wrong address fails it directly"
+  },
+  "110": {
+   "cause": "The laptop task PT gives the owner to paste still said \"sign-ups, deletions and publishing need no question\" (a 1.8 override of the owner's rule b1/D1 of 5 Nov 2026): the only text in PT that told an agent past a final button",
+   "checks": [
+    "test/e2e180_run.py :: 8 laptop tasks stop at every gate",
+    "test/e2e17.py :: stop before any sign-up / payment / deletion / publishing"
+   ],
+   "no_plant": "text pinned by two suites with must and must-not phrases in three languages; a static plant cannot tell the two wordings apart"
+  },
+  "111": {
+   "cause": "A cloud session cannot add a local (host:) tool to an artifact's manifest: the 2.1.0 main publish was refused (422) after the full gate, and nothing had warned before the GO; no record of any artifact's live host set existed",
+   "checks": [
+    "test/release_gate.py :: manifest"
+   ],
+   "no_plant": "tools/manifest_check.py --selftest plants a manifest that adds, removes and equals a tool and checks the four verdicts; the gate runs the self-test before the check"
+  },
+  "112": {
+   "cause": "A search field re-rendered the page on every input event, also while a pinyin/IME composition was open, so Chinese characters could not be typed into the Ctrl+K search (live in 2.1.1, found by the item-22 red team)",
+   "checks": [
+    "test/e2e210_clicks.py :: K.ime-search"
+   ],
+   "no_plant": "the case needs real composition events in a browser; reverting the guard turned K.ime-search red on 10 Nov 2026 (manual plant, recorded in BUILD-LOG-2.2.0.md)"
+  },
+  "113": {
+   "cause": "A question's answer pointed at a place Pick Mode has no page for (refs \"loop\" and \"exboard\" missing from PG_OF_REF): \"Check them now\" spent an AI round that never showed, \"Judge my own examples\" did nothing (owner's tool request of 5 Nov 2026, live until 2.2.0)",
+   "checks": [
+    "test/e2e220_older.py :: “Judge my own examples” opens the Idea page",
+    "test/e2e220_older.py :: “Check them now” opens the round on the Idea page"
+   ],
+   "no_plant": "removing the two map entries turned both checks red on 10 Nov 2026 (manual plant, BUILD-LOG-2.2.0.md)"
+  },
+  "114": {
+   "cause": "A code note (\"// ok:trunc …\") written after a ${…} inside a multi-line page template is template text, so it showed on the goal card in Chat Mode (found while re-testing the owner's requests, 10 Nov 2026)",
+   "checks": [
+    "test/e2e220_older.py :: no code note (“// ok:…”) is visible"
+   ],
+   "no_plant": "re-adding the note after the history line turned the check red on 10 Nov 2026 (manual plant, BUILD-LOG-2.2.0.md); the check renders the goal card with and without history"
+  },
+  "115": {
+   "cause": "Reinstall vX started the update job on the current working brief (briefPaths of the working copy) and marked the tool live before the update was verified (C7, found by the 7 Nov red team, live until 2.2.0)",
+   "checks": [
+    "test/e2e220_tools.py :: the update run gets the brief of the released version",
+    "test/e2e220_tools.py :: the tool is not marked live on the old version"
+   ],
+   "no_plant": "disabling the brief hand-over turned the check red on 10 Nov 2026 (manual plant, BUILD-LOG-2.2.0.md)"
+  },
+  "116": {
+   "cause": "The two new queue wrappers of 2.2.0 (hard gates, connector check) copied the render-cache shortcut: during a render they returned the base queue cached by v14_queue, skipping every outer filter (the held detail items of a project before its route decision came back as picks), and pushed onto the cached array, so items piled up (found by the quick gate, flows 2.0 map, before any publish)",
+   "checks": [
+    "test/e2e220_tools.py :: during a render the queue is the same as outside it",
+    "test/e2e200_map.py :: the picks in the deck come first (here none); then one Next: check the goal card"
+   ],
+   "no_plant": "the shortcut put back turned the check red on 10 Nov 2026 (manual plant, BUILD-LOG-2.2.0.md)"
+  },
+  "117": {
+   "cause": "The hard-gate and connector queue items were pushed as plain objects without qItem, so they had no key: their rows on the Build and Launch pages all got the id \"pq-\" (one box twice), and their open lists were worked out on every one of the many queue calls of a render, which made big projects draw slower (hunt 12 and hunt 30, quick gate quick220d, before any publish)",
+   "checks": [
+    "test/e2e220_tools.py :: every new queue item has its own key",
+    "test/hunt.py :: 12 one box",
+    "test/hunt2.py :: 30 speed"
+   ],
+   "no_plant": "hunt 12 and hunt 30 are themselves planted-bug checks (check_the_hunts); the key check went red with qItem removed on 10 Nov 2026 (manual plant, BUILD-LOG-2.2.0.md)"
+  },
+  "118": {
+   "cause": "An older suite did not answer the new hard gates of 2.2.0, so a tool other people use stayed blocked before publishing",
+   "checks": [
+    "test/e2e12_on14.py :: hard gates answered"
+   ],
+   "no_plant": "a test-side gap, not a PT bug: the gate's red on flows 1.2 and check the Pick tests 2 (full220a) was the catch; hard-gate blocking itself is planted in e2e220_tools.py"
   }
+ }
 }

@@ -144,7 +144,7 @@ Object.assign(STR, {
 "q.why.riskmit":["A mitigation exists: mark it done or accept the risk.","Eine Gegenmassnahme gibt es: als erledigt markieren oder das Risiko akzeptieren.","已有应对措施：标记为已处理或接受该风险。"],
 "q.why.reqcrit":["Every requirement should serve a goal criterion, or it may not be needed.","Jede Anforderung sollte einem Zielkriterium dienen, sonst braucht es sie vielleicht nicht.","每项需求都应服务于某个目标标准，否则可能并不需要。"],
 "q.why.archredraw":["The package must be built from the parts of the chosen option.","Das Paket muss aus den Teilen der gewählten Option gebaut werden.","配置包必须基于所选方案的组成部分来构建。"],
-"q.why.gate":["PT needs your answer for the right size of the tool.","PT braucht deine Antwort für die richtige Grösse des Tools.","PT 需要你的回答来确定工具的合适规模。"],
+"q.why.gate":["PT needs your answer to decide how much of the tool runs by itself (automation) and how much stays with you.","PT braucht deine Antwort, um zu entscheiden, wie viel vom Tool von selbst läuft (Automatisierung) und wie viel bei dir bleibt.","PT 需要你的回答，来决定工具有多少部分自动运行（自动化），有多少留给你来做。"],
 "q.why.gatesug":["PT suggests: {a}","PT schlägt vor: {a}","PT 建议：{a}"],
 "q.why.optional":["Optional evidence; it costs usage.","Freiwilliger Beleg; kostet Kontingent.","可选的依据；会消耗用量。"],
 "q.why.waiting":["Fixed earlier; the checker has not looked at it yet.","Früher behoben; der Prüfer hat es noch nicht angeschaut.","之前已修复；检查者尚未查看。"],

@@ -115,6 +115,7 @@ function importBackup(d, fname){
   for (const x of R.patterns){ WS.patterns.push(x); Store.put(wsPath() + "/patterns/" + x.id, x); }
   for (const x of R.research){ WS.research.push(x); Store.put(wsPath() + "/research/" + x.id, x); }
   if (st) for (const k of IMPORT_SETTINGS) if (st[k] !== undefined && typeof st[k] !== "object"){ WS.settings[k] = st[k]; R.settings++; }
+  if (st) for (const k of Object.keys(st)) if (/^vlSet_[a-z0-9]{1,30}$/.test(k) && typeof st[k] === "string" && /^\d{4}-\d{2}-\d{2}$/.test(st[k])){ WS.settings[k] = st[k]; R.settings++; }   // 2.2.0: vendor-limit ticks (flat keys, dates only)
   if (R.settings){ saveWs(); if (st.lang && ["en", "de", "zh"].includes(st.lang)) LANG = st.lang; }
   LAST_IMPORT = {at: now(), pids: R.projects.map(p => p.id), nids: R.notes.map(x => x.id), patids: R.patterns.map(x => x.id), rids: R.research.map(x => x.id)};
   render();

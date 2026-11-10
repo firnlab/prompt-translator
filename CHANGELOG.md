@@ -5,6 +5,37 @@ notes PT shows in "What's new" (`CHANGELOG` in `src/views_run.js`, the `cl.<vers
 (published date and release notes). Do not edit it by hand: `python3 tools/changelog.py` writes it, `--check` says when it is stale.
 Versions before 1.8 were published from the private archive repository (see RELEASES-ARCHIVE.md).
 
+## 2.2.0 — 2026-11-10
+
+### Added
+
+- My prompts where I type: a Prompts button under every field that talks to Claude; the list opens on Most used with your ★ on top, categories, Copy, and Choose puts the prompt at your cursor (blanks asked first); add, edit, ★ and delete into a Deleted bin only you empty; Library › Prompts and Settings › General › Prompts
+- What each vendor's spending limit really does, read on the vendors' own pages, in Settings › Knowledge, with a tick when you have set it
+- Tools you build get new rules in their design, brief and tests: a runtime check of what comes in and goes out, outside calls that back off and stop, a fallback model, checkpoints for sending and paying, an output contract, and (where they apply) the reasoning pattern, a model per step, data-handling and memory cards, retrieval tests, a sandbox, provider re-checks, handoffs without loops
+- Hard gates before a tool other people use can be released: no key in the package, a server layer, access rules checked, payments and permissions on the server, staging and production apart, rate limits, the three launch questions
+- Before the build, every outside app of the chosen route is a pick: connected, connect it, bridge, or not reachable
+- A small change to a live tool takes one sentence: PT says small or big and why, and prepares only that change
+- The last mile: every step outside Claude in order, one press per screen with its cost and whether it can be undone, checked after each press
+- A missed run of any scheduled tool shows in the morning check; a drift number per live tool in the Sunday note; reports wait as candidate tests
+- Five learning moments in Learning mode
+
+### Changed
+
+- Kit prices re-read on the vendors' own pages (Stripe cards outside Switzerland 3.25 %, Supabase's cap does not cover compute, domains or IPv4, Vercel Hobby pauses for 30 days at its limits); pages that could not be read say so with the date last read
+- The Library tab Patterns is now Prompts; a deleted prompt goes into Deleted instead of being gone
+- Reinstall builds from the released version's own brief, counts as live only once the update run has checked it, copies the tool's data before every update and can bring it back (code only, or code and data)
+- A tool used by named people (not only customers) gets the accessibility floor by default
+- The built page leaves out comments that start a line (about 228 KB smaller, the same code)
+
+### Fixed
+
+- In Pick Mode, “Check them now” spent an AI round that never showed and “Judge my own examples” did nothing; both open the Idea page now
+- Typing Chinese into the Ctrl+K search broke the characters; it waits until they are confirmed
+- A code note showed as text on the goal card in Chat Mode
+- After the last example of a round PT now says all are judged and names the next button
+- The out-of-scope list says what it is for and where suggestions come from; the right-size reason says it is about automation; a finding's explanation names only buttons that exist
+- A report sent right after an error carries the error
+
 ## 2.1.1 — 2026-11-07
 
 Release notes: 2.1.1 (small lane, Fix items): the release check reads the releases list instead of the tag page (cause 109); the laptop task stops before any sign-up, payment, deletion, publishing or anything it cannot undo (D1, cause 110); kitEngineRec matches whole words and keeps the ★ on the scheduled task while K3 is open; Health and the kit options follow the 20-day price clock; manifest check in the gate with hosts per artifact (RT-11, cause 111); the second owner's welcome without "1.8"; kit facts dated 7 Nov (Managed Agents, Vercel Hobby, Stripe restricted keys). Page byte budget 3.5 -&gt; 3.6 MB. Full gate 55 of 55 on 1004f85. Main published from the cloud with capabilities omitted (host set unchanged, manifest carried forward incl. form_input) - first cloud publish to main since typing was added.

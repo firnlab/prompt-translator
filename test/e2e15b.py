@@ -5,7 +5,7 @@ BK = sys.argv[1] if len(sys.argv) > 1 else "work/backup-141"
 sys.argv = [sys.argv[0], BK]
 __file__ = str(pathlib.Path(__file__).resolve().parent / "e2e14.py")
 exec(open(__file__).read().split("with sync_playwright() as pw:")[0])
-PROOF_RULES = 29   # 19 in 1.5.0 + consent, where, secret, alive, spend, money, cap, clean (1.6.0 kits) + lean, canary (1.7.0): raise it with every new rule
+PROOF_RULES = 42   # 19 in 1.5.0 + consent, where, secret, alive, spend, money, cap, clean (1.6.0 kits) + lean, canary (1.7.0) + guard, backoff, fallback, resume, contract, reason, models, pdata, memory, retrieve, sandbox, providers, handoff (2.2.0): raise it with every new rule
 _check0 = check
 def check(name, cond, info=""):
     _check0(name, cond, info); print(("ok    " if cond else "FAIL  ") + name + ("" if cond else "  → " + str(info)[:500]), flush=True)

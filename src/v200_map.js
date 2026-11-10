@@ -701,9 +701,11 @@ function goal20HTML(p){
     <div class="list">${M20_GOAL.map(rowH).join("")}
       <div class="item g20-row" data-f="nevers">${stSlot(nev.length || G.noNevers ? "ok" : "todo")}<div class="body"><b class="small">${esc(t("g20.nevers"))}</b><span>${nev.length ? esc(nev.map(e => factKindLabel(e.kind) + ": " + factText(e)).join(" · ")) : G.noNevers ? esc(t("g20.nonevers")) : `<span class="muted">${esc(t("g20.nevers.h"))}</span>`}</span><span class="small muted">${esc(t("g20.nevers.src"))}</span></div>
         <div class="qacts"><button class="btn xs" data-a="facts-open">${esc(t("g20.nevers.add"))}</button>${nev.length ? "" : `<button class="btn xs ghost" data-a="g20-nonevers" aria-pressed="${G.noNevers}">${esc(t("g20.nonevers"))}</button>`}</div></div></div>
-    ${G.hist.length ? `<details class="small"><summary>${esc(t("g20.hist", {n: G.hist.length}))}</summary><ul>${G.hist.slice().reverse().map(h => `<li>G${esc(String(h.v))} · ${esc(fmtDate(h.at))}: ${esc(trunc(str(h.f.outcome), 160))}</li>`).join("")}</ul></details>` : ""}   // ok:trunc a history line; the full goal is in that version
+    ${G.hist.length ? `<details class="small"><summary>${esc(t("g20.hist", {n: G.hist.length}))}</summary><ul>${G.hist.slice().reverse().map(g20HistLi).join("")}</ul></details>` : ""}
     <div class="row">${goal20Clear(p) ? `<span class="small"><span aria-hidden="true">✓</span> ${esc(t("g20.clear"))}</span>` : `<span class="small m20-why">${esc(t("g20.open", {x: goal20Open(p).map(k => t(k === "nevers" ? "g20.nevers0" : "g20.f." + k)).join(", ")}))}</span>${G.skip ? "" : `<button class="btn xs ghost" data-a="g20-skip">${esc(t("g20.skip"))}</button>`}`}<button class="btn sm primary" data-a="m20-open" data-v="map">${esc(t("g20.tomap"))}</button></div></section>${form}`;
 }
+/* 2.2.0: the history line was built inside the card's template, so its "// ok:trunc" note showed on screen as text */
+function g20HistLi(h){ return `<li>G${esc(String(h.v))} · ${esc(fmtDate(h.at))}: ${esc(trunc(str(h.f.outcome), 160))}</li>`; }   // ok:trunc a history line; the full goal is in that version
 function m20CardHTML(p, id){
   const r = m20Route(p, id); if (!r) return `<p class="small muted">${esc(t("m20.gone"))}</p>`;
   if (!r.fit && r.blocker) return `<p class="small muted">${esc(t("m20.gone"))}</p>`;

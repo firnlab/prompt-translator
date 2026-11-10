@@ -38,9 +38,9 @@ def check(name, cond, info=""):
 def ev(pg, js, *a): return pg.evaluate(js, *a)
 
 # bytes: 3.5 MB from 1.8 to 2.1.0 (2.1.0 built 3,495,572); 2.1.1 adds 6.7 KB of strings and the manifest note, so 3.6 MB from
-# 2.1.1 on - the time budgets below are the real guard (first screen ~0.4 s against 6 s). 2.2 wins ~23 KB back by stripping
+# 2.1.1 on; 3.8 MB from 2.2.0 (owner, D-2026-11-10: comments stripped at build, 3,430,669 bytes) - the time budgets below are the real guard (first screen ~0.4 s against 6 s). 2.2 wins ~23 KB back by stripping
 # comment lines in build.py (BACKLOG).
-BUDGET = {"bytes": 3_600_000, "first_ms": 6000, "open_ms": 6000, "boot_task_ms": 4000, "screen_task_ms": 1500}
+BUDGET = {"bytes": 3_800_000, "first_ms": 6000, "open_ms": 6000, "boot_task_ms": 4000, "screen_task_ms": 1500}
 # findings in screens other parts own, accepted for now with the reason (matched against the finding's text); new ones fail
 KNOWN = [
 ]

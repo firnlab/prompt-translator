@@ -460,6 +460,7 @@ async function wk18Build(key, at, by = "pt"){
       if (dec) L.push(["wk.t.dec", {n: dec}]);
       const ib = arr(p.inbox).filter(i => i && inWin(i.at) && !IB18_RECORD.has(i.src)).length; if (ib) L.push(["wk.t.ib", {n: ib}]);
       const runs = arr(p.inbox).filter(i => i && inWin(i.at) && i.src === "run"); if (runs.length) L.push(["wk.t.runs", {n: runs.length, f: runs.filter(i => i.ok === false).length}]);
+      if (typeof toolDrift === "function"){ const d = toolDrift(p, to); if (d) L.push([d.falling ? "wk.t.driftdown" : "wk.t.drift", d]); }   // 2.2.0 SHOULD 2: the drift number per live tool
       if (!L.length){ const a = arr(p.activity).filter(x => x && inWin(x.at)).length; if (a) L.push(["wk.t.act", {n: a}]); }
       return L;
     });
