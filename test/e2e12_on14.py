@@ -238,6 +238,11 @@ with sync_playwright() as p:
       for (const c of goalOf(p).criteria) if (!critChecked(c)) c.checked = ex.slice(0, 2);
       touch(p); render(); return {examples: ex.length, unchecked: goalOf(p).criteria.filter(c => !critChecked(c)).length}; }""")
     print("   examples loop:", lp)
+    # 2.2.0: a tool other people use has hard gates (cause 118); the owner writes the evidence for each open one, as in the gate's box
+    hg = pg.evaluate("""() => { const p = curP(); const open = hg22Open(p).map(g => g.id);
+      for (const id of open) if (id !== 'secret') p.hg22 = Object.assign({}, hg22Read(p), {[id]: {ev: 'Checked by the owner on the staging copy: ' + id, at: now()}});
+      touch(p); render(); return {open, left: hg22Open(p).map(g => g.id)}; }""")
+    print("   hard gates answered:", hg)
     check(pg.evaluate("blockingItems(curP()).length") == 0, "nothing blocks publishing after Finish + decisions: " + str(pg.evaluate("blockingItems(curP()).map(x => x.kind + ':' + (x.title || '').slice(0, 60)).slice(0, 8)")))
     score = str(pg.evaluate("readinessScore(curP())")) + "%"
     print("   readiness:", score)

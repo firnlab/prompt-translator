@@ -22,3 +22,6 @@ Owner "GO 2.2.0" 10 Nov 2026 00:52 (D-2026-11-10-01: everything in one update). 
 - quick220d also: hunt 12 (id "pq-" twice on Build/Launch) and hunt 30 (screens 280–392 ms against 250 ms under gate load) — cause 117. Items now through qItem; open gates/apps memoized per render (Q_CACHE identity). HUNT_ONLY=12 and HUNT_ONLY=30 green, e2e220_tools 57.
   Manual plant: qItem removed from the hard-gate items → the key check red [None ×5]; restored → 57 green.
 - Preview published 10 Nov: Prompt Translator 2.2.0 preview, version 1794279862-ced9 (previous 1794071704-0c06 stays restorable); capabilities carried forward unchanged; quick gate quick220e green 46/46.
+
+## Full gate full220a (10 Nov): RED 58/60
+- flows 1.2 and check the Pick tests 2 (both run e2e12_on14.py): the tool in that suite is used by others, so the 2.2.0 hard gates blocked the launch step. PT behaved as designed; the suite never answered the gates. Cause 118: the suite now writes the owner's evidence per open gate. Alone: 161 ok, 0 failed. Full gate rerun as full220b.

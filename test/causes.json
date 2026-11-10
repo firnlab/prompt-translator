@@ -1145,6 +1145,13 @@
     "test/hunt2.py :: 30 speed"
    ],
    "no_plant": "hunt 12 and hunt 30 are themselves planted-bug checks (check_the_hunts); the key check went red with qItem removed on 10 Nov 2026 (manual plant, BUILD-LOG-2.2.0.md)"
+  },
+  "118": {
+   "cause": "An older suite did not answer the new hard gates of 2.2.0, so a tool other people use stayed blocked before publishing",
+   "checks": [
+    "test/e2e12_on14.py :: hard gates answered"
+   ],
+   "no_plant": "a test-side gap, not a PT bug: the gate's red on flows 1.2 and check the Pick tests 2 (full220a) was the catch; hard-gate blocking itself is planted in e2e220_tools.py"
   }
  }
 }
