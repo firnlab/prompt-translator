@@ -284,5 +284,68 @@
    }
   },
   "notes": "2.1.1 (small lane, Fix items): the release check reads the releases list instead of the tag page (cause 109); the laptop task stops before any sign-up, payment, deletion, publishing or anything it cannot undo (D1, cause 110); kitEngineRec matches whole words and keeps the ★ on the scheduled task while K3 is open; Health and the kit options follow the 20-day price clock; manifest check in the gate with hosts per artifact (RT-11, cause 111); the second owner's welcome without \"1.8\"; kit facts dated 7 Nov (Managed Agents, Vercel Hobby, Stripe restricted keys). Page byte budget 3.5 -> 3.6 MB. Full gate 55 of 55 on 1004f85. Main published from the cloud with capabilities omitted (host set unchanged, manifest carried forward incl. form_input) - first cloud publish to main since typing was added."
+ },
+ {
+  "version": "2.2.0",
+  "date": "2026-11-10",
+  "commit": "4d35cffc38f79cceb6044dc3ca49aeebafeba34b",
+  "main": {
+   "artifact": "VjEPcpnocMTPMwHvHdwTZ3",
+   "live": "1794315963-ef5c",
+   "previous": "1794082802-e32a",
+   "hosts": {
+    "claude_browser": [
+     "computer",
+     "find",
+     "form_input",
+     "get_page_text",
+     "navigate",
+     "preview_start"
+    ],
+    "filesystem": [
+     "list_allowed_directories",
+     "list_directory",
+     "write_file"
+    ],
+    "git": [
+     "git_status"
+    ],
+    "fetch": [
+     "fetch"
+    ],
+    "blender": [
+     "execute_blender_code"
+    ]
+   }
+  },
+  "preview": {
+   "artifact": "6rj1ZPyMB6GxKwAHsmndny",
+   "live": "1794279862-ced9",
+   "previous": "1794071704-0c06",
+   "hosts": {
+    "claude_browser": [
+     "computer",
+     "find",
+     "get_page_text",
+     "navigate",
+     "preview_start"
+    ],
+    "filesystem": [
+     "list_allowed_directories",
+     "list_directory",
+     "write_file"
+    ],
+    "git": [
+     "git_status"
+    ],
+    "fetch": [
+     "fetch"
+    ],
+    "blender": [
+     "execute_blender_code"
+    ]
+   }
+  },
+  "notes": "2.2.0 (one update with everything, owner GO): My prompts where you type; vendor spending limits in Knowledge; new rules for the tools you build; hard gates before a tool other people use is released; a pick per outside app before the build; small changes to live tools; the last mile; missed runs and drift; learning moments; kit prices; Reinstall with data; comments stripped (~228 KB). Fixes: Pick Mode buttons, Chinese Ctrl+K, code note on the goal card, wording. Causes 116-118. Full gate full220b GREEN 60/60 (FULL on 5014edb, built file sha256 0a86137dbf0ffbc7). Cabinet moved to 2.3.0 (D-2026-11-10-05)."
  }
 ]
