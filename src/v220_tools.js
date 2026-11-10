@@ -193,8 +193,7 @@ function hg22Read(p){ return p && p.hg22 && typeof p.hg22 === "object" ? p.hg22 
 function hg22Met(p, g){ if (g.id === "secret") return !hg22Secret(p).length; const e = hg22Read(p)[g.id]; return !!(e && str(e.ev).trim().length >= 12); }
 function hg22Open(p){ return hg22Gates(p).filter(g => !hg22Met(p, g)); }
 { const orig = queueOf; queueOf = function(p){
-    if (RENDERING && Q_CACHE && Q_CACHE.p === p) return Q_CACHE.q;
-    const q = orig(p); if (!p) return q;
+    const q0 = orig(p); if (!p) return q0; const q = q0.slice();   // a copy: during a render orig hands out the cached queue (cause 116)
     try{ for (const g of hg22Open(p)) q.push({kind: "hg22", ref: "hg22:" + g.id, ph: "launch", cls: "block", hard: true, who: "you", title: t("hg22." + g.id + ".t"), why: g.id === "secret" ? t("hg22.secret.where", {x: hg22Secret(p).join(", ")}) : t("hg22." + g.id + ".why")}); }
     catch(e){ onAppError(e && e.message, "hg22"); }
     return q; }; }
@@ -221,8 +220,7 @@ function conn22Apps(p){
 function conn22Read(p){ return p && p.conn22 && typeof p.conn22 === "object" ? p.conn22 : {}; }
 function conn22Open(p){ const A = conn22Read(p); return conn22Apps(p).filter(n => !CONN22_ANS.includes(str(A[n] && A[n].a))); }
 { const orig = queueOf; queueOf = function(p){
-    if (RENDERING && Q_CACHE && Q_CACHE.p === p) return Q_CACHE.q;
-    const q = orig(p); if (!p) return q;
+    const q0 = orig(p); if (!p) return q0; const q = q0.slice();   // a copy: during a render orig hands out the cached queue (cause 116)
     try{ for (const n of conn22Open(p)) q.push({kind: "conn22", ref: "conn22:" + n, ph: "arch", cls: "block", who: "you", title: t("conn22.t", {x: n}), why: t(CONN22_KNOWN.has(n) ? "conn22.why.known" : "conn22.why.unknown", {x: n})}); }
     catch(e){ onAppError(e && e.message, "conn22"); }
     return q; }; }

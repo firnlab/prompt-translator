@@ -114,6 +114,13 @@ with sync_playwright() as pw:
     ev(pg, "(id) => { const p = WS.projects.find(x => x.id === id); p.pkg.sections[0].content = 'Read the key from the secret store.'; p.hg22 = {launch3: {ev: 'short', at: now()}, backend: {ev: 'Supabase edge functions; the page holds no database key', at: now()}}; touch(p); }", hg)
     left = ev(pg, "(id) => hg22Open(WS.projects.find(x => x.id === id)).map(g => g.id)", hg)
     check("without the key the key gate is met; real evidence meets a gate, a too-short answer does not", "secret" not in left and "backend" not in left and "launch3" in left, left)
+    inr = ev(pg, """(id) => { const p = WS.projects.find(x => x.id === id); const out = queueOf(p).map(x => x.ref).join('|');
+        RENDERING = true; Q_CACHE = null; let a, b; try { a = queueOf(p).map(x => x.ref).join('|'); b = queueOf(p).map(x => x.ref).join('|'); } finally { RENDERING = false; Q_CACHE = null; }
+        const w = WS.projects.find(x => x.id === id); return {same: out === a && a === b, n: out.split('|').length, a: a.split('|').length, b: b.split('|').length}; }""", hg)
+    check("during a render the queue is the same as outside it, and asking twice adds nothing (the new items do not skip outer filters or pile up)", inr["same"], inr)
+    early = ev(pg, """() => { const p = WS.projects.find(x => stage20Early(x) && str(x.northStar.goal).trim()) || null; if (!p) return null;
+        const out = queueOf(p).map(x => x.ref).join('|'); RENDERING = true; Q_CACHE = null; let a; try { a = queueOf(p).map(x => x.ref).join('|'); } finally { RENDERING = false; Q_CACHE = null; } return out === a; }""")
+    check("…also for a project before its route decision (the held detail items stay held while rendering)", early is not False, early)
     check("a tool only for me has no hard gates", ev(pg, "(id) => hg22Gates(WS.projects.find(x => x.id === id)).length", notes) == 0, "")
 
     print("8 the connector check")

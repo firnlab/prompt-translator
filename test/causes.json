@@ -1128,6 +1128,14 @@
     "test/e2e220_tools.py :: the tool is not marked live on the old version"
    ],
    "no_plant": "disabling the brief hand-over turned the check red on 10 Nov 2026 (manual plant, BUILD-LOG-2.2.0.md)"
+  },
+  "116": {
+   "cause": "The two new queue wrappers of 2.2.0 (hard gates, connector check) copied the render-cache shortcut: during a render they returned the base queue cached by v14_queue, skipping every outer filter (the held detail items of a project before its route decision came back as picks), and pushed onto the cached array, so items piled up (found by the quick gate, flows 2.0 map, before any publish)",
+   "checks": [
+    "test/e2e220_tools.py :: during a render the queue is the same as outside it",
+    "test/e2e200_map.py :: the picks in the deck come first (here none); then one Next: check the goal card"
+   ],
+   "no_plant": "the shortcut put back turned the check red on 10 Nov 2026 (manual plant, BUILD-LOG-2.2.0.md)"
   }
  }
 }
