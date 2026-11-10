@@ -110,7 +110,7 @@ _LAST = {"check the checks": 49, "the gate itself": 36, "unit": 14, "flows 1.4.1
          "flows 2.1 platform": 52, "flows 2.1 clicks": 10, "flows 2.1 safe": 53, "changelog": 27}   # 2.1 (red team 4 #16): every counted suite is listed
 MIN_OK = {n: (c if c <= 25 else int(c * 0.9)) for n, c in _LAST.items()}
 # suites that print no ok-count by design (a build, a parser, a scan that prints only problems): the only ones allowed to miss MIN_OK
-NO_COUNT = {"build", "static checks", "tests parse", "strings", "check the causes", "smoke", "flows 1.3", "click everything", "manifest"}
+NO_COUNT = {"build", "static checks", "tests parse", "strings", "check the causes", "smoke", "flows 1.3", "click everything", "manifest", "comments stripped"}
 _missing = [n for n, *_ in CHECKS if n not in MIN_OK and n not in NO_COUNT]
 if _missing and not _os.environ.get("GATE_CHECKS"): print("GATE SETUP RED: suites without a minimum count (add to _LAST or NO_COUNT): " + ", ".join(_missing)); sys.exit(2)
 def ok_count(out):
