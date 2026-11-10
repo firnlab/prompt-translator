@@ -821,7 +821,7 @@ const STR = {
 "tfb.open":["open","offen","未处理"],
 
 /* library */
-"lib.tab.patterns":["Patterns","Bausteine","模板"],
+"lib.tab.patterns":["Prompts","Prompts","提示词"],
 "lib.tab.practices":["Best practices","Best Practices","最佳实践"],
 "lib.tab.research":["Research","Recherche","研究"],
 "lib.newpattern":["New pattern","Neuer Baustein","新建模板"],

@@ -324,6 +324,15 @@ console.log(`static checks (baseline ${baseArg}${base ? '' : ' NOT READ'}): ${ha
   for (const [f, re, msg] of need) if (!re.test(src(f))) H('safe', `${f}: ${msg}`);
   for (const f of codeFiles.filter(f => f.endsWith('.js'))) src(f).split('\n').forEach((line, i) => { if (/\son[a-z]+="/.test(line) && /<[a-z]/.test(line) && !/ok:safe/.test(line)) H('safe', `${f}:${i + 1} an inline event handler in markup (safeHTML removes it): use a listener`); }); }
 console.log(`  raw values: hard in ${codeFiles.filter(f => RAW_HARD.some(r => r.test(f))).length} files (RAW_HARD), ${rawKnown} known raw selector ids left for Wave 3 (RAW_KNOWN)` + (rawStale.length ? `; stale entries to delete: ${rawStale.join(' | ')}` : ''));
+/* 2.2.0 item 22: the prompt-fields registry — every text field is on PRM_FIELDS (it gets a Prompts button) or on PRM_NOFIELDS with a reason */
+{ const pf = codeFiles.find(f => /v220_prompts\.js$/.test(f));
+  if (!pf) H('prompts', 'src/v220_prompts.js is missing');
+  else { const t = src(pf), yes = new Set([...(/const PRM_FIELDS = \[([^\]]*)\]/.exec(t) || ['', ''])[1].matchAll(/"([^"]+)"/g)].map(m => m[1])),
+      noBlock = (/const PRM_NOFIELDS = \{([\s\S]*?)\n\};/.exec(t) || ['', ''])[1], no = new Set([...noBlock.matchAll(/"([a-zA-Z0-9_-]+)":\s*"[^"]+"/g)].map(m => m[1]));
+    const ids = new Set(); for (const m of code.matchAll(/<(textarea|input)\b([^>]*?)\bid="([a-zA-Z0-9_-]+)"/g)){ const ty = /type="([a-z]+)"/.exec(m[2] + code.slice(m.index, m.index + 300)); if (m[1] === 'input' && ty && ['checkbox', 'radio', 'file', 'range', 'number', 'color', 'hidden'].includes(ty[1])) continue; ids.add(m[3]); }
+    for (const id of ids) if (!yes.has(id) && !no.has(id)) H('prompts', `text field #${id} is on neither PRM_FIELDS nor PRM_NOFIELDS (src/v220_prompts.js): decide whether it talks to Claude`);
+    for (const id of yes) if (no.has(id)) H('prompts', `#${id} is on both prompt-field lists`);
+    for (const id of yes) if (!ids.has(id)) H('prompts', `PRM_FIELDS names #${id}, which no screen has`); } }
 if (hard.length){ console.log('HARD'); hard.slice(0, 60).forEach(x => console.log('  ' + x)); }
 if (review.length){ console.log('REVIEW (look at each; add // ok:<check> when it is fine)'); review.slice(0, 120).forEach(x => console.log('  ' + x)); }
 process.exit(hard.length ? 1 : 0);

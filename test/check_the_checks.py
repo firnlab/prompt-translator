@@ -28,6 +28,7 @@ M = [
     ("Traditional Chinese",                            "strings7.js", "dupline_edit", ('"it.inpanel":', '"zz.tr":["a", "a", "這個"],'), "strings", True),
     ("a build promised to wait for a GitHub approval (cause 75)", "strings16.js", "dupline_edit", ('"bld.sub":', '"zz.appr":["Only your comment starts it; GitHub then waits for your approval in the build environment.", "GitHub wartet dann auf deine Freigabe in der Build-Umgebung.", "之后 GitHub 会在 build 环境中等待你的批准。"],'), "claims", True),
     ("a workspace found by a person's name (cause 59)", "app.js", "sub", ("const w = META.workspaces.find(x => x.id !== META.workspaces[0].id);", "const w = META.workspaces.find(x => /Robin/i.test(x.name));"), "person", True),
+    ("a text field that talks to Claude dropped from the prompt-field registry (2.2.0 item 22)", "v220_prompts.js", "sub", ('"c20-in", "it-in",', '"it-in",'), "prompts", True),
     ("missing translation key",                        "views13.js", "append", APP.format(n=4, body='return t("zz.never.defined");'), "strings", True),
     ("a button with no action",                        "views13.js", "append", APP.format(n=5, body="return '<button data-a=\"zz-nothing\">x</button>';"), "handlers", True),
     ("wrapper of a missing function",                  "actions4.js", "append", "\n{ const orig = zzGone; zzGone = function(){ return orig(); }; }\n", "wrappers", True),

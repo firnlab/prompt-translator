@@ -29,7 +29,7 @@ function vlRow(v){
   const setCtl = v.kind === "none" || v.kind === "unchecked" ? `<span class="small muted">${esc(t("vl.noset"))}</span>`
     : set ? `<span class="chip ok" data-vl-set="1">${ic("check")} ${esc(t("vl.isset", {d: fmtDay(set)}))}</span> <button class="btn xs ghost" data-a="vl-unset" data-id="${esc(v.id)}">${esc(t("vl.unset"))}</button>`
     : `<button class="btn xs" data-a="vl-set" data-id="${esc(v.id)}">${esc(t("vl.markset"))}</button>`;
-  return `<div class="item" data-vl="${esc(v.id)}"><div class="body"><span class="title">${esc(v.name)} ${kindChip}${stale ? ` <span class="chip warn" data-vl-stale="1">${ic("clock")} ${esc(t("vl.stale"))}</span>` : ""}</span>
+  return `<div class="item" data-vl="${esc(v.id)}"><div class="body"><span class="title"><span translate="no">${esc(v.name)}</span> ${kindChip}${stale ? ` <span class="chip warn" data-vl-stale="1">${ic("clock")} ${esc(t("vl.stale"))}</span>` : ""}</span>
     <span class="small">${esc(t("vl." + v.id + ".what"))}</span>
     <span class="small muted">${esc(t("vl." + v.id + ".billed"))}</span>
     <span class="small muted">${esc(t("vl.when"))} · ${esc(t("fact.checked", {d: fmtDay(v.d)}))} · ${srcLink}</span></div>
