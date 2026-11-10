@@ -62,6 +62,7 @@ CHECKS = [  # (name, command, in quick run, minutes allowed)
     ("flows 2.0 modes", "python3 test/e2e200_modes.py", True, 25),   # 2.0 Part C: two faces (Pick, Chat Mode) of one ledger, the 1.x modes gone, the move to 2.0 (Before 2.0, additive, once, per project), the RC replay
     ("flows 2.0 hands", "python3 test/e2e200_hands.py", True, 15),   # 2.0 Part D: PT's hands per project (site list, plan first, action contract, forms and non-final clicks, the final-button stop, keys never typed, the guard)
     ("flows 2.0 loop", "python3 test/e2e200_loop.py", True, 20),   # 2.0 Parts D/E: morning check, prompt tests, Improve-PT loop, metrics, helpers (detection, Needs <program>, file save), guides, CAPABILITIES-2.0.json
+    ("flows 2.2 kits", "python3 test/e2e220_kits.py", True, 5),   # 2.2.0 item 7 + SHOULD 16: kit prices from the vendors' own pages, vendor limits table, ticks, price clock
     ("flows 2.1 platform", "python3 test/e2e210_platform.py", True, 10),   # 2.1 J12/J13: PT against a platform-like mock (sample codes, mcp refusals, path grammar, access rules); expected reds listed in test/expected_red.json
     ("flows 2.1 clicks", "python3 test/e2e210_clicks.py", True, 10),   # 2.1 J13: cancel, retry and delete clicks (C2 "one click = one call" is still open; its reds are in expected_red.json)
     ("flows 2.1 safe", "python3 test/e2e210_safe.py", True, 10),   # 2.1 A1/A14/B17: safeHTML, the booby-trapped import, export→import round trip, data-bind paths
@@ -99,7 +100,7 @@ _LAST = {"check the checks": 49, "the gate itself": 36, "unit": 14, "flows 1.4.1
          "flows 1.8 kits": 83, "flows 1.8 run": 109, "check the rows": 9, "flows 1.8 (checks)": 86, "flows 1.8 (deciding)": 71,
          "flows 1.8 health": 98, "PT checks itself": 73, "flows 1.8 (the cone)": 84, "flows 1.9 care": 108, "PT outside claude.ai": 21,
          "flows 1.9 fleet": 78, "flows 1.9 scan": 99, "flows 1.9.1 judge": 81, "flows 1.10 hands": 54, "flows 2.0 foundation": 82,
-         "flows 2.0 map": 122, "flows 2.0 modes": 170, "flows 2.0 hands": 55, "flows 2.0 loop": 83, "pseudo-localisation": 179, "hunt": 21,
+         "flows 2.0 map": 122, "flows 2.0 modes": 170, "flows 2.0 hands": 55, "flows 2.0 loop": 83, "flows 2.2 kits": 23, "pseudo-localisation": 179, "hunt": 21,
          "hunt 2": 10, "check the hunt": 31, "check the Pick tests": 104, "check the Pick tests 2": 103, "layout": 60, "migration 1.4.1": 14,
          "migration 1.4": 15, "flows 1.4": 58, "flows 1.2": 161,
          "flows 2.1 platform": 52, "flows 2.1 clicks": 10, "flows 2.1 safe": 53, "changelog": 27}   # 2.1 (red team 4 #16): every counted suite is listed
