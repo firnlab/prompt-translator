@@ -1105,6 +1105,21 @@
     "test/e2e210_clicks.py :: K.ime-search"
    ],
    "no_plant": "the case needs real composition events in a browser; reverting the guard turned K.ime-search red on 10 Nov 2026 (manual plant, recorded in BUILD-LOG-2.2.0.md)"
+  },
+  "113": {
+   "cause": "A question's answer pointed at a place Pick Mode has no page for (refs \"loop\" and \"exboard\" missing from PG_OF_REF): \"Check them now\" spent an AI round that never showed, \"Judge my own examples\" did nothing (owner's tool request of 5 Nov 2026, live until 2.2.0)",
+   "checks": [
+    "test/e2e220_older.py :: “Judge my own examples” opens the Idea page",
+    "test/e2e220_older.py :: “Check them now” opens the round on the Idea page"
+   ],
+   "no_plant": "removing the two map entries turned both checks red on 10 Nov 2026 (manual plant, BUILD-LOG-2.2.0.md)"
+  },
+  "114": {
+   "cause": "A code note (\"// ok:trunc …\") written after a ${…} inside a multi-line page template is template text, so it showed on the goal card in Chat Mode (found while re-testing the owner's requests, 10 Nov 2026)",
+   "checks": [
+    "test/e2e220_older.py :: no code note (“// ok:…”) is visible"
+   ],
+   "no_plant": "re-adding the note after the history line turned the check red on 10 Nov 2026 (manual plant, BUILD-LOG-2.2.0.md); the check renders the goal card with and without history"
   }
  }
 }

@@ -384,7 +384,7 @@ const STR = {
 "req.tests":["{n} tests","{n} Tests","{n} 个测试"],
 "req.notests":["no test yet","noch kein Test","还没有测试"],
 "req.oos":["Not in this version","Nicht in dieser Version","这个版本不做"],
-"req.oos.sub":["What this version deliberately leaves out (one per line); later versions can take it in.","Was diese Version bewusst weglässt (eins pro Zeile); spätere Versionen können es aufnehmen.","这个版本有意不做的事（每行一条）；以后的版本可以再加。"],
+"req.oos.sub":["What this version deliberately leaves out, so nobody builds it by mistake; later versions can take it in. PT suggests lines when it writes the requirements (the button above). Each line you leave here is your decision that it stays out: there is nothing else to confirm. Delete a line to bring it back into this version.","Was diese Version bewusst weglässt, damit es niemand aus Versehen baut; spätere Versionen können es aufnehmen. PT schlägt Zeilen vor, wenn es die Anforderungen schreibt (der Knopf oben). Jede Zeile, die du hier lässt, ist dein Entscheid, dass sie draussen bleibt: Sonst gibt es nichts zu bestätigen. Lösch eine Zeile, um sie in diese Version zurückzuholen.","这个版本有意不做的事，免得有人误做；以后的版本可以再加。PT 在编写需求时会建议这些条目（上方的按钮）。你留在这里的每一行，就是你决定它不在本版本里：无需另外确认。删除一行即可把它放回本版本。"],
 "req.const":["Constitution","Grundsätze","基本原则"],
 "req.const.sub":["Non-negotiable principles every part must respect.","Unverhandelbare Grundsätze, die jeder Teil einhalten muss.","每个部分都必须遵守的、不可妥协的原则。"],
 "req.lines":["One item per line.","Ein Punkt pro Zeile.","每行一项。"],

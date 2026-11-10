@@ -7,8 +7,9 @@
 const PG_PAGES = SP_STATIONS;   // idea · picks · try · design · review · build · run
 const PG_PHASES = {idea: ["capture", "understand"], picks: ["interview", "assume"], try: [], design: ["require", "arch"], review: ["review", "test"], build: ["build", "launch"], run: ["release", "operate"]};
 const PG_OF_PHASE = {}; for (const [pg, phs] of Object.entries(PG_PHASES)) for (const ph of phs) PG_OF_PHASE[ph] = pg;
-/* a step ref the old screens use → the page it lives on */
-const PG_OF_REF = {goal: "idea", "#pk-deck": "picks", "#pk-research": "picks", "#pk-summary": "picks", "#pk-try": "try", arch: "design", review: "review", test: "review", build: "build", release: "run", run: "run"};
+/* a step ref the old screens use → the page it lives on (2.2.0, tool request of 5 Nov: "loop" and "exboard" had no page, so
+   "Check them now" spent a round and "Judge my own examples" opened nothing in Pick Mode; both live on the Idea page) */
+const PG_OF_REF = {goal: "idea", "#pk-deck": "picks", "#pk-research": "picks", "#pk-summary": "picks", "#pk-try": "try", loop: "idea", exboard: "idea", arch: "design", review: "review", test: "review", build: "build", release: "run", run: "run"};
 const PG_ICON = {idea: "target", picks: "list", try: "play", design: "layers", review: "shield", build: "bolt", run: "heart"};
 function pgOn(p){ return !!p && MODES.includes(projMode(p)); }   // 2.0: the pages are the structure of both faces (Pick Mode and Chat Mode)
 /** the station of the one next step */

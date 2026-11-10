@@ -711,3 +711,5 @@ Look at each; fix it, or mark the line `// ok:<check>` when it is fine.
 - 2.0.0 PR: quick-gate red on a stale CHANGELOG.md. The releases.json notes go into CHANGELOG.md, so adding the release entry needs
   `python3 tools/changelog.py` again before the commit (the local gate had run before the entry existed).
 - Cause 112 (2.2.0, item 23): the Ctrl+K search re-rendered on every input event during an IME composition, so pinyin input broke; the input handler skips composing events and `compositionend` renders once; check `e2e210_clicks.py` K.ime-search (reverting the guard turns it red).
+- Cause 113 (2.2.0, owner's request of 5 Nov): refs "loop"/"exboard" had no page in Pick Mode, so two answers led nowhere (one after spending an AI round); mapped to the Idea page; checks in `e2e220_older.py`.
+- Cause 114 (2.2.0): a `// ok:` note inside a multi-line template showed as text on the goal card; the note moved to a helper; `e2e220_older.py` scans the main screens and the goal card for visible code notes.

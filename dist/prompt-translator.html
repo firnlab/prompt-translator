@@ -2337,7 +2337,7 @@ const STR = {
 "req.tests":["{n} tests","{n} Tests","{n} 个测试"],
 "req.notests":["no test yet","noch kein Test","还没有测试"],
 "req.oos":["Not in this version","Nicht in dieser Version","这个版本不做"],
-"req.oos.sub":["What this version deliberately leaves out (one per line); later versions can take it in.","Was diese Version bewusst weglässt (eins pro Zeile); spätere Versionen können es aufnehmen.","这个版本有意不做的事（每行一条）；以后的版本可以再加。"],
+"req.oos.sub":["What this version deliberately leaves out, so nobody builds it by mistake; later versions can take it in. PT suggests lines when it writes the requirements (the button above). Each line you leave here is your decision that it stays out: there is nothing else to confirm. Delete a line to bring it back into this version.","Was diese Version bewusst weglässt, damit es niemand aus Versehen baut; spätere Versionen können es aufnehmen. PT schlägt Zeilen vor, wenn es die Anforderungen schreibt (der Knopf oben). Jede Zeile, die du hier lässt, ist dein Entscheid, dass sie draussen bleibt: Sonst gibt es nichts zu bestätigen. Lösch eine Zeile, um sie in diese Version zurückzuholen.","这个版本有意不做的事，免得有人误做；以后的版本可以再加。PT 在编写需求时会建议这些条目（上方的按钮）。你留在这里的每一行，就是你决定它不在本版本里：无需另外确认。删除一行即可把它放回本版本。"],
 "req.const":["Constitution","Grundsätze","基本原则"],
 "req.const.sub":["Non-negotiable principles every part must respect.","Unverhandelbare Grundsätze, die jeder Teil einhalten muss.","每个部分都必须遵守的、不可妥协的原则。"],
 "req.lines":["One item per line.","Ein Punkt pro Zeile.","每行一项。"],
@@ -2967,7 +2967,7 @@ const STR2 = {
 "fst.open":["Open","Offen","待处理"], "fst.waiting":["Waiting for confirmation","Wartet auf Bestätigung","等待确认"], "fst.signoff":["Needs your sign-off", "Von dir abzuzeichnen", "需要你签字确认"], "fst.done":["Done","Erledigt","已完成"], "fst.accepted":["Accepted risk","Akzeptiertes Risiko","已接受的风险"],
 "rev.problems":["Problems","Probleme","问题"], "rev.problems.sub":["Fixed problems move to Done; nothing is deleted. A problem that comes back is reopened, not counted as new.","Behobene Probleme wandern zu «Erledigt»; nichts wird gelöscht. Ein Problem, das wiederkommt, wird wieder geöffnet und nicht neu gezählt.","已修复的问题会移到“已完成”，不会删除任何内容。再次出现的问题会被重新打开，而不是算作新问题。"],
 "rev.fixauto":["Fix automatically","Automatisch beheben","自动修复"], "rev.fixtogether":["PT drafts a fix, you pick what to keep","PT entwirft eine Lösung, du wählst, was bleibt","PT 起草修复，你挑选要保留的部分"], "rev.acceptrisk":["Accept the risk","Risiko akzeptieren","接受风险"], "rev.confirmnow":["Check the fix now","Korrektur jetzt prüfen","立即检查修复"], "rev.signoff":["Sign off","Abzeichnen","签字确认"], "rev.reopen":["Reopen","Wieder öffnen","重新打开"],
-"rev.explain":["What does this mean?","Was bedeutet das?","这是什么意思？"], "rev.explaining":["Explaining in plain language…","Wird in einfachen Worten erklärt …","正在用通俗的话解释…"], "rev.rec":["Recommended","Empfohlen","推荐"], "rev.choice.auto":["fix automatically","automatisch beheben","自动修复"], "rev.choice.together":["fix it together","gemeinsam beheben","一起修复"], "rev.choice.accept":["accept the risk","Risiko akzeptieren","接受风险"],
+"rev.explain":["What does this mean?","Was bedeutet das?","这是什么意思？"], "rev.explaining":["Explaining in plain language…","Wird in einfachen Worten erklärt …","正在用通俗的话解释…"], "rev.rec":["Recommended","Empfohlen","推荐"], "rev.choice.auto":["fix automatically","automatisch beheben","自动修复"], "rev.choice.together":["PT drafts a fix, you pick what to keep","PT entwirft eine Lösung, du wählst, was bleibt","PT 起草修复，你挑选要保留的部分"], "rev.choice.accept":["accept the risk","Risiko akzeptieren","接受风险"],
 "rev.walk":["Walk me through, one at a time","Einzeln mit mir durchgehen","带我逐个处理"], "rev.fixall":["Fix all open automatically ({n})","Alle offenen automatisch beheben ({n})","自动修复所有待处理问题（{n}）"],
 "rev.audit":["Audit record","Audit-Protokoll","审计记录"], "rev.hideaudit":["Hide audit","Audit-Protokoll ausblenden","隐藏审计记录"], "rev.beforeafter":["Text before and after","Text vorher und nachher","修改前后的文本"],
 "rev.reopenedn":["reopened {n}×","{n}× wieder geöffnet","已重新打开 {n} 次"], "rev.reopened":["{n} reopened","{n} wieder geöffnet","{n} 个已重新打开"], "rev.rerun":["Re-check open problems","Offene Probleme erneut prüfen","重新检查待处理问题"], "rev.rerunhint":["Checks only unresolved problems plus a quick check that the fixes broke nothing else.","Prüft nur ungelöste Probleme und kurz, ob die Korrekturen nichts anderes beschädigt haben.","只检查未解决的问题，并快速确认修复没有影响其他部分。"], "rev.tabempty":["Nothing in this list.","Diese Liste ist leer.","此列表为空。"],
@@ -3882,7 +3882,7 @@ Object.assign(STR, {
 "q.why.riskmit":["A mitigation exists: mark it done or accept the risk.","Eine Gegenmassnahme gibt es: als erledigt markieren oder das Risiko akzeptieren.","已有应对措施：标记为已处理或接受该风险。"],
 "q.why.reqcrit":["Every requirement should serve a goal criterion, or it may not be needed.","Jede Anforderung sollte einem Zielkriterium dienen, sonst braucht es sie vielleicht nicht.","每项需求都应服务于某个目标标准，否则可能并不需要。"],
 "q.why.archredraw":["The package must be built from the parts of the chosen option.","Das Paket muss aus den Teilen der gewählten Option gebaut werden.","配置包必须基于所选方案的组成部分来构建。"],
-"q.why.gate":["PT needs your answer for the right size of the tool.","PT braucht deine Antwort für die richtige Grösse des Tools.","PT 需要你的回答来确定工具的合适规模。"],
+"q.why.gate":["PT needs your answer to decide how much of the tool runs by itself (automation) and how much stays with you.","PT braucht deine Antwort, um zu entscheiden, wie viel vom Tool von selbst läuft (Automatisierung) und wie viel bei dir bleibt.","PT 需要你的回答，来决定工具有多少部分自动运行（自动化），有多少留给你来做。"],
 "q.why.gatesug":["PT suggests: {a}","PT schlägt vor: {a}","PT 建议：{a}"],
 "q.why.optional":["Optional evidence; it costs usage.","Freiwilliger Beleg; kostet Kontingent.","可选的依据；会消耗用量。"],
 "q.why.waiting":["Fixed earlier; the checker has not looked at it yet.","Früher behoben; der Prüfer hat es noch nicht angeschaut.","之前已修复；检查者尚未查看。"],
@@ -8212,6 +8212,8 @@ Object.assign(STR, {
 
 /* 2.2.0 · vendor limits table (v220_kits.js) and the other 2.2.0 parts as they are built */
 Object.assign(STR, {
+"loop.alldone.react":["All examples judged ({n} of {n}). Next: “Show the rules behind my reactions” below.","Alle Beispiele beurteilt ({n} von {n}). Weiter: «Regeln hinter meinen Reaktionen zeigen» unten.","全部示例已评判（{n}/{n}）。下一步：点击下方的“显示我反应背后的规则”。"],
+"loop.alldone.check":["All examples checked ({n} of {n}). Next: “Done checking” below.","Alle Beispiele geprüft ({n} von {n}). Weiter: «Prüfen fertig» unten.","全部示例已检验（{n}/{n}）。下一步：点击下方的“检验完成”。"],
 "vl.title":["What each vendor's spending limit really does","Was das Ausgabenlimit jedes Anbieters wirklich macht","各服务商的消费上限实际起什么作用"],
 "vl.sub":["Read on each vendor's own page. Set the limit on day one, before a tool's first run; PT re-checks these facts on the 20-day price clock. Tick “set” once you have set it.","Auf der Seite jedes Anbieters gelesen. Setz das Limit am ersten Tag, vor dem ersten Lauf eines Tools; PT prüft diese Fakten nach der 20-Tage-Preisuhr neu. Hak «gesetzt» an, sobald du es gesetzt hast.","均在各服务商自己的页面上核实。请在工具第一次运行之前的第一天设置上限；PT 按 20 天的价格时钟重新核对这些事实。设置好后请勾选“已设置”。"],
 "vl.kind.cap":["Cap","Deckel","封顶"],
@@ -10133,7 +10135,7 @@ function similar(a, b){
 
 async function aiExplainFinding(p, f){
   const prompt = buildPrompt("explain", {proj: p, rules: null, userLang: "viewer", context: projectContext(p, {max: 12000}),
-    body: `Explain this review finding in plain language for a non-technical person: what it means for the finished tool, why it matters, and what each of the three choices (fix automatically, fix it together, accept the risk) would mean here.\n<finding>${JSON.stringify({issue: f.issue, where: f.where, fix: f.fix, severity: f.severity})}</finding>`,
+    body: `Explain this review finding in plain language for a non-technical person: what it means for the finished tool, why it matters, and what each of the three buttons would mean here: "Fix automatically" (PT applies its fix), "PT drafts a fix, you pick what to keep" (PT proposes the change and the person keeps or drops each part; the value \"together\"), "Accept the risk" (nothing changes, the finding is re-checked later).\n<finding>${JSON.stringify({issue: f.issue, where: f.where, fix: f.fix, severity: f.severity})}</finding>`,
     schema: `{"meaning":"2-4 sentences","why":"1-2 sentences","recommend":"auto|together|accept","reason":"one sentence"}`});
   const r = await runAI("explain-" + f.id, t("rev.explaining"), prompt, {pid: p && p.id, step: "ask"});
   if (!r) return;
@@ -14407,7 +14409,8 @@ Object.assign(FORMS, {
   "guide": async () => { const p = curP(); const q = ($("#guide-in").value || "").trim(); if (!q) return; $("#guide-in").value = ""; const r = await aiGuide(p, q); if (r){ if (p){ p.guide = arr(p.guide); p.guide.push(r); if (p.guide.length > 40) p.guide = p.guide.slice(-40); logAct(p, t("act.guide", {q: trunc(q, 60)}), {kind: "guide"}); touch(p); } else { UI.guideWs = arr(UI.guideWs); UI.guideWs.push(r); } render(); } },
   "change-request": async () => { const p = curP(); const v = ($("#cr-in").value || "").trim(); if (!v) return; const it = {id: uid("ib"), src: "yours", title: trunc(v, 140), body: v, on: true, at: now(), k: "change"}; p.inbox.push(it); touch(p); render(); const r = await aiImpactParts(p, v); if (r){ it.refs = r.refs; touch(p); render(); } },
   "report-paste": () => { const p = curP(); const o = parseReport(($("#rep-in").value || "")); if (!o){ toast(t("rel.pasteerr"), "err"); return; } p.report = {at: now(), raw: o, check: checkReport(p, o), via: "paste", draft: (p.brief && p.brief.draft) || p.versionNo}; touch(p); render(); },
-  "tool-report": () => { const v = ($("#tr-in").value || "").trim(); if (!v) return; const x = {id: uid("tf"), text: v, where: UI.modal.where || "", at: now(), ws: WS.name, status: "open", version: PT_VERSION}; Store.put("toolfeedback/" + x.id, x); WS.toolfb = [x, ...arr(WS.toolfb)]; UI.modal = null; render(); toast(t("tfb.sent"), "ok"); },
+  /* 2.2.0 (tool request of 3 Nov): a report sent within 10 minutes of an error carries it (lastError) */
+  "tool-report": () => { const v = ($("#tr-in").value || "").trim(); if (!v) return; const x = {id: uid("tf"), text: v, where: UI.modal.where || "", at: now(), ws: WS.name, status: "open", version: PT_VERSION}; const le = ERRS[ERRS.length - 1]; if (le && Date.now() - Date.parse(le.at) < 600000) x.lastError = trunc(str(le.msg), 300); Store.put("toolfeedback/" + x.id, x); WS.toolfb = [x, ...arr(WS.toolfb)]; UI.modal = null; render(); toast(t("tfb.sent"), "ok"); },
   "rp-save": () => { const p = curP(); const v = ($("#rp-name").value || "").trim() || t("rp.manual"); addRestore(p, {kind: "manual", label: v}); touch(p); render(); toast(t("rp.saved"), "ok"); }
 });
 function suggestName(raw){ const s = str(raw).replace(/\s+/g, " ").trim(); if (!s) return ""; const first = s.split(/[.!?。！？\n]/)[0]; return trunc(first, 48); }
@@ -17063,7 +17066,9 @@ function loopCard(p){
     const nav = `<div class="row"><button class="btn sm ghost" data-a="loop-go" data-i="${i - 1}" ${i ? "" : "disabled"}>‹ ${esc(t("nav14.prev"))} <kbd>K</kbd></button><button class="btn sm ghost" data-a="loop-go" data-i="${i + 1}" ${i < list.length - 1 ? "" : "disabled"}>${esc(t("nav14.next"))} › <kbd>J</kbd></button><span style="flex:1"></span>
       ${L.phase === "react" ? aiBtn("loop-rule", done < list.length ? t("loop.rulenow", {n: done}) : t("loop.rule"), "M", {primary: done === list.length, key: "loop", attrs: done ? "" : "disabled"}) : `<button class="btn sm ${done === list.length ? "primary" : ""}" data-a="loop-finish">${esc(t("loop.finishcheck"))}</button>`}</div>`;
     const guess = L.phase === "react" && lv === "learn" && done === list.length ? `<div class="moment"><b>${esc(t("loop.guess.t"))}</b><p class="small">${esc(t("loop.guess"))}</p>${bindInput("p:loop.guess", L.guess || "", {ph: t("loop.guessph")})}</div>` : "";
-    body = `${dots}${e ? exCard(p, e, {reveal: L.phase === "check"}) : `<p class="small muted">${esc(t("loop.empty"))}</p>`}${guess}${nav}`;
+    // 2.2.0 (tool request of 2 Nov): when the last example is judged, say so and name the one next step
+    const allDone = list.length && done === list.length ? `<p class="small ok-t loop-alldone" role="status">${ic("check")} ${esc(t(L.phase === "react" ? "loop.alldone.react" : "loop.alldone.check", {n: list.length}))}</p>` : "";
+    body = `${dots}${e ? exCard(p, e, {reveal: L.phase === "check"}) : `<p class="small muted">${esc(t("loop.empty"))}</p>`}${guess}${allDone}${nav}`;
   } else if (L.phase === "done"){
     const rs = arr(L.rules).map(x => ({x, c: critById(p, x.id)})).filter(o => o.c);
     const checks = L.checkIds.map(id => exById(p, id)).filter(Boolean), agree = checks.filter(e => e.agree).length;
@@ -19919,8 +19924,9 @@ function spineWake(p){
 const PG_PAGES = SP_STATIONS;   // idea · picks · try · design · review · build · run
 const PG_PHASES = {idea: ["capture", "understand"], picks: ["interview", "assume"], try: [], design: ["require", "arch"], review: ["review", "test"], build: ["build", "launch"], run: ["release", "operate"]};
 const PG_OF_PHASE = {}; for (const [pg, phs] of Object.entries(PG_PHASES)) for (const ph of phs) PG_OF_PHASE[ph] = pg;
-/* a step ref the old screens use → the page it lives on */
-const PG_OF_REF = {goal: "idea", "#pk-deck": "picks", "#pk-research": "picks", "#pk-summary": "picks", "#pk-try": "try", arch: "design", review: "review", test: "review", build: "build", release: "run", run: "run"};
+/* a step ref the old screens use → the page it lives on (2.2.0, tool request of 5 Nov: "loop" and "exboard" had no page, so
+   "Check them now" spent a round and "Judge my own examples" opened nothing in Pick Mode; both live on the Idea page) */
+const PG_OF_REF = {goal: "idea", "#pk-deck": "picks", "#pk-research": "picks", "#pk-summary": "picks", "#pk-try": "try", loop: "idea", exboard: "idea", arch: "design", review: "review", test: "review", build: "build", release: "run", run: "run"};
 const PG_ICON = {idea: "target", picks: "list", try: "play", design: "layers", review: "shield", build: "bolt", run: "heart"};
 function pgOn(p){ return !!p && MODES.includes(projMode(p)); }   // 2.0: the pages are the structure of both faces (Pick Mode and Chat Mode)
 /** the station of the one next step */
@@ -28641,9 +28647,11 @@ function goal20HTML(p){
     <div class="list">${M20_GOAL.map(rowH).join("")}
       <div class="item g20-row" data-f="nevers">${stSlot(nev.length || G.noNevers ? "ok" : "todo")}<div class="body"><b class="small">${esc(t("g20.nevers"))}</b><span>${nev.length ? esc(nev.map(e => factKindLabel(e.kind) + ": " + factText(e)).join(" · ")) : G.noNevers ? esc(t("g20.nonevers")) : `<span class="muted">${esc(t("g20.nevers.h"))}</span>`}</span><span class="small muted">${esc(t("g20.nevers.src"))}</span></div>
         <div class="qacts"><button class="btn xs" data-a="facts-open">${esc(t("g20.nevers.add"))}</button>${nev.length ? "" : `<button class="btn xs ghost" data-a="g20-nonevers" aria-pressed="${G.noNevers}">${esc(t("g20.nonevers"))}</button>`}</div></div></div>
-    ${G.hist.length ? `<details class="small"><summary>${esc(t("g20.hist", {n: G.hist.length}))}</summary><ul>${G.hist.slice().reverse().map(h => `<li>G${esc(String(h.v))} · ${esc(fmtDate(h.at))}: ${esc(trunc(str(h.f.outcome), 160))}</li>`).join("")}</ul></details>` : ""}   // ok:trunc a history line; the full goal is in that version
+    ${G.hist.length ? `<details class="small"><summary>${esc(t("g20.hist", {n: G.hist.length}))}</summary><ul>${G.hist.slice().reverse().map(g20HistLi).join("")}</ul></details>` : ""}
     <div class="row">${goal20Clear(p) ? `<span class="small"><span aria-hidden="true">✓</span> ${esc(t("g20.clear"))}</span>` : `<span class="small m20-why">${esc(t("g20.open", {x: goal20Open(p).map(k => t(k === "nevers" ? "g20.nevers0" : "g20.f." + k)).join(", ")}))}</span>${G.skip ? "" : `<button class="btn xs ghost" data-a="g20-skip">${esc(t("g20.skip"))}</button>`}`}<button class="btn sm primary" data-a="m20-open" data-v="map">${esc(t("g20.tomap"))}</button></div></section>${form}`;
 }
+/* 2.2.0: the history line was built inside the card's template, so its "// ok:trunc" note showed on screen as text */
+function g20HistLi(h){ return `<li>G${esc(String(h.v))} · ${esc(fmtDate(h.at))}: ${esc(trunc(str(h.f.outcome), 160))}</li>`; }   // ok:trunc a history line; the full goal is in that version
 function m20CardHTML(p, id){
   const r = m20Route(p, id); if (!r) return `<p class="small muted">${esc(t("m20.gone"))}</p>`;
   if (!r.fit && r.blocker) return `<p class="small muted">${esc(t("m20.gone"))}</p>`;

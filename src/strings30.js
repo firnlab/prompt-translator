@@ -1,5 +1,7 @@
 /* 2.2.0 · vendor limits table (v220_kits.js) and the other 2.2.0 parts as they are built */
 Object.assign(STR, {
+"loop.alldone.react":["All examples judged ({n} of {n}). Next: “Show the rules behind my reactions” below.","Alle Beispiele beurteilt ({n} von {n}). Weiter: «Regeln hinter meinen Reaktionen zeigen» unten.","全部示例已评判（{n}/{n}）。下一步：点击下方的“显示我反应背后的规则”。"],
+"loop.alldone.check":["All examples checked ({n} of {n}). Next: “Done checking” below.","Alle Beispiele geprüft ({n} von {n}). Weiter: «Prüfen fertig» unten.","全部示例已检验（{n}/{n}）。下一步：点击下方的“检验完成”。"],
 "vl.title":["What each vendor's spending limit really does","Was das Ausgabenlimit jedes Anbieters wirklich macht","各服务商的消费上限实际起什么作用"],
 "vl.sub":["Read on each vendor's own page. Set the limit on day one, before a tool's first run; PT re-checks these facts on the 20-day price clock. Tick “set” once you have set it.","Auf der Seite jedes Anbieters gelesen. Setz das Limit am ersten Tag, vor dem ersten Lauf eines Tools; PT prüft diese Fakten nach der 20-Tage-Preisuhr neu. Hak «gesetzt» an, sobald du es gesetzt hast.","均在各服务商自己的页面上核实。请在工具第一次运行之前的第一天设置上限；PT 按 20 天的价格时钟重新核对这些事实。设置好后请勾选“已设置”。"],
 "vl.kind.cap":["Cap","Deckel","封顶"],

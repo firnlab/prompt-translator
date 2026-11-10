@@ -8,7 +8,7 @@ function similar(a, b){
 
 async function aiExplainFinding(p, f){
   const prompt = buildPrompt("explain", {proj: p, rules: null, userLang: "viewer", context: projectContext(p, {max: 12000}),
-    body: `Explain this review finding in plain language for a non-technical person: what it means for the finished tool, why it matters, and what each of the three choices (fix automatically, fix it together, accept the risk) would mean here.\n<finding>${JSON.stringify({issue: f.issue, where: f.where, fix: f.fix, severity: f.severity})}</finding>`,
+    body: `Explain this review finding in plain language for a non-technical person: what it means for the finished tool, why it matters, and what each of the three buttons would mean here: "Fix automatically" (PT applies its fix), "PT drafts a fix, you pick what to keep" (PT proposes the change and the person keeps or drops each part; the value \"together\"), "Accept the risk" (nothing changes, the finding is re-checked later).\n<finding>${JSON.stringify({issue: f.issue, where: f.where, fix: f.fix, severity: f.severity})}</finding>`,
     schema: `{"meaning":"2-4 sentences","why":"1-2 sentences","recommend":"auto|together|accept","reason":"one sentence"}`});
   const r = await runAI("explain-" + f.id, t("rev.explaining"), prompt, {pid: p && p.id, step: "ask"});
   if (!r) return;

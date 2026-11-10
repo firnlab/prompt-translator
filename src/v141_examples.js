@@ -183,7 +183,9 @@ function loopCard(p){
     const nav = `<div class="row"><button class="btn sm ghost" data-a="loop-go" data-i="${i - 1}" ${i ? "" : "disabled"}>‹ ${esc(t("nav14.prev"))} <kbd>K</kbd></button><button class="btn sm ghost" data-a="loop-go" data-i="${i + 1}" ${i < list.length - 1 ? "" : "disabled"}>${esc(t("nav14.next"))} › <kbd>J</kbd></button><span style="flex:1"></span>
       ${L.phase === "react" ? aiBtn("loop-rule", done < list.length ? t("loop.rulenow", {n: done}) : t("loop.rule"), "M", {primary: done === list.length, key: "loop", attrs: done ? "" : "disabled"}) : `<button class="btn sm ${done === list.length ? "primary" : ""}" data-a="loop-finish">${esc(t("loop.finishcheck"))}</button>`}</div>`;
     const guess = L.phase === "react" && lv === "learn" && done === list.length ? `<div class="moment"><b>${esc(t("loop.guess.t"))}</b><p class="small">${esc(t("loop.guess"))}</p>${bindInput("p:loop.guess", L.guess || "", {ph: t("loop.guessph")})}</div>` : "";
-    body = `${dots}${e ? exCard(p, e, {reveal: L.phase === "check"}) : `<p class="small muted">${esc(t("loop.empty"))}</p>`}${guess}${nav}`;
+    // 2.2.0 (tool request of 2 Nov): when the last example is judged, say so and name the one next step
+    const allDone = list.length && done === list.length ? `<p class="small ok-t loop-alldone" role="status">${ic("check")} ${esc(t(L.phase === "react" ? "loop.alldone.react" : "loop.alldone.check", {n: list.length}))}</p>` : "";
+    body = `${dots}${e ? exCard(p, e, {reveal: L.phase === "check"}) : `<p class="small muted">${esc(t("loop.empty"))}</p>`}${guess}${allDone}${nav}`;
   } else if (L.phase === "done"){
     const rs = arr(L.rules).map(x => ({x, c: critById(p, x.id)})).filter(o => o.c);
     const checks = L.checkIds.map(id => exById(p, id)).filter(Boolean), agree = checks.filter(e => e.agree).length;
