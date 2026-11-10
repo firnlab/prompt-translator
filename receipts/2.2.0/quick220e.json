@@ -1,0 +1,388 @@
+{
+ "version": "2.2.0",
+ "label": "quick220e",
+ "scope": "QUICK",
+ "commit": "140f36321d5d75a7e451cd30bbb44591693349e7",
+ "code_tree": "edfb1bf36e1607d3dfbf3d235733c50417030b9e",
+ "dirty": false,
+ "dist_sha256": "0a86137dbf0ffbc73969fa8fee205e3801d0bf58cb69712f281be203fe812893",
+ "started": "2026-11-10T03:39:11",
+ "seconds": 1486,
+ "args": [
+  "--quick",
+  "--label=quick220e"
+ ],
+ "checks": [
+  {
+   "name": "build",
+   "result": "PASS",
+   "seconds": 0,
+   "ok": null,
+   "failed": null,
+   "key": null
+  },
+  {
+   "name": "static checks",
+   "result": "PASS",
+   "seconds": 1,
+   "ok": null,
+   "failed": null,
+   "key": "24647bd5ba7cd6ff58e732bfb85c97e0"
+  },
+  {
+   "name": "tests parse",
+   "result": "PASS",
+   "seconds": 0,
+   "ok": null,
+   "failed": null,
+   "key": "d0dec03ac80b5b0a5ed2fcd00dfa4b34"
+  },
+  {
+   "name": "check the checks",
+   "result": "PASS",
+   "seconds": 59,
+   "ok": 50,
+   "failed": null,
+   "key": "5393b35e6da95f2712057e7bd39abdfa"
+  },
+  {
+   "name": "the gate itself",
+   "result": "PASS",
+   "seconds": 10,
+   "ok": 36,
+   "failed": 0,
+   "key": "aa7cffdc1d70f293b6c46fd6406b386d"
+  },
+  {
+   "name": "manifest",
+   "result": "PASS",
+   "seconds": 0,
+   "ok": null,
+   "failed": null,
+   "key": "f8d3606534f9d8131fe662ee41b85aad"
+  },
+  {
+   "name": "strings",
+   "result": "PASS",
+   "seconds": 0,
+   "ok": null,
+   "failed": null,
+   "key": "1ddd290f4ef7ec00edeaeb60aa50507b"
+  },
+  {
+   "name": "unit",
+   "result": "PASS",
+   "seconds": 2,
+   "ok": 14,
+   "failed": 0,
+   "key": "bf875442d9a6b877bb18ce72c206be9e"
+  },
+  {
+   "name": "flows 1.4.1",
+   "result": "PASS",
+   "seconds": 107,
+   "ok": 91,
+   "failed": 0,
+   "key": "0ba3a18024295be010c9a93e84233c0d"
+  },
+  {
+   "name": "flows 1.5 (Pick)",
+   "result": "PASS",
+   "seconds": 38,
+   "ok": 57,
+   "failed": 0,
+   "key": "7a156c0c8d248dc578060cf59b0b0742"
+  },
+  {
+   "name": "flows 1.5 review",
+   "result": "PASS",
+   "seconds": 50,
+   "ok": 92,
+   "failed": 0,
+   "key": "d3ea90a1f0621ef9e2bd6a1893f48c00"
+  },
+  {
+   "name": "Pick contract",
+   "result": "PASS",
+   "seconds": 35,
+   "ok": 22,
+   "failed": 0,
+   "key": "689f5bd46d17805142deaae1f0f6f7a5"
+  },
+  {
+   "name": "flows 1.6 (kit 1)",
+   "result": "PASS",
+   "seconds": 16,
+   "ok": 128,
+   "failed": 0,
+   "key": "a196d47b9f914edcbde3974ed3c3ee87"
+  },
+  {
+   "name": "flows 1.7 (pages)",
+   "result": "PASS",
+   "seconds": 36,
+   "ok": 91,
+   "failed": 0,
+   "key": "27e0b6f809e773cf411aa75507c21b79"
+  },
+  {
+   "name": "flows 1.7.1 (time, names)",
+   "result": "PASS",
+   "seconds": 13,
+   "ok": 28,
+   "failed": 0,
+   "key": "7d39a6367283b6a32c60b9a6c10ba8f8"
+  },
+  {
+   "name": "flows 1.8 look",
+   "result": "PASS",
+   "seconds": 72,
+   "ok": 98,
+   "failed": 0,
+   "key": "c03438f41630d0c9015df3499f129a22"
+  },
+  {
+   "name": "flows 1.8 rows",
+   "result": "PASS",
+   "seconds": 22,
+   "ok": 58,
+   "failed": 0,
+   "key": "fb1dc011ebe48277edff6fa56f7c81e7"
+  },
+  {
+   "name": "flows 1.8 kits",
+   "result": "PASS",
+   "seconds": 14,
+   "ok": 83,
+   "failed": 0,
+   "key": "ffd3b7d15301015fa637c8658b44b97a"
+  },
+  {
+   "name": "flows 1.8 run",
+   "result": "PASS",
+   "seconds": 54,
+   "ok": 109,
+   "failed": 0,
+   "key": "6eb6eadbdaaaa22f8767c8a6738cc46f"
+  },
+  {
+   "name": "flows 1.8 (checks)",
+   "result": "PASS",
+   "seconds": 37,
+   "ok": 86,
+   "failed": 0,
+   "key": "d4e1a2bf43ed51dfbd4d8dfd6973d1ff"
+  },
+  {
+   "name": "flows 1.8 (deciding)",
+   "result": "PASS",
+   "seconds": 33,
+   "ok": 71,
+   "failed": 0,
+   "key": "f7178cafeb69a69a082ea46c0ed4223b"
+  },
+  {
+   "name": "flows 1.8 health",
+   "result": "PASS",
+   "seconds": 43,
+   "ok": 98,
+   "failed": 0,
+   "key": "f57e1bee4f2a9fab169acc9c26fc56f3"
+  },
+  {
+   "name": "flows 1.8 (the cone)",
+   "result": "PASS",
+   "seconds": 78,
+   "ok": 84,
+   "failed": 0,
+   "key": "e34c32137b090cd7b035f3e9d4d62913"
+  },
+  {
+   "name": "flows 1.9 care",
+   "result": "PASS",
+   "seconds": 57,
+   "ok": 108,
+   "failed": 0,
+   "key": "6f700653c24e61f8a15906b47b838641"
+  },
+  {
+   "name": "PT outside claude.ai",
+   "result": "PASS",
+   "seconds": 15,
+   "ok": 21,
+   "failed": 0,
+   "key": "4e4d536362028a541d43f0985a88c42e"
+  },
+  {
+   "name": "flows 1.9 fleet",
+   "result": "PASS",
+   "seconds": 48,
+   "ok": 78,
+   "failed": 0,
+   "key": "650bde53f91909df586d2759f9ea329c"
+  },
+  {
+   "name": "flows 1.9 scan",
+   "result": "PASS",
+   "seconds": 50,
+   "ok": 99,
+   "failed": 0,
+   "key": "88a5afa14496580106c0ac88dab83fdc"
+  },
+  {
+   "name": "flows 1.9.1 judge",
+   "result": "PASS",
+   "seconds": 58,
+   "ok": 81,
+   "failed": 0,
+   "key": "62a8a0af415d42ee4ba9667f23eb8f56"
+  },
+  {
+   "name": "flows 1.10 hands",
+   "result": "PASS",
+   "seconds": 26,
+   "ok": 54,
+   "failed": 0,
+   "key": "7a4d4899941afa1fae98a515e1780b80"
+  },
+  {
+   "name": "flows 2.0 foundation",
+   "result": "PASS",
+   "seconds": 55,
+   "ok": 82,
+   "failed": 0,
+   "key": "93855ae86eda5d046de11c064dc0d5fb"
+  },
+  {
+   "name": "flows 2.0 map",
+   "result": "PASS",
+   "seconds": 50,
+   "ok": 122,
+   "failed": 0,
+   "key": "cfd9dbc008bce43e6b0a6db73da1467d"
+  },
+  {
+   "name": "flows 2.0 modes",
+   "result": "PASS",
+   "seconds": 119,
+   "ok": 170,
+   "failed": 0,
+   "key": "14d6ec1cd0e36f5ff5e94ad0073f3872"
+  },
+  {
+   "name": "flows 2.0 hands",
+   "result": "PASS",
+   "seconds": 19,
+   "ok": 55,
+   "failed": 0,
+   "key": "abdd220051714ea4dfef20ccfd6ecdfe"
+  },
+  {
+   "name": "flows 2.0 loop",
+   "result": "PASS",
+   "seconds": 41,
+   "ok": 83,
+   "failed": 0,
+   "key": "6be1e2ae52de7e21bbea4a60fdc1248d"
+  },
+  {
+   "name": "flows 2.2 kits",
+   "result": "PASS",
+   "seconds": 8,
+   "ok": 23,
+   "failed": 0,
+   "key": "f24b17f47c3031ad5ea847db721572eb"
+  },
+  {
+   "name": "flows 2.2 older",
+   "result": "PASS",
+   "seconds": 12,
+   "ok": 16,
+   "failed": 0,
+   "key": "425945d4685d771b81a745797fdda546"
+  },
+  {
+   "name": "flows 2.2 prompts",
+   "result": "PASS",
+   "seconds": 26,
+   "ok": 48,
+   "failed": 0,
+   "key": "ff373775eb2e693535951d0864891101"
+  },
+  {
+   "name": "flows 2.2 tools",
+   "result": "PASS",
+   "seconds": 15,
+   "ok": 57,
+   "failed": 0,
+   "key": "97de4f12666b22724639c3c6a744084b"
+  },
+  {
+   "name": "flows 2.1 platform",
+   "result": "PASS",
+   "seconds": 110,
+   "ok": 52,
+   "failed": 0,
+   "key": "711a6a04b623ace05822221a9bf01347"
+  },
+  {
+   "name": "flows 2.1 clicks",
+   "result": "PASS",
+   "seconds": 15,
+   "ok": 11,
+   "failed": 0,
+   "key": "d9ce7d9d71c369c7bed60dc80e23f61d"
+  },
+  {
+   "name": "flows 2.1 safe",
+   "result": "PASS",
+   "seconds": 11,
+   "ok": 53,
+   "failed": 0,
+   "key": "ebb51b3dd474d32e47676b82c0bff52b"
+  },
+  {
+   "name": "check the causes",
+   "result": "PASS",
+   "seconds": 0,
+   "ok": null,
+   "failed": null,
+   "key": "f5fa8c8e2ef11575b28cedbdc74d158a"
+  },
+  {
+   "name": "pseudo-localisation",
+   "result": "PASS",
+   "seconds": 60,
+   "ok": 179,
+   "failed": 0,
+   "key": "6252a3d2cd148512e3539f1b722def2e"
+  },
+  {
+   "name": "changelog",
+   "result": "PASS",
+   "seconds": 2,
+   "ok": 27,
+   "failed": 0,
+   "key": "053e3a871f64c6c322968a4f423c01c5"
+  },
+  {
+   "name": "hunt",
+   "result": "PASS",
+   "seconds": 721,
+   "ok": 21,
+   "failed": 0,
+   "key": "7f4b14ce04b8d6dd0d70d1f51dd1424c"
+  },
+  {
+   "name": "hunt 2",
+   "result": "PASS",
+   "seconds": 467,
+   "ok": 10,
+   "failed": 0,
+   "key": "79bbe01584437a30c5e2a9ab641e9afc"
+  }
+ ],
+ "flaky": [],
+ "expected_red": 8,
+ "preview_sha256": "9f2e55e33b338556c57e340398c64952d38cd8696788ecd6987c5a05a2f04817"
+}
