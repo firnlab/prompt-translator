@@ -5,6 +5,12 @@
  4 COULD 12: the map's Buy angle asks for a managed service and for hiring someone, with cost and date
  5 SHOULD 6: a missed run is computed from the schedule for any cadence (weekly missed Monday → shown Tuesday; daily ok; paused never)
  6 SHOULD 2: the drift number falls when quality falls over three weeks; reports wait as candidate tests until ticked or dismissed
+ 7 SHOULD 15: hard gates for tools others use block the release until met; a key in the package can only be removed, not answered
+ 8 SHOULD 4: every outside app of the chosen route is a pick before the build; the answers go into the brief
+ 9 SHOULD 5: one sentence on a live tool → small or big with the reason; small prepares only that change
+10 SHOULD 13 + 14: the last-mile checklist, one press per screen, checks after each press, a wrong result stops it
+11 C7 + SHOULD 3: Reinstall uses the released brief, is live only once verified, snapshots the data, restores it on request
+12 COULD 14: five learning moments in Learning mode
  + three languages, no page errors."""
 import json, sys, pathlib
 BK = sys.argv[1] if len(sys.argv) > 1 else "test/fixtures/synthetic.json"
@@ -96,6 +102,89 @@ with sync_playwright() as pw:
     n0 = ev(pg, "curP().tests.length")
     pg.locator("[data-cand=ib-t22a] [data-a=rc22-test]").click(); pg.wait_for_timeout(3000)
     check("“Make it a test” turns it into a test after your tick, and it leaves the board", ev(pg, "curP().tests.length") == n0 + 1 and ev(pg, "!!curP().inbox.find(x => x.id === 'ib-t22a').testId") and not ev(pg, "!!document.querySelector('[data-cand=ib-t22a]')"), [ev(pg, "curP().tests.length"), n0])
+
+    print("7 hard gates")
+    hg = ev(pg, MK, {"name": "Shared shop 22", "raw": "A web app online shop where customers pay with a subscription, log in, and their orders are stored in a database", "aud": {"customers": True}, "home": "a web app on its own domain"})
+    ev(pg, """(id) => { const p = WS.projects.find(x => x.id === id); p.pkg.sections = [{id: 'instructions', dest: 'instructions', title: 'Instructions', reqIds: [], content: 'Use the key ' + ['sk', 'live', 'AbCdEfGhIjKlMnOpQrStUvWx0123'].join('_') + ' for Stripe.'}]; touch(p); }""", hg)
+    items = ev(pg, "(id) => queueOf(WS.projects.find(x => x.id === id)).filter(x => x.kind === 'hg22').map(x => ({id: x.ref.slice(5), cls: x.cls}))", hg)
+    ids = [x["id"] for x in items]
+    check("a shared web shop with payments and a database gets every hard gate, each blocking", set(ids) == {"secret", "backend", "access", "server", "stage", "rate", "launch3"} and all(x["cls"] == "block" for x in items), items)
+    sec = ev(pg, "(id) => { const p = WS.projects.find(x => x.id === id); return qOptions(p, {kind: 'hg22', ref: 'hg22:secret'}).map(o => o.label); }", hg)
+    check("the key gate can only be fixed by removing the key, not answered", len(sec) == 1 and "Remove" in sec[0], sec)
+    ev(pg, "(id) => { const p = WS.projects.find(x => x.id === id); p.pkg.sections[0].content = 'Read the key from the secret store.'; p.hg22 = {launch3: {ev: 'short', at: now()}, backend: {ev: 'Supabase edge functions; the page holds no database key', at: now()}}; touch(p); }", hg)
+    left = ev(pg, "(id) => hg22Open(WS.projects.find(x => x.id === id)).map(g => g.id)", hg)
+    check("without the key the key gate is met; real evidence meets a gate, a too-short answer does not", "secret" not in left and "backend" not in left and "launch3" in left, left)
+    check("a tool only for me has no hard gates", ev(pg, "(id) => hg22Gates(WS.projects.find(x => x.id === id)).length", notes) == 0, "")
+
+    print("8 the connector check")
+    ev(pg, """(id) => { const p = WS.projects.find(x => x.id === id); const M = m20Read(p); M.routes = [{id: 'R1', name: 'Gmail and Trello helper', line: 'Reads Gmail, files cards in Trello', day: [], where: 'claude', how: 'scheduled', lvl: 1}]; M.chosen = 'R1'; p.map20 = M; touch(p); }""", mail)
+    cq = ev(pg, "(id) => { const p = WS.projects.find(x => x.id === id); return {apps: conn22Apps(p), q: queueOf(p).filter(x => x.kind === 'conn22').map(x => [x.ref, x.cls, x.why])}; }", mail)
+    check("the chosen route's apps (Gmail, Trello) each become a blocking pick before the build", "Gmail" in cq["apps"] and "Trello" in cq["apps"] and all(x[1] == "block" for x in cq["q"]) and len(cq["q"]) == len(cq["apps"]), cq)
+    tr = [x for x in cq["q"] if x[0] == "conn22:Trello"][0][2]
+    check("for an app PT has no official page on, it says so instead of guessing", "does not know" in tr, tr)
+    ev(pg, "(id) => { const p = WS.projects.find(x => x.id === id); for (const n of conn22Apps(p)) qOptions(p, {kind: 'conn22', ref: 'conn22:' + n}).find(o => o.label.startsWith(n === 'Gmail' ? 'It is connected' : 'No connector')).run(); }", mail)
+    kb = ev(pg, "(id) => kitBriefPart(WS.projects.find(x => x.id === id))", mail)
+    check("the answers go into the brief: Gmail via the connector, Trello via a bridge", "PART N · OUTSIDE APPS" in kb and "Gmail: connected" in kb and "Trello: no connector" in kb, kb[-300:])
+    check("…and the picks are no longer open", ev(pg, "(id) => conn22Open(WS.projects.find(x => x.id === id)).length", mail) == 0, "")
+
+    print("9 the small-change path")
+    sz = ev(pg, """() => { const p = WS.projects[0]; p.live = {v: '1.0', since: now()};
+        const off = Object.assign({}, p); delete off.live;
+        return {small: sc22Size(p, 'Make the weekly mail list the prices too'), money: sc22Size(p, 'Charge customers a subscription'), people: sc22Size(p, 'Also send it to every customer'), app: sc22Size(p, 'Put the results into Notion'), notlive: sc22Size(off, 'Make the heading bigger')}; }""")
+    check("one plain sentence on a live tool is small", sz["small"]["size"] == "small", sz)
+    check("money, other people, a new app or a tool not live yet make it big, each with its reason", sz["money"] == {"size": "big", "why": "money"} and sz["people"]["why"] == "people" and sz["app"]["why"] == "app" and sz["notlive"]["why"] == "notlive", sz)
+    ev(pg, """() => { const p = WS.projects[0]; openProject(p.id); UI.home = false; p.inbox = arr(p.inbox).filter(i => !/^ib-s22/.test(i.id));
+        p.inbox.push({id: 'ib-s22old', src: 'yours', title: 'old wish', body: 'old wish', on: true, at: now(), k: 'change'}); window.__prep = []; const o = aiPrepareUpdate; aiPrepareUpdate = async function(q){ window.__prep.push(arr(q.inbox).filter(i => i.on && !i.done).map(i => i.title)); }; window.__restorePrep = () => { aiPrepareUpdate = o; }; render(); }""")
+    ev(pg, "() => { const f = document.createElement('form'); f.innerHTML = '<input id=\"cr-in\" value=\"Make the weekly mail list the prices too\">'; document.body.appendChild(f); FORMS['change-request'](); f.remove(); }"); pg.wait_for_timeout(500)
+    it = ev(pg, "(() => { const i = curP().inbox.slice(-1)[0]; return {title: i.title, size: i.size22}; })()")
+    check("the change box marks the sentence small with its reason", it["size"] and it["size"]["size"] == "small", it)
+    ev(pg, "(async () => { const i = curP().inbox.slice(-1)[0]; await ACTIONS['sc22-go']({dataset: {id: i.id}}); })()"); pg.wait_for_timeout(400)
+    prep = ev(pg, "window.__prep")
+    check("“Prepare only this change” prepares that one change and nothing else", prep and prep[-1] == ["Make the weekly mail list the prices too"], prep)
+    check("…and the other wish is switched back on afterwards", ev(pg, "curP().inbox.find(i => i.id === 'ib-s22old').on === true"), "")
+    ev(pg, "window.__restorePrep()")
+
+    print("10 the last mile")
+    st = ev(pg, "(id) => lm22Steps(WS.projects.find(x => x.id === id)).map(s => [s.id, s.who])", hg)
+    check("a web shop's last mile: repository by Claude Code, accounts by PT's hands, keys, merge and limits by you", [x[0] for x in st][:2] == ["w-repo", "w-vercel"] and ["w-secrets", "you"] in st and ["w-merge", "you"] in st and ["w-cap", "you"] in st and ["w-repo", "code"] in st, st)
+    ev(pg, "(id) => { const p = WS.projects.find(x => x.id === id); openProject(p.id); UI.home = false; face20Set(p, 'chat'); p.lm22 = {}; pgOpen(p, 'build'); p.focus = {ph: 'launch', id: null}; UI.phase = 'launch'; pgShowPhase(p, 'launch'); render(); }", hg); pg.wait_for_timeout(300)
+    card = ev(pg, "(() => { const c = document.querySelector('.lm22-press'); return c ? {id: c.dataset.lm22, presses: c.querySelectorAll('[data-a=lm22-did]').length, cost: c.textContent.includes('Costs'), undo: c.textContent.includes('Can be undone')} : null; })()")
+    check("the Launch page shows one step at a time with one press, its cost and whether it can be undone", card and card["id"] == "w-repo" and card["presses"] == 1 and card["cost"] and card["undo"], card)
+    pg.locator("[data-a=lm22-did]").click(); pg.wait_for_timeout(200)
+    pg.locator("[data-a=lm22-yes]").click(); pg.wait_for_timeout(200)
+    check("after the press PT asks what you see; Yes moves to the next step", ev(pg, "document.querySelector('.lm22-press').dataset.lm22") == "w-vercel", "")
+    pg.locator("[data-a=lm22-did]").click(); pg.wait_for_timeout(200)
+    pg.locator("[data-a=lm22-no]").click(); pg.wait_for_timeout(200)
+    check("No stops the checklist on that step and says what to do", ev(pg, "document.querySelector('.lm22-press').dataset.lm22") == "w-vercel" and ev(pg, "!!document.querySelector('.lm22-press .crit-t')"), "")
+    ev(pg, "(id) => { const p = WS.projects.find(x => x.id === id); p.lm22 = {'w-repo': {ok: true}, 'w-vercel': {ok: true}, 'w-supa': {ok: true}}; delete WS.settings.vlSet_supabase; render(); }", hg); pg.wait_for_timeout(200)
+    pg.locator("[data-a=lm22-did]").click(); pg.wait_for_timeout(200)
+    check("a step PT can check itself (the Supabase spend cap) stays open until the limit is ticked in Settings", ev(pg, "document.querySelector('.lm22-press').dataset.lm22") == "w-cap", "")
+    ev(pg, "() => { WS.settings.vlSet_supabase = '2026-11-10'; render(); }"); pg.wait_for_timeout(200)
+    check("…and is done once it is", ev(pg, "document.querySelector('.lm22-press').dataset.lm22") != "w-cap", "")
+    check("the brief carries the whole last mile in order", "PART O · LAST MILE" in ev(pg, "(id) => kitBriefPart(WS.projects.find(x => x.id === id))", hg), "")
+
+    print("11 Reinstall: the released brief, live only when verified, data")
+    rr = ev(pg, """(async () => { const p = WS.projects[1]; openProject(p.id); p.pkg.sections = [{id: 'instructions', dest: 'instructions', title: 'Instructions', content: 'VERSION ONE TEXT'}]; saveVersion(p, 'v1'); const d1 = p.versionNo;
+        p.releases = [{v: '1.0', draft: d1, at: now()}]; p.pkg.sections = [{id: 'instructions', dest: 'instructions', title: 'Instructions', content: 'WORKING COPY TEXT'}]; saveVersion(p, 'wc');
+        p.tool = Object.assign(p.tool || {}, {artifacts: ['art-test-1'], triggers: []}); p.live = {v: '1.1', since: now()}; p.updates = [];
+        window.__jobs = []; const o = startJob; startJob = function(k, opt){ let r; try{ r = o.apply(this, arguments); }catch(e){} window.__jobs.push({k, inputs: opt.inputs, ins: opt.instructions}); return r; };
+        window.__docs = {}; const pt = putTextDoc; putTextDoc = async function(coll, id, meta, text){ window.__docs[id] = text; return pt.apply(this, arguments); };
+        await doReinstall(p, '1.0', {withData: true});
+        startJob = o; putTextDoc = pt;
+        const j = window.__jobs.find(x => x.k === 'update'); const bid = Object.keys(window.__docs).find(k => /-rel-/.test(k));
+        return {live: p.live.v, reinstalling: !!p.reinstalling, brief: j && j.inputs.brief, bidText: bid ? window.__docs[bid] : '', snap: j && j.inputs.snapshot, restore: j && j.inputs.restore, ins: j ? j.ins : ''}; })()""")
+    check("the tool is not marked live on the old version before the run checked it", rr["live"] == "1.1" and rr["reinstalling"], rr)
+    check("the update run gets the brief of the released version, not the working copy", rr["brief"] and "-rel-1.0" in rr["brief"] and "VERSION ONE TEXT" in rr["bidText"] and "WORKING COPY TEXT" not in rr["bidText"], {k: rr[k] for k in ("brief", "live")})
+    check("the run first copies the tool's data, and with “code and data” puts version 1.0's copy back", "Before changing anything" in rr["ins"] and rr["snap"] and rr["restore"] and rr["restore"].endswith("-1.0") and "put the data back" in rr["ins"], {k: rr[k] for k in ("snap", "restore")})
+    ver = ev(pg, """() => { const p = WS.projects[1]; const u = p.updates.slice(-1)[0]; u.job = 'job-rein'; JOB_APPLY.update({id: 'job-rein', status: 'done', result: {verified: true}}, p); return {live: p.live.v, reinstalling: !!p.reinstalling}; }""")
+    check("once the run reports verified, the tool is live on 1.0", ver == {"live": "1.0", "reinstalling": False}, ver)
+    co = ev(pg, """(async () => { const p = WS.projects[1]; p.live = {v: '1.1', since: now()}; window.__jobs = []; const o = startJob; startJob = function(k, opt){ let r; try{ r = o.apply(this, arguments); }catch(e){} window.__jobs.push({k, inputs: opt.inputs, ins: opt.instructions}); return r; };
+        await doReinstall(p, '1.0', {withData: false}); startJob = o; const j = window.__jobs.find(x => x.k === 'update'); return {restore: j && j.inputs.restore, snap: j && j.inputs.snapshot}; })()""")
+    check("“code only” copies the data but restores nothing", co["snap"] and not co["restore"], co)
+
+    print("12 learning moments")
+    lm = ev(pg, """() => { const p = WS.projects[0]; p.level = 'learn'; WS.settings.lm5Seen = []; const a = lm5HTML(p); WS.settings.lm5Seen = ['repo', 'pr', 'key', 'domain', 'line']; const b = lm5HTML(p); p.level = 'guided'; const c = (WS.settings.lm5Seen = [], lm5HTML(p)); return {a, b, c}; }""")
+    check("Learning mode shows the first moment (a repository); all seen → none; another help level → none", "repository" in lm["a"].lower() and not lm["b"] and not lm["c"], {k: v[:60] for k, v in lm.items()})
 
     for lang, word in (("de", "Aus Meldungen"), ("zh", "来自报告")):
         check(f"the candidate strings in {lang}", word in ev(pg, f"STR['rc22.t'][{1 if lang == 'de' else 2}]"), "")

@@ -1120,6 +1120,14 @@
     "test/e2e220_older.py :: no code note (“// ok:…”) is visible"
    ],
    "no_plant": "re-adding the note after the history line turned the check red on 10 Nov 2026 (manual plant, BUILD-LOG-2.2.0.md); the check renders the goal card with and without history"
+  },
+  "115": {
+   "cause": "Reinstall vX started the update job on the current working brief (briefPaths of the working copy) and marked the tool live before the update was verified (C7, found by the 7 Nov red team, live until 2.2.0)",
+   "checks": [
+    "test/e2e220_tools.py :: the update run gets the brief of the released version",
+    "test/e2e220_tools.py :: the tool is not marked live on the old version"
+   ],
+   "no_plant": "disabling the brief hand-over turned the check red on 10 Nov 2026 (manual plant, BUILD-LOG-2.2.0.md)"
   }
  }
 }

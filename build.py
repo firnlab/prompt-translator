@@ -1,7 +1,8 @@
 import pathlib, os, sys
 # usage: python3 build.py [preview-artifact-url]  → a preview build talks to its own storage
 MAIN_URL = "https://claude.ai/artifact/VjEPcpnocMTPMwHvHdwTZ3"
-URL = sys.argv[1] if len(sys.argv) > 1 else MAIN_URL
+_ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
+URL = _ARGS[0] if _ARGS else MAIN_URL
 OUT = "dist/prompt-translator.html" if URL == MAIN_URL else "dist/prompt-translator-preview.html"
 S = pathlib.Path("src")
 order = ["knowledge.js","strings.js","strings2.js","strings3.js","strings4.js","strings5.js","strings6.js","strings7.js","strings8.js","strings9.js","strings10.js","strings11.js","strings12.js","strings13.js","strings14.js","strings15.js","strings16.js","strings17.js","strings18.js","strings19.js","strings20.js","strings21.js","strings22.js","strings23.js","strings24.js","strings25.js","strings26.js","strings27.js","strings28.js","strings29.js","strings30.js","core.js","items.js","engine.js","tasks.js","tasks2.js","tasks3.js","tasks4.js","tasks5.js","v14_fix.js","app.js","v14_model.js","v14_queue.js","views_shell.js","views_modes.js","views_phases.js","views_run.js","views_engine.js","views13.js","views_pages.js","actions.js","actions2.js","actions3.js","actions4.js","v14_change.js","v14_goal.js","v14_interview.js","v14_tasks.js","v14_ui.js","v14_finish.js","v14_map.js","v14_release.js","v14_migrate.js","v141_ui.js","v141_shell.js","v141_examples.js","v141_stages.js","v141_levels.js","v141_migrate.js","v142_proof.js","v150_pick.js","v160_kits.js","v160_company.js","v160_webapp.js","v160_media.js","v160_phone.js","v160_rebuild.js","v160_spine.js","v170_pages.js","v170_honest.js","v170_more.js","v170_build.js","v170_vault.js","v171_measure.js","v180_look.js","v180_decide.js","v180_checks.js","v180_rows.js","v180_cone.js","v180_run.js","v180_health.js","v180_kits.js","v190_care.js","v190_fleet.js","v190_scan.js","v190_interview.js","v191_judge.js","v191_lab.js","v1100_hands.js","v200_facts.js","v200_events.js","v200_stage.js","v200_map.js","v200_modes.js","v200_hands.js","v200_loop.js","v200_setup.js","v210_safe.js","v220_kits.js","v220_prompts.js","v220_tools.js"]
@@ -24,6 +25,25 @@ assert ('const PT_URL = "' + URL + '";') in js
 if URL != MAIN_URL:
     js = js.replace("const PT_PREVIEW = false;", "const PT_PREVIEW = true;"); assert "const PT_PREVIEW = true;" in js
 import re as _re
+# 2.2.0 (item 21): comments that start a line ("//" lines, "/* ... */" blocks) are left out of the built page (~228 KB). Only text from a
+# column-0 "/*" to the first "*/" is removed (code after it on that line stays); test/strip_check.js proves with a real parser that every
+# removed range is exactly a comment. The sources keep their comments; static checks read the sources.
+def _strip_col0(src):
+    out, i, n = [], 0, len(src)
+    while i < n:
+        j = src.find("\n", i); j = n if j < 0 else j + 1
+        line = src[i:j]
+        if line.startswith("//"): i = j; continue
+        if line.startswith("/*"):
+            e = src.find("*/", i + 2)
+            if e < 0: out.append(src[i:]); break
+            rest_end = src.find("\n", e + 2); rest_end = n if rest_end < 0 else rest_end + 1
+            rest = src[e + 2:rest_end]
+            if rest.strip(): out.append(rest)
+            i = rest_end; continue
+        out.append(line); i = j
+    return "".join(out)
+if "--keep-comments" not in sys.argv: js = _strip_col0(js)
 VER = _re.search(r'const PT_VERSION = "([0-9.]+)";', S.joinpath("app.js").read_text()).group(1)
 TITLE = "Prompt Translator " + VER + (" Preview" if URL != MAIN_URL else "")
 css = S.joinpath("styles.css").read_text() + "\n/* ===== 1.8 look (styles18.css) ===== */\n" + S.joinpath("styles18.css").read_text()
