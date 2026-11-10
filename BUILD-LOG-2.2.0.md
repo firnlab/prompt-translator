@@ -28,3 +28,6 @@ Owner "GO 2.2.0" 10 Nov 2026 00:52 (D-2026-11-10-01: everything in one update). 
 
 ## Full gate full220b (10 Nov): GREEN 60/60
 - First run stopped at the 2-hour task limit during click everything (59 green, none red); resumed with --resume on the same build: FULL on commit 5014edb, built file sha256 0a86137dbf0ffbc7.
+
+## Published main (10 Nov, 14:06, owner GO 2.2.0)
+- Prompt Translator 2.2.0 main: version id 1794315963-ef5c (previous 1794082802-e32a, rollback one GO away); capabilities carried forward unchanged. Built file identical to the gated one (dist committed, no diff).
