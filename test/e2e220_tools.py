@@ -121,6 +121,8 @@ with sync_playwright() as pw:
     early = ev(pg, """() => { const p = WS.projects.find(x => stage20Early(x) && str(x.northStar.goal).trim()) || null; if (!p) return null;
         const out = queueOf(p).map(x => x.ref).join('|'); RENDERING = true; Q_CACHE = null; let a; try { a = queueOf(p).map(x => x.ref).join('|'); } finally { RENDERING = false; Q_CACHE = null; } return out === a; }""")
     check("…also for a project before its route decision (the held detail items stay held while rendering)", early is not False, early)
+    keys = ev(pg, "(id) => queueOf(WS.projects.find(x => x.id === id)).filter(x => x.kind === 'hg22' || x.kind === 'conn22').map(x => x.key)", hg)
+    check("every new queue item has its own key (the row id on screen is made from it)", keys and all(k and "undefined" not in k for k in keys) and len(set(keys)) == len(keys), keys)
     check("a tool only for me has no hard gates", ev(pg, "(id) => hg22Gates(WS.projects.find(x => x.id === id)).length", notes) == 0, "")
 
     print("8 the connector check")

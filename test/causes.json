@@ -1136,6 +1136,15 @@
     "test/e2e200_map.py :: the picks in the deck come first (here none); then one Next: check the goal card"
    ],
    "no_plant": "the shortcut put back turned the check red on 10 Nov 2026 (manual plant, BUILD-LOG-2.2.0.md)"
+  },
+  "117": {
+   "cause": "The hard-gate and connector queue items were pushed as plain objects without qItem, so they had no key: their rows on the Build and Launch pages all got the id \"pq-\" (one box twice), and their open lists were worked out on every one of the many queue calls of a render, which made big projects draw slower (hunt 12 and hunt 30, quick gate quick220d, before any publish)",
+   "checks": [
+    "test/e2e220_tools.py :: every new queue item has its own key",
+    "test/hunt.py :: 12 one box",
+    "test/hunt2.py :: 30 speed"
+   ],
+   "no_plant": "hunt 12 and hunt 30 are themselves planted-bug checks (check_the_hunts); the key check went red with qItem removed on 10 Nov 2026 (manual plant, BUILD-LOG-2.2.0.md)"
   }
  }
 }

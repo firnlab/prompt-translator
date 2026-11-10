@@ -104,7 +104,7 @@ _LAST = {"check the checks": 49, "the gate itself": 36, "unit": 14, "flows 1.4.1
          "flows 1.8 kits": 83, "flows 1.8 run": 109, "check the rows": 9, "flows 1.8 (checks)": 86, "flows 1.8 (deciding)": 71,
          "flows 1.8 health": 98, "PT checks itself": 73, "flows 1.8 (the cone)": 84, "flows 1.9 care": 108, "PT outside claude.ai": 21,
          "flows 1.9 fleet": 78, "flows 1.9 scan": 99, "flows 1.9.1 judge": 81, "flows 1.10 hands": 54, "flows 2.0 foundation": 82,
-         "flows 2.0 map": 122, "flows 2.0 modes": 170, "flows 2.0 hands": 55, "flows 2.0 loop": 83, "flows 2.2 kits": 23, "flows 2.2 older": 16, "flows 2.2 prompts": 48, "flows 2.2 tools": 56, "pseudo-localisation": 179, "hunt": 21,
+         "flows 2.0 map": 122, "flows 2.0 modes": 170, "flows 2.0 hands": 55, "flows 2.0 loop": 83, "flows 2.2 kits": 23, "flows 2.2 older": 16, "flows 2.2 prompts": 48, "flows 2.2 tools": 57, "pseudo-localisation": 179, "hunt": 21,
          "hunt 2": 10, "check the hunt": 31, "check the Pick tests": 104, "check the Pick tests 2": 103, "layout": 60, "migration 1.4.1": 14,
          "migration 1.4": 15, "flows 1.4": 58, "flows 1.2": 161,
          "flows 2.1 platform": 52, "flows 2.1 clicks": 10, "flows 2.1 safe": 53, "changelog": 27}   # 2.1 (red team 4 #16): every counted suite is listed
