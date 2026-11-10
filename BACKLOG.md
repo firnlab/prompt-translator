@@ -21,6 +21,9 @@ DEFER and DROP items stay out. Failing features ship switched off. The release r
 - b15 automatic repair: off; a "Try again" button instead.
 - Paused 5 Nov 21:48 by the owner before Wave 1 was merged: more changes to come; spend nothing until the revised plan is agreed.
 
+## Next version 2.3.0 (owner, 10 Nov 2026, D-2026-11-10-05)
+- Drawer cabinet as PT's home: chest in the rail (Inbox, Waiting, one drawer per project, Done with the 30-day bin), "Needs you now" strip across projects, always-visible drop field, Sweep and Leave; later the uniform cards and the Cockpit's retirement. Owner choices so far: no three-item limit; side doors closed (Claude files as it goes, "to PT:" from any chat, paste as fallback); Done reviewed in the sweep; light look; every drag has "Move to"; 30-day bin. Waits on HANDOFF-cabinet.md (chosen solution, where the PT drawer's list lives). Large (touches the rail every screen shares).
+
 ## Master list
 ## A. Safety & security
 
